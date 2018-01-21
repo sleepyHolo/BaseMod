@@ -46,7 +46,7 @@ Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubsc
 
 Example of setting up a basic mod badge with settings panel:
 
-`
+```java
 ModPanel settingsPanel = new ModPanel();
 settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
     if (me.parent.waitingOnEvent) {
@@ -72,7 +72,7 @@ settingsPanel.addButton(350.0f, 650.0f, (me) -> {
 
 Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
 registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
-`
+```
 
 ## Changelog ##
 #### v1.0.0 ####
