@@ -17,8 +17,10 @@ BaseMod provides a number of hooks and a console.
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
+* `card add [id]` generate card
+* `card r [id]` lose card
 * `info` toggle Settings.isInfo
-* `relic [id]` generate relic
+* `relic add [id]` generate relic
 * `relic r [id]` lose relic
 
 ## For Modders ##
