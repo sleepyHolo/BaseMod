@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
@@ -68,6 +71,10 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
             }
             case "info": {
                 Settings.isInfo = !Settings.isInfo;
+                break;
+            }
+            case "kill": {
+                cmdKill(tokens);
                 break;
             }
             default: {
@@ -128,6 +135,24 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
                     }
                 }
                 if(removed) AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
+            }
+        }
+    }
+    
+    private static void cmdKill(String[] tokens) {
+        if (AbstractDungeon.getCurrRoom().monsters != null) {
+            if (tokens.length != 2) {
+                return;
+            }
+            
+            if (tokens[1].equals("all")) {
+                int monsterCount = AbstractDungeon.getCurrRoom().monsters.monsters.size();
+                int[] multiDamage = new int[monsterCount];
+                for (int i = 0; i < monsterCount; ++i) {
+                    multiDamage[i] = 999;
+                }
+                
+                AbstractDungeon.actionManager.addToBottom(new DamageAllEnemiesAction(AbstractDungeon.player, multiDamage, DamageInfo.DamageType.HP_LOSS, AbstractGameAction.AttackEffect.NONE));
             }
         }
     }

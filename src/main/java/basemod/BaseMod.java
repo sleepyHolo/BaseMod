@@ -14,6 +14,10 @@ import org.apache.logging.log4j.LogManager;
 public class BaseMod {
     public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
     
+    private static final String MODNAME = "BaseMod";
+    private static final String AUTHOR = "t-larson";
+    private static final String DESCRIPTION = "v1.1.2 NL Provides hooks and a console";
+    
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
     private static final float BADGES_Y = 250.0f;
@@ -69,7 +73,7 @@ public class BaseMod {
     public static void publishPostInitialize() {
         // BaseMod post initialize handling
         Texture badgeTexture = new Texture(Gdx.files.internal("img/badge.png"));
-        registerModBadge(badgeTexture, "BaseMod", "t-larson", "v1.1.1 NL Provides hooks and a console");
+        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION);
         
         // Publish
         for (PostInitializeSubscriber sub : postInitializeSubscribers) {

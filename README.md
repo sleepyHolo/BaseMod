@@ -17,9 +17,10 @@ BaseMod provides a number of hooks and a console.
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
-* `card add [id]` generate card
-* `card r [id]` lose card
+* `card add [id]` add card to hand
+* `card r [id]` exhaust card from hand
 * `info` toggle Settings.isInfo
+* `kill all` kills all enemies in the current combat
 * `relic add [id]` generate relic
 * `relic r [id]` lose relic
 
@@ -30,7 +31,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `BaseMod.unsubscribeFrom...(this)`
 
 #### Subscriptions ####
-Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscription`)
+Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
 * `receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
 * `receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
 * `receivePostRender(SpriteBatch)` - Above everything
@@ -59,6 +60,11 @@ Currently only has full support for the badges themselves. Clicking any will ope
 * Scale mod badges by Settings.scale
 * Scale mod settings screens by Settings.scale
 
-## Changelog ##
+#### v1.1.2 #####
+* Fix bug with IDs which contain spaces (FlipskiZ)
+* Add `card` console command (FlipskiZ)
+* Add `kill all` console command
+
+## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `card` command, bug fixes
