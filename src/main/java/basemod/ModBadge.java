@@ -2,6 +2,7 @@ package basemod;
 
 import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,7 +30,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
     private Hitbox hb;
     private ModPanel modPanel;
     
-    public ModBadge(Texture t, float xPos, float yPos, String name, String auth, String desc) {
+    public ModBadge(Texture t, float xPos, float yPos, String name, String auth, String desc, ModPanel modSettings) {
         modName = name;
         author = auth;
         description = desc;
@@ -42,7 +43,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
         h = t.getHeight();
         
         hb = new Hitbox(x, y, w*Settings.scale, h*Settings.scale);
-        modPanel = new ModPanel();
+        modPanel = modSettings;
         
         BaseMod.subscribeToRender(this);
         BaseMod.subscribeToPreUpdate(this);
@@ -53,7 +54,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
             sb.setColor(Color.WHITE); 
             sb.draw(texture, x, y, w*Settings.scale, h*Settings.scale);
             hb.render(sb);
-        } else if (modPanel.isUp) {
+        } else if (modPanel != null && modPanel.isUp) {
             modPanel.render(sb);
         }
     }
@@ -79,18 +80,21 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
                 hb.clicked = false;
                 onClick();
             }
-        } else if (modPanel.isUp) {
+        } else if (modPanel != null && modPanel.isUp) {
             modPanel.update();
         }        
     }
     
     private void onClick() {
-        BaseMod.modSettingsUp = true;
-        modPanel.isUp = true;
-        
-        CardCrawlGame.mainMenuScreen.darken();
-        CardCrawlGame.mainMenuScreen.hideMenuButtons();
-        CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.SETTINGS;
-        CardCrawlGame.cancelButton.show("Close");
+        if (modPanel != null) {
+            modPanel.oldInputProcessor = Gdx.input.getInputProcessor();
+            BaseMod.modSettingsUp = true;
+            modPanel.isUp = true;
+            
+            CardCrawlGame.mainMenuScreen.darken();
+            CardCrawlGame.mainMenuScreen.hideMenuButtons();
+            CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.SETTINGS;
+            CardCrawlGame.cancelButton.show("Close");
+        }
     }
 }

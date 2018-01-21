@@ -1,6 +1,9 @@
 package basemod;
 
 import basemod.interfaces.*;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,13 +19,15 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.1.2 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.1.3 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
     private static final float BADGES_Y = 250.0f;
     public static final float BADGE_W = 40.0f;
     public static final float BADGE_H = 40.0f;
+    
+    private static InputProcessor oldInputProcessor = null;
     
     private static ArrayList<ModBadge> modBadges;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
@@ -54,14 +59,14 @@ public class BaseMod {
     //
     // Mod badges
     //
-    public static void registerModBadge(Texture t, String name, String author, String desc) {
+    public static void registerModBadge(Texture t, String name, String author, String desc, ModPanel settingsPanel) {
         int modBadgeCount = modBadges.size();
         int col = (modBadgeCount%BADGES_PER_ROW);
         int row = (modBadgeCount/BADGES_PER_ROW);
         float x = (BADGES_X*Settings.scale) + (col*BADGE_W*Settings.scale);
         float y = (BADGES_Y*Settings.scale) - (row*BADGE_H*Settings.scale);
         
-        ModBadge badge = new ModBadge(t, x, y, name, author, desc);
+        ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
         modBadges.add(badge);
     }
     
@@ -72,8 +77,31 @@ public class BaseMod {
     // publishPostInitialize -
     public static void publishPostInitialize() {
         // BaseMod post initialize handling
+        ModPanel settingsPanel = new ModPanel();
+        settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
+            if (me.parent.waitingOnEvent) {
+                me.text = "Press key";
+            } else {
+                me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
+            }
+        });
+        
+        settingsPanel.addButton(350.0f, 650.0f, (me) -> {
+            me.parent.waitingOnEvent = true;
+            oldInputProcessor = Gdx.input.getInputProcessor();
+            Gdx.input.setInputProcessor(new InputAdapter() {
+                @Override
+                public boolean keyUp(int keycode) {
+                    DevConsole.toggleKey = keycode;
+                    me.parent.waitingOnEvent = false;
+                    Gdx.input.setInputProcessor(oldInputProcessor);
+                    return true;
+                }
+            });
+        });
+        
         Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
-        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION);
+        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         
         // Publish
         for (PostInitializeSubscriber sub : postInitializeSubscribers) {

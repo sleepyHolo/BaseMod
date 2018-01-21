@@ -13,34 +13,34 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class ModPanel {
-    private static Texture texture;
+    private static final float ROW_LEFT = 475.0f;
+    private static final float ROW_TOP = 650.0f;
+    private static final float ROW_HEIGHT = 64.0f;
     
-    private boolean waitingOnKey;
-    private InputProcessor oldInputProcessor = null;
-    private ModButton consoleKeyButton;
-    public String consoleKeyLabel;
+    private static Texture background;
+    private ArrayList<ModButton> buttons;
+    private ArrayList<ModLabel> labels;
     
+    public InputProcessor oldInputProcessor = null;
     public boolean isUp = false;
+    public boolean waitingOnEvent = false;
     
     public ModPanel() {
-        texture = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
-        consoleKeyLabel = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
-        
-        consoleKeyButton = new ModButton(350.0f*Settings.scale, 650.0f*Settings.scale, this, (me) -> {       
-            waitingOnKey = true;
-            oldInputProcessor = Gdx.input.getInputProcessor();
-            Gdx.input.setInputProcessor(new InputAdapter() {
-                @Override
-                public boolean keyUp(int keycode) {
-                    DevConsole.toggleKey = keycode;
-                    waitingOnKey = false;
-                    Gdx.input.setInputProcessor(oldInputProcessor);
-                    return true;
-                }
-            });
-        });
+        background = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
+        buttons = new ArrayList<ModButton>();
+        labels = new ArrayList<ModLabel>();
+    }
+    
+    public void addButton(float x, float y, Consumer<ModButton> click) {
+        buttons.add(new ModButton(x, y, this, click));
+    }
+    
+    public void addLabel(String text, float x, float y, Consumer<ModLabel> update) {
+        labels.add(new ModLabel(text, x, y, this, update));
     }
     
     public void render(SpriteBatch sb) {
@@ -51,15 +51,19 @@ public class ModPanel {
     
     private void renderBg(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
-        sb.draw(texture, (float)Settings.WIDTH / 2.0f - 682.0f, Settings.OPTION_Y - 376.0f, 682.0f, 376.0f, 1364.0f, 752.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 1364, 752, false, false);
+        sb.draw(background, (float)Settings.WIDTH / 2.0f - 682.0f, Settings.OPTION_Y - 376.0f, 682.0f, 376.0f, 1364.0f, 752.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 1364, 752, false, false);
     }
     
     private void renderText(SpriteBatch sb) {
-        FontHelper.renderFontLeftDownAligned(sb, FontHelper.buttonLabelFont, consoleKeyLabel, 475.0f*Settings.scale, 700.0f*Settings.scale, Color.WHITE);
+        for (ModLabel label : labels) {
+            label.render(sb);
+        }
     }
     
     private void renderButtons(SpriteBatch sb) {
-        consoleKeyButton.render(sb);
+        for (ModButton button : buttons) {
+            button.render(sb);
+        }
     }
     
     public void update() {
@@ -72,7 +76,7 @@ public class ModPanel {
         }
         
         if (!BaseMod.modSettingsUp) {
-            waitingOnKey = false;
+            waitingOnEvent = false;
             Gdx.input.setInputProcessor(oldInputProcessor);
             CardCrawlGame.mainMenuScreen.lighten();
             CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.MAIN_MENU;
@@ -82,10 +86,14 @@ public class ModPanel {
     }
     
     private void updateText() {
-        consoleKeyLabel = waitingOnKey ? "Press key" : "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
+        for (ModLabel label : labels) {
+            label.update();
+        }
     }
     
     private void updateButtons() {
-        consoleKeyButton.update();
+        for (ModButton button : buttons) {
+            button.update();
+        }
     }
 }

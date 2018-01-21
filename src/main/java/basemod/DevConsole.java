@@ -90,11 +90,11 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
                 return;
             }
             
-            if (tokens[1].equals("r") && tokens.length > 2) {
+            if (tokens[1].equals("r")) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.player.loseRelic(relicName);
-            } else if (tokens[1].equals("add") && tokens.length > 2) {
+            } else if (tokens[1].equals("add")) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2, RelicLibrary.getRelic(relicName).makeCopy());
@@ -110,7 +110,7 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
             logger.info("" + String.join(" ", tokens));
             logger.info("" + tokens[1]);
             
-            if (tokens[1].equals("add") && tokens.length > 2) {
+            if (tokens[1].equals("add")) {
                 String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String cardName = String.join(" ", cardNameArray);
                 logger.info("" + cardName);
@@ -119,7 +119,7 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
                     c = c.makeCopy();
                     AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
                 }
-            } else if (tokens[1].equals("r") && tokens.length > 2){
+            } else if (tokens[1].equals("r")) {
                 String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String cardName = String.join(" ", cardNameArray);
                 logger.info("" + cardName);

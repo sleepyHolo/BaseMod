@@ -27,8 +27,8 @@ public class ModButton {
     
     public ModButton(float xPos, float yPos, ModPanel p, Consumer<ModButton> c) {
         texture = new Texture(Gdx.files.internal("img/BlankButton.png"));
-        x = xPos;
-        y = yPos;
+        x = xPos*Settings.scale;
+        y = yPos*Settings.scale;
         w = texture.getWidth();
         h = texture.getHeight();
         hb = new Hitbox(x+(HB_SHRINK*Settings.scale), y+(HB_SHRINK*Settings.scale), (w-(2*HB_SHRINK))*Settings.scale, (h-(2*HB_SHRINK))*Settings.scale);
@@ -64,7 +64,6 @@ public class ModButton {
     } 
     
     private void onClick() {
-        BaseMod.logger.info("onClick");
         click.accept(this);
     }
 }

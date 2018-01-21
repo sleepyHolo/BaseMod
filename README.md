@@ -39,8 +39,40 @@ Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubsc
 * `receivePostUpdate()` - Immediately before input is disposed
 
 ### Mod Badges ###
-Currently only has full support for the badges themselves. Clicking any will open the BaseMod settings page for now.
-* `BaseMod.registerModBadge(Texture texture, String modName, String author, String description)`
+32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
+* `BaseMod.registerModBadge(Texture texture, String modName, String author, String description, ModPanel settingsPanel)`
+* `ModPanel.addButton(float x, float y, Consumer<ModButton> clickEvent)`
+* `ModPanel.addLabel(String text, float x, float y, Consumer<ModLabel> updateEvent)`
+
+Example of setting up a basic mod badge with settings panel:
+
+`
+ModPanel settingsPanel = new ModPanel();
+settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
+    if (me.parent.waitingOnEvent) {
+        me.text = "Press key";
+    } else {
+        me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
+    }
+});
+
+settingsPanel.addButton(350.0f, 650.0f, (me) -> {
+    me.parent.waitingOnEvent = true;
+    oldInputProcessor = Gdx.input.getInputProcessor();
+    Gdx.input.setInputProcessor(new InputAdapter() {
+        @Override
+        public boolean keyUp(int keycode) {
+            DevConsole.toggleKey = keycode;
+            me.parent.waitingOnEvent = false;
+            Gdx.input.setInputProcessor(oldInputProcessor);
+            return true;
+        }
+    });
+});
+
+Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
+registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
+`
 
 ## Changelog ##
 #### v1.0.0 ####
@@ -64,6 +96,9 @@ Currently only has full support for the badges themselves. Clicking any will ope
 * Fix bug with IDs which contain spaces (FlipskiZ)
 * Add `card` console command (FlipskiZ)
 * Add `kill all` console command
+
+#### v1.1.3 #####
+* Initial support for each mod badge being tied to its own settings panel
 
 ## Contributors ##
 * t-larson - Original author
