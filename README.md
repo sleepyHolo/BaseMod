@@ -56,3 +56,7 @@ Currently only has full support for the badges themselves. Clicking any will ope
 #### v1.1.1 #####
 * Scale mod badges by Settings.scale
 * Scale mod settings screens by Settings.scale
+
+## Changelog ##
+* t-larson - Original author
+* FlipskiZ - `card` command, bug fixes
