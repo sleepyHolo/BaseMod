@@ -72,7 +72,7 @@ public class BaseMod {
     // publishPostInitialize -
     public static void publishPostInitialize() {
         // BaseMod post initialize handling
-        Texture badgeTexture = new Texture(Gdx.files.internal("img/badge.png"));
+        Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
         registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION);
         
         // Publish
