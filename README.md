@@ -20,7 +20,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `card add [id]` add card to hand
 * `card r [id]` exhaust card from hand
 * `energy add [amount]` gain energy
-* `energy inf` start every turn with 9999 energy
+* `energy inf` toggles infinite energy
 * `energy r [amount]` lose energy
 * `gold add [amount]` gain gold
 * `gold r [amount]` lose gold
