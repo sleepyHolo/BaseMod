@@ -13,20 +13,21 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
-import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
+import com.megacrit.cardcrawl.actions.common.*;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.actions.common.*;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import java.util.Arrays;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-public class DevConsole implements PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {    
-    public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
+public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {    
+    public static final Logger logger = LogManager.getLogger(DevConsole.class.getName());
+    
     private static final float CONSOLE_X = 75.0f;
     private static final float CONSOLE_Y = 75.0f;
     private static final float CONSOLE_W = 800.0f;
@@ -40,6 +41,8 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
     private static InputProcessor consoleInputProcessor; 
     private static InputProcessor otherInputProcessor = null;
     
+    private static boolean infiniteEnergy = false;
+    
     public static boolean backspace = false;
     public static boolean visible = false;
     public static int backspaceWait = 0;
@@ -47,6 +50,7 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
     public static String currentText = "";
     
     public DevConsole() {
+        BaseMod.subscribeToPostEnergyRecharge(this);
         BaseMod.subscribeToPostInitialize(this);
         BaseMod.subscribeToPostRender(this);
         BaseMod.subscribeToPostUpdate(this);
@@ -185,15 +189,26 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
     
     private static void cmdEnergy(String[] tokens) {
         if (AbstractDungeon.player != null) {
-            if (tokens.length != 3) {
+            if (tokens.length < 2) {
                 return;
             }
             
-            if (tokens[1].equals("add")) {
+            if (tokens[1].equals("add") && tokens.length > 2) {
                 AbstractDungeon.player.gainEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
-            } else if (tokens[1].equals("r")) {
+            } else if (tokens[1].equals("r") && tokens.length > 2) {
                 AbstractDungeon.player.loseEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
+            } else if (tokens[1].equals("inf")) {
+                infiniteEnergy = !infiniteEnergy;
+                if (infiniteEnergy) {
+                    AbstractDungeon.player.gainEnergy(9999);
+                }
             }
+        }
+    }
+    
+    public void receivePostEnergyRecharge() {
+        if (infiniteEnergy) {
+            EnergyPanel.setEnergy(9999);
         }
     }
     

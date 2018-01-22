@@ -20,6 +20,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `card add [id]` add card to hand
 * `card r [id]` exhaust card from hand
 * `energy add [amount]` gain energy
+* `energy inf` start every turn with 9999 energy
 * `energy r [amount]` lose energy
 * `gold add [amount]` gain gold
 * `gold r [amount]` lose gold
@@ -36,6 +37,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 
 #### Subscriptions ####
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
+* `receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged
 * `receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
 * `receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
 * `receivePostRender(SpriteBatch)` - Above everything
@@ -108,6 +110,10 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `gold` command
 * Add `energy` command
 * Remove bundled font and use one from the base game instead
+
+#### v1.1.5 ####
+* Add `energy inf` command
+* Add `PostEnergyRechargeSubscriber` interface and related code
 
 ## Contributors ##
 * t-larson - Original author

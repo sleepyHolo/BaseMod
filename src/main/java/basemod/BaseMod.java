@@ -19,7 +19,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.1.3 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.1.5 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -30,6 +30,7 @@ public class BaseMod {
     private static InputProcessor oldInputProcessor = null;
     
     private static ArrayList<ModBadge> modBadges;
+    private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
     private static ArrayList<RenderSubscriber> renderSubscribers;
     private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
@@ -44,7 +45,9 @@ public class BaseMod {
         logger.info("========================= BASEMOD INIT =========================");
         logger.info("isModded: " + Settings.isModded);
         
-        modBadges = new ArrayList<ModBadge>();        
+        modBadges = new ArrayList<ModBadge>();
+        
+        postEnergyRechargeSubscribers = new ArrayList<PostEnergyRechargeSubscriber>();
         postInitializeSubscribers = new ArrayList<PostInitializeSubscriber>();
         renderSubscribers = new ArrayList<RenderSubscriber>();
         postRenderSubscribers = new ArrayList<PostRenderSubscriber>();
@@ -73,6 +76,13 @@ public class BaseMod {
     //
     // Publishers
     //
+    
+    // publishPostEnergyRecharge -
+    public static void publishPostEnergyRecharge() {
+        for (PostEnergyRechargeSubscriber sub : postEnergyRechargeSubscribers) {
+            sub.receivePostEnergyRecharge();
+        }
+    }
     
     // publishPostInitialize -
     public static void publishPostInitialize() {
@@ -140,6 +150,16 @@ public class BaseMod {
     //
     // Subsciption handlers
     //
+    
+    // subscribeToPostEnergyRecharge -
+    public static void subscribeToPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
+        postEnergyRechargeSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromPostEnergyRecharge -
+    public static void unsubscribeFromPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
+        postEnergyRechargeSubscribers.remove(sub);
+    }
     
     // subscribeToPostInitialize -
     public static void subscribeToPostInitialize(PostInitializeSubscriber sub) {

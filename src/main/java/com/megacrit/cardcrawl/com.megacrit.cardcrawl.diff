@@ -1,6 +1,6 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-19 20:30:39.812725800 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-21 01:09:49.853437200 -0800
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 12:29:41.313958100 -0800
 @@ -113,6 +113,9 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -90,9 +90,41 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          this.updateDebugSwitch();
          InputHelper.updateLast();
          if (Settings.isInfo) {
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java com/megacrit/cardcrawl/core/EnergyManager.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:40.419519200 -0800
++++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:56.930813500 -0800
+@@ -12,6 +12,9 @@
+ import com.megacrit.cardcrawl.relics.AbstractRelic;
+ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public class EnergyManager {
+     public int energy;
+     public int energyMaster;
+@@ -25,7 +28,7 @@
+         EnergyPanel.totalCount = 0;
+     }
+ 
+-    public void recharge() {
++    public void recharge() {        
+         if (AbstractDungeon.player.hasRelic("Ice Cream")) {
+             if (EnergyPanel.totalCount > 0) {
+                 AbstractDungeon.player.getRelic("Ice Cream").flash();
+@@ -36,6 +39,9 @@
+             EnergyPanel.setEnergy(this.energy);
+         }
+         AbstractDungeon.actionManager.updateEnergyGain(this.energy);
++        
++        // BaseMod modification
++        BaseMod.publishPostEnergyRecharge();
+     }
+ 
+     public void use(int e) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-21 01:02:58.518447800 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-21 03:51:12.472275000 -0800
++++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-22 12:29:41.315460400 -0800
 @@ -29,6 +29,9 @@
  import com.megacrit.cardcrawl.screens.stats.StatsScreen;
  import com.megacrit.cardcrawl.screens.trial.TrialScreen;
@@ -122,7 +154,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-19 20:30:45.726395900 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-19 21:16:48.864194100 -0800
++++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-22 12:29:41.317320600 -0800
 @@ -32,6 +32,9 @@
  import java.util.ArrayList;
  import java.util.Iterator;
@@ -146,7 +178,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
                  this.disable(true);
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-19 20:30:45.853517300 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-19 21:27:37.917842600 -0800
++++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-22 12:29:41.318837000 -0800
 @@ -36,6 +36,9 @@
  import java.util.ArrayList;
  import java.util.Iterator;
@@ -176,7 +208,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-19 20:30:45.866530600 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-19 21:28:25.853573500 -0800
++++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-22 12:29:41.320823600 -0800
 @@ -39,6 +39,9 @@
  import java.util.ArrayList;
  import java.util.Iterator;
@@ -206,7 +238,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-19 20:30:45.961622700 -0800
-+++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-19 21:41:05.589296700 -0800
++++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-22 12:29:41.322825600 -0800
 @@ -45,6 +45,9 @@
  import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
  import java.util.ArrayList;
