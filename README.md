@@ -19,6 +19,10 @@ BaseMod provides a number of hooks and a console.
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `card add [id]` add card to hand
 * `card r [id]` exhaust card from hand
+* `energy add [amount]` gain energy
+* `energy r [amount]` lose energy
+* `gold add [amount]` gain gold
+* `gold r [amount]` lose gold
 * `info` toggle Settings.isInfo
 * `kill all` kills all enemies in the current combat
 * `relic add [id]` generate relic
@@ -99,6 +103,11 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 
 #### v1.1.3 #####
 * Initial support for each mod badge being tied to its own settings panel
+
+#### v1.1.4 #####
+* Add `gold` command
+* Add `energy` command
+* Remove bundled font and use one from the base game instead
 
 ## Contributors ##
 * t-larson - Original author

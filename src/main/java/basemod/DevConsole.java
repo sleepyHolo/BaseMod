@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.helpers.*;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -75,6 +76,14 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
             }
             case "kill": {
                 cmdKill(tokens);
+                break;
+            }
+            case "gold": {
+                cmdGold(tokens);
+                break;
+            }
+            case "energy": {
+                cmdEnergy(tokens);
                 break;
             }
             default: {
@@ -157,11 +166,42 @@ public class DevConsole implements PostInitializeSubscriber, PostRenderSubscribe
         }
     }
     
+    private static void cmdGold(String[] tokens) {
+        if (AbstractDungeon.player != null) {
+            if (tokens.length != 3) {
+                return;
+            }
+            
+            int amount = ConvertHelper.tryParseInt(tokens[2], 0);
+            if (tokens[1].equals("add")) {
+                AbstractDungeon.player.displayGold += amount;
+                AbstractDungeon.player.gainGold(amount);
+            } else if (tokens[1].equals("r")) {
+                AbstractDungeon.player.displayGold = Math.max(AbstractDungeon.player.displayGold - amount, 0);
+                AbstractDungeon.player.loseGold(amount);
+            }
+        }
+    }
+    
+    private static void cmdEnergy(String[] tokens) {
+        if (AbstractDungeon.player != null) {
+            if (tokens.length != 3) {
+                return;
+            }
+            
+            if (tokens[1].equals("add")) {
+                AbstractDungeon.player.gainEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
+            } else if (tokens[1].equals("r")) {
+                AbstractDungeon.player.loseEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
+            }
+        }
+    }
+    
     public void receivePostInitialize() {
         consoleInputProcessor = new ConsoleInputProcessor();      
         
         // Console font
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/FantasqueSansMono/FantasqueSansMono-Regular.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Kreon-Regular.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = (int) (CONSOLE_TEXT_SIZE * Settings.scale);
         consoleFont = generator.generateFont(parameter);
