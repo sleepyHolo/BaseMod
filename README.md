@@ -135,6 +135,9 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `draw` command
 * Add `float BaseMod.pathDensityMultiplier` property which can be used to modify map generation
 
+#### v1.2.1 ####
+* Add `PreStartGameSubscriber` interface and related code
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes

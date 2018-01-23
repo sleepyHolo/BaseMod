@@ -29,7 +29,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.2.0 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.2.1 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -45,6 +45,7 @@ public class BaseMod {
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
     private static ArrayList<RenderSubscriber> renderSubscribers;
     private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
+    private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
     private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
     private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;  
     
@@ -67,6 +68,7 @@ public class BaseMod {
         postInitializeSubscribers = new ArrayList<PostInitializeSubscriber>();
         renderSubscribers = new ArrayList<RenderSubscriber>();
         postRenderSubscribers = new ArrayList<PostRenderSubscriber>();
+        preStartGameSubscribers = new ArrayList<PreStartGameSubscriber>();
         preUpdateSubscribers = new ArrayList<PreUpdateSubscriber>();
         postUpdateSubscribers = new ArrayList<PostUpdateSubscriber>();
            
@@ -177,6 +179,17 @@ public class BaseMod {
         }
     }
     
+    // publishPreStartGame -
+    public static void publishPreStartGame() {
+        // BaseMod pre start game handling
+        mapPathDensityMultiplier = 1.0f;
+        
+        // Publish
+        for (PreStartGameSubscriber sub : preStartGameSubscribers) {
+            sub.receivePreStartGame();
+        }
+    }
+    
     // publishPreUpdate -
     public static void publishPreUpdate() {
         for (PreUpdateSubscriber sub : preUpdateSubscribers) {
@@ -243,6 +256,16 @@ public class BaseMod {
     // unsubscribeFromPostRender -
     public static void unsubscribeFromPostRender(PostRenderSubscriber sub) {
         postRenderSubscribers.remove(sub);
+    }
+    
+    // subscribeToPreStartGame -
+    public static void subscribeToPreStartGame(PreStartGameSubscriber sub) {
+        preStartGameSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromPreStartGame -
+    public static void unsubscribeFromPreStartGame(PreStartGameSubscriber sub) {
+        preStartGameSubscribers.remove(sub);
     }
     
     // subscribeToPreUpdate -

@@ -24,7 +24,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
              logger.info("ERROR: How did this happen? No cards in draw pile?? Player.java");
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-19 20:30:39.812725800 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 12:29:41.313958100 -0800
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 21:58:31.994048300 -0800
 @@ -113,6 +113,9 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -81,7 +81,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          catch (Exception e) {
              ExceptionHandler.handleException(e, logger);
-@@ -505,7 +519,7 @@
+@@ -461,6 +475,9 @@
+     }
+ 
+     public static void startNewGame(AbstractPlayer.PlayerClass c) {
++        // BaseMod modification
++        BaseMod.publishPreStartGame();
++        
+         sound.fadeOut(DeathScreen.STINGER_KEY, DeathScreen.STINGER_ID);
+         if (AbstractDungeon.scene != null) {
+             AbstractDungeon.scene.fadeOutAmbiance();
+@@ -505,7 +522,7 @@
          mysteryMachine = 0;
      }
  
@@ -90,7 +100,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          cursor.update();
          screenShake.update(viewport);
          if (mode != GameMode.SPLASH) {
-@@ -532,6 +546,10 @@
+@@ -532,6 +549,10 @@
              this.displayCursor = !this.displayCursor;
          }
          InputHelper.updateFirst();
@@ -101,7 +111,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          if (CardCrawlGame.cardPopup.isOpen) {
              cardPopup.update();
          }
-@@ -650,7 +668,11 @@
+@@ -650,7 +671,11 @@
              default: {
                  logger.info("Unknown Game Mode: " + mode.name());
              }
