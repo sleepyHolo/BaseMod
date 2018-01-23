@@ -19,7 +19,7 @@ BaseMod provides a number of hooks and a console.
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `deck add [id]` add card to deck
 * `deck r [id]` remove card from deck
-# `draw [num]` draw cards
+* `draw [num]` draw cards
 * `energy add [amount]` gain energy
 * `energy inf` toggles infinite energy
 * `energy r [amount]` lose energy
