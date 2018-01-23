@@ -1,3 +1,27 @@
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java com/megacrit/cardcrawl/characters/AbstractPlayer.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-19 20:30:39.566986100 -0800
++++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-22 19:29:45.734248400 -0800
+@@ -86,6 +86,9 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public abstract class AbstractPlayer
+ extends AbstractCreature {
+     private static final Logger logger = LogManager.getLogger(AbstractPlayer.class.getName());
+@@ -831,6 +834,10 @@
+                 for (AbstractRelic r : this.relics) {
+                     r.onCardDraw(c);
+                 }
++                
++                // BaseMod modification
++                BaseMod.publishPostDraw(c);
++                
+                 continue;
+             }
+             logger.info("ERROR: How did this happen? No cards in draw pile?? Player.java");
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-19 20:30:39.812725800 -0800
 +++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 12:29:41.313958100 -0800
@@ -122,6 +146,29 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      }
  
      public void use(int e) {
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-19 20:30:42.159476100 -0800
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-22 21:29:06.237442500 -0800
+@@ -12,12 +12,18 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public class MapGenerator {
+     private static final Logger logger = LogManager.getLogger(MapGenerator.class.getName());
+ 
+     public static ArrayList<ArrayList<MapRoomNode>> generateDungeon(int height, int width, int pathDensity, Random rng) {
+         ArrayList<ArrayList<MapRoomNode>> map = MapGenerator.createNodes(height, width);
+-        map = MapGenerator.createPaths(map, pathDensity, rng);
++        
++        // BaseMod modification
++        map = MapGenerator.createPaths(map, (int)(pathDensity*BaseMod.mapPathDensityMultiplier), rng);
++        
+         map = MapGenerator.filterRedundantEdgesFromRow(map);
+         return map;
+     }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-21 01:02:58.518447800 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-22 12:29:41.315460400 -0800
