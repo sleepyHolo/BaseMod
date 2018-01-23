@@ -35,6 +35,12 @@ public class ConsoleInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
+        // For some reason the validation procedure thinks uppercase D is invalid
+        if (character == 'D') {
+            DevConsole.currentText += character;
+            return true;
+        }
+        
         Character.UnicodeBlock block = Character.UnicodeBlock.of(character);
         
         boolean badBlock = (block == null || block == Character.UnicodeBlock.SPECIALS);

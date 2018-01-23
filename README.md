@@ -17,13 +17,17 @@ BaseMod provides a number of hooks and a console.
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
-* `card add [id]` add card to hand
-* `card r [id]` exhaust card from hand
+* `deck add [id]` add card to deck
+* `deck r [id]` remove card from deck
+# `draw [num]` draw cards
 * `energy add [amount]` gain energy
 * `energy inf` start every turn with 9999 energy
 * `energy r [amount]` lose energy
 * `gold add [amount]` gain gold
 * `gold r [amount]` lose gold
+* `hand add [id]` add card to hand
+* `hand r all` exhaust entire hand
+* `hand r [id]` exhaust card from hand
 * `info` toggle Settings.isInfo
 * `kill all` kills all enemies in the current combat
 * `relic add [id]` generate relic
@@ -37,6 +41,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 
 #### Subscriptions ####
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
+* `receivePostDraw(AbstractCard)` - After a card is drawn
 * `receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged
 * `receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
 * `receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
@@ -80,6 +85,10 @@ Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
 registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 ```
 
+### Custom Relics ###
+* `CustomRelic(String id, Texture texture, AbstractRelic.RelicTier tier, AbstractRelic.LandingSound sfx)`
+* `BaseMod.loadCustomRelicStrings(String json)`
+
 ## Changelog ##
 #### v1.0.0 ####
 * Initial release
@@ -115,6 +124,17 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `energy inf` command
 * Add `PostEnergyRechargeSubscriber` interface and related code
 
+#### v1.2.0 ####
+* Add `PostDrawSubscriber` interface and related code
+* Add `CustomRelic` extension of AbstractRelic
+* Add support for loading custom RelicStrings
+* Fix a bug that prevented the character `D` from being input into the console
+* Rename `card` command to `hand`
+* Add `hand r all` command
+* Add `deck` command 
+* Add `draw` command
+* Add `float BaseMod.pathDensityMultiplier` property which can be used to modify map generation
+
 ## Contributors ##
 * t-larson - Original author
-* FlipskiZ - `card` command, bug fixes
+* FlipskiZ - `hand` command, bug fixes

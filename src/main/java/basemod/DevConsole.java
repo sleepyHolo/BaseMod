@@ -21,6 +21,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -70,8 +72,8 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 cmdRelic(tokens);
                 break;
             }
-            case "card": {
-                cmdCard(tokens);
+            case "hand": {
+                cmdHand(tokens);
                 break;
             }
             case "info": {
@@ -88,6 +90,14 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             }
             case "energy": {
                 cmdEnergy(tokens);
+                break;
+            }
+            case "deck": {
+                cmdDeck(tokens);
+                break;
+            }
+            case "draw": {
+                cmdDraw(tokens);
                 break;
             }
             default: {
@@ -115,39 +125,41 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
         }
     }
     
-    private static void cmdCard(String[] tokens) {
+    private static void cmdHand(String[] tokens) {
         if (AbstractDungeon.player != null) {
             if (tokens.length < 3) {
                 return;
             }
-            logger.info("" + String.join(" ", tokens));
-            logger.info("" + tokens[1]);
             
             if (tokens[1].equals("add")) {
                 String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String cardName = String.join(" ", cardNameArray);
-                logger.info("" + cardName);
                 AbstractCard c = CardLibrary.getCard(cardName);
                 if (c != null) {
                     c = c.makeCopy();
                     AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
                 }
             } else if (tokens[1].equals("r")) {
+                if (tokens[2].equals("all")) {
+                    for (AbstractCard c : new ArrayList<AbstractCard>(AbstractDungeon.player.hand.group)) {
+                        AbstractDungeon.player.hand.moveToExhaustPile(c);
+                    }
+                    return;
+                }
+                
                 String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String cardName = String.join(" ", cardNameArray);
-                logger.info("" + cardName);
                 
                 boolean removed = false;
                 AbstractCard toRemove = null;
                 for (AbstractCard c : AbstractDungeon.player.hand.group) {
-                    logger.info("" + c.cardID);
                     if(removed) break;
                     if(c.cardID.equals(cardName)){
                         toRemove = c;
                         removed = true;
                     }
                 }
-                if(removed) AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
+                if (removed) AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
             }
         }
     }
@@ -203,6 +215,34 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                     AbstractDungeon.player.gainEnergy(9999);
                 }
             }
+        }
+    }
+    
+    private static void cmdDeck(String[] tokens) {
+        if (AbstractDungeon.player != null) {
+            if (tokens.length < 3) {
+                return;
+            }
+            
+            String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+            String cardName = String.join(" ", cardNameArray);
+            
+            if (tokens[1].equals("add")) {
+                AbstractCard c = CardLibrary.getCard(cardName).makeCopy();
+                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
+            } else if (tokens[1].equals("r")) {
+                AbstractDungeon.player.masterDeck.removeCard(cardName);
+            }
+        }
+    }
+    
+    private static void cmdDraw(String[] tokens) {
+        if (AbstractDungeon.getCurrRoom().monsters != null) {
+            if (tokens.length != 2) {
+                return;
+            }
+            
+            AbstractDungeon.actionManager.addToTop(new DrawCardAction(AbstractDungeon.player, ConvertHelper.tryParseInt(tokens[1], 0)));
         }
     }
     
