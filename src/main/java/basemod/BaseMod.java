@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -29,7 +30,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.2.1 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.2.2 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -43,6 +44,7 @@ public class BaseMod {
     private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
     private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
+    private static ArrayList<PreMonsterTurnSubscriber> preMonsterTurnSubscribers;
     private static ArrayList<RenderSubscriber> renderSubscribers;
     private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
     private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
@@ -53,7 +55,12 @@ public class BaseMod {
     public static Gson gson;
     
     public static boolean modSettingsUp = false;
+    
+    // Map generation
     public static float mapPathDensityMultiplier = 1.0f;
+    public static int mapFirstEliteCampfireRoom = 4;
+    public static int mapLastCampfireRoom = 13;
+    public static int mapTreasureRoom = 8;
     
     // initialize -
     public static void initialize() {
@@ -66,6 +73,7 @@ public class BaseMod {
         postDrawSubscribers = new ArrayList<PostDrawSubscriber>();
         postEnergyRechargeSubscribers = new ArrayList<PostEnergyRechargeSubscriber>();
         postInitializeSubscribers = new ArrayList<PostInitializeSubscriber>();
+        preMonsterTurnSubscribers = new ArrayList<PreMonsterTurnSubscriber>();
         renderSubscribers = new ArrayList<RenderSubscriber>();
         postRenderSubscribers = new ArrayList<PostRenderSubscriber>();
         preStartGameSubscribers = new ArrayList<PreStartGameSubscriber>();
@@ -165,6 +173,19 @@ public class BaseMod {
         }
     }
     
+    // publishPreMonsterTurn - false skips monster turn
+    public static boolean publishPreMonsterTurn(AbstractMonster m) {
+        boolean takeTurn = true;
+        
+        for (PreMonsterTurnSubscriber sub : preMonsterTurnSubscribers) {
+            if (!sub.receivePreMonsterTurn(m)) {
+                takeTurn = false;
+            }
+        }
+        
+        return takeTurn;
+    }
+    
     // publishRender -
     public static void publishRender(SpriteBatch sb) {
         for (RenderSubscriber sub : renderSubscribers) {
@@ -226,6 +247,16 @@ public class BaseMod {
     // unsubscribeFromPostEnergyRecharge -
     public static void unsubscribeFromPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
         postEnergyRechargeSubscribers.remove(sub);
+    }
+    
+    // subscribeToPreMonsterTurn -
+    public static void subscribeToPreMonsterTurn(PreMonsterTurnSubscriber sub) {
+        preMonsterTurnSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromPreMonsterTurn -
+    public static void unsubscribeFromPreMonsterTurn(PreMonsterTurnSubscriber sub) {
+        preMonsterTurnSubscribers.remove(sub);
     }
     
     // subscribeToPostInitialize -

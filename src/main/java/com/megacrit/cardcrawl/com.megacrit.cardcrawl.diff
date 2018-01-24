@@ -1,5 +1,5 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java com/megacrit/cardcrawl/characters/AbstractPlayer.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-19 20:30:39.566986100 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-23 23:47:27.476820600 -0800
 +++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-22 19:29:45.734248400 -0800
 @@ -86,6 +86,9 @@
  import org.apache.logging.log4j.LogManager;
@@ -11,6 +11,135 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
  public abstract class AbstractPlayer
  extends AbstractCreature {
      private static final Logger logger = LogManager.getLogger(AbstractPlayer.class.getName());
+@@ -255,7 +258,7 @@
+         }
+         int index = 0;
+         for (String s : relics) {
+-            if (s.equals((Object)"Philosopher's Stone") || s.equals((Object)"Velvet Choker") || s.equals((Object)"Sozu") || s.equals((Object)"Gremlin Horn") || s.equals((Object)"Cursed Key") || s.equals((Object)"Lantern")) {
++            if (s.equals("Philosopher's Stone") || s.equals("Velvet Choker") || s.equals("Sozu") || s.equals("Gremlin Horn") || s.equals("Cursed Key") || s.equals("Lantern")) {
+                 RelicLibrary.getRelic(s).makeCopy(chosenClass).instantObtain(this, index, false);
+             } else {
+                 RelicLibrary.getRelic(s).makeCopy().instantObtain(this, index, false);
+@@ -388,8 +391,8 @@
+                 }
+                 if (this.isHoveringCard && this.hoveredCard != null && !this.hoveredCard.isHoveredInHand(1.0f)) {
+                     for (int i = 0; i < this.hand.group.size(); ++i) {
+-                        if (this.hand.group.get(i) != this.hoveredCard || i == 0 || !((AbstractCard)this.hand.group.get(i - 1)).isHoveredInHand(1.0f)) continue;
+-                        this.toHover = (AbstractCard)this.hand.group.get(i - 1);
++                        if (this.hand.group.get(i) != this.hoveredCard || i == 0 || !this.hand.group.get(i - 1).isHoveredInHand(1.0f)) continue;
++                        this.toHover = this.hand.group.get(i - 1);
+                         break;
+                     }
+                     this.releaseCard();
+@@ -427,7 +430,7 @@
+                 if (this.hoveredCard.canUse(this, this.hoveredMonster)) {
+                     this.playCard();
+                 } else {
+-                    AbstractDungeon.effectList.add((Object)new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
++                    AbstractDungeon.effectList.add(new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
+                     this.energyTip(this.hoveredCard);
+                     this.releaseCard();
+                 }
+@@ -441,7 +444,7 @@
+                 if (this.hoveredCard.canUse(this, this.hoveredMonster)) {
+                     this.playCard();
+                 } else {
+-                    AbstractDungeon.effectList.add((Object)new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
++                    AbstractDungeon.effectList.add(new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
+                     this.energyTip(this.hoveredCard);
+                     this.releaseCard();
+                 }
+@@ -455,7 +458,7 @@
+ 
+     private void energyTip(AbstractCard cardToCheck) {
+         int availableEnergy = EnergyPanel.totalCount;
+-        if (cardToCheck.cost > availableEnergy && !((Boolean)TipTracker.tips.get((Object)"ENERGY_USE_TIP")).booleanValue() && ++TipTracker.energyUseCounter >= 2) {
++        if (cardToCheck.cost > availableEnergy && !TipTracker.tips.get("ENERGY_USE_TIP").booleanValue() && ++TipTracker.energyUseCounter >= 2) {
+             AbstractDungeon.ftue = new FtueTip(LABEL[1], MSG[1], 330.0f * Settings.scale, 400.0f * Settings.scale, FtueTip.TipType.ENERGY);
+             TipTracker.neverShowAgain("ENERGY_USE_TIP");
+         }
+@@ -499,7 +502,7 @@
+             this.hoveredCard.target_x = InputHelper.mX;
+             this.hoveredCard.target_y = InputHelper.mY;
+             if (!this.hoveredCard.hasEnoughEnergy() && this.isHoveringDropZone) {
+-                AbstractDungeon.effectList.add((Object)new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
++                AbstractDungeon.effectList.add(new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
+                 this.energyTip(this.hoveredCard);
+                 this.releaseCard();
+                 CardCrawlGame.sound.play("CARD_REJECT");
+@@ -536,7 +539,7 @@
+                     this.playCard();
+                     return true;
+                 }
+-                AbstractDungeon.effectList.add((Object)new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
++                AbstractDungeon.effectList.add(new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, this.hoveredCard.cantUseMessage, true));
+                 this.energyTip(this.hoveredCard);
+                 this.releaseCard();
+                 return true;
+@@ -560,9 +563,9 @@
+         this.hoverEnemyWaitTimer = 1.0f;
+         this.hoveredCard.unhover();
+         if (this.hoveredCard.target == AbstractCard.CardTarget.ENEMY || this.hoveredCard.target == AbstractCard.CardTarget.SELF_AND_ENEMY) {
+-            AbstractDungeon.actionManager.cardQueue.add((Object)new CardQueueItem(this.hoveredCard, this.hoveredMonster));
++            AbstractDungeon.actionManager.cardQueue.add(new CardQueueItem(this.hoveredCard, this.hoveredMonster));
+         } else {
+-            AbstractDungeon.actionManager.cardQueue.add((Object)new CardQueueItem(this.hoveredCard, null));
++            AbstractDungeon.actionManager.cardQueue.add(new CardQueueItem(this.hoveredCard, null));
+         }
+         this.isUsingClickDragControl = false;
+         this.hoveredCard = null;
+@@ -683,11 +686,11 @@
+             this.updateCardsOnDamage();
+             ++this.damagedThisCombat;
+             this.currentHealth -= damageAmount;
+-            AbstractDungeon.effectList.add((Object)new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, damageAmount));
++            AbstractDungeon.effectList.add(new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, damageAmount));
+             if (this.currentHealth < 0) {
+                 this.currentHealth = 0;
+             } else if (this.currentHealth < this.maxHealth / 4) {
+-                AbstractDungeon.topLevelEffects.add((Object)new BorderFlashEffect(new Color(1.0f, 0.1f, 0.05f, 0.0f)));
++                AbstractDungeon.topLevelEffects.add(new BorderFlashEffect(new Color(1.0f, 0.1f, 0.05f, 0.0f)));
+             }
+             this.healthBarUpdatedEvent();
+             if ((float)this.currentHealth <= (float)this.maxHealth / 2.0f && !this.isBloodied) {
+@@ -708,13 +711,13 @@
+                 this.currentHealth = 0;
+                 if (this.currentBlock > 0) {
+                     this.loseBlock();
+-                    AbstractDungeon.effectList.add((Object)new HbBlockBrokenEffect(this.hb.cX - this.hb.width / 2.0f + BLOCK_ICON_X, this.hb.cY - this.hb.height / 2.0f + BLOCK_ICON_Y));
++                    AbstractDungeon.effectList.add(new HbBlockBrokenEffect(this.hb.cX - this.hb.width / 2.0f + BLOCK_ICON_X, this.hb.cY - this.hb.height / 2.0f + BLOCK_ICON_Y));
+                 }
+             }
+         } else if (this.currentBlock > 0) {
+-            AbstractDungeon.effectList.add((Object)new BlockedWordEffect(this, this.hb.cX, this.hb.cY, BLOCKED_STRING));
++            AbstractDungeon.effectList.add(new BlockedWordEffect(this, this.hb.cX, this.hb.cY, BLOCKED_STRING));
+         } else if (!hadBlock) {
+-            AbstractDungeon.effectList.add((Object)new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, 0));
++            AbstractDungeon.effectList.add(new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, 0));
+         }
+     }
+ 
+@@ -766,7 +769,7 @@
+     }
+ 
+     public void preBattlePrep() {
+-        if (!((Boolean)TipTracker.tips.get((Object)"COMBAT_TIP")).booleanValue()) {
++        if (!TipTracker.tips.get("COMBAT_TIP").booleanValue()) {
+             AbstractDungeon.ftue = new MultiPageFtue();
+             TipTracker.neverShowAgain("COMBAT_TIP");
+         }
+@@ -800,9 +803,9 @@
+     }
+ 
+     public ArrayList<String> getRelicNames() {
+-        ArrayList arr = new ArrayList();
++        ArrayList<String> arr = new ArrayList<String>();
+         for (AbstractRelic relic : this.relics) {
+-            arr.add((Object)relic.relicId);
++            arr.add(relic.relicId);
+         }
+         return arr;
+     }
 @@ -831,6 +834,10 @@
                  for (AbstractRelic r : this.relics) {
                      r.onCardDraw(c);
@@ -22,10 +151,179 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
                  continue;
              }
              logger.info("ERROR: How did this happen? No cards in draw pile?? Player.java");
+@@ -859,7 +866,7 @@
+                 sb.setColor(Color.WHITE);
+                 sb.draw(this.img, this.drawX - (float)this.img.getWidth() * Settings.scale / 2.0f + this.animX, this.drawY, (float)this.img.getWidth() * Settings.scale, (float)this.img.getHeight() * Settings.scale, 0, 0, this.img.getWidth(), this.img.getHeight(), false, false);
+                 if (this.chosenClass == PlayerClass.CROWBOT) {
+-                    FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, Integer.toString((int)this.charge), this.drawX - 90.0f * Settings.scale, this.drawY + 170.0f * Settings.scale, Color.CYAN.cpy());
++                    FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, Integer.toString(this.charge), this.drawX - 90.0f * Settings.scale, this.drawY + 170.0f * Settings.scale, Color.CYAN.cpy());
+                 }
+             } else {
+                 this.renderPlayerImage(sb);
+@@ -895,7 +902,7 @@
+         CardCrawlGame.psb.end();
+         sb.begin();
+         if (this.chosenClass == PlayerClass.CROWBOT) {
+-            FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, Integer.toString((int)this.charge), this.drawX - 90.0f * Settings.scale, this.drawY + 170.0f * Settings.scale, Color.CYAN.cpy());
++            FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, Integer.toString(this.charge), this.drawX - 90.0f * Settings.scale, this.drawY + 170.0f * Settings.scale, Color.CYAN.cpy());
+         }
+     }
+ 
+@@ -945,7 +952,7 @@
+         if (this.cardInUse != null && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.HAND_SELECT) {
+             this.cardInUse.render(sb);
+             if (AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT) {
+-                AbstractDungeon.effectList.add((Object)new PurgeCardEffect(this.cardInUse.makeCopy(), this.cardInUse.current_x, this.cardInUse.current_y));
++                AbstractDungeon.effectList.add(new PurgeCardEffect(this.cardInUse.makeCopy(), this.cardInUse.current_x, this.cardInUse.current_y));
+                 this.cardInUse = null;
+             }
+         }
+@@ -961,14 +968,14 @@
+             if (this.hoveredCard.target == AbstractCard.CardTarget.ENEMY && this.hoveredMonster != null) {
+                 this.hoverTimer = MathHelper.fadeLerpSnap(this.hoverTimer, 1.0f);
+                 this.hoveredCard.calculateDamageDisplay(this.hoveredMonster);
+-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, Integer.toString((int)this.hoveredCard.damage), this.hoveredMonster.hb.cX, this.hoveredMonster.hb.cY + this.hoveredMonster.hb.height / 2.0f + 80.0f * Settings.scale + this.hoverTimer * 30.0f * Settings.scale, new Color(1.0f, 0.9f, 0.4f, this.hoverTimer));
++                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, Integer.toString(this.hoveredCard.damage), this.hoveredMonster.hb.cX, this.hoveredMonster.hb.cY + this.hoveredMonster.hb.height / 2.0f + 80.0f * Settings.scale + this.hoverTimer * 30.0f * Settings.scale, new Color(1.0f, 0.9f, 0.4f, this.hoverTimer));
+             } else if (this.hoveredCard.target == AbstractCard.CardTarget.ALL_ENEMY) {
+                 this.hoverTimer = MathHelper.fadeLerpSnap(this.hoverTimer, 1.0f);
+                 this.hoveredCard.calculateDamageDisplay(null);
+                 float tmpY = 80.0f * Settings.scale + this.hoverTimer * 30.0f * Settings.scale;
+                 int i = 0;
+                 for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
+-                    FontHelper.renderFontCentered(sb, FontHelper.bannerFont, Integer.toString((int)this.hoveredCard.multiDamage[i]), m.hb.cX, m.hb.cY + m.hb.height / 2.0f + tmpY, new Color(1.0f, 0.9f, 0.4f, this.hoverTimer));
++                    FontHelper.renderFontCentered(sb, FontHelper.bannerFont, Integer.toString(this.hoveredCard.multiDamage[i]), m.hb.cX, m.hb.cY + m.hb.height / 2.0f + tmpY, new Color(1.0f, 0.9f, 0.4f, this.hoverTimer));
+                     ++i;
+                 }
+             } else {
+@@ -1004,8 +1011,8 @@
+     private void drawCurvedLine(SpriteBatch sb, Vector2 start, Vector2 end, Vector2 control) {
+         float radius = 7.0f * Settings.scale;
+         for (int i = 0; i < this.points.length - 1; ++i) {
+-            Vector2 tmp;
+             float angle;
++            Vector2 tmp;
+             this.points[i] = Bezier.quadratic(this.points[i], (float)i / 20.0f, start, control, end, new Vector2());
+             radius += 0.4f * Settings.scale;
+             if (i != 0) {
+@@ -1020,7 +1027,7 @@
+     }
+ 
+     public void createHandIsFullDialog() {
+-        AbstractDungeon.effectList.add((Object)new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, MSG[2], true));
++        AbstractDungeon.effectList.add(new ThoughtBubble(this.dialogX, this.dialogY, 3.0f, MSG[2], true));
+     }
+ 
+     private void renderHoverReticle(SpriteBatch sb) {
+@@ -1109,7 +1116,7 @@
+ 
+     public boolean hasRelic(String targetID) {
+         for (AbstractRelic r : this.relics) {
+-            if (!r.relicId.equals((Object)targetID)) continue;
++            if (!r.relicId.equals(targetID)) continue;
+             return true;
+         }
+         return false;
+@@ -1117,7 +1124,7 @@
+ 
+     public boolean hasPotion(String id) {
+         for (AbstractPotion p : this.potions) {
+-            if (!p.ID.equals((Object)id)) continue;
++            if (!p.ID.equals(id)) continue;
+             return true;
+         }
+         return false;
+@@ -1128,7 +1135,7 @@
+             return false;
+         }
+         for (int i = 0; i < this.potions.length; ++i) {
+-            if (!this.potions[i].ID.equals((Object)id)) continue;
++            if (!this.potions[i].ID.equals(id)) continue;
+             AbstractDungeon.topPanel.destroyPotion(i);
+             return true;
+         }
+@@ -1146,7 +1153,7 @@
+         }
+         for (int i = 0; i < amount; ++i) {
+             int index = MathUtils.random(0, this.relics.size() - 1);
+-            ((AbstractRelic)this.relics.get(index)).onUnequip();
++            this.relics.get(index).onUnequip();
+             this.relics.remove(index);
+         }
+         this.reorganizeRelics();
+@@ -1158,7 +1165,7 @@
+         }
+         AbstractRelic toRemove = null;
+         for (AbstractRelic r : this.relics) {
+-            if (!r.relicId.equals((Object)targetID)) continue;
++            if (!r.relicId.equals(targetID)) continue;
+             r.onUnequip();
+             toRemove = r;
+         }
+@@ -1166,14 +1173,14 @@
+             logger.info("WHY WAS RELIC: " + this.name + " NOT FOUND???");
+             return false;
+         }
+-        this.relics.remove((Object)toRemove);
++        this.relics.remove(toRemove);
+         this.reorganizeRelics();
+         return true;
+     }
+ 
+     public void reorganizeRelics() {
+         logger.info("Reorganizing relics");
+-        ArrayList tmpRelics = new ArrayList();
++        ArrayList<AbstractRelic> tmpRelics = new ArrayList<AbstractRelic>();
+         tmpRelics.addAll(this.relics);
+         this.relics.clear();
+         for (int i = 0; i < tmpRelics.size(); ++i) {
+@@ -1183,7 +1190,7 @@
+ 
+     public AbstractRelic getRelic(String targetID) {
+         for (AbstractRelic r : this.relics) {
+-            if (!r.relicId.equals((Object)targetID)) continue;
++            if (!r.relicId.equals(targetID)) continue;
+             return r;
+         }
+         return null;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-19 20:30:39.812725800 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-23 23:47:28.117935500 -0800
 +++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 21:58:31.994048300 -0800
-@@ -113,6 +113,9 @@
+@@ -42,11 +42,15 @@
+ import com.megacrit.cardcrawl.core.EnergyManager;
+ import com.megacrit.cardcrawl.core.ExceptionHandler;
+ import com.megacrit.cardcrawl.core.GameCursor;
++import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.daily.DailyMods;
+ import com.megacrit.cardcrawl.daily.TimeHelper;
+ import com.megacrit.cardcrawl.daily.TimeLookup;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
++import com.megacrit.cardcrawl.dungeons.Exordium;
++import com.megacrit.cardcrawl.dungeons.TheBeyond;
++import com.megacrit.cardcrawl.dungeons.TheCity;
+ import com.megacrit.cardcrawl.helpers.CardHelper;
+ import com.megacrit.cardcrawl.helpers.CardLibrary;
+ import com.megacrit.cardcrawl.helpers.DrawMaster;
+@@ -68,6 +72,8 @@
+ import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.metrics.LeaderboardPoster;
+ import com.megacrit.cardcrawl.metrics.MetricData;
++import com.megacrit.cardcrawl.monsters.AbstractMonster;
++import com.megacrit.cardcrawl.monsters.MonsterGroup;
+ import com.megacrit.cardcrawl.potions.AbstractPotion;
+ import com.megacrit.cardcrawl.potions.PotionPlaceholder;
+ import com.megacrit.cardcrawl.powers.AbstractPower;
+@@ -75,6 +81,9 @@
+ import com.megacrit.cardcrawl.relics.BottledFlame;
+ import com.megacrit.cardcrawl.relics.BottledLightning;
+ import com.megacrit.cardcrawl.relics.BottledTornado;
++import com.megacrit.cardcrawl.rewards.RewardSave;
++import com.megacrit.cardcrawl.rooms.AbstractRoom;
++import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
+ import com.megacrit.cardcrawl.scenes.AbstractScene;
+ import com.megacrit.cardcrawl.scenes.TitleBackground;
+ import com.megacrit.cardcrawl.screens.DeathScreen;
+@@ -104,6 +113,9 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -35,7 +333,16 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
  public class CardCrawlGame
  implements ApplicationListener {
      public static String VERSION_NUM = "[EARLY_ACCESS_012] (01-18-2018)";
-@@ -252,6 +255,9 @@
+@@ -190,7 +202,7 @@
+             playerPref = SaveHelper.getPrefs("STSPlayer");
+             playerName = playerPref.getString("name", "");
+             alias = playerPref.getString("alias", "");
+-            if (alias.equals((Object)"")) {
++            if (alias.equals("")) {
+                 alias = CardCrawlGame.generateRandomAlias();
+                 playerPref.putString("alias", alias);
+                 playerPref.flush();
+@@ -243,6 +255,9 @@
              if (Settings.isDebug) {
                  CardCrawlGame.splashScreen.isDone = true;
              }
@@ -45,19 +352,25 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          catch (Exception e) {
              ExceptionHandler.handleException(e, logger);
-@@ -287,9 +293,9 @@
+@@ -253,7 +268,7 @@
+     public void saveMigration() {
+         if (!SaveHelper.saveExists()) {
+             Preferences p = Gdx.app.getPreferences("STSPlayer");
+-            if (p.getString("name", "").equals((Object)"") && Gdx.app.getPreferences("STSDataVagabond").getLong("PLAYTIME") == 0L) {
++            if (p.getString("name", "").equals("") && Gdx.app.getPreferences("STSDataVagabond").getLong("PLAYTIME") == 0L) {
+                 System.out.println("New player, no migration.");
+                 return;
+             }
+@@ -278,7 +293,7 @@
      public void migrateHelper(String file) {
          Preferences p = Gdx.app.getPreferences(file);
          Prefs p2 = SaveHelper.getPrefs(file);
 -        Map map = p.get();
 +        Map<?,?> map = p.get();
          for (Map.Entry c : map.entrySet()) {
--            p2.putString(c.getKey(), p.getString(c.getKey()));
-+            p2.putString((String)c.getKey(), p.getString((String)c.getKey()));
+             p2.putString((String)c.getKey(), p.getString((String)c.getKey()));
          }
-         p2.flush();
-     }
-@@ -340,6 +346,10 @@
+@@ -331,6 +346,10 @@
                  }
              }
              DrawMaster.draw(this.sb);
@@ -68,7 +381,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
              if (CardCrawlGame.cardPopup.isOpen) {
                  cardPopup.render(this.sb);
              }
-@@ -371,7 +381,11 @@
+@@ -362,7 +381,11 @@
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0f, 0.0f, (float)(- Settings.VERT_LETTERBOX_AMT), (float)Settings.HEIGHT);
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, (float)Settings.WIDTH, 0.0f, (float)Settings.VERT_LETTERBOX_AMT, (float)Settings.HEIGHT);
              }
@@ -81,7 +394,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          catch (Exception e) {
              ExceptionHandler.handleException(e, logger);
-@@ -461,6 +475,9 @@
+@@ -452,6 +475,9 @@
      }
  
      public static void startNewGame(AbstractPlayer.PlayerClass c) {
@@ -91,7 +404,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          sound.fadeOut(DeathScreen.STINGER_KEY, DeathScreen.STINGER_ID);
          if (AbstractDungeon.scene != null) {
              AbstractDungeon.scene.fadeOutAmbiance();
-@@ -505,7 +522,7 @@
+@@ -496,7 +522,7 @@
          mysteryMachine = 0;
      }
  
@@ -100,7 +413,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          cursor.update();
          screenShake.update(viewport);
          if (mode != GameMode.SPLASH) {
-@@ -532,6 +549,10 @@
+@@ -523,6 +549,10 @@
              this.displayCursor = !this.displayCursor;
          }
          InputHelper.updateFirst();
@@ -111,7 +424,25 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          if (CardCrawlGame.cardPopup.isOpen) {
              cardPopup.update();
          }
-@@ -650,7 +671,11 @@
+@@ -583,7 +613,7 @@
+                     int index = 0;
+                     for (AbstractRelic r : CardCrawlGame.trial.relics) {
+                         r.instantObtain(AbstractDungeon.player, index, false);
+-                        AbstractDungeon.relicsToRemoveOnStart.add((Object)r.relicId);
++                        AbstractDungeon.relicsToRemoveOnStart.add(r.relicId);
+                         ++index;
+                     }
+                     mode = GameMode.GAMEPLAY;
+@@ -618,7 +648,7 @@
+                             }
+                         } else {
+                             this.getDungeon(nextDungeon, AbstractDungeon.player);
+-                            if (!nextDungeon.equals((Object)"Exordium") || Settings.isShowBuild || !((Boolean)TipTracker.tips.get((Object)"NEOW_SKIP")).booleanValue()) {
++                            if (!nextDungeon.equals("Exordium") || Settings.isShowBuild || !TipTracker.tips.get("NEOW_SKIP").booleanValue()) {
+                                 AbstractDungeon.dungeonMapScreen.open(true);
+                                 TipTracker.neverShowAgain("NEOW_SKIP");
+                             }
+@@ -641,7 +671,11 @@
              default: {
                  logger.info("Unknown Game Mode: " + mode.name());
              }
@@ -124,8 +455,215 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          this.updateDebugSwitch();
          InputHelper.updateLast();
          if (Settings.isInfo) {
+@@ -649,33 +683,49 @@
+         }
+     }
+ 
+-    /*
+-     * Exception decompiling
+-     */
+     private void loadPostCombat(SaveFile saveFile) {
+-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$TooOptimisticMatchException
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.getString(SwitchStringRewriter.java:251)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$SwitchStringMatchResultCollector.collectMatches(SwitchStringRewriter.java:215)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.KleeneN.match(KleeneN.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.MatchSequence.match(MatchSequence.java:25)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:23)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.rewrite(SwitchStringRewriter.java:96)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:868)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:217)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:162)
+-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:95)
+-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:357)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:769)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:701)
+-        // org.benf.cfr.reader.Main.doJar(Main.java:134)
+-        // org.benf.cfr.reader.Main.main(Main.java:189)
+-        throw new IllegalStateException("Decompilation failed");
++        if (saveFile.post_combat) {
++            AbstractDungeon.getCurrRoom().isBattleOver = true;
++            AbstractDungeon.overlayMenu.hideCombatPanels();
++            AbstractDungeon.loading_post_combat = true;
++            if (AbstractDungeon.getCurrRoom().monsters != null) {
++                AbstractDungeon.getCurrRoom().monsters.monsters.clear();
++            }
++            block14 : for (RewardSave i : saveFile.combat_rewards) {
++                switch (i.type) {
++                    case "CARD": {
++                        continue block14;
++                    }
++                    case "GOLD": {
++                        AbstractDungeon.getCurrRoom().addGoldToRewards(i.amount);
++                        continue block14;
++                    }
++                    case "RELIC": {
++                        AbstractDungeon.getCurrRoom().addRelicToRewards(RelicLibrary.getRelic(i.id).makeCopy());
++                        continue block14;
++                    }
++                    case "POTION": {
++                        AbstractDungeon.getCurrRoom().addPotionToRewards(PotionHelper.getPotion(i.id));
++                        continue block14;
++                    }
++                    case "STOLEN_GOLD": {
++                        AbstractDungeon.getCurrRoom().addStolenGoldToRewards(i.amount);
++                        continue block14;
++                    }
++                }
++                System.out.println("Loading unknown type: " + i.type);
++            }
++            if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
++                AbstractDungeon.scene.fadeInAmbiance();
++                music.silenceTempBgmInstantly();
++                music.silenceBGMInstantly();
++                AbstractMonster.preloadBossStinger();
++                AbstractMonster.playBossStinger();
++            }
++        }
+     }
+ 
+     private void loadPlayerSave(AbstractPlayer p) {
+-        AbstractCard c;
+         this.saveFile = SaveAndContinue.loadSaveFile(p.chosenClass);
+         p.currentHealth = this.saveFile.current_health;
+         p.maxHealth = this.saveFile.max_health;
+@@ -706,8 +756,8 @@
+         }
+         index = 0;
+         for (Integer i : this.saveFile.relic_counters) {
+-            ((AbstractRelic)p.relics.get(index)).setCounter(i);
+-            ((AbstractRelic)p.relics.get(index)).updateDescription(p.chosenClass);
++            p.relics.get(index).setCounter(i);
++            p.relics.get(index).updateDescription(p.chosenClass);
+             ++index;
+         }
+         index = 0;
+@@ -724,19 +774,19 @@
+             ++index;
+         }
+         if (this.saveFile.bottled_flame != null) {
+-            c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_flame);
++            AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_flame);
+             c.inBottleFlame = true;
+             ((BottledFlame)AbstractDungeon.player.getRelic((String)"Bottled Flame")).card = c;
+             ((BottledFlame)AbstractDungeon.player.getRelic("Bottled Flame")).setDescriptionAfterLoading();
+         }
+         if (this.saveFile.bottled_lightning != null) {
+-            c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_lightning);
++            AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_lightning);
+             c.inBottleLightning = true;
+             ((BottledLightning)AbstractDungeon.player.getRelic((String)"Bottled Lightning")).card = c;
+             ((BottledLightning)AbstractDungeon.player.getRelic("Bottled Lightning")).setDescriptionAfterLoading();
+         }
+         if (this.saveFile.bottled_tornado != null) {
+-            c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_tornado);
++            AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_tornado);
+             c.inBottleTornado = true;
+             ((BottledTornado)AbstractDungeon.player.getRelic((String)"Bottled Tornado")).card = c;
+             ((BottledTornado)AbstractDungeon.player.getRelic("Bottled Tornado")).setDescriptionAfterLoading();
+@@ -765,14 +815,14 @@
+         if (Settings.UPLOAD_DATA) {
+             LeaderboardPoster poster = new LeaderboardPoster();
+             StringWriter sw = new StringWriter();
+-            e.printStackTrace(new PrintWriter((Writer)sw));
++            e.printStackTrace(new PrintWriter(sw));
+             String exceptionAsString = sw.toString();
+             poster.setValues(LeaderboardPoster.LeaderboardDataType.CRASH_DATA, exceptionAsString, null, null, false);
+-            Thread t = new Thread((Runnable)poster);
++            Thread t = new Thread(poster);
+             t.run();
+         }
+         try {
+-            Thread.sleep((long)2500L);
++            Thread.sleep(2500L);
+         }
+         catch (InterruptedException ie) {
+             ie.printStackTrace();
+@@ -851,54 +901,35 @@
+     public void resize(int width, int height) {
+     }
+ 
+-    /*
+-     * Exception decompiling
+-     */
+     public AbstractDungeon getDungeon(String key, AbstractPlayer p) {
+-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$TooOptimisticMatchException
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.getString(SwitchStringRewriter.java:251)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$SwitchStringMatchResultCollector.collectMatches(SwitchStringRewriter.java:215)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.KleeneN.match(KleeneN.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.MatchSequence.match(MatchSequence.java:25)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:23)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.rewrite(SwitchStringRewriter.java:96)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:868)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:217)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:162)
+-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:95)
+-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:357)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:769)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:701)
+-        // org.benf.cfr.reader.Main.doJar(Main.java:134)
+-        // org.benf.cfr.reader.Main.main(Main.java:189)
+-        throw new IllegalStateException("Decompilation failed");
+-    }
+-
+-    /*
+-     * Exception decompiling
+-     */
++        switch (key) {
++            case "Exordium": {
++                ArrayList<String> emptyList = new ArrayList<String>();
++                return new Exordium(p, emptyList);
++            }
++            case "TheCity": {
++                return new TheCity(p, AbstractDungeon.specialOneTimeEventList);
++            }
++            case "TheBeyond": {
++                return new TheBeyond(p, AbstractDungeon.specialOneTimeEventList);
++            }
++        }
++        return null;
++    }
++
+     public AbstractDungeon getDungeon(String key, AbstractPlayer p, SaveFile saveFile) {
+-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$TooOptimisticMatchException
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.getString(SwitchStringRewriter.java:251)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$SwitchStringMatchResultCollector.collectMatches(SwitchStringRewriter.java:215)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.KleeneN.match(KleeneN.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.MatchSequence.match(MatchSequence.java:25)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:23)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.rewrite(SwitchStringRewriter.java:96)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:868)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:217)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:162)
+-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:95)
+-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:357)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:769)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:701)
+-        // org.benf.cfr.reader.Main.doJar(Main.java:134)
+-        // org.benf.cfr.reader.Main.main(Main.java:189)
+-        throw new IllegalStateException("Decompilation failed");
++        switch (key) {
++            case "Exordium": {
++                return new Exordium(p, saveFile);
++            }
++            case "TheCity": {
++                return new TheCity(p, saveFile);
++            }
++            case "TheBeyond": {
++                return new TheBeyond(p, saveFile);
++            }
++        }
++        return null;
+     }
+ 
+     @Override
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java com/megacrit/cardcrawl/core/EnergyManager.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:40.419519200 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-23 23:47:28.122940200 -0800
 +++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:56.930813500 -0800
 @@ -12,6 +12,9 @@
  import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -156,10 +694,1314 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      }
  
      public void use(int e) {
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java com/megacrit/cardcrawl/dungeons/AbstractDungeon.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-23 23:47:29.085864900 -0800
++++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-23 19:06:37.786619900 -0800
+@@ -121,6 +121,9 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public abstract class AbstractDungeon {
+     private static final Logger logger = LogManager.getLogger(AbstractDungeon.class.getName());
+     private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("AbstractDungeon");
+@@ -287,18 +290,18 @@
+         switch (n) {
+             default: 
+         }
+-        acceptablePools.add((Object)1);
+-        acceptablePools.add((Object)2);
++        acceptablePools.add(1);
++        acceptablePools.add(2);
+         AbstractDungeon.dungeonTransitionSetup();
+         this.generateMonsters();
+         this.initializeBoss();
+-        bossKey = (String)bossList.get(0);
+-        logger.info("[BOSS] " + (String)bossList.get(0));
++        bossKey = bossList.get(0);
++        logger.info("[BOSS] " + bossList.get(0));
+         this.initializeEventList();
+         this.initializeEventImg();
+         this.initializeShrineList();
+         this.initializeCardPools();
+-        if (id.equals((Object)"Exordium")) {
++        if (id.equals("Exordium")) {
+             screen = CurrentScreen.NONE;
+             isScreenUp = false;
+         } else {
+@@ -329,8 +332,8 @@
+         firstRoomChosen = true;
+         unlocks.clear();
+         acceptablePools.clear();
+-        acceptablePools.add((Object)1);
+-        acceptablePools.add((Object)2);
++        acceptablePools.add(1);
++        acceptablePools.add(2);
+         try {
+             this.loadSave(saveFile);
+         }
+@@ -351,7 +354,7 @@
+     protected abstract void initializeLevelSpecificChances();
+ 
+     public static void generateSeeds() {
+-        logger.info("Generating seeds: " + (Object)Settings.seed);
++        logger.info("Generating seeds: " + Settings.seed);
+         monsterRng = new Random(Settings.seed);
+         eventRng = new Random(Settings.seed);
+         merchantRng = new Random(Settings.seed);
+@@ -374,7 +377,7 @@
+         treasureRng = new Random(Settings.seed, save.treasure_seed_count);
+         relicRng = new Random(Settings.seed, save.relic_seed_count);
+         potionRng = new Random(Settings.seed, save.potion_seed_count);
+-        logger.info("Loading seeds: " + (Object)Settings.seed);
++        logger.info("Loading seeds: " + Settings.seed);
+         logger.info("Monster seed:  " + AbstractDungeon.monsterRng.counter);
+         logger.info("Event seed:    " + AbstractDungeon.eventRng.counter);
+         logger.info("Merchant seed: " + AbstractDungeon.merchantRng.counter);
+@@ -386,11 +389,11 @@
+ 
+     public void populatePathTaken(SaveFile saveFile) {
+         MapRoomNode node = null;
+-        if (saveFile.current_room.equals((Object)MonsterRoomBoss.class.getName())) {
++        if (saveFile.current_room.equals(MonsterRoomBoss.class.getName())) {
+             node = new MapRoomNode(-1, 15);
+             node.room = new MonsterRoomBoss();
+             nextRoom = node;
+-        } else if (saveFile.current_room.equals((Object)TreasureRoomBoss.class.getName())) {
++        } else if (saveFile.current_room.equals(TreasureRoomBoss.class.getName())) {
+             node = new MapRoomNode(-1, 15);
+             node.room = new TreasureRoomBoss();
+             nextRoom = node;
+@@ -399,23 +402,23 @@
+             node.room = new VictoryRoom();
+             nextRoom = node;
+         } else {
+-            nextRoom = saveFile.floor_num == 0 ? null : (MapRoomNode)((ArrayList)map.get(saveFile.room_y)).get(saveFile.room_x);
++            nextRoom = saveFile.floor_num == 0 ? null : map.get(saveFile.room_y).get(saveFile.room_x);
+         }
+         for (int i = 0; i < pathX.size(); ++i) {
+             MapEdge connectedEdge;
+-            if ((Integer)pathY.get(i) == 14) {
+-                MapRoomNode node2 = (MapRoomNode)((ArrayList)map.get(((Integer)pathY.get(i)).intValue())).get(((Integer)pathX.get(i)).intValue());
++            if (pathY.get(i) == 14) {
++                MapRoomNode node2 = map.get(pathY.get(i)).get(pathX.get(i));
+                 for (MapEdge e : node2.getEdges()) {
+                     if (e == null) continue;
+                     e.markAsTaken();
+                 }
+             }
+-            if ((Integer)pathY.get(i) >= 15) continue;
+-            ((MapRoomNode)((ArrayList)AbstractDungeon.map.get((int)((Integer)AbstractDungeon.pathY.get((int)i)).intValue())).get((int)((Integer)AbstractDungeon.pathX.get((int)i)).intValue())).taken = true;
+-            if (node != null && (connectedEdge = node.getEdgeConnectedTo((MapRoomNode)((ArrayList)map.get(((Integer)pathY.get(i)).intValue())).get(((Integer)pathX.get(i)).intValue()))) != null) {
++            if (pathY.get(i) >= 15) continue;
++            AbstractDungeon.map.get((int)AbstractDungeon.pathY.get((int)i).intValue()).get((int)AbstractDungeon.pathX.get((int)i).intValue()).taken = true;
++            if (node != null && (connectedEdge = node.getEdgeConnectedTo(map.get(pathY.get(i)).get(pathX.get(i)))) != null) {
+                 connectedEdge.markAsTaken();
+             }
+-            node = (MapRoomNode)((ArrayList)map.get(((Integer)pathY.get(i)).intValue())).get(((Integer)pathX.get(i)).intValue());
++            node = map.get(pathY.get(i)).get(pathX.get(i));
+         }
+         if (saveFile.floor_num == 0) {
+             logger.info("Loading into Neow");
+@@ -472,29 +475,29 @@
+         int mapHeight = 15;
+         int mapWidth = 7;
+         int mapPathDensity = 6;
+-        ArrayList roomList = new ArrayList();
++        ArrayList<AbstractRoom> roomList = new ArrayList<AbstractRoom>();
+         map = MapGenerator.generateDungeon(mapHeight, mapWidth, mapPathDensity, mapRng);
+         int count = 0;
+-        for (ArrayList a : map) {
++        for (ArrayList<MapRoomNode> a : map) {
+             for (MapRoomNode n : a) {
+                 if (!n.hasEdges() || n.y == map.size() - 2) continue;
+                 ++count;
+             }
+         }
+         AbstractDungeon.generateRoomTypes(roomList, count);
+-        RoomTypeAssigner.assignRowAsRoomType((ArrayList)map.get(map.size() - 1), RestRoom.class);
+-        RoomTypeAssigner.assignRowAsRoomType((ArrayList)map.get(0), MonsterRoom.class);
+-        RoomTypeAssigner.assignRowAsRoomType((ArrayList)map.get(8), TreasureRoom.class);
++        RoomTypeAssigner.assignRowAsRoomType(map.get(map.size() - 1), RestRoom.class);
++        RoomTypeAssigner.assignRowAsRoomType(map.get(0), MonsterRoom.class);
++        RoomTypeAssigner.assignRowAsRoomType(map.get(8), TreasureRoom.class);
+         map = RoomTypeAssigner.distributeRoomsAcrossMap(mapRng, map, roomList);
+         logger.info("Generated the following dungeon map:");
+         logger.info(MapGenerator.toString(map, true));
+-        logger.info("Game Seed: " + (Object)Settings.seed);
++        logger.info("Game Seed: " + Settings.seed);
+         logger.info("Map generation time: " + (System.currentTimeMillis() - startTime) + "ms");
+         firstRoomChosen = false;
+         if (Settings.mapDebugMode) {
+             Settings.isDebug = true;
+             LOGGER.warn("EnvVar 'STS_MAP_DEBUG=true', proceeding to draw map and exit.");
+-            System.exit((int)0);
++            System.exit(0);
+         }
+         AbstractDungeon.fadeIn();
+     }
+@@ -503,39 +506,39 @@
+         int i;
+         int eliteCount;
+         logger.info("Generating Room Types! There are " + availableRoomCount + " rooms:");
+-        int shopCount = Math.round((float)((float)availableRoomCount * shopRoomChance));
++        int shopCount = Math.round((float)availableRoomCount * shopRoomChance);
+         logger.info(" SHOP (" + AbstractDungeon.toPercentage(shopRoomChance) + "): " + shopCount);
+-        int restCount = Math.round((float)((float)availableRoomCount * restRoomChance));
++        int restCount = Math.round((float)availableRoomCount * restRoomChance);
+         logger.info(" REST (" + AbstractDungeon.toPercentage(restRoomChance) + "): " + restCount);
+-        int treasureCount = Math.round((float)((float)availableRoomCount * treasureRoomChance));
++        int treasureCount = Math.round((float)availableRoomCount * treasureRoomChance);
+         logger.info(" TRSRE (" + AbstractDungeon.toPercentage(treasureRoomChance) + "): " + treasureCount);
+-        if (((Boolean)DailyMods.mods.get((Object)"Double Elites")).booleanValue()) {
+-            eliteCount = Math.round((float)((float)availableRoomCount * (eliteRoomChance * 2.0f)));
++        if (DailyMods.mods.get("Double Elites").booleanValue()) {
++            eliteCount = Math.round((float)availableRoomCount * (eliteRoomChance * 2.0f));
+             logger.info(" ELITE (" + AbstractDungeon.toPercentage(eliteRoomChance) + "): " + eliteCount);
+         } else {
+-            eliteCount = Math.round((float)((float)availableRoomCount * eliteRoomChance));
++            eliteCount = Math.round((float)availableRoomCount * eliteRoomChance);
+             logger.info(" ELITE (" + AbstractDungeon.toPercentage(eliteRoomChance) + "): " + eliteCount);
+         }
+-        int eventCount = Math.round((float)((float)availableRoomCount * eventRoomChance));
++        int eventCount = Math.round((float)availableRoomCount * eventRoomChance);
+         logger.info(" EVNT (" + AbstractDungeon.toPercentage(eventRoomChance) + "): " + eventCount);
+         int monsterCount = availableRoomCount - shopCount - restCount - treasureCount - eliteCount - eventCount;
+         logger.info(" MSTR (" + AbstractDungeon.toPercentage(1.0f - shopRoomChance - restRoomChance - treasureRoomChance - eliteRoomChance - eventRoomChance) + "): " + monsterCount);
+         for (i = 0; i < shopCount; ++i) {
+-            roomList.add((Object)new ShopRoom());
++            roomList.add(new ShopRoom());
+         }
+         for (i = 0; i < restCount; ++i) {
+-            roomList.add((Object)new RestRoom());
++            roomList.add(new RestRoom());
+         }
+         for (i = 0; i < eliteCount; ++i) {
+-            roomList.add((Object)new MonsterRoomElite());
++            roomList.add(new MonsterRoomElite());
+         }
+         for (i = 0; i < eventCount; ++i) {
+-            roomList.add((Object)new EventRoom());
++            roomList.add(new EventRoom());
+         }
+     }
+ 
+     private static String toPercentage(float n) {
+-        return String.format((String)"%.0f", (Object[])new Object[]{Float.valueOf((float)(n * 100.0f))}) + "%";
++        return String.format("%.0f", Float.valueOf(n * 100.0f)) + "%";
+     }
+ 
+     private static void firstRoomLogic() {
+@@ -547,7 +550,7 @@
+ 
+     private boolean passesDonutCheck(ArrayList<ArrayList<MapRoomNode>> map) {
+         logger.info("CASEY'S DONUT CHECK: ");
+-        int width = ((ArrayList)map.get(0)).size();
++        int width = map.get(0).size();
+         int height = map.size();
+         logger.info(" HEIGHT: " + height);
+         logger.info(" WIDTH:  " + width);
+@@ -556,7 +559,7 @@
+         for (int i = 0; i < width; ++i) {
+             roomHasNode[i] = false;
+         }
+-        ArrayList secondToLastRow = (ArrayList)map.get(map.size() - 2);
++        ArrayList<MapRoomNode> secondToLastRow = map.get(map.size() - 2);
+         for (MapRoomNode n : secondToLastRow) {
+             for (MapEdge e : n.getEdges()) {
+                 roomHasNode[e.dstX] = true;
+@@ -572,7 +575,7 @@
+         }
+         logger.info(" [SUCCESS] " + nodeCount + " NODE IN LAST ROW");
+         int roomCount = 0;
+-        for (ArrayList rows : map) {
++        for (ArrayList<MapRoomNode> rows : map) {
+             for (MapRoomNode n : rows) {
+                 if (n.room == null) continue;
+                 ++roomCount;
+@@ -597,16 +600,16 @@
+     }
+ 
+     public static ArrayList<MapRoomNode> identifyAvailableNodes(ArrayList<MapRoomNode> nodes) {
+-        ArrayList nodesWithEdges = new ArrayList();
++        ArrayList<MapRoomNode> nodesWithEdges = new ArrayList<MapRoomNode>();
+         for (MapRoomNode node : nodes) {
+             if (!node.hasEdges()) continue;
+-            nodesWithEdges.add((Object)node);
++            nodesWithEdges.add(node);
+         }
+         return nodesWithEdges;
+     }
+ 
+     public static MapRoomNode getRandomNodeWithEdges(Random rng, ArrayList<MapRoomNode> nodes) {
+-        MapRoomNode node = nodes.size() == 1 ? (MapRoomNode)nodes.get(0) : (MapRoomNode)nodes.get(rng.random.nextInt(nodes.size()));
++        MapRoomNode node = nodes.size() == 1 ? nodes.get(0) : nodes.get(rng.random.nextInt(nodes.size()));
+         if (node.hasEdges()) {
+             return node;
+         }
+@@ -625,7 +628,7 @@
+     public static AbstractRelic returnRandomScreenlessRelic(AbstractRelic.RelicTier tier) {
+         logger.info("Returning " + tier.name() + " relic");
+         AbstractRelic tmpRelic = RelicLibrary.getRelic(AbstractDungeon.returnRandomRelicKey(tier)).makeCopy();
+-        while (Objects.equals((Object)tmpRelic.relicId, (Object)"Molten Egg") || Objects.equals((Object)tmpRelic.relicId, (Object)"Toxic Egg") || Objects.equals((Object)tmpRelic.relicId, (Object)"Frozen Egg") || Objects.equals((Object)tmpRelic.relicId, (Object)"Bottled Flame") || Objects.equals((Object)tmpRelic.relicId, (Object)"Bottled Lightning") || Objects.equals((Object)tmpRelic.relicId, (Object)"Bottled Tornado") || Objects.equals((Object)tmpRelic.relicId, (Object)"Whetstone")) {
++        while (Objects.equals(tmpRelic.relicId, "Molten Egg") || Objects.equals(tmpRelic.relicId, "Toxic Egg") || Objects.equals(tmpRelic.relicId, "Frozen Egg") || Objects.equals(tmpRelic.relicId, "Bottled Flame") || Objects.equals(tmpRelic.relicId, "Bottled Lightning") || Objects.equals(tmpRelic.relicId, "Bottled Tornado") || Objects.equals(tmpRelic.relicId, "Whetstone")) {
+             tmpRelic = RelicLibrary.getRelic(AbstractDungeon.returnRandomRelicKey(tier)).makeCopy();
+         }
+         return tmpRelic;
+@@ -644,7 +647,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.UNCOMMON);
+                     break;
+                 }
+-                retVal = (String)commonRelicPool.remove(commonRelicPool.size() - 1);
++                retVal = commonRelicPool.remove(commonRelicPool.size() - 1);
+                 break;
+             }
+             case UNCOMMON: {
+@@ -652,7 +655,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.RARE);
+                     break;
+                 }
+-                retVal = (String)uncommonRelicPool.remove(uncommonRelicPool.size() - 1);
++                retVal = uncommonRelicPool.remove(uncommonRelicPool.size() - 1);
+                 break;
+             }
+             case RARE: {
+@@ -660,7 +663,7 @@
+                     retVal = "Circlet";
+                     break;
+                 }
+-                retVal = (String)rareRelicPool.remove(rareRelicPool.size() - 1);
++                retVal = rareRelicPool.remove(rareRelicPool.size() - 1);
+                 break;
+             }
+             case SHOP: {
+@@ -668,7 +671,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.UNCOMMON);
+                     break;
+                 }
+-                retVal = (String)shopRelicPool.remove(shopRelicPool.size() - 1);
++                retVal = shopRelicPool.remove(shopRelicPool.size() - 1);
+                 break;
+             }
+             case BOSS: {
+@@ -676,11 +679,11 @@
+                     retVal = "Red Circlet";
+                     break;
+                 }
+-                retVal = (String)bossRelicPool.remove(0);
++                retVal = bossRelicPool.remove(0);
+                 break;
+             }
+         }
+-        if (retVal.equals((Object)"Peace Pipe") || retVal.equals((Object)"Shovel") || retVal.equals((Object)"Girya")) {
++        if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
+             int campfireCount = 0;
+             for (AbstractRelic r : AbstractDungeon.player.relics) {
+                 if (!(r instanceof PeacePipe) && !(r instanceof Shovel) && !(r instanceof Girya)) continue;
+@@ -690,13 +693,13 @@
+                 return AbstractDungeon.returnEndRandomRelicKey(tier);
+             }
+         }
+-        if ((retVal.equals((Object)"Frozen Egg") || retVal.equals((Object)"Bottled Tornado")) && !CardHelper.hasUpgradeablePowerCard()) {
++        if ((retVal.equals("Frozen Egg") || retVal.equals("Bottled Tornado")) && !CardHelper.hasUpgradeablePowerCard()) {
+             return AbstractDungeon.returnEndRandomRelicKey(tier);
+         }
+-        if (retVal.equals((Object)"Black Blood") && !player.hasRelic("Burning Blood")) {
++        if (retVal.equals("Black Blood") && !player.hasRelic("Burning Blood")) {
+             return AbstractDungeon.returnEndRandomRelicKey(tier);
+         }
+-        if (retVal.equals((Object)"Ring of the Serpent") && !player.hasRelic("Ring of the Snake")) {
++        if (retVal.equals("Ring of the Serpent") && !player.hasRelic("Ring of the Snake")) {
+             return AbstractDungeon.returnEndRandomRelicKey(tier);
+         }
+         return retVal;
+@@ -710,7 +713,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.UNCOMMON);
+                     break;
+                 }
+-                retVal = (String)commonRelicPool.remove(0);
++                retVal = commonRelicPool.remove(0);
+                 break;
+             }
+             case UNCOMMON: {
+@@ -718,7 +721,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.RARE);
+                     break;
+                 }
+-                retVal = (String)uncommonRelicPool.remove(0);
++                retVal = uncommonRelicPool.remove(0);
+                 break;
+             }
+             case RARE: {
+@@ -726,7 +729,7 @@
+                     retVal = "Circlet";
+                     break;
+                 }
+-                retVal = (String)rareRelicPool.remove(0);
++                retVal = rareRelicPool.remove(0);
+                 break;
+             }
+             case SHOP: {
+@@ -734,7 +737,7 @@
+                     retVal = AbstractDungeon.returnRandomRelicKey(AbstractRelic.RelicTier.UNCOMMON);
+                     break;
+                 }
+-                retVal = (String)shopRelicPool.remove(0);
++                retVal = shopRelicPool.remove(0);
+                 break;
+             }
+             case BOSS: {
+@@ -742,11 +745,11 @@
+                     retVal = "Red Circlet";
+                     break;
+                 }
+-                retVal = (String)bossRelicPool.remove(0);
++                retVal = bossRelicPool.remove(0);
+                 break;
+             }
+         }
+-        if (retVal.equals((Object)"Peace Pipe") || retVal.equals((Object)"Shovel") || retVal.equals((Object)"Girya")) {
++        if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
+             int campfireCount = 0;
+             for (AbstractRelic r : AbstractDungeon.player.relics) {
+                 if (!(r instanceof PeacePipe) && !(r instanceof Shovel) && !(r instanceof Girya)) continue;
+@@ -756,13 +759,13 @@
+                 return AbstractDungeon.returnRandomRelicKey(tier);
+             }
+         }
+-        if ((retVal.equals((Object)"Frozen Egg") || retVal.equals((Object)"Bottled Tornado")) && !CardHelper.hasUpgradeablePowerCard()) {
++        if ((retVal.equals("Frozen Egg") || retVal.equals("Bottled Tornado")) && !CardHelper.hasUpgradeablePowerCard()) {
+             return AbstractDungeon.returnRandomRelicKey(tier);
+         }
+-        if (retVal.equals((Object)"Black Blood") && !player.hasRelic("Burning Blood")) {
++        if (retVal.equals("Black Blood") && !player.hasRelic("Burning Blood")) {
+             return AbstractDungeon.returnRandomRelicKey(tier);
+         }
+-        if (retVal.equals((Object)"Ring of the Serpent") && !player.hasRelic("Ring of the Snake")) {
++        if (retVal.equals("Ring of the Serpent") && !player.hasRelic("Ring of the Snake")) {
+             return AbstractDungeon.returnRandomRelicKey(tier);
+         }
+         return retVal;
+@@ -875,7 +878,7 @@
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard() {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         list.addAll(AbstractDungeon.srcCommonCardPool.group);
+         list.addAll(AbstractDungeon.srcUncommonCardPool.group);
+         list.addAll(AbstractDungeon.srcRareCardPool.group);
+@@ -883,73 +886,73 @@
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard(AbstractCard.CardType type) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcUncommonCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcRareCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard(AbstractCard.CardType type, Random rng) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcUncommonCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcRareCardPool.group) {
+             if (c.type != type) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         return (AbstractCard)list.get(rng.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomCardWithSubtype(AbstractCard.CardSubType subType) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.subType != subType) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcUncommonCardPool.group) {
+             if (c.subType != subType) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         for (AbstractCard c : AbstractDungeon.srcRareCardPool.group) {
+             if (c.subType != subType) continue;
+-            list.add((Object)c);
++            list.add(c);
+         }
+         return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCard() {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         list.addAll(AbstractDungeon.srcColorlessCardPool.group);
+         return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCard(Random rng) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         list.addAll(AbstractDungeon.srcColorlessCardPool.group);
+         return (AbstractCard)list.get(rng.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCardFromAvailable(AbstractCard prohibited, Random rng) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         for (AbstractCard c : AbstractDungeon.srcColorlessCardPool.group) {
+-            if (Objects.equals((Object)c.cardID, (Object)prohibited.cardID)) continue;
+-            list.add((Object)c);
++            if (Objects.equals(c.cardID, prohibited.cardID)) continue;
++            list.add(c);
+         }
+         return (AbstractCard)list.get(rng.random(list.size() - 1));
+     }
+@@ -959,12 +962,12 @@
+     }
+ 
+     public static AbstractCard returnTrulyRandomCardFromAvailable(AbstractCard prohibited, Random rng) {
+-        ArrayList list = new ArrayList();
++        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+         switch (prohibited.color) {
+             case COLORLESS: {
+                 for (AbstractCard c : AbstractDungeon.colorlessCardPool.group) {
+-                    if (Objects.equals((Object)c.cardID, (Object)prohibited.cardID)) continue;
+-                    list.add((Object)c);
++                    if (Objects.equals(c.cardID, prohibited.cardID)) continue;
++                    list.add(c);
+                 }
+                 break;
+             }
+@@ -973,16 +976,16 @@
+             }
+             default: {
+                 for (AbstractCard c : AbstractDungeon.commonCardPool.group) {
+-                    if (Objects.equals((Object)c.cardID, (Object)prohibited.cardID)) continue;
+-                    list.add((Object)c);
++                    if (Objects.equals(c.cardID, prohibited.cardID)) continue;
++                    list.add(c);
+                 }
+                 for (AbstractCard c : AbstractDungeon.srcUncommonCardPool.group) {
+-                    if (Objects.equals((Object)c.cardID, (Object)prohibited.cardID)) continue;
+-                    list.add((Object)c);
++                    if (Objects.equals(c.cardID, prohibited.cardID)) continue;
++                    list.add(c);
+                 }
+                 for (AbstractCard c : AbstractDungeon.srcRareCardPool.group) {
+-                    if (Objects.equals((Object)c.cardID, (Object)prohibited.cardID)) continue;
+-                    list.add((Object)c);
++                    if (Objects.equals(c.cardID, prohibited.cardID)) continue;
++                    list.add(c);
+                 }
+             }
+         }
+@@ -1001,21 +1004,21 @@
+ 
+     public void populateFirstStrongEnemy(ArrayList<MonsterInfo> monsters, ArrayList<String> exclusions) {
+         String m;
+-        while (exclusions.contains((Object)(m = MonsterInfo.roll(monsters, monsterRng.random())))) {
++        while (exclusions.contains(m = MonsterInfo.roll(monsters, monsterRng.random()))) {
+         }
+-        monsterList.add((Object)m);
++        monsterList.add(m);
+     }
+ 
+     public void populateMonsterList(ArrayList<MonsterInfo> monsters, int numMonsters, boolean elites) {
+         if (elites) {
+             for (int i = 0; i < numMonsters; ++i) {
+                 if (eliteMonsterList.isEmpty()) {
+-                    eliteMonsterList.add((Object)MonsterInfo.roll(monsters, monsterRng.random()));
++                    eliteMonsterList.add(MonsterInfo.roll(monsters, monsterRng.random()));
+                     continue;
+                 }
+                 String toAdd = MonsterInfo.roll(monsters, monsterRng.random());
+                 if (!toAdd.equals(eliteMonsterList.get(eliteMonsterList.size() - 1))) {
+-                    eliteMonsterList.add((Object)toAdd);
++                    eliteMonsterList.add(toAdd);
+                     continue;
+                 }
+                 --i;
+@@ -1023,7 +1026,7 @@
+         } else {
+             for (int i = 0; i < numMonsters; ++i) {
+                 if (monsterList.isEmpty()) {
+-                    monsterList.add((Object)MonsterInfo.roll(monsters, monsterRng.random()));
++                    monsterList.add(MonsterInfo.roll(monsters, monsterRng.random()));
+                     continue;
+                 }
+                 String toAdd = MonsterInfo.roll(monsters, monsterRng.random());
+@@ -1032,7 +1035,7 @@
+                         --i;
+                         continue;
+                     }
+-                    monsterList.add((Object)toAdd);
++                    monsterList.add(toAdd);
+                     continue;
+                 }
+                 --i;
+@@ -1043,7 +1046,7 @@
+     protected abstract ArrayList<String> generateExclusions();
+ 
+     public static AbstractCard returnColorlessCard(AbstractCard.CardRarity rarity) {
+-        Collections.shuffle(AbstractDungeon.colorlessCardPool.group, (java.util.Random)new java.util.Random(shuffleRng.randomLong()));
++        Collections.shuffle(AbstractDungeon.colorlessCardPool.group, new java.util.Random(shuffleRng.randomLong()));
+         for (AbstractCard c : AbstractDungeon.colorlessCardPool.group) {
+             if (c.rarity != rarity) continue;
+             return c.makeCopy();
+@@ -1059,9 +1062,9 @@
+ 
+     public static AbstractCard returnColorlessCard() {
+         Collections.shuffle(AbstractDungeon.colorlessCardPool.group);
+-        Iterator iterator = AbstractDungeon.colorlessCardPool.group.iterator();
++        Iterator<AbstractCard> iterator = AbstractDungeon.colorlessCardPool.group.iterator();
+         if (iterator.hasNext()) {
+-            AbstractCard c = (AbstractCard)iterator.next();
++            AbstractCard c = iterator.next();
+             return c.makeCopy();
+         }
+         return new SwiftStrike();
+@@ -1080,7 +1083,7 @@
+         rareCardPool.clear();
+         colorlessCardPool.clear();
+         curseCardPool.clear();
+-        ArrayList tmpPool = new ArrayList();
++        ArrayList<AbstractCard> tmpPool = new ArrayList<AbstractCard>();
+         switch (AbstractDungeon.player.chosenClass) {
+             case IRONCLAD: {
+                 this.addRedCards(tmpPool);
+@@ -1098,9 +1101,9 @@
+         this.addColorlessCards();
+         this.addCurseCards();
+         for (AbstractCard c : tmpPool) {
+-            Iterator iterator = acceptablePools.iterator();
++            Iterator<Integer> iterator = acceptablePools.iterator();
+             block12 : while (iterator.hasNext()) {
+-                int i = (Integer)iterator.next();
++                int i = iterator.next();
+                 if (c.pool == i) {
+                     switch (c.rarity) {
+                         case COMMON: {
+@@ -1152,8 +1155,8 @@
+ 
+     private void addColorlessCards() {
+         AbstractCard card = null;
+-        for (Map.Entry c : CardLibrary.cards.entrySet()) {
+-            card = (AbstractCard)c.getValue();
++        for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
++            card = c.getValue();
+             if (card.color != AbstractCard.CardColor.COLORLESS || card.rarity == AbstractCard.CardRarity.BASIC) continue;
+             colorlessCardPool.addToTop(card);
+         }
+@@ -1162,9 +1165,9 @@
+ 
+     private void addCurseCards() {
+         AbstractCard card = null;
+-        for (Map.Entry c : CardLibrary.cards.entrySet()) {
+-            card = (AbstractCard)c.getValue();
+-            if (card.type != AbstractCard.CardType.CURSE || Objects.equals((Object)card.cardID, (Object)"Necronomicurse")) continue;
++        for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
++            card = c.getValue();
++            if (card.type != AbstractCard.CardType.CURSE || Objects.equals(card.cardID, "Necronomicurse")) continue;
+             curseCardPool.addToTop(card);
+         }
+         logger.info("CURSE CARDS: " + colorlessCardPool.size());
+@@ -1172,28 +1175,28 @@
+ 
+     private void addRedCards(ArrayList<AbstractCard> tmpPool) {
+         AbstractCard card = null;
+-        for (Map.Entry c : CardLibrary.cards.entrySet()) {
+-            card = (AbstractCard)c.getValue();
+-            if (card.color != AbstractCard.CardColor.RED || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked((String)c.getKey()) && !Settings.isDailyRun) continue;
+-            tmpPool.add((Object)card);
++        for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
++            card = c.getValue();
++            if (card.color != AbstractCard.CardColor.RED || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
++            tmpPool.add(card);
+         }
+     }
+ 
+     private void addGreenCards(ArrayList<AbstractCard> tmpPool) {
+         AbstractCard card = null;
+-        for (Map.Entry c : CardLibrary.cards.entrySet()) {
+-            card = (AbstractCard)c.getValue();
+-            if (card.color != AbstractCard.CardColor.GREEN || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked((String)c.getKey()) && !Settings.isDailyRun) continue;
+-            tmpPool.add((Object)card);
++        for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
++            card = c.getValue();
++            if (card.color != AbstractCard.CardColor.GREEN || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
++            tmpPool.add(card);
+         }
+     }
+ 
+     private void addBlueCards(ArrayList<AbstractCard> tmpPool) {
+         AbstractCard card = null;
+-        for (Map.Entry c : CardLibrary.cards.entrySet()) {
+-            card = (AbstractCard)c.getValue();
+-            if (card.color != AbstractCard.CardColor.BLUE || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked((String)c.getKey()) && !Settings.isDailyRun) continue;
+-            tmpPool.add((Object)card);
++        for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
++            card = c.getValue();
++            if (card.color != AbstractCard.CardColor.BLUE || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
++            tmpPool.add(card);
+         }
+     }
+ 
+@@ -1208,49 +1211,49 @@
+         RelicLibrary.populateRelicPool(rareRelicPool, AbstractRelic.RelicTier.RARE, AbstractDungeon.player.chosenClass);
+         RelicLibrary.populateRelicPool(shopRelicPool, AbstractRelic.RelicTier.SHOP, AbstractDungeon.player.chosenClass);
+         RelicLibrary.populateRelicPool(bossRelicPool, AbstractRelic.RelicTier.BOSS, AbstractDungeon.player.chosenClass);
+-        Collections.shuffle(commonRelicPool, (java.util.Random)new java.util.Random(relicRng.randomLong()));
+-        Collections.shuffle(uncommonRelicPool, (java.util.Random)new java.util.Random(relicRng.randomLong()));
+-        Collections.shuffle(rareRelicPool, (java.util.Random)new java.util.Random(relicRng.randomLong()));
+-        Collections.shuffle(shopRelicPool, (java.util.Random)new java.util.Random(relicRng.randomLong()));
+-        Collections.shuffle(bossRelicPool, (java.util.Random)new java.util.Random(relicRng.randomLong()));
++        Collections.shuffle(commonRelicPool, new java.util.Random(relicRng.randomLong()));
++        Collections.shuffle(uncommonRelicPool, new java.util.Random(relicRng.randomLong()));
++        Collections.shuffle(rareRelicPool, new java.util.Random(relicRng.randomLong()));
++        Collections.shuffle(shopRelicPool, new java.util.Random(relicRng.randomLong()));
++        Collections.shuffle(bossRelicPool, new java.util.Random(relicRng.randomLong()));
+         block0 : for (String remove : relicsToRemoveOnStart) {
+             String derp;
+-            Iterator s = commonRelicPool.iterator();
++            Iterator<String> s = commonRelicPool.iterator();
+             while (s.hasNext()) {
+-                derp = (String)s.next();
+-                if (!derp.equals((Object)remove)) continue;
++                derp = s.next();
++                if (!derp.equals(remove)) continue;
+                 s.remove();
+                 logger.info(derp + " removed.");
+                 break;
+             }
+             s = uncommonRelicPool.iterator();
+             while (s.hasNext()) {
+-                derp = (String)s.next();
+-                if (!derp.equals((Object)remove)) continue;
++                derp = s.next();
++                if (!derp.equals(remove)) continue;
+                 s.remove();
+                 logger.info(derp + " removed.");
+                 break;
+             }
+             s = rareRelicPool.iterator();
+             while (s.hasNext()) {
+-                derp = (String)s.next();
+-                if (!derp.equals((Object)remove)) continue;
++                derp = s.next();
++                if (!derp.equals(remove)) continue;
+                 s.remove();
+                 logger.info(derp + " removed.");
+                 break;
+             }
+             s = bossRelicPool.iterator();
+             while (s.hasNext()) {
+-                derp = (String)s.next();
+-                if (!derp.equals((Object)remove)) continue;
++                derp = s.next();
++                if (!derp.equals(remove)) continue;
+                 s.remove();
+                 logger.info(derp + " removed.");
+                 break;
+             }
+             s = shopRelicPool.iterator();
+             while (s.hasNext()) {
+-                derp = (String)s.next();
+-                if (!derp.equals((Object)remove)) continue;
++                derp = s.next();
++                if (!derp.equals(remove)) continue;
+                 s.remove();
+                 logger.info(derp + " removed.");
+                 continue block0;
+@@ -1292,19 +1295,19 @@
+ 
+     public void initializeSpecialOneTimeEventList() {
+         specialOneTimeEventList.clear();
+-        specialOneTimeEventList.add((Object)"Accursed Blacksmith");
+-        specialOneTimeEventList.add((Object)"Bonfire Elementals");
+-        specialOneTimeEventList.add((Object)"Fountain of Cleansing");
+-        specialOneTimeEventList.add((Object)"Duplicator");
+-        specialOneTimeEventList.add((Object)"Knowing Skull");
+-        specialOneTimeEventList.add((Object)"Lab");
+-        specialOneTimeEventList.add((Object)"N'loth");
+-        specialOneTimeEventList.add((Object)"The Joust");
+-        specialOneTimeEventList.add((Object)"The Woman in Blue");
++        specialOneTimeEventList.add("Accursed Blacksmith");
++        specialOneTimeEventList.add("Bonfire Elementals");
++        specialOneTimeEventList.add("Fountain of Cleansing");
++        specialOneTimeEventList.add("Duplicator");
++        specialOneTimeEventList.add("Knowing Skull");
++        specialOneTimeEventList.add("Lab");
++        specialOneTimeEventList.add("N'loth");
++        specialOneTimeEventList.add("The Joust");
++        specialOneTimeEventList.add("The Woman in Blue");
+     }
+ 
+     public static ArrayList<AbstractCard> getBossRewardCards() {
+-        ArrayList retVal = new ArrayList();
++        ArrayList<AbstractCard> retVal = new ArrayList<AbstractCard>();
+         int numCards = 3;
+         if (player.hasRelic("Question Card")) {
+             numCards = 4;
+@@ -1332,21 +1335,21 @@
+                     logger.info("WTF?");
+                 }
+             }
+-            while (retVal.contains((Object)card)) {
++            while (retVal.contains(card)) {
+                 logger.info("DUPE: " + card.originalName);
+                 card = AbstractDungeon.getCard(rarity);
+             }
+-            retVal.add((Object)card);
++            retVal.add(card);
+         }
+-        ArrayList retVal2 = new ArrayList();
++        ArrayList<AbstractCard> retVal2 = new ArrayList<AbstractCard>();
+         for (AbstractCard c : retVal) {
+-            retVal2.add((Object)c.makeCopy());
++            retVal2.add(c.makeCopy());
+         }
+         return retVal2;
+     }
+ 
+     public static ArrayList<AbstractCard> getRewardCards() {
+-        ArrayList retVal = new ArrayList();
++        ArrayList<AbstractCard> retVal = new ArrayList<AbstractCard>();
+         int numCards = 3;
+         if (player.hasRelic("Question Card")) {
+             numCards = 4;
+@@ -1354,18 +1357,18 @@
+         for (int i = 0; i < numCards; ++i) {
+             AbstractCard.CardRarity rarity = AbstractDungeon.rollRarity();
+             AbstractCard card = null;
+-            switch (rarity) {
+-                case RARE: {
+-                    card = AbstractDungeon.getCard(rarity);
++            switch (rarity.ordinal()) {
++                case 4: {
++                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
+                     cardBlizzRandomizer = cardBlizzStartOffset;
+                     break;
+                 }
+-                case UNCOMMON: {
+-                    card = AbstractDungeon.getCard(rarity);
++                case 3: {
++                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
+                     break;
+                 }
+-                case COMMON: {
+-                    card = AbstractDungeon.getCard(rarity);
++                case 2: {
++                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
+                     if ((cardBlizzRandomizer -= cardBlizzGrowth) > cardBlizzMaxOffset) break;
+                     cardBlizzRandomizer = cardBlizzMaxOffset;
+                     break;
+@@ -1375,34 +1378,34 @@
+                 }
+             }
+             int dupeCount = 0;
+-            block11 : while (retVal.contains((Object)card)) {
++            block11 : while (retVal.contains(card)) {
+                 logger.info("DUPE: " + card.originalName);
+                 if (dupeCount < 4) {
+                     card = AbstractDungeon.getCard(rarity);
+                     continue;
+                 }
+                 logger.info("FALLBACK FOR CARD RARITY HAS OCCURRED");
+-                switch (rarity) {
+-                    case RARE: {
++                switch (rarity.ordinal()) {
++                    case 4: {
+                         card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
+                         continue block11;
+                     }
+-                    case UNCOMMON: {
++                    case 3: {
+                         card = AbstractDungeon.getCard(AbstractCard.CardRarity.COMMON);
+                         continue block11;
+                     }
+-                    case COMMON: {
++                    case 2: {
+                         card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
+                         continue block11;
+                     }
+                 }
+                 card = AbstractDungeon.getCard(AbstractCard.CardRarity.COMMON);
+             }
+-            retVal.add((Object)card);
++            retVal.add(card);
+         }
+-        ArrayList retVal2 = new ArrayList();
++        ArrayList<AbstractCard> retVal2 = new ArrayList<AbstractCard>();
+         for (AbstractCard c : retVal) {
+-            retVal2.add((Object)c.makeCopy());
++            retVal2.add(c.makeCopy());
+         }
+         for (AbstractCard c : retVal2) {
+             if (c.rarity == AbstractCard.CardRarity.RARE || !cardRng.randomBoolean(cardUpgradedChance) || !c.canUpgrade()) continue;
+@@ -1469,8 +1472,9 @@
+     }
+ 
+     public static AbstractCard getCardFromPool(AbstractCard.CardRarity rarity, AbstractCard.CardType type, boolean useRng) {
++        AbstractCard retVal;
++        
+         switch (rarity) {
+-            AbstractCard retVal;
+             case RARE: {
+                 retVal = rareCardPool.getRandomCard(type, useRng);
+                 if (retVal != null) {
+@@ -1511,8 +1515,8 @@
+     }
+ 
+     public static AbstractCard getColorlessCardFromPool(AbstractCard.CardRarity rarity) {
++        AbstractCard retVal;
+         switch (rarity) {
+-            AbstractCard retVal;
+             case RARE: {
+                 retVal = colorlessCardPool.getRandomCard(true, rarity);
+                 if (retVal != null) {
+@@ -1535,10 +1539,10 @@
+                 if (color == AbstractCard.CardColor.COLORLESS || color == AbstractCard.CardColor.CURSE) break block14;
+                 switch (rarity) {
+                     case RARE: {
+-                        Iterator i = AbstractDungeon.rareCardPool.group.iterator();
++                        Iterator<AbstractCard> i = AbstractDungeon.rareCardPool.group.iterator();
+                         while (i.hasNext()) {
+-                            AbstractCard e = (AbstractCard)i.next();
+-                            if (!e.cardID.equals((Object)id)) continue;
++                            AbstractCard e = i.next();
++                            if (!e.cardID.equals(id)) continue;
+                             i.remove();
+                             logger.info(name + " removed from pool.");
+                             return;
+@@ -1546,10 +1550,10 @@
+                         break block15;
+                     }
+                     case UNCOMMON: {
+-                        Iterator i = AbstractDungeon.uncommonCardPool.group.iterator();
++                        Iterator<AbstractCard> i = AbstractDungeon.uncommonCardPool.group.iterator();
+                         while (i.hasNext()) {
+-                            AbstractCard e = (AbstractCard)i.next();
+-                            if (!e.cardID.equals((Object)id)) continue;
++                            AbstractCard e = i.next();
++                            if (!e.cardID.equals(id)) continue;
+                             i.remove();
+                             logger.info(name + " removed from pool.");
+                             return;
+@@ -1557,10 +1561,10 @@
+                         break block15;
+                     }
+                     case COMMON: {
+-                        Iterator i = AbstractDungeon.commonCardPool.group.iterator();
++                        Iterator<AbstractCard> i = AbstractDungeon.commonCardPool.group.iterator();
+                         while (i.hasNext()) {
+-                            AbstractCard e = (AbstractCard)i.next();
+-                            if (!e.cardID.equals((Object)id)) continue;
++                            AbstractCard e = i.next();
++                            if (!e.cardID.equals(id)) continue;
+                             i.remove();
+                             logger.info(name + " removed from pool.");
+                             return;
+@@ -1572,19 +1576,19 @@
+                 break block15;
+             }
+             if (color == AbstractCard.CardColor.COLORLESS) {
+-                Iterator i = AbstractDungeon.colorlessCardPool.group.iterator();
++                Iterator<AbstractCard> i = AbstractDungeon.colorlessCardPool.group.iterator();
+                 while (i.hasNext()) {
+-                    AbstractCard e = (AbstractCard)i.next();
+-                    if (!e.cardID.equals((Object)id)) continue;
++                    AbstractCard e = i.next();
++                    if (!e.cardID.equals(id)) continue;
+                     i.remove();
+                     logger.info(name + " removed from pool.");
+                     return;
+                 }
+             } else if (color == AbstractCard.CardColor.CURSE) {
+-                Iterator i = AbstractDungeon.curseCardPool.group.iterator();
++                Iterator<AbstractCard> i = AbstractDungeon.curseCardPool.group.iterator();
+                 while (i.hasNext()) {
+-                    AbstractCard e = (AbstractCard)i.next();
+-                    if (!e.cardID.equals((Object)id)) continue;
++                    AbstractCard e = i.next();
++                    if (!e.cardID.equals(id)) continue;
+                     i.remove();
+                     logger.info(name + " removed from pool.");
+                     return;
+@@ -1633,7 +1637,7 @@
+                 if (!(Settings.isDailyRun || Settings.isTrial || Settings.isDemo)) {
+                     SaveFile saveFile = new SaveFile(SaveFile.SaveType.ENTER_ROOM);
+                     SaveAndContinue.save(saveFile);
+-                    effectList.add((Object)new GameSavedEffect());
++                    effectList.add(new GameSavedEffect());
+                 } else if (Settings.isDailyRun) {
+                     Metrics metrics = new Metrics();
+                     metrics.setValues(false, null, Metrics.MetricRequestType.NONE);
+@@ -1647,7 +1651,7 @@
+ 
+     public void nextRoomTransition() {
+         if (player.hasRelic("Singing Bowl")) {
+-            for (Object r : AbstractDungeon.combatRewardScreen.rewards) {
++            for (RewardItem r : AbstractDungeon.combatRewardScreen.rewards) {
+                 if (r.type != RewardItem.RewardType.CARD) continue;
+                 CardCrawlGame.sound.play("SINGING_BOWL");
+                 player.increaseMaxHp(2, false);
+@@ -1690,14 +1694,15 @@
+         GameActionManager.turn = 1;
+         if (!CardCrawlGame.loadingSave) {
+             this.incrementFloorBasedMetrics();
+-            if (!((Boolean)TipTracker.tips.get((Object)"INTENT_TIP")).booleanValue() && ++floorNum == 6) {
++            ++floorNum;
++            if (!TipTracker.tips.get("INTENT_TIP").booleanValue() && floorNum == 6) {
+                 TipTracker.neverShowAgain("INTENT_TIP");
+             }
+             StatsScreen.incrementFloorClimbed();
+             if (!(Settings.isDailyRun || Settings.isTrial || Settings.isDemo)) {
+                 SaveFile saveFile = new SaveFile(SaveFile.SaveType.ENTER_ROOM);
+                 SaveAndContinue.save(saveFile);
+-                effectList.add((Object)new GameSavedEffect());
++                effectList.add(new GameSavedEffect());
+             } else if (Settings.isDailyRun) {
+                 Metrics metrics = new Metrics();
+                 metrics.setValues(false, null, Metrics.MetricRequestType.NONE);
+@@ -1710,7 +1715,7 @@
+         cardRandomRng = new Random(Settings.seed, floorNum);
+         miscRng = new Random(Settings.seed, floorNum);
+         if (nextRoom != null) {
+-            for (Object r : AbstractDungeon.player.relics) {
++            for (AbstractRelic r : AbstractDungeon.player.relics) {
+                 r.onEnterRoom(AbstractDungeon.nextRoom.room);
+             }
+         }
+@@ -1738,10 +1743,10 @@
+ 
+     private void incrementFloorBasedMetrics() {
+         if (floorNum != 0) {
+-            CardCrawlGame.metricData.current_hp_per_floor.add((Object)AbstractDungeon.player.currentHealth);
+-            CardCrawlGame.metricData.max_hp_per_floor.add((Object)AbstractDungeon.player.maxHealth);
+-            CardCrawlGame.metricData.gold_per_floor.add((Object)AbstractDungeon.player.gold);
+-            CardCrawlGame.metricData.path_per_floor.add((Object)AbstractDungeon.getCurrMapNode().getRoomSymbol(true));
++            CardCrawlGame.metricData.current_hp_per_floor.add(AbstractDungeon.player.currentHealth);
++            CardCrawlGame.metricData.max_hp_per_floor.add(AbstractDungeon.player.maxHealth);
++            CardCrawlGame.metricData.gold_per_floor.add(AbstractDungeon.player.gold);
++            CardCrawlGame.metricData.path_per_floor.add(AbstractDungeon.getCurrMapNode().getRoomSymbol(true));
+         }
+     }
+ 
+@@ -1769,14 +1774,14 @@
+     }
+ 
+     public static MonsterGroup getMonsterForRoomCreation() {
+-        lastCombatMetricKey = (String)monsterList.get(0);
++        lastCombatMetricKey = monsterList.get(0);
+         logger.info("Monster Removed");
+-        return MonsterHelper.getEncounter((String)monsterList.remove(0));
++        return MonsterHelper.getEncounter(monsterList.remove(0));
+     }
+ 
+     public static MonsterGroup getEliteMonsterForRoomCreation() {
+-        lastCombatMetricKey = (String)eliteMonsterList.get(0);
+-        return MonsterHelper.getEncounter((String)eliteMonsterList.remove(0));
++        lastCombatMetricKey = eliteMonsterList.get(0);
++        return MonsterHelper.getEncounter(eliteMonsterList.remove(0));
+     }
+ 
+     public static AbstractEvent generateEvent() {
+@@ -1797,54 +1802,84 @@
+         return retVal;
+     }
+ 
+-    /*
+-     * Exception decompiling
+-     */
+     public static AbstractEvent getShrine() {
+-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$TooOptimisticMatchException
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.getString(SwitchStringRewriter.java:251)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$SwitchStringMatchResultCollector.collectMatches(SwitchStringRewriter.java:215)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.KleeneN.match(KleeneN.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.MatchSequence.match(MatchSequence.java:25)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:23)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.rewrite(SwitchStringRewriter.java:96)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:868)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:217)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:162)
+-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:95)
+-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:357)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:769)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:701)
+-        // org.benf.cfr.reader.Main.doJar(Main.java:134)
+-        // org.benf.cfr.reader.Main.main(Main.java:189)
+-        throw new IllegalStateException("Decompilation failed");
+-    }
+-
+-    /*
+-     * Exception decompiling
+-     */
++        ArrayList<String> tmp = new ArrayList<String>();
++        tmp.addAll(shrineList);
++        Iterator<String> iterator = specialOneTimeEventList.iterator();
++        block16 : while (iterator.hasNext()) {
++            String e;
++            switch (e = iterator.next()) {
++                case "Fountain of Cleansing": {
++                    if (!player.isCursed()) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++                case "Duplicator": {
++                    if (!id.equals("TheCity") && !id.equals("TheBeyond")) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++                case "Knowing Skull": {
++                    if (!id.equals("TheCity") || AbstractDungeon.player.currentHealth <= AbstractDungeon.player.maxHealth / 2) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++                case "N'loth": {
++                    if (!id.equals("TheCity") && !id.equals("TheCity") || AbstractDungeon.player.relics.size() < 2) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++                case "The Joust": {
++                    if (!id.equals("TheCity") || AbstractDungeon.player.gold < 50) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++                case "The Woman in Blue": {
++                    if (AbstractDungeon.player.gold < 50) continue block16;
++                    tmp.add(e);
++                    continue block16;
++                }
++            }
++            tmp.add(e);
++        }
++        String tmpKey = (String)tmp.get(eventRng.random(tmp.size() - 1));
++        shrineList.remove(tmpKey);
++        specialOneTimeEventList.remove(tmpKey);
++        logger.info("Removed event: " + tmpKey + " from pool.");
++        return EventHelper.getEvent(tmpKey);
++    }
++
+     public static AbstractEvent getEvent() {
+-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$TooOptimisticMatchException
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.getString(SwitchStringRewriter.java:251)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter$SwitchStringMatchResultCollector.collectMatches(SwitchStringRewriter.java:215)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.KleeneN.match(KleeneN.java:24)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.MatchSequence.match(MatchSequence.java:25)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.matchutil.ResetAfterTest.match(ResetAfterTest.java:23)
+-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op4rewriters.SwitchStringRewriter.rewrite(SwitchStringRewriter.java:96)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:868)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:217)
+-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:162)
+-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:95)
+-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:357)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:769)
+-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:701)
+-        // org.benf.cfr.reader.Main.doJar(Main.java:134)
+-        // org.benf.cfr.reader.Main.main(Main.java:189)
+-        throw new IllegalStateException("Decompilation failed");
++        ArrayList<String> tmp = new ArrayList<String>();
++        Iterator<String> iterator = eventList.iterator();
++        block10 : while (iterator.hasNext()) {
++            String e;
++            switch (e = iterator.next()) {
++                case "Dead Adventurer": {
++                    if (floorNum <= 6) continue block10;
++                    tmp.add(e);
++                    continue block10;
++                }
++                case "Mushrooms": {
++                    if (floorNum <= 6) continue block10;
++                    tmp.add(e);
++                    continue block10;
++                }
++                case "The Moai Head": {
++                    if (!player.hasRelic("Golden Idol") && (float)AbstractDungeon.player.currentHealth / (float)AbstractDungeon.player.maxHealth > 0.5f) continue block10;
++                    tmp.add(e);
++                    continue block10;
++                }
++            }
++            tmp.add(e);
++        }
++        if (tmp.isEmpty()) {
++            return AbstractDungeon.getShrine();
++        }
++        String tmpKey = (String)tmp.get(eventRng.random(tmp.size() - 1));
++        eventList.remove(tmpKey);
++        logger.info("Removed event: " + tmpKey + " from pool.");
++        return EventHelper.getEvent(tmpKey);
+     }
+ 
+     public MonsterGroup getBoss() {
+@@ -1950,16 +1985,16 @@
+             }
+         }
+         turnPhaseEffectActive = false;
+-        Iterator i = topLevelEffects.iterator();
++        Iterator<AbstractGameEffect> i = topLevelEffects.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
++            e = i.next();
+             e.update();
+             if (!e.isDone) continue;
+             i.remove();
+         }
+         i = effectList.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
++            e = i.next();
+             e.update();
+             if (e instanceof PlayerTurnEffect) {
+                 turnPhaseEffectActive = true;
+@@ -1969,14 +2004,14 @@
+         }
+         i = effectsQueue.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
+-            effectList.add((Object)e);
++            e = i.next();
++            effectList.add(e);
+             i.remove();
+         }
+         i = topLevelEffectsQueue.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
+-            topLevelEffects.add((Object)e);
++            e = i.next();
++            topLevelEffects.add(e);
+             i.remove();
+         }
+         overlayMenu.update();
+@@ -2349,7 +2384,7 @@
+         eliteMonsterList.clear();
+         bossList.clear();
+         AbstractRoom.blizzardPotionMod = 0;
+-        if (!((Boolean)DailyMods.mods.get((Object)"Restless Journey")).booleanValue()) {
++        if (!DailyMods.mods.get("Restless Journey").booleanValue()) {
+             player.heal(AbstractDungeon.player.maxHealth, false);
+         }
+         AbstractDungeon.dungeonMapScreen.map.atBoss = false;
+@@ -2383,10 +2418,10 @@
+     }
+ 
+     protected void removeRelicFromPool(ArrayList<String> pool, String name) {
+-        Iterator i = pool.iterator();
++        Iterator<String> i = pool.iterator();
+         while (i.hasNext()) {
+-            String s = (String)i.next();
+-            if (!s.equals((Object)name)) continue;
++            String s = i.next();
++            if (!s.equals(name)) continue;
+             i.remove();
+             logger.info("Relic" + s + " removed from relic pool.");
+         }
+@@ -2441,7 +2476,7 @@
+ 
+     static {
+         floorNum = 0;
+-        unlocks = new ArrayList();
++        unlocks = new ArrayList<AbstractUnlock>();
+         shrineChance = 0.25f;
+         firstChest = true;
+         encounteredCursedChest = false;
+@@ -2456,30 +2491,30 @@
+         commonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+         uncommonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+         rareCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+-        acceptablePools = new ArrayList();
+-        commonRelicPool = new ArrayList();
+-        uncommonRelicPool = new ArrayList();
+-        rareRelicPool = new ArrayList();
+-        shopRelicPool = new ArrayList();
+-        bossRelicPool = new ArrayList();
++        acceptablePools = new ArrayList<Integer>();
++        commonRelicPool = new ArrayList<String>();
++        uncommonRelicPool = new ArrayList<String>();
++        rareRelicPool = new ArrayList<String>();
++        shopRelicPool = new ArrayList<String>();
++        bossRelicPool = new ArrayList<String>();
+         lastMonsterKey = null;
+         lastCombatMetricKey = null;
+-        monsterList = new ArrayList();
+-        eliteMonsterList = new ArrayList();
+-        bossList = new ArrayList();
+-        eventList = new ArrayList();
+-        shrineList = new ArrayList();
+-        specialOneTimeEventList = new ArrayList();
++        monsterList = new ArrayList<String>();
++        eliteMonsterList = new ArrayList<String>();
++        bossList = new ArrayList<String>();
++        eventList = new ArrayList<String>();
++        shrineList = new ArrayList<String>();
++        specialOneTimeEventList = new ArrayList<String>();
+         actionManager = new GameActionManager();
+-        topLevelEffects = new ArrayList();
+-        topLevelEffectsQueue = new ArrayList();
+-        effectList = new ArrayList();
+-        effectsQueue = new ArrayList();
++        topLevelEffects = new ArrayList<AbstractGameEffect>();
++        topLevelEffectsQueue = new ArrayList<AbstractGameEffect>();
++        effectList = new ArrayList<AbstractGameEffect>();
++        effectsQueue = new ArrayList<AbstractGameEffect>();
+         turnPhaseEffectActive = false;
+         firstRoomChosen = false;
+         rs = RenderScene.NORMAL;
+-        pathX = new ArrayList();
+-        pathY = new ArrayList();
++        pathX = new ArrayList<Integer>();
++        pathY = new ArrayList<Integer>();
+         topGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+         botGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+         floorY = 340.0f * Settings.scale;
+@@ -2506,7 +2541,7 @@
+         cardBlizzRandomizer = AbstractDungeon.cardBlizzStartOffset = 5;
+         cardBlizzGrowth = 1;
+         cardBlizzMaxOffset = -40;
+-        relicsToRemoveOnStart = new ArrayList();
++        relicsToRemoveOnStart = new ArrayList<String>();
+         bossCount = 0;
+         LOGGER = LogManager.getLogger(AbstractDungeon.class.getName());
+     }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-19 20:30:42.159476100 -0800
-+++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-22 21:29:06.237442500 -0800
-@@ -12,12 +12,18 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-23 23:47:32.813940800 -0800
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-23 17:20:07.689464500 -0800
+@@ -9,31 +9,36 @@
+ import com.megacrit.cardcrawl.random.Random;
+ import java.util.ArrayList;
+ import java.util.Collections;
+-import java.util.Comparator;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -179,8 +2021,224 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
          map = MapGenerator.filterRedundantEdgesFromRow(map);
          return map;
      }
+ 
+     private static ArrayList<ArrayList<MapRoomNode>> filterRedundantEdgesFromRow(ArrayList<ArrayList<MapRoomNode>> map) {
+-        ArrayList existingEdges = new ArrayList();
+-        ArrayList deleteList = new ArrayList();
+-        for (MapRoomNode node : (ArrayList)map.get(0)) {
++        ArrayList<MapEdge> existingEdges = new ArrayList<MapEdge>();
++        ArrayList<MapEdge> deleteList = new ArrayList<MapEdge>();
++        for (MapRoomNode node : map.get(0)) {
+             if (!node.hasEdges()) continue;
+             for (MapEdge edge : node.getEdges()) {
+                 for (MapEdge prevEdge : existingEdges) {
+                     if (edge.dstX != prevEdge.dstX || edge.dstY != prevEdge.dstY) continue;
+-                    deleteList.add((Object)edge);
++                    deleteList.add(edge);
+                 }
+-                existingEdges.add((Object)edge);
++                existingEdges.add(edge);
+             }
+             for (MapEdge edge : deleteList) {
+                 node.delEdge(edge);
+@@ -44,20 +49,20 @@
+     }
+ 
+     private static ArrayList<ArrayList<MapRoomNode>> createNodes(int height, int width) {
+-        ArrayList nodes = new ArrayList();
++        ArrayList<ArrayList<MapRoomNode>> nodes = new ArrayList<ArrayList<MapRoomNode>>();
+         for (int y = 0; y < height; ++y) {
+-            ArrayList row = new ArrayList();
++            ArrayList<MapRoomNode> row = new ArrayList<MapRoomNode>();
+             for (int x = 0; x < width; ++x) {
+-                row.add((Object)new MapRoomNode(x, y));
++                row.add(new MapRoomNode(x, y));
+             }
+-            nodes.add((Object)row);
++            nodes.add(row);
+         }
+         return nodes;
+     }
+ 
+     private static ArrayList<ArrayList<MapRoomNode>> createPaths(ArrayList<ArrayList<MapRoomNode>> nodes, int pathDensity, Random rng) {
+         int first_row = 0;
+-        int row_size = ((ArrayList)nodes.get(first_row)).size() - 1;
++        int row_size = nodes.get(first_row).size() - 1;
+         int firstStartingNode = -1;
+         for (int i = 0; i < pathDensity; ++i) {
+             int startingNode = MapGenerator.randRange(rng, 0, row_size);
+@@ -73,20 +78,20 @@
+     }
+ 
+     private static MapEdge getMaxEdge(ArrayList<MapEdge> edges) {
+-        Collections.sort(edges, (Comparator)new EdgeComparator());
++        Collections.sort(edges, new EdgeComparator());
+         assert (!edges.isEmpty());
+-        return (MapEdge)edges.get(edges.size() - 1);
++        return edges.get(edges.size() - 1);
+     }
+ 
+     private static MapEdge getMinEdge(ArrayList<MapEdge> edges) {
+-        Collections.sort(edges, (Comparator)new EdgeComparator());
++        Collections.sort(edges, new EdgeComparator());
+         assert (!edges.isEmpty());
+-        return (MapEdge)edges.get(0);
++        return edges.get(0);
+     }
+ 
+     private static MapRoomNode getNodeWithMaxX(ArrayList<MapRoomNode> nodes) {
+         assert (!nodes.isEmpty());
+-        MapRoomNode max = (MapRoomNode)nodes.get(0);
++        MapRoomNode max = nodes.get(0);
+         for (MapRoomNode node : nodes) {
+             if (node.x <= max.x) continue;
+             max = node;
+@@ -96,7 +101,7 @@
+ 
+     private static MapRoomNode getNodeWithMinX(ArrayList<MapRoomNode> nodes) {
+         assert (!nodes.isEmpty());
+-        MapRoomNode min = (MapRoomNode)nodes.get(0);
++        MapRoomNode min = nodes.get(0);
+         for (MapRoomNode node : nodes) {
+             if (node.x >= min.x) continue;
+             min = node;
+@@ -135,10 +140,10 @@
+         if (edge.dstY + 1 >= nodes.size()) {
+             MapEdge newEdge = new MapEdge(edge.dstX, edge.dstY, currentNode.offsetX, currentNode.offsetY, 3, edge.dstY + 2, 0.0f, 0.0f, true);
+             currentNode.addEdge(newEdge);
+-            Collections.sort(currentNode.getEdges(), (Comparator)new EdgeComparator());
++            Collections.sort(currentNode.getEdges(), new EdgeComparator());
+             return nodes;
+         }
+-        int row_width = ((ArrayList)nodes.get(edge.dstY)).size();
++        int row_width = nodes.get(edge.dstY).size();
+         int row_end_node = row_width - 1;
+         if (edge.dstX == 0) {
+             min = 0;
+@@ -186,13 +191,13 @@
+                 if (ancestor_gap < max_ancestor_gap) continue;
+             }
+         }
+-        if (edge.dstX != 0 && (left_node = (MapRoomNode)((ArrayList)nodes.get(edge.dstY)).get(edge.dstX - 1)).hasEdges()) {
++        if (edge.dstX != 0 && (left_node = nodes.get(edge.dstY).get(edge.dstX - 1)).hasEdges()) {
+             MapEdge right_edge_of_left_node = MapGenerator.getMaxEdge(left_node.getEdges());
+             if (right_edge_of_left_node.dstX > newEdgeX) {
+                 newEdgeX = right_edge_of_left_node.dstX;
+             }
+         }
+-        if (edge.dstX < row_end_node && (right_node = (MapRoomNode)((ArrayList)nodes.get(edge.dstY)).get(edge.dstX + 1)).hasEdges()) {
++        if (edge.dstX < row_end_node && (right_node = nodes.get(edge.dstY).get(edge.dstX + 1)).hasEdges()) {
+             MapEdge left_edge_of_right_node = MapGenerator.getMinEdge(right_node.getEdges());
+             if (left_edge_of_right_node.dstX < newEdgeX) {
+                 newEdgeX = left_edge_of_right_node.dstX;
+@@ -201,13 +206,13 @@
+         targetNodeCandidate = MapGenerator.getNode(newEdgeX, newEdgeY, nodes);
+         MapEdge newEdge = new MapEdge(edge.dstX, edge.dstY, currentNode.offsetX, currentNode.offsetY, newEdgeX, newEdgeY, targetNodeCandidate.offsetX, targetNodeCandidate.offsetY, false);
+         currentNode.addEdge(newEdge);
+-        Collections.sort(currentNode.getEdges(), (Comparator)new EdgeComparator());
++        Collections.sort(currentNode.getEdges(), new EdgeComparator());
+         targetNodeCandidate.addParent(currentNode);
+         return MapGenerator._createPaths(nodes, newEdge, rng);
+     }
+ 
+     private static MapRoomNode getNode(int x, int y, ArrayList<ArrayList<MapRoomNode>> nodes) {
+-        return (MapRoomNode)((ArrayList)nodes.get(y)).get(x);
++        return nodes.get(y).get(x);
+     }
+ 
+     private static String paddingGenerator(int length) {
+@@ -227,9 +232,9 @@
+         int left_padding_size = 5;
+         for (int row_num = nodes.size() - 1; row_num >= 0; --row_num) {
+             str = str + "\n " + MapGenerator.paddingGenerator(left_padding_size);
+-            for (MapRoomNode node : (ArrayList)nodes.get(row_num)) {
++            for (MapRoomNode node : nodes.get(row_num)) {
+                 String right = " ";
+-                String mid = " ";
++                Object mid = " ";
+                 String left = " ";
+                 for (MapEdge edge : node.getEdges()) {
+                     if (edge.dstX < node.x) {
+@@ -241,14 +246,14 @@
+                     if (edge.dstX <= node.x) continue;
+                     right = "/";
+                 }
+-                str = str + left + mid + right;
++                str = str + left + (String)mid + right;
+             }
+             str = str + "\n" + row_num + " ";
+-            str = str + MapGenerator.paddingGenerator(left_padding_size - String.valueOf((int)row_num).length());
+-            for (MapRoomNode node : (ArrayList)nodes.get(row_num)) {
++            str = str + MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length());
++            for (MapRoomNode node : nodes.get(row_num)) {
+                 String node_symbol = " ";
+                 if (row_num == nodes.size() - 1) {
+-                    for (MapRoomNode lower_node : (ArrayList)nodes.get(row_num - 1)) {
++                    for (MapRoomNode lower_node : nodes.get(row_num - 1)) {
+                         for (MapEdge edge : lower_node.getEdges()) {
+                             if (edge.dstX != node.x) continue;
+                             node_symbol = node.getRoomSymbol(showRoomSymbols);
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-23 23:47:33.139252500 -0800
++++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-24 03:39:37.907238600 -0800
+@@ -25,6 +25,9 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public class MonsterGroup {
+     private static final Logger logger = LogManager.getLogger(MonsterGroup.class.getName());
+     public ArrayList<AbstractMonster> monsters = new ArrayList();
+@@ -32,19 +35,19 @@
+     private static final float WAIT_AFTER_MONSTERS_TIME = 1.5f;
+ 
+     public MonsterGroup(AbstractMonster[] input) {
+-        Collections.addAll(this.monsters, (Object[])input);
++        Collections.addAll(this.monsters, input);
+     }
+ 
+     public void addMonster(AbstractMonster m) {
+-        this.monsters.add((Object)m);
++        this.monsters.add(m);
+     }
+ 
+     public void addMonster(int newIndex, AbstractMonster m) {
+-        this.monsters.add(newIndex, (Object)m);
++        this.monsters.add(newIndex, m);
+     }
+ 
+     public void addSpawnedMonster(AbstractMonster m) {
+-        this.monsters.add(0, (Object)m);
++        this.monsters.add(0, m);
+     }
+ 
+     public MonsterGroup(AbstractMonster m) {
+@@ -64,7 +67,7 @@
+     }
+ 
+     public void add(AbstractMonster m) {
+-        this.monsters.add((Object)m);
++        this.monsters.add(m);
+     }
+ 
+     public void usePreBattleAction() {
+@@ -123,7 +126,11 @@
+                     TipTracker.neverShowAgain("INTENT_TIP");
+                 }
+             }
+-            m.takeTurn();
++            
++            // BaseMod modification
++            if (BaseMod.publishPreMonsterTurn(m)) {
++                m.takeTurn();
++            }
+         }
+         if (!Settings.isDebug) {
+             AbstractDungeon.actionManager.addToBottom(new WaitAction(1.5f));
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-21 01:02:58.518447800 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-23 23:47:37.618550200 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-22 12:29:41.315460400 -0800
 @@ -29,6 +29,9 @@
  import com.megacrit.cardcrawl.screens.stats.StatsScreen;
@@ -192,10 +2250,11 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
  public class CancelButton {
      private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("Cancel Button");
      public static final String[] TEXT = CancelButton.uiStrings.TEXT;
-@@ -95,6 +98,16 @@
+@@ -95,7 +98,17 @@
                          this.hide();
                          return;
                      }
+-                    if (this.buttonText.equals((Object)TEXT[0])) {
 +                    
 +                    // BaseMod modification
 +                    if (BaseMod.modSettingsUp) {
@@ -206,11 +2265,21 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
 +                        return;
 +                    }
 +                    
-                     if (this.buttonText.equals(TEXT[0])) {
++                    if (this.buttonText.equals(TEXT[0])) {
                          return;
                      }
+                 }
+@@ -122,7 +135,7 @@
+         }
+         if (this.current_x == this.target_x) return;
+         this.current_x = MathUtils.lerp(this.current_x, this.target_x, Gdx.graphics.getDeltaTime() * 9.0f);
+-        if (Math.abs((float)(this.current_x - this.target_x)) >= Settings.UI_SNAP_THRESHOLD) return;
++        if (Math.abs(this.current_x - this.target_x) >= Settings.UI_SNAP_THRESHOLD) return;
+         this.current_x = this.target_x;
+     }
+ 
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-19 20:30:45.726395900 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-23 23:47:37.693621700 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-22 12:29:41.317320600 -0800
 @@ -32,6 +32,9 @@
  import java.util.ArrayList;
@@ -222,6 +2291,15 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
  public class EndTurnButton {
      private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("End Turn Tip");
      public static final String[] MSG = EndTurnButton.tutorialStrings.TEXT;
+@@ -63,7 +66,7 @@
+         this.glow();
+         if (this.current_x != this.target_x) {
+             this.current_x = MathUtils.lerp(this.current_x, this.target_x, Gdx.graphics.getDeltaTime() * 9.0f);
+-            if (Math.abs((float)(this.current_x - this.target_x)) < Settings.UI_SNAP_THRESHOLD) {
++            if (Math.abs(this.current_x - this.target_x) < Settings.UI_SNAP_THRESHOLD) {
+                 this.current_x = this.target_x;
+             }
+         }
 @@ -91,7 +94,9 @@
                  }
              }
@@ -233,8 +2311,36 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
              this.hitbox.clicked = false;
              if (!this.isDisabled && !AbstractDungeon.isScreenUp) {
                  this.disable(true);
+@@ -142,15 +147,15 @@
+     private void glow() {
+         if (this.isGlowing && !this.isHidden) {
+             if (this.glowTimer < 0.0f) {
+-                this.glowList.add((Object)new EndTurnGlowEffect());
++                this.glowList.add(new EndTurnGlowEffect());
+                 this.glowTimer = 1.2f;
+             } else {
+                 this.glowTimer -= Gdx.graphics.getDeltaTime();
+             }
+         }
+-        Iterator i = this.glowList.iterator();
++        Iterator<EndTurnGlowEffect> i = this.glowList.iterator();
+         while (i.hasNext()) {
+-            AbstractGameEffect e = (AbstractGameEffect)i.next();
++            AbstractGameEffect e = i.next();
+             e.update();
+             if (!e.isDone) continue;
+             i.remove();
+@@ -178,7 +183,7 @@
+         if (!Settings.hideEndTurn) {
+             float tmpY = this.current_y;
+             if (this.isDisabled || !this.enabled) {
+-                this.textColor = this.label.equals((Object)ENEMY_TURN_MSG) ? Settings.CREAM_COLOR : Color.LIGHT_GRAY;
++                this.textColor = this.label.equals(ENEMY_TURN_MSG) ? Settings.CREAM_COLOR : Color.LIGHT_GRAY;
+             } else {
+                 this.textColor = this.hitbox.hovered ? (this.isWarning ? Settings.RED_TEXT_COLOR : Color.CYAN) : (this.isGlowing ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
+                 if (Settings.COMMON_TIP && this.hitbox.hovered && !AbstractDungeon.isScreenUp) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-19 20:30:45.853517300 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-23 23:47:37.907326700 -0800
 +++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-22 12:29:41.318837000 -0800
 @@ -36,6 +36,9 @@
  import java.util.ArrayList;
@@ -263,8 +2369,65 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  this.hitbox.hovered = false;
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
+@@ -116,7 +121,7 @@
+         if (p.discardPile.size() != 0) {
+             AbstractDungeon.discardPileViewScreen.open();
+         } else {
+-            AbstractDungeon.effectList.add((Object)new ThoughtBubble(p.dialogX, p.dialogY, 3.0f, TEXT[0], true));
++            AbstractDungeon.effectList.add(new ThoughtBubble(p.dialogX, p.dialogY, 3.0f, TEXT[0], true));
+         }
+         this.hitbox.hovered = false;
+         InputHelper.justClickedLeft = false;
+@@ -124,32 +129,32 @@
+ 
+     private void updateVfx() {
+         AbstractGameEffect e;
+-        Iterator i = this.vfxAbove.iterator();
++        Iterator<DiscardGlowEffect> i = this.vfxAbove.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
++            e = i.next();
+             e.update();
+             if (!e.isDone) continue;
+             i.remove();
+         }
+         i = this.vfxBelow.iterator();
+         while (i.hasNext()) {
+-            e = (AbstractGameEffect)i.next();
++            e = i.next();
+             e.update();
+             if (!e.isDone) continue;
+             i.remove();
+         }
+         if (this.vfxAbove.size() < 9) {
+-            this.vfxAbove.add((Object)new DiscardGlowEffect(true));
++            this.vfxAbove.add(new DiscardGlowEffect(true));
+         }
+         if (this.vfxBelow.size() < 9) {
+-            this.vfxBelow.add((Object)new DiscardGlowEffect(false));
++            this.vfxBelow.add(new DiscardGlowEffect(false));
+         }
+     }
+ 
+     private void updatePop() {
+         if (this.scale != 1.0f) {
+             this.scale = MathUtils.lerp(this.scale, 1.0f, Gdx.graphics.getDeltaTime() * 8.0f);
+-            if (Math.abs((float)(this.scale - 1.0f)) < 0.003f) {
++            if (Math.abs(this.scale - 1.0f) < 0.003f) {
+                 this.scale = 1.0f;
+             }
+         }
+@@ -163,7 +168,7 @@
+     public void render(SpriteBatch sb) {
+         if (!Settings.hideLowerElements) {
+             this.renderButton(sb);
+-            String msg = Integer.toString((int)AbstractDungeon.player.discardPile.size());
++            String msg = Integer.toString(AbstractDungeon.player.discardPile.size());
+             this.gl.setText(FontHelper.deckCountFont, msg);
+             sb.setColor(Color.WHITE);
+             sb.draw(ImageMaster.DECK_COUNT_CIRCLE, this.current_x + COUNT_OFFSET_X, this.current_y + COUNT_OFFSET_Y, COUNT_CIRCLE_W, COUNT_CIRCLE_W);
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-19 20:30:45.866530600 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-23 23:47:37.928347400 -0800
 +++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-22 12:29:41.320823600 -0800
 @@ -39,6 +39,9 @@
  import java.util.ArrayList;
@@ -293,12 +2456,58 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  this.hitbox.hovered = false;
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
+@@ -118,29 +123,29 @@
+         if (!p.drawPile.isEmpty()) {
+             AbstractDungeon.gameDeckViewScreen.open();
+         } else {
+-            AbstractDungeon.effectList.add((Object)new ThoughtBubble(p.dialogX, p.dialogY, 3.0f, TEXT[0], true));
++            AbstractDungeon.effectList.add(new ThoughtBubble(p.dialogX, p.dialogY, 3.0f, TEXT[0], true));
+         }
+         this.hitbox.hovered = false;
+         InputHelper.justClickedLeft = false;
+     }
+ 
+     private void updateVfx() {
+-        Iterator i = this.vfxBelow.iterator();
++        Iterator<GameDeckGlowEffect> i = this.vfxBelow.iterator();
+         while (i.hasNext()) {
+-            AbstractGameEffect e = (AbstractGameEffect)i.next();
++            AbstractGameEffect e = i.next();
+             e.update();
+             if (!e.isDone) continue;
+             i.remove();
+         }
+         if (this.vfxBelow.size() < 25) {
+-            this.vfxBelow.add((Object)new GameDeckGlowEffect(false));
++            this.vfxBelow.add(new GameDeckGlowEffect(false));
+         }
+     }
+ 
+     private void updatePop() {
+         if (this.scale != 1.0f) {
+             this.scale = MathUtils.lerp(this.scale, 1.0f, Gdx.graphics.getDeltaTime() * 8.0f);
+-            if (Math.abs((float)(this.scale - 1.0f)) < 0.003f) {
++            if (Math.abs(this.scale - 1.0f) < 0.003f) {
+                 this.scale = 1.0f;
+             }
+         }
+@@ -161,7 +166,7 @@
+             }
+             sb.setColor(Color.WHITE);
+             sb.draw(ImageMaster.DECK_BTN_BASE, this.current_x + DECK_X, this.current_y + DECK_Y + this.bob.y / 2.0f, 64.0f, 64.0f, 128.0f, 128.0f, this.scale * Settings.scale, this.scale * Settings.scale, 0.0f, 0, 0, 128, 128, false, false);
+-            String msg = Integer.toString((int)AbstractDungeon.player.drawPile.size());
++            String msg = Integer.toString(AbstractDungeon.player.drawPile.size());
+             this.gl.setText(FontHelper.deckCountFont, msg);
+             sb.setColor(Color.WHITE);
+             sb.draw(ImageMaster.DECK_COUNT_CIRCLE, this.current_x + COUNT_OFFSET_X, this.current_y + COUNT_OFFSET_Y, COUNT_CIRCLE_W, COUNT_CIRCLE_W);
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-19 20:30:45.961622700 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-23 23:47:38.069483000 -0800
 +++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-22 12:29:41.322825600 -0800
-@@ -45,6 +45,9 @@
+@@ -44,8 +44,10 @@
+ import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
  import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
  import java.util.ArrayList;
+-import java.util.Iterator;
  
 +// BaseMod imports
 +import basemod.DevConsole;
@@ -306,7 +2515,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java
  public class TopPanel {
      private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Top Panel Tips");
      public static final String[] MSG = TopPanel.tutorialStrings.TEXT;
-@@ -324,7 +327,8 @@
+@@ -325,7 +327,8 @@
              this.deckButtonDisabled = true;
              this.deckHb.hovered = false;
          }
@@ -316,7 +2525,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
                  AbstractDungeon.closeCurrentScreen();
                  AbstractDungeon.deckViewScreen.open();
-@@ -383,7 +387,8 @@
+@@ -384,7 +387,8 @@
              this.mapButtonDisabled = true;
              this.mapHb.hovered = false;
          }
@@ -326,3 +2535,27 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP && !AbstractDungeon.dungeonMapScreen.dismissable) {
                  CardCrawlGame.sound.play("CARD_REJECT");
              } else if (!AbstractDungeon.isScreenUp) {
+@@ -498,11 +502,11 @@
+         sb.setColor(Color.WHITE);
+         sb.draw(ImageMaster.TP_GOLD, this.goldIconX, ICON_Y, ICON_W, ICON_W);
+         if (AbstractDungeon.player.displayGold == AbstractDungeon.player.gold) {
+-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, Integer.toString((int)AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X, INFO_TEXT_Y, Settings.GOLD_COLOR);
++            FontHelper.renderFontLeftTopAligned(sb, FontHelper.topPanelInfoFont, Integer.toString(AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X, INFO_TEXT_Y, Settings.GOLD_COLOR);
+         } else if (AbstractDungeon.player.displayGold > AbstractDungeon.player.gold) {
+-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.cardTitleFont_N, Integer.toString((int)AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X - 1.0f * Settings.scale, INFO_TEXT_Y + 1.0f * Settings.scale, Settings.RED_TEXT_COLOR);
++            FontHelper.renderFontLeftTopAligned(sb, FontHelper.cardTitleFont_N, Integer.toString(AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X - 1.0f * Settings.scale, INFO_TEXT_Y + 1.0f * Settings.scale, Settings.RED_TEXT_COLOR);
+         } else {
+-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.cardTitleFont_N, Integer.toString((int)AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X - 1.0f * Settings.scale, INFO_TEXT_Y + 1.0f * Settings.scale, Settings.GREEN_TEXT_COLOR);
++            FontHelper.renderFontLeftTopAligned(sb, FontHelper.cardTitleFont_N, Integer.toString(AbstractDungeon.player.displayGold), this.goldIconX + GOLD_NUM_OFFSET_X - 1.0f * Settings.scale, INFO_TEXT_Y + 1.0f * Settings.scale, Settings.GREEN_TEXT_COLOR);
+         }
+         this.goldHb.render(sb);
+     }
+@@ -546,7 +550,7 @@
+             sb.setColor(Color.WHITE);
+         }
+         this.renderDeckIcon(sb);
+-        FontHelper.renderFontRightTopAligned(sb, FontHelper.topPanelAmountFont, Integer.toString((int)AbstractDungeon.player.masterDeck.size()), DECK_X + 58.0f * Settings.scale, ICON_Y + 25.0f * Settings.scale, tmpColor);
++        FontHelper.renderFontRightTopAligned(sb, FontHelper.topPanelAmountFont, Integer.toString(AbstractDungeon.player.masterDeck.size()), DECK_X + 58.0f * Settings.scale, ICON_Y + 25.0f * Settings.scale, tmpColor);
+         if (this.mapButtonDisabled) {
+             sb.setColor(DISABLED_BTN_COLOR);
+         } else if (this.mapHb.hovered) {

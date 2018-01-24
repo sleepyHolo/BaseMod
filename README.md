@@ -17,7 +17,7 @@ BaseMod provides a number of hooks and a console.
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
-* `deck add [id]` add card to deck
+* `deck add [id] {upgrades}` add card to deck (optional: integer # of upgrades)
 * `deck r [id]` remove card from deck
 * `draw [num]` draw cards
 * `energy add [amount]` gain energy
@@ -25,12 +25,13 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `energy r [amount]` lose energy
 * `gold add [amount]` gain gold
 * `gold r [amount]` lose gold
-* `hand add [id]` add card to hand
+* `hand add [id] {upgrades}` add card to hand with (optional: integer # of upgrades)
 * `hand r all` exhaust entire hand
 * `hand r [id]` exhaust card from hand
 * `info` toggle Settings.isInfo
 * `kill all` kills all enemies in the current combat
 * `relic add [id]` generate relic
+* `relic list` logs all relic pools
 * `relic r [id]` lose relic
 
 ## For Modders ##
@@ -41,13 +42,15 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 
 #### Subscriptions ####
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
-* `receivePostDraw(AbstractCard)` - After a card is drawn
-* `receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged
-* `receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
-* `receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
-* `receivePostRender(SpriteBatch)` - Above everything
-* `receivePreUpdate()` - Immediately after input is handled
-* `receivePostUpdate()` - Immediately before input is disposed
+* `void receivePostDraw(AbstractCard)` - After a card is drawn
+* `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged
+* `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
+* `boolean receivePreMonsterTurn(AbstractMonster)` - Before each monster takes its turn. Returning false will skip the monsters turn.
+* `void receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
+* `void receivePostRender(SpriteBatch)` - Above everything
+* `void receivePreStartGame()` - When starting a new game, before generating the dungeon
+* `void receivePreUpdate()` - Immediately after input is handled
+* `void receivePostUpdate()` - Immediately before input is disposed
 
 ### Mod Badges ###
 32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
@@ -137,6 +140,12 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 
 #### v1.2.1 ####
 * Add `PreStartGameSubscriber` interface and related code
+
+#### v1.2.2 ####
+* Add `relic list` command
+* Fix crash when attempting to `deck add` an invalid card id
+* Add upgrade support to `deck add` and `hand add` 
+* Add `PreMonsterTurnSubscriber` interface and related code
 
 ## Contributors ##
 * t-larson - Original author

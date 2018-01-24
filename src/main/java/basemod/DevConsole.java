@@ -24,6 +24,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -109,18 +110,31 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     
     private static void cmdRelic(String[] tokens) {
         if (AbstractDungeon.player != null) {
-            if (tokens.length < 3) {
+            if (tokens.length < 2) {
                 return;
             }
             
-            if (tokens[1].equals("r")) {
+            if (tokens[1].equals("r") && tokens.length > 2) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.player.loseRelic(relicName);
-            } else if (tokens[1].equals("add")) {
+            } else if (tokens[1].equals("add") && tokens.length > 2) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2, RelicLibrary.getRelic(relicName).makeCopy());
+            } else if (tokens[1].equals("list")) {
+                Collections.sort(RelicLibrary.starterList);
+                Collections.sort(RelicLibrary.commonList);
+                Collections.sort(RelicLibrary.uncommonList);
+                Collections.sort(RelicLibrary.rareList);
+                Collections.sort(RelicLibrary.bossList);
+                Collections.sort(RelicLibrary.specialList);
+                Collections.sort(RelicLibrary.shopList);
+                logger.info(RelicLibrary.starterList);
+                logger.info(RelicLibrary.commonList);
+                logger.info(RelicLibrary.uncommonList);
+                logger.info(RelicLibrary.rareList);
+                logger.info(RelicLibrary.bossList);
             }
         }
     }
@@ -131,12 +145,26 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 return;
             }
             
+            int upgradeIndex = 3;
+            while (upgradeIndex < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) == 0) {
+                ++upgradeIndex;
+            }
+            
             if (tokens[1].equals("add")) {
-                String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+                String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
                 String cardName = String.join(" ", cardNameArray);
                 AbstractCard c = CardLibrary.getCard(cardName);
+                
                 if (c != null) {
                     c = c.makeCopy();
+                    
+                    if (upgradeIndex != tokens.length) {
+                        int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
+                        for (int i = 0; i < upgradeCount; i++) {
+                            c.upgrade();
+                        }
+                    }
+                    
                     AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
                 }
             } else if (tokens[1].equals("r")) {
@@ -224,14 +252,30 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 return;
             }
             
-            String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+            int upgradeIndex = 3;
+            while (upgradeIndex < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) == 0) {
+                ++upgradeIndex;
+            }
+
+            String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
             String cardName = String.join(" ", cardNameArray);
             
             if (tokens[1].equals("add")) {
-                AbstractCard c = CardLibrary.getCard(cardName).makeCopy();
-                AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
-            } else if (tokens[1].equals("r")) {
-                AbstractDungeon.player.masterDeck.removeCard(cardName);
+                AbstractCard c = CardLibrary.getCard(cardName);
+                if (c != null) {
+                    c = c.makeCopy();
+                
+                    if (upgradeIndex != tokens.length) {
+                        int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
+                        for (int i = 0; i < upgradeCount; i++) {
+                            c.upgrade();
+                        }
+                    }
+                        
+                    AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
+                } else if (tokens[1].equals("r")) {
+                    AbstractDungeon.player.masterDeck.removeCard(cardName);
+                }
             }
         }
     }
