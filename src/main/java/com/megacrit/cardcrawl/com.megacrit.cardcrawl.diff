@@ -1,5 +1,5 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java com/megacrit/cardcrawl/characters/AbstractPlayer.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-19 20:30:39.566986100 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-24 04:26:15.035139500 -0800
 +++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-22 19:29:45.734248400 -0800
 @@ -86,6 +86,9 @@
  import org.apache.logging.log4j.LogManager;
@@ -23,8 +23,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
              }
              logger.info("ERROR: How did this happen? No cards in draw pile?? Player.java");
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-19 20:30:39.812725800 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-22 21:58:31.994048300 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-24 04:26:15.322414300 -0800
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-24 04:30:09.109440100 -0800
 @@ -113,6 +113,9 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -68,19 +68,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
              if (CardCrawlGame.cardPopup.isOpen) {
                  cardPopup.render(this.sb);
              }
-@@ -371,7 +381,11 @@
+@@ -371,6 +381,10 @@
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0f, 0.0f, (float)(- Settings.VERT_LETTERBOX_AMT), (float)Settings.HEIGHT);
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, (float)Settings.WIDTH, 0.0f, (float)Settings.VERT_LETTERBOX_AMT, (float)Settings.HEIGHT);
              }
--            this.sb.end();
 +            
 +            // BaseMod hook
 +            BaseMod.publishPostRender(sb);
 +            
-+            this.sb.end(); 
+             this.sb.end();
          }
          catch (Exception e) {
-             ExceptionHandler.handleException(e, logger);
 @@ -461,6 +475,9 @@
      }
  
@@ -91,15 +89,6 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          sound.fadeOut(DeathScreen.STINGER_KEY, DeathScreen.STINGER_ID);
          if (AbstractDungeon.scene != null) {
              AbstractDungeon.scene.fadeOutAmbiance();
-@@ -505,7 +522,7 @@
-         mysteryMachine = 0;
-     }
- 
--    public void update() {
-+    public void update() {    
-         cursor.update();
-         screenShake.update(viewport);
-         if (mode != GameMode.SPLASH) {
 @@ -532,6 +549,10 @@
              this.displayCursor = !this.displayCursor;
          }
@@ -111,12 +100,10 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          if (CardCrawlGame.cardPopup.isOpen) {
              cardPopup.update();
          }
-@@ -650,7 +671,11 @@
-             default: {
+@@ -651,6 +672,10 @@
                  logger.info("Unknown Game Mode: " + mode.name());
              }
--        }
-+        }      
+         }
 +
 +        // BaseMod hook
 +        BaseMod.publishPostUpdate();
@@ -125,8 +112,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          InputHelper.updateLast();
          if (Settings.isInfo) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java com/megacrit/cardcrawl/core/EnergyManager.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:40.419519200 -0800
-+++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-22 15:15:56.930813500 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-24 04:26:15.325417500 -0800
++++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-24 04:30:41.566621100 -0800
 @@ -12,6 +12,9 @@
  import com.megacrit.cardcrawl.relics.AbstractRelic;
  import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
@@ -137,15 +124,6 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
  public class EnergyManager {
      public int energy;
      public int energyMaster;
-@@ -25,7 +28,7 @@
-         EnergyPanel.totalCount = 0;
-     }
- 
--    public void recharge() {
-+    public void recharge() {        
-         if (AbstractDungeon.player.hasRelic("Ice Cream")) {
-             if (EnergyPanel.totalCount > 0) {
-                 AbstractDungeon.player.getRelic("Ice Cream").flash();
 @@ -36,6 +39,9 @@
              EnergyPanel.setEnergy(this.energy);
          }
@@ -156,9 +134,141 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      }
  
      public void use(int e) {
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java com/megacrit/cardcrawl/dungeons/AbstractDungeon.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-24 04:26:15.885454600 -0800
++++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-23 19:06:37.786619900 -0800
+@@ -121,6 +121,9 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
++
+ public abstract class AbstractDungeon {
+     private static final Logger logger = LogManager.getLogger(AbstractDungeon.class.getName());
+     private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("AbstractDungeon");
+@@ -1352,9 +1355,9 @@
+             numCards = 4;
+         }
+         for (int i = 0; i < numCards; ++i) {
+-            Iterator<E> rarity = AbstractDungeon.rollRarity();
++            AbstractCard.CardRarity rarity = AbstractDungeon.rollRarity();
+             AbstractCard card = null;
+-            switch (.$SwitchMap$com$megacrit$cardcrawl$cards$AbstractCard$CardRarity[rarity.ordinal()]) {
++            switch (rarity.ordinal()) {
+                 case 4: {
+                     card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
+                     cardBlizzRandomizer = cardBlizzStartOffset;
+@@ -1382,7 +1385,7 @@
+                     continue;
+                 }
+                 logger.info("FALLBACK FOR CARD RARITY HAS OCCURRED");
+-                switch (.$SwitchMap$com$megacrit$cardcrawl$cards$AbstractCard$CardRarity[rarity.ordinal()]) {
++                switch (rarity.ordinal()) {
+                     case 4: {
+                         card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
+                         continue block11;
+@@ -1469,8 +1472,9 @@
+     }
+ 
+     public static AbstractCard getCardFromPool(AbstractCard.CardRarity rarity, AbstractCard.CardType type, boolean useRng) {
++        AbstractCard retVal;
++        
+         switch (rarity) {
+-            AbstractCard retVal;
+             case RARE: {
+                 retVal = rareCardPool.getRandomCard(type, useRng);
+                 if (retVal != null) {
+@@ -1511,8 +1515,8 @@
+     }
+ 
+     public static AbstractCard getColorlessCardFromPool(AbstractCard.CardRarity rarity) {
++        AbstractCard retVal;
+         switch (rarity) {
+-            AbstractCard retVal;
+             case RARE: {
+                 retVal = colorlessCardPool.getRandomCard(true, rarity);
+                 if (retVal != null) {
+@@ -1690,7 +1694,8 @@
+         GameActionManager.turn = 1;
+         if (!CardCrawlGame.loadingSave) {
+             this.incrementFloorBasedMetrics();
+-            if (!TipTracker.tips.get("INTENT_TIP").booleanValue() && ++floorNum == 6) {
++            ++floorNum;
++            if (!TipTracker.tips.get("INTENT_TIP").booleanValue() && floorNum == 6) {
+                 TipTracker.neverShowAgain("INTENT_TIP");
+             }
+             StatsScreen.incrementFloorClimbed();
+@@ -2471,7 +2476,7 @@
+ 
+     static {
+         floorNum = 0;
+-        unlocks = new ArrayList<E>();
++        unlocks = new ArrayList<AbstractUnlock>();
+         shrineChance = 0.25f;
+         firstChest = true;
+         encounteredCursedChest = false;
+@@ -2486,30 +2491,30 @@
+         commonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+         uncommonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+         rareCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
+-        acceptablePools = new ArrayList<E>();
+-        commonRelicPool = new ArrayList<E>();
+-        uncommonRelicPool = new ArrayList<E>();
+-        rareRelicPool = new ArrayList<E>();
+-        shopRelicPool = new ArrayList<E>();
+-        bossRelicPool = new ArrayList<E>();
++        acceptablePools = new ArrayList<Integer>();
++        commonRelicPool = new ArrayList<String>();
++        uncommonRelicPool = new ArrayList<String>();
++        rareRelicPool = new ArrayList<String>();
++        shopRelicPool = new ArrayList<String>();
++        bossRelicPool = new ArrayList<String>();
+         lastMonsterKey = null;
+         lastCombatMetricKey = null;
+-        monsterList = new ArrayList<E>();
+-        eliteMonsterList = new ArrayList<E>();
+-        bossList = new ArrayList<E>();
+-        eventList = new ArrayList<E>();
+-        shrineList = new ArrayList<E>();
+-        specialOneTimeEventList = new ArrayList<E>();
++        monsterList = new ArrayList<String>();
++        eliteMonsterList = new ArrayList<String>();
++        bossList = new ArrayList<String>();
++        eventList = new ArrayList<String>();
++        shrineList = new ArrayList<String>();
++        specialOneTimeEventList = new ArrayList<String>();
+         actionManager = new GameActionManager();
+-        topLevelEffects = new ArrayList<E>();
+-        topLevelEffectsQueue = new ArrayList<E>();
+-        effectList = new ArrayList<E>();
+-        effectsQueue = new ArrayList<E>();
++        topLevelEffects = new ArrayList<AbstractGameEffect>();
++        topLevelEffectsQueue = new ArrayList<AbstractGameEffect>();
++        effectList = new ArrayList<AbstractGameEffect>();
++        effectsQueue = new ArrayList<AbstractGameEffect>();
+         turnPhaseEffectActive = false;
+         firstRoomChosen = false;
+         rs = RenderScene.NORMAL;
+-        pathX = new ArrayList<E>();
+-        pathY = new ArrayList<E>();
++        pathX = new ArrayList<Integer>();
++        pathY = new ArrayList<Integer>();
+         topGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+         botGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+         floorY = 340.0f * Settings.scale;
+@@ -2536,7 +2541,7 @@
+         cardBlizzRandomizer = AbstractDungeon.cardBlizzStartOffset = 5;
+         cardBlizzGrowth = 1;
+         cardBlizzMaxOffset = -40;
+-        relicsToRemoveOnStart = new ArrayList<E>();
++        relicsToRemoveOnStart = new ArrayList<String>();
+         bossCount = 0;
+         LOGGER = LogManager.getLogger(AbstractDungeon.class.getName());
+     }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-19 20:30:42.159476100 -0800
-+++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-22 21:29:06.237442500 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-24 04:26:17.587587900 -0800
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-23 17:20:07.689464500 -0800
 @@ -12,12 +12,18 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -179,8 +289,33 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
          map = MapGenerator.filterRedundantEdgesFromRow(map);
          return map;
      }
+diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-24 04:26:17.779772000 -0800
++++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-24 04:34:01.136357800 -0800
+@@ -25,6 +25,8 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// BaseMod imports
++import basemod.BaseMod;
+ public class MonsterGroup {
+     private static final Logger logger = LogManager.getLogger(MonsterGroup.class.getName());
+     public ArrayList<AbstractMonster> monsters = new ArrayList();
+@@ -123,7 +125,11 @@
+                     TipTracker.neverShowAgain("INTENT_TIP");
+                 }
+             }
+-            m.takeTurn();
++            
++            // BaseMod modification
++            if (BaseMod.publishPreMonsterTurn(m)) {
++                m.takeTurn();
++            }
+         }
+         if (!Settings.isDebug) {
+             AbstractDungeon.actionManager.addToBottom(new WaitAction(1.5f));
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-21 01:02:58.518447800 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-24 04:26:21.002864800 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-22 12:29:41.315460400 -0800
 @@ -29,6 +29,9 @@
  import com.megacrit.cardcrawl.screens.stats.StatsScreen;
@@ -210,7 +345,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                          return;
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-19 20:30:45.726395900 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-24 04:26:21.056916200 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-22 12:29:41.317320600 -0800
 @@ -32,6 +32,9 @@
  import java.util.ArrayList;
@@ -234,7 +369,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
              if (!this.isDisabled && !AbstractDungeon.isScreenUp) {
                  this.disable(true);
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-19 20:30:45.853517300 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-24 04:26:21.189542600 -0800
 +++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-22 12:29:41.318837000 -0800
 @@ -36,6 +36,9 @@
  import java.util.ArrayList;
@@ -264,7 +399,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-19 20:30:45.866530600 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-24 04:26:21.209562100 -0800
 +++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-22 12:29:41.320823600 -0800
 @@ -39,6 +39,9 @@
  import java.util.ArrayList;
@@ -294,7 +429,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-19 20:30:45.961622700 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-24 04:26:21.384229600 -0800
 +++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-22 12:29:41.322825600 -0800
 @@ -45,6 +45,9 @@
  import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
