@@ -6,11 +6,14 @@ BaseMod provides a number of hooks and a console.
 * Java 8+
 
 #### Development ####
-* Java 8+
+* Java 8
 * Maven
+* CFR 124 (run this with Java 8, doesn't work well with 9)
 
 ## Building ##
-1. Run `mvn package`
+1. Decompile the `com.megacrit.cardcrawl` package from `desktop-1.0.jar`
+2. Put the decompiled files in `../_lib/decompiled` relative to the repo
+3. Run `mvn package`
 
 ## Installation ##
 1. Copy `target/BaseMod.jar` to your ModTheSpire mods directory.
