@@ -30,7 +30,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.2.2 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.3.0 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -89,6 +89,7 @@ public class BaseMod {
     
     // initializeGson -
     private static void initializeGson() {
+        logger.info("initializeGson");
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
     }
@@ -97,6 +98,7 @@ public class BaseMod {
     // Mod badges
     //
     public static void registerModBadge(Texture t, String name, String author, String desc, ModPanel settingsPanel) {
+        logger.info("registerModBadge : " + name);
         int modBadgeCount = modBadges.size();
         int col = (modBadgeCount%BADGES_PER_ROW);
         int row = (modBadgeCount/BADGES_PER_ROW);
@@ -113,6 +115,7 @@ public class BaseMod {
     
     // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
     public static void loadCustomRelicStrings(String jsonString) {
+        logger.info("loadCustomRelicStrings");
         HashMap<String, RelicStrings> customRelicStrings = new HashMap<String, RelicStrings>();
         Type relicType = new TypeToken<HashMap<String, RelicStrings>>(){}.getType();
         customRelicStrings.putAll(gson.fromJson(jsonString, relicType));
@@ -128,6 +131,8 @@ public class BaseMod {
     
     // publishPostCampfire - false allows an additional option to be selected
     public static boolean publishPostCampfire() {
+        logger.info("publishPostCampfire");
+        
         boolean campfireDone = true;
         
         for (PostCampfireSubscriber sub : postCampfireSubscribers) {
@@ -141,6 +146,7 @@ public class BaseMod {
     
     // publishPostDraw -
     public static void publishPostDraw(AbstractCard c) {
+        logger.info("publishPostDraw");
         for (PostDrawSubscriber sub : postDrawSubscribers) {
             sub.receivePostDraw(c);
         }
@@ -148,6 +154,7 @@ public class BaseMod {
     
     // publishPostEnergyRecharge -
     public static void publishPostEnergyRecharge() {
+        logger.info("publishPostEnergyRecharge");
         for (PostEnergyRechargeSubscriber sub : postEnergyRechargeSubscribers) {
             sub.receivePostEnergyRecharge();
         }
@@ -155,6 +162,8 @@ public class BaseMod {
     
     // publishPostInitialize -
     public static void publishPostInitialize() {
+        logger.info("publishPostInitialize");
+        
         // BaseMod post initialize handling
         ModPanel settingsPanel = new ModPanel();
         settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
@@ -190,6 +199,8 @@ public class BaseMod {
     
     // publishPreMonsterTurn - false skips monster turn
     public static boolean publishPreMonsterTurn(AbstractMonster m) {
+        logger.info("publishPreMonsterTurn");
+        
         boolean takeTurn = true;
         
         for (PreMonsterTurnSubscriber sub : preMonsterTurnSubscribers) {
@@ -217,6 +228,8 @@ public class BaseMod {
     
     // publishPreStartGame -
     public static void publishPreStartGame() {
+        logger.info("publishPreStartGame");
+        
         // BaseMod pre start game handling
         mapPathDensityMultiplier = 1.0f;
         
