@@ -41,6 +41,7 @@ public class BaseMod {
     private static InputProcessor oldInputProcessor = null;
     
     private static ArrayList<ModBadge> modBadges;
+    private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
     private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
     private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
@@ -70,6 +71,7 @@ public class BaseMod {
         initializeGson();
         
         modBadges = new ArrayList<ModBadge>();
+        postCampfireSubscribers = new ArrayList<PostCampfireSubscriber>();
         postDrawSubscribers = new ArrayList<PostDrawSubscriber>();
         postEnergyRechargeSubscribers = new ArrayList<PostEnergyRechargeSubscriber>();
         postInitializeSubscribers = new ArrayList<PostInitializeSubscriber>();
@@ -123,6 +125,19 @@ public class BaseMod {
     //
     // Publishers
     //
+    
+    // publishPostCampfire - false allows an additional option to be selected
+    public static boolean publishPostCampfire() {
+        boolean campfireDone = true;
+        
+        for (PostCampfireSubscriber sub : postCampfireSubscribers) {
+            if (!sub.receivePostCampfire()) {
+                campfireDone = false;
+            }
+        }
+        
+        return campfireDone;
+    }
     
     // publishPostDraw -
     public static void publishPostDraw(AbstractCard c) {
@@ -228,6 +243,16 @@ public class BaseMod {
     //
     // Subsciption handlers
     //
+    
+    // subscribeToPostCampfire -
+    public static void subscribeToPostCampfire(PostCampfireSubscriber sub) {
+        postCampfireSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromPostCampfire -
+    public static void unsubscribeFromPostCampfire(PostCampfireSubscriber sub) {
+        postCampfireSubscribers.remove(sub);
+    }
     
     // subscribeToPostDraw -
     public static void subscribeToPostDraw(PostDrawSubscriber sub) {

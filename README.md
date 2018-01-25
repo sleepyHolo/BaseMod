@@ -145,11 +145,15 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `PreStartGameSubscriber` interface and related code
 
 #### v1.2.2 ####
-* Add AbstractDungeon cleanup to diff, nothing changed yet.
+* Add `AbstractDungeon` cleanup to diff, nothing changed yet.
 * Add `relic list` command
 * Fix crash when attempting to `deck add` an invalid card id
 * Add upgrade support to `deck add` and `hand add` 
 * Add `PreMonsterTurnSubscriber` interface and related code
+
+#### v1.2.3 ####
+* Add `PostCampfireSubscriber` interface and related code
+* Add proper support for `IntangiblePower` to be applied to players
 
 ## Contributors ##
 * t-larson - Original author
