@@ -7,17 +7,6 @@ import java.awt.event.KeyEvent;
 public class ConsoleInputProcessor implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Keys.ENTER: {
-                DevConsole.execute();
-                return true;
-            }
-            case Keys.BACKSPACE: {
-                DevConsole.backspaceWait = 0;
-                DevConsole.backspace = true;
-                return true;
-            }
-        }
         return false;
     }
 
@@ -25,8 +14,15 @@ public class ConsoleInputProcessor implements InputProcessor {
     public boolean keyUp(int keycode) {
         switch (keycode) {
             case Keys.BACKSPACE: {
-                DevConsole.backspace = false;
-                DevConsole.backspaceWait = 0;
+                if (DevConsole.currentText.length() > 0)
+                {
+                    DevConsole.currentText = DevConsole.currentText.substring(0, DevConsole.currentText.length()-1);
+                    return true;
+                }
+                return false;
+            }
+            case Keys.ENTER: {
+                DevConsole.execute();
                 return true;
             }
         }

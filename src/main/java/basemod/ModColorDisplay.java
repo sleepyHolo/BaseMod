@@ -41,8 +41,8 @@ public class ModColorDisplay {
         
         this.click = click;
         
-        float hbx = x + HB_SHRINK * Settings.scale;
-        float hby = y + HB_SHRINK * Settings.scale;
+        float hbx = (x + HB_SHRINK) * Settings.scale;
+        float hby = (y + HB_SHRINK) * Settings.scale;
         float hbw = (w - 2*HB_SHRINK) * Settings.scale;
         float hbh = (h - 2*HB_SHRINK) * Settings.scale;
         
@@ -52,11 +52,11 @@ public class ModColorDisplay {
     public void render(SpriteBatch sb) {
         if (outline != null) {
             sb.setColor(new Color(0.0f, 0.0f, 0.0f, aOutline));
-            sb.draw(outline, x, y, w * Settings.scale, h * Settings.scale);
+            sb.draw(outline, x * Settings.scale, y * Settings.scale, w * Settings.scale, h * Settings.scale);
         }
         
         sb.setColor(new Color(r, g, b, a)); 
-        sb.draw(texture, x, y, w * Settings.scale, h * Settings.scale);
+        sb.draw(texture, x * Settings.scale, y * Settings.scale, w * Settings.scale, h * Settings.scale);
         
         hb.render(sb);
     }

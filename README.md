@@ -170,6 +170,11 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * A lot of behind the scenes work on settings pages. 
 * MODDERS: You shouldn't try to build complex settings pages right now, its probably going to get significantly cleaned up and reworked to be more simple soon.
 
+#### v1.3.3 ####
+* Fix non-id parameters on commands being cases sensitive
+* Change backspace behavior on console
+* Fix scaling for new settings panel elements introduced in v1.3.2
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes

@@ -30,7 +30,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.3.2 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.3.3 NL Provides hooks and a console";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -374,7 +374,7 @@ public class BaseMod {
         return null;
     }
     
-    // setFinalStatic - modify (private) static (final) variables
+    // setPrivateStaticFinal - modify private static (final) variables
     private static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
@@ -386,7 +386,7 @@ public class BaseMod {
             targetField.setAccessible(true);
             targetField.set(null, newValue);
         } catch (Exception e) {
-            logger.error("Exception occured when setting (private) static (final) field " + fieldName + " of " + objClass.getName(), e);
+            logger.error("Exception occured when setting private static (final) field " + fieldName + " of " + objClass.getName(), e);
         }
     }
 }

@@ -37,7 +37,6 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     private static final float CONSOLE_H = 40.0f;
     private static final float CONSOLE_PAD_X = 15.0f;
     private static final int CONSOLE_TEXT_SIZE = 30;
-    private static final int BACKSPACE_INTERVAL = 4;
     
     private static BitmapFont consoleFont = null;
     private static Color consoleColor = Color.BLACK;
@@ -46,9 +45,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     
     private static boolean infiniteEnergy = false;
     
-    public static boolean backspace = false;
     public static boolean visible = false;
-    public static int backspaceWait = 0;
     public static int toggleKey = Keys.GRAVE;
     public static String currentText = "";
     
@@ -114,15 +111,15 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 return;
             }
             
-            if (tokens[1].equals("r") && tokens.length > 2) {
+            if (tokens[1].toLowerCase().equals("r") && tokens.length > 2) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.player.loseRelic(relicName);
-            } else if (tokens[1].equals("add") && tokens.length > 2) {
+            } else if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
                 String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
                 String relicName = String.join(" ", relicNameArray);
                 AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2, RelicLibrary.getRelic(relicName).makeCopy());
-            } else if (tokens[1].equals("list")) {
+            } else if (tokens[1].toLowerCase().equals("list")) {
                 Collections.sort(RelicLibrary.starterList);
                 Collections.sort(RelicLibrary.commonList);
                 Collections.sort(RelicLibrary.uncommonList);
@@ -150,7 +147,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 ++upgradeIndex;
             }
             
-            if (tokens[1].equals("add")) {
+            if (tokens[1].toLowerCase().equals("add")) {
                 String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
                 String cardName = String.join(" ", cardNameArray);
                 AbstractCard c = CardLibrary.getCard(cardName);
@@ -167,8 +164,8 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                     
                     AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
                 }
-            } else if (tokens[1].equals("r")) {
-                if (tokens[2].equals("all")) {
+            } else if (tokens[1].toLowerCase().equals("r")) {
+                if (tokens[2].toLowerCase().equals("all")) {
                     for (AbstractCard c : new ArrayList<AbstractCard>(AbstractDungeon.player.hand.group)) {
                         AbstractDungeon.player.hand.moveToExhaustPile(c);
                     }
@@ -198,7 +195,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 return;
             }
             
-            if (tokens[1].equals("all")) {
+            if (tokens[1].toLowerCase().equals("all")) {
                 int monsterCount = AbstractDungeon.getCurrRoom().monsters.monsters.size();
                 int[] multiDamage = new int[monsterCount];
                 for (int i = 0; i < monsterCount; ++i) {
@@ -217,10 +214,10 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             }
             
             int amount = ConvertHelper.tryParseInt(tokens[2], 0);
-            if (tokens[1].equals("add")) {
+            if (tokens[1].toLowerCase().equals("add")) {
                 AbstractDungeon.player.displayGold += amount;
                 AbstractDungeon.player.gainGold(amount);
-            } else if (tokens[1].equals("r")) {
+            } else if (tokens[1].toLowerCase().equals("r")) {
                 AbstractDungeon.player.displayGold = Math.max(AbstractDungeon.player.displayGold - amount, 0);
                 AbstractDungeon.player.loseGold(amount);
             }
@@ -233,11 +230,11 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 return;
             }
             
-            if (tokens[1].equals("add") && tokens.length > 2) {
+            if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
                 AbstractDungeon.player.gainEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
-            } else if (tokens[1].equals("r") && tokens.length > 2) {
+            } else if (tokens[1].toLowerCase().equals("r") && tokens.length > 2) {
                 AbstractDungeon.player.loseEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
-            } else if (tokens[1].equals("inf")) {
+            } else if (tokens[1].toLowerCase().equals("inf")) {
                 infiniteEnergy = !infiniteEnergy;
                 if (infiniteEnergy) {
                     AbstractDungeon.player.gainEnergy(9999);
@@ -260,7 +257,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
             String cardName = String.join(" ", cardNameArray);
             
-            if (tokens[1].equals("add")) {
+            if (tokens[1].toLowerCase().equals("add")) {
                 AbstractCard c = CardLibrary.getCard(cardName);
                 if (c != null) {
                     c = c.makeCopy();
@@ -274,7 +271,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                         
                     AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
                 }
-            } else if (tokens[1].equals("r")) {
+            } else if (tokens[1].toLowerCase().equals("r")) {
                 AbstractDungeon.player.masterDeck.removeCard(cardName);
             }
         }
@@ -328,15 +325,6 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     }
     
     public void receivePostUpdate() {
-        --backspaceWait;
-        
-        if (backspace && currentText.length() > 0) {
-            if (backspaceWait <= 0) {
-                currentText = currentText.substring(0, currentText.length()-1);
-                backspaceWait = BACKSPACE_INTERVAL;
-            }
-        }
-        
         if (Gdx.input.isKeyJustPressed(toggleKey)) {
             if (visible) {
                 currentText = "";
