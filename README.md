@@ -155,6 +155,12 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `PostCampfireSubscriber` interface and related code
 * Add proper support for `IntangiblePower` to be applied to players
 
+#### v1.3.0 ####
+* Update to support [EARLY_ACCESS_13]
+
+#### v1.3.1 ####
+* Fix bug that prevented the `deck r` command from working
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes
