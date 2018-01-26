@@ -1,17 +1,192 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java com/megacrit/cardcrawl/characters/AbstractPlayer.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-25 17:03:51.334096300 -0800
-+++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-25 15:43:03.697924600 -0800
-@@ -86,6 +86,9 @@
++++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-26 14:49:36.764862200 -0800
+@@ -3,89 +3,50 @@
+  */
+ package com.megacrit.cardcrawl.characters;
+ 
++import basemod.BaseMod;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+ import com.badlogic.gdx.graphics.Color;
+ import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+ import com.badlogic.gdx.math.Bezier;
+ import com.badlogic.gdx.math.Interpolation;
+ import com.badlogic.gdx.math.MathUtils;
+ import com.badlogic.gdx.math.Vector2;
+-import com.esotericsoftware.spine.AnimationState;
+-import com.esotericsoftware.spine.Skeleton;
+-import com.esotericsoftware.spine.SkeletonMeshRenderer;
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+ import com.megacrit.cardcrawl.actions.GameActionManager;
+ import com.megacrit.cardcrawl.actions.utility.UseCardAction;
+ import com.megacrit.cardcrawl.actions.utility.WaitAction;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+ import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.cards.CardQueueItem;
+ import com.megacrit.cardcrawl.cards.DamageInfo;
+-import com.megacrit.cardcrawl.characters.Crowbot;
+-import com.megacrit.cardcrawl.characters.Ironclad;
+-import com.megacrit.cardcrawl.characters.TheSilent;
+-import com.megacrit.cardcrawl.core.AbstractCreature;
+-import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.EnergyManager;
+-import com.megacrit.cardcrawl.core.GameCursor;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+-import com.megacrit.cardcrawl.core.Settings;
++import com.megacrit.cardcrawl.core.*;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.helpers.CardLibrary;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.helpers.RelicLibrary;
+-import com.megacrit.cardcrawl.helpers.ShaderHelper;
+-import com.megacrit.cardcrawl.helpers.TipTracker;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.monsters.AbstractMonster;
+-import com.megacrit.cardcrawl.monsters.MonsterGroup;
+ import com.megacrit.cardcrawl.potions.AbstractPotion;
+ import com.megacrit.cardcrawl.potions.PotionPlaceholder;
+ import com.megacrit.cardcrawl.powers.AbstractPower;
+-import com.megacrit.cardcrawl.random.Random;
+-import com.megacrit.cardcrawl.relics.AbstractRelic;
+-import com.megacrit.cardcrawl.relics.BottledFlame;
+-import com.megacrit.cardcrawl.relics.BottledLightning;
+-import com.megacrit.cardcrawl.relics.BottledTornado;
+-import com.megacrit.cardcrawl.relics.LizardTail;
+-import com.megacrit.cardcrawl.rooms.AbstractRoom;
+-import com.megacrit.cardcrawl.rooms.CampfireUI;
+-import com.megacrit.cardcrawl.rooms.MonsterRoom;
+-import com.megacrit.cardcrawl.rooms.RestRoom;
+-import com.megacrit.cardcrawl.rooms.ShopRoom;
++import com.megacrit.cardcrawl.relics.*;
++import com.megacrit.cardcrawl.rooms.*;
+ import com.megacrit.cardcrawl.screens.CharSelectInfo;
+ import com.megacrit.cardcrawl.screens.DeathScreen;
+ import com.megacrit.cardcrawl.ui.FtueTip;
+ import com.megacrit.cardcrawl.ui.MultiPageFtue;
+-import com.megacrit.cardcrawl.ui.buttons.EndTurnButton;
+ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
+-import com.megacrit.cardcrawl.ui.panels.TopPanel;
+-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.BorderFlashEffect;
+ import com.megacrit.cardcrawl.vfx.ThoughtBubble;
+-import com.megacrit.cardcrawl.vfx.TintEffect;
+ import com.megacrit.cardcrawl.vfx.cardManip.PurgeCardEffect;
+ import com.megacrit.cardcrawl.vfx.combat.BlockedWordEffect;
+ import com.megacrit.cardcrawl.vfx.combat.HbBlockBrokenEffect;
+ import com.megacrit.cardcrawl.vfx.combat.StrikeEffect;
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.HashMap;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-+// BaseMod imports
-+import basemod.BaseMod;
++import java.util.ArrayList;
++import java.util.Objects;
 +
  public abstract class AbstractPlayer
  extends AbstractCreature {
      private static final Logger logger = LogManager.getLogger(AbstractPlayer.class.getName());
-@@ -831,6 +834,10 @@
+@@ -101,7 +62,7 @@
+     public CardGroup discardPile = new CardGroup(CardGroup.CardGroupType.DISCARD_PILE);
+     public CardGroup exhaustPile = new CardGroup(CardGroup.CardGroupType.EXHAUST_PILE);
+     public CardGroup limbo = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+-    public ArrayList<AbstractRelic> relics = new ArrayList();
++    public ArrayList<AbstractRelic> relics = new ArrayList<>();
+     public AbstractPotion[] potions = new AbstractPotion[3];
+     public EnergyManager energy;
+     public boolean isEndingTurn = false;
+@@ -130,7 +91,6 @@
+     public Texture shoulder2Img;
+     public Texture corpseImg;
+     private static final Color ARROW_COLOR = new Color(1.0f, 0.2f, 0.3f, 1.0f);
+-    private float arrowScale;
+     private float arrowScaleTimer = 0.0f;
+     private float arrowX;
+     private float arrowY;
+@@ -448,14 +408,13 @@
+                 this.inSingleTargetMode = false;
+                 GameCursor.hidden = false;
+                 this.hoveredMonster = null;
+-                return;
+             }
+         }
+     }
+ 
+     private void energyTip(AbstractCard cardToCheck) {
+         int availableEnergy = EnergyPanel.totalCount;
+-        if (cardToCheck.cost > availableEnergy && !TipTracker.tips.get("ENERGY_USE_TIP").booleanValue() && ++TipTracker.energyUseCounter >= 2) {
++        if (cardToCheck.cost > availableEnergy && !TipTracker.tips.get("ENERGY_USE_TIP") && ++TipTracker.energyUseCounter >= 2) {
+             AbstractDungeon.ftue = new FtueTip(LABEL[1], MSG[1], 330.0f * Settings.scale, 400.0f * Settings.scale, FtueTip.TipType.ENERGY);
+             TipTracker.neverShowAgain("ENERGY_USE_TIP");
+         }
+@@ -481,7 +440,7 @@
+                 return true;
+             }
+             InputHelper.justClickedLeft = false;
+-            if (this.isHoveringDropZone && this.hoveredCard.canUse(this, null) && this.hoveredCard.target != AbstractCard.CardTarget.ENEMY && this.hoveredCard.target != AbstractCard.CardTarget.SELF_AND_ENEMY) {
++            if (this.isHoveringDropZone && Objects.requireNonNull(this.hoveredCard).canUse(this, null) && this.hoveredCard.target != AbstractCard.CardTarget.ENEMY && this.hoveredCard.target != AbstractCard.CardTarget.SELF_AND_ENEMY) {
+                 this.playCard();
+             } else {
+                 CardCrawlGame.sound.play("CARD_OBTAIN");
+@@ -683,7 +642,7 @@
+             this.updateCardsOnDamage();
+             ++this.damagedThisCombat;
+             this.currentHealth -= damageAmount;
+-            AbstractDungeon.effectList.add(new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, damageAmount));
++            AbstractDungeon.effectList.add(new StrikeEffect(this, this.hb.cX, this.hb.cY, damageAmount));
+             if (this.currentHealth < 0) {
+                 this.currentHealth = 0;
+             } else if (this.currentHealth < this.maxHealth / 4) {
+@@ -698,7 +657,7 @@
+                 }
+             }
+             if (this.currentHealth < 1) {
+-                if (this.hasRelic("Lizard Tail") && ((LizardTail)this.getRelic((String)"Lizard Tail")).counter == -1) {
++                if (this.hasRelic("Lizard Tail") && ((LizardTail)this.getRelic("Lizard Tail")).counter == -1) {
+                     this.currentHealth = 0;
+                     this.getRelic("Lizard Tail").onTrigger();
+                     return;
+@@ -714,7 +673,7 @@
+         } else if (this.currentBlock > 0) {
+             AbstractDungeon.effectList.add(new BlockedWordEffect(this, this.hb.cX, this.hb.cY, BLOCKED_STRING));
+         } else if (!hadBlock) {
+-            AbstractDungeon.effectList.add(new StrikeEffect((AbstractCreature)this, this.hb.cX, this.hb.cY, 0));
++            AbstractDungeon.effectList.add(new StrikeEffect(this, this.hb.cX, this.hb.cY, 0));
+         }
+     }
+ 
+@@ -766,7 +725,7 @@
+     }
+ 
+     public void preBattlePrep() {
+-        if (!TipTracker.tips.get("COMBAT_TIP").booleanValue()) {
++        if (!TipTracker.tips.get("COMBAT_TIP")) {
+             AbstractDungeon.ftue = new MultiPageFtue();
+             TipTracker.neverShowAgain("COMBAT_TIP");
+         }
+@@ -800,7 +759,7 @@
+     }
+ 
+     public ArrayList<String> getRelicNames() {
+-        ArrayList<String> arr = new ArrayList<String>();
++        ArrayList<String> arr = new ArrayList<>();
+         for (AbstractRelic relic : this.relics) {
+             arr.add(relic.relicId);
+         }
+@@ -831,6 +790,10 @@
                  for (AbstractRelic r : this.relics) {
                      r.onCardDraw(c);
                  }
@@ -22,20 +197,199 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
                  continue;
              }
              logger.info("ERROR: How did this happen? No cards in draw pile?? Player.java");
+@@ -983,8 +946,9 @@
+         this.arrowX = MathHelper.mouseLerpSnap(this.arrowX, InputHelper.mX);
+         this.arrowY = MathHelper.mouseLerpSnap(this.arrowY, InputHelper.mY);
+         this.controlPoint = new Vector2(this.hoveredCard.current_x - (this.arrowX - this.hoveredCard.current_x) / 4.0f, this.arrowY + (this.arrowY - this.hoveredCard.current_y) / 2.0f);
++        float arrowScale;
+         if (this.hoveredMonster == null) {
+-            this.arrowScale = Settings.scale;
++            arrowScale = Settings.scale;
+             this.arrowScaleTimer = 0.0f;
+             sb.setColor(Color.WHITE);
+         } else {
+@@ -992,13 +956,13 @@
+             if (this.arrowScaleTimer > 1.0f) {
+                 this.arrowScaleTimer = 1.0f;
+             }
+-            this.arrowScale = Interpolation.elasticOut.apply(Settings.scale, Settings.scale * 1.2f, this.arrowScaleTimer);
++            arrowScale = Interpolation.elasticOut.apply(Settings.scale, Settings.scale * 1.2f, this.arrowScaleTimer);
+             sb.setColor(ARROW_COLOR);
+         }
+         Vector2 tmp = new Vector2(this.controlPoint.x - this.arrowX, this.controlPoint.y - this.arrowY);
+         tmp.nor();
+         this.drawCurvedLine(sb, new Vector2(this.hoveredCard.current_x, this.hoveredCard.current_y), new Vector2(this.arrowX, this.arrowY), this.controlPoint);
+-        sb.draw(ImageMaster.TARGET_UI_ARROW, this.arrowX - 128.0f, this.arrowY - 128.0f, 128.0f, 128.0f, 256.0f, 256.0f, this.arrowScale, this.arrowScale, tmp.angle() + 90.0f, 0, 0, 256, 256, false, false);
++        sb.draw(ImageMaster.TARGET_UI_ARROW, this.arrowX - 128.0f, this.arrowY - 128.0f, 128.0f, 128.0f, 256.0f, 256.0f, arrowScale, arrowScale, tmp.angle() + 90.0f, 0, 0, 256, 256, false, false);
+     }
+ 
+     private void drawCurvedLine(SpriteBatch sb, Vector2 start, Vector2 end, Vector2 control) {
+@@ -1152,6 +1116,7 @@
+         this.reorganizeRelics();
+     }
+ 
++    @SuppressWarnings("UnusedReturnValue")
+     public boolean loseRelic(String targetID) {
+         if (!this.hasRelic(targetID)) {
+             return false;
+@@ -1173,11 +1138,10 @@
+ 
+     public void reorganizeRelics() {
+         logger.info("Reorganizing relics");
+-        ArrayList<AbstractRelic> tmpRelics = new ArrayList<AbstractRelic>();
+-        tmpRelics.addAll(this.relics);
++        ArrayList<AbstractRelic> tmpRelics = new ArrayList<>(this.relics);
+         this.relics.clear();
+         for (int i = 0; i < tmpRelics.size(); ++i) {
+-            ((AbstractRelic)tmpRelics.get(i)).reorganizeObtain(this, i, false, tmpRelics.size());
++            tmpRelics.get(i).reorganizeObtain(this, i, false, tmpRelics.size());
+         }
+     }
+ 
+@@ -1240,14 +1204,10 @@
+         }
+     }
+ 
+-    public static enum PlayerClass {
++    public enum PlayerClass {
+         IRONCLAD,
+         THE_SILENT,
+-        CROWBOT;
+-        
+-
+-        private PlayerClass() {
+-        }
++        CROWBOT
+     }
+ 
+ }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-25 17:03:51.601863900 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-25 17:07:15.064775100 -0800
-@@ -113,6 +113,9 @@
- import org.apache.logging.log4j.LogManager;
- import org.apache.logging.log4j.Logger;
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-26 15:06:57.385620500 -0800
+@@ -3,47 +3,30 @@
+  */
+ package com.megacrit.cardcrawl.core;
  
-+// BaseMod imports
+-import com.badlogic.gdx.Application;
 +import basemod.BaseMod;
+ import com.badlogic.gdx.ApplicationListener;
+-import com.badlogic.gdx.Files;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+ import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.Preferences;
+-import com.badlogic.gdx.files.FileHandle;
+-import com.badlogic.gdx.graphics.Camera;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Cursor;
+ import com.badlogic.gdx.graphics.FPSLogger;
+-import com.badlogic.gdx.graphics.GL20;
+ import com.badlogic.gdx.graphics.OrthographicCamera;
+ import com.badlogic.gdx.graphics.Pixmap;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.Interpolation;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.badlogic.gdx.math.Matrix4;
+-import com.badlogic.gdx.math.Vector3;
+ import com.badlogic.gdx.utils.viewport.FitViewport;
+ import com.codedisaster.steamworks.SteamAPI;
+ import com.esotericsoftware.spine.SkeletonRendererDebug;
+ import com.megacrit.cardcrawl.audio.MusicMaster;
+ import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.cards.CardSave;
+ import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.characters.Crowbot;
+ import com.megacrit.cardcrawl.characters.Ironclad;
+ import com.megacrit.cardcrawl.characters.TheSilent;
+-import com.megacrit.cardcrawl.core.AbstractCreature;
+-import com.megacrit.cardcrawl.core.EnergyManager;
+-import com.megacrit.cardcrawl.core.ExceptionHandler;
+-import com.megacrit.cardcrawl.core.GameCursor;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+-import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.daily.DailyMods;
+ import com.megacrit.cardcrawl.daily.TimeHelper;
+ import com.megacrit.cardcrawl.daily.TimeLookup;
+@@ -51,29 +34,11 @@
+ import com.megacrit.cardcrawl.dungeons.Exordium;
+ import com.megacrit.cardcrawl.dungeons.TheBeyond;
+ import com.megacrit.cardcrawl.dungeons.TheCity;
+-import com.megacrit.cardcrawl.helpers.CardHelper;
+-import com.megacrit.cardcrawl.helpers.CardLibrary;
+-import com.megacrit.cardcrawl.helpers.DrawMaster;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.GameDictionary;
+-import com.megacrit.cardcrawl.helpers.GameTips;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.ModHelper;
+-import com.megacrit.cardcrawl.helpers.MonsterHelper;
+-import com.megacrit.cardcrawl.helpers.PotionHelper;
+-import com.megacrit.cardcrawl.helpers.Prefs;
+-import com.megacrit.cardcrawl.helpers.RelicLibrary;
+-import com.megacrit.cardcrawl.helpers.SaveHelper;
+-import com.megacrit.cardcrawl.helpers.ScreenShake;
+-import com.megacrit.cardcrawl.helpers.ShaderHelper;
+-import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.helpers.TipTracker;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.metrics.LeaderboardPoster;
+ import com.megacrit.cardcrawl.metrics.MetricData;
+ import com.megacrit.cardcrawl.monsters.AbstractMonster;
+-import com.megacrit.cardcrawl.monsters.MonsterGroup;
+ import com.megacrit.cardcrawl.potions.AbstractPotion;
+ import com.megacrit.cardcrawl.potions.PotionPlaceholder;
+ import com.megacrit.cardcrawl.powers.AbstractPower;
+@@ -82,12 +47,8 @@
+ import com.megacrit.cardcrawl.relics.BottledLightning;
+ import com.megacrit.cardcrawl.relics.BottledTornado;
+ import com.megacrit.cardcrawl.rewards.RewardSave;
+-import com.megacrit.cardcrawl.rooms.AbstractRoom;
+ import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
+-import com.megacrit.cardcrawl.scenes.AbstractScene;
+-import com.megacrit.cardcrawl.scenes.TitleBackground;
+ import com.megacrit.cardcrawl.screens.DeathScreen;
+-import com.megacrit.cardcrawl.screens.DungeonMapScreen;
+ import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
+ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+ import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
+@@ -101,17 +62,14 @@
+ import com.megacrit.cardcrawl.steam.SteamSaveSync;
+ import com.megacrit.cardcrawl.ui.buttons.CancelButton;
+ import com.megacrit.cardcrawl.unlock.UnlockTracker;
+-import java.io.PrintStream;
++import org.apache.logging.log4j.LogManager;
++import org.apache.logging.log4j.Logger;
 +
+ import java.io.PrintWriter;
+ import java.io.StringWriter;
+-import java.io.Writer;
+ import java.util.ArrayList;
+-import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Random;
+-import java.util.Set;
+-import org.apache.logging.log4j.LogManager;
+-import org.apache.logging.log4j.Logger;
+ 
  public class CardCrawlGame
  implements ApplicationListener {
-     public static String VERSION_NUM = "[EARLY_ACCESS_013] (01-25-2018)";
-@@ -253,6 +256,9 @@
+@@ -175,7 +133,7 @@
+     public static MetricData metricData;
+     public static LocalizedStrings languagePack;
+     private boolean displayCursor = true;
+-    private ArrayList<String> debugString = new ArrayList();
++    private ArrayList<String> debugString = new ArrayList<>();
+     private float debugTimer;
+     public static String preferenceDir;
+     private static final Logger logger;
+@@ -253,6 +211,9 @@
              if (Settings.isDebug) {
                  CardCrawlGame.splashScreen.isDone = true;
              }
@@ -45,7 +399,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          catch (Exception e) {
              ExceptionHandler.handleException(e, logger);
-@@ -288,9 +294,9 @@
+@@ -288,9 +249,9 @@
      public void migrateHelper(String file) {
          Preferences p = Gdx.app.getPreferences(file);
          Prefs p2 = SaveHelper.getPrefs(file);
@@ -57,7 +411,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          p2.flush();
      }
-@@ -341,6 +347,10 @@
+@@ -341,6 +302,10 @@
                  }
              }
              DrawMaster.draw(this.sb);
@@ -68,7 +422,15 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
              if (CardCrawlGame.cardPopup.isOpen) {
                  cardPopup.render(this.sb);
              }
-@@ -372,6 +382,10 @@
+@@ -351,6 +316,7 @@
+             if (mode != GameMode.SPLASH) {
+                 this.renderBlackFadeScreen(this.sb);
+                 if (this.displayCursor) {
++                    //noinspection ConstantConditions
+                     if (isPopupOpen && isPopupOpen) {
+                         InputHelper.mX = popupMX;
+                         InputHelper.mY = popupMY;
+@@ -372,6 +338,10 @@
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0f, 0.0f, (float)(- Settings.VERT_LETTERBOX_AMT), (float)Settings.HEIGHT);
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, (float)Settings.WIDTH, 0.0f, (float)Settings.VERT_LETTERBOX_AMT, (float)Settings.HEIGHT);
              }
@@ -79,7 +441,15 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
              this.sb.end();
          }
          catch (Exception e) {
-@@ -462,6 +476,9 @@
+@@ -421,6 +391,7 @@
+                     dungeonTransitionScreen = new DungeonTransitionScreen("Exordium");
+                     TipTracker.refresh();
+                     logger.info("New Transition Screen, Tip Tracker Refresh: " + (System.currentTimeMillis() - startTime) + "ms");
++                    //noinspection UnusedAssignment
+                     startTime = System.currentTimeMillis();
+                     CardCrawlGame.fadeIn(2.0f);
+                     if (queueCredits) {
+@@ -462,6 +433,9 @@
      }
  
      public static void startNewGame(AbstractPlayer.PlayerClass c) {
@@ -89,7 +459,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          sound.fadeOut(DeathScreen.STINGER_KEY, DeathScreen.STINGER_ID);
          if (AbstractDungeon.scene != null) {
              AbstractDungeon.scene.fadeOutAmbiance();
-@@ -534,6 +551,10 @@
+@@ -534,6 +508,10 @@
              this.displayCursor = !this.displayCursor;
          }
          InputHelper.updateFirst();
@@ -100,7 +470,16 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          if (CardCrawlGame.cardPopup.isOpen) {
              cardPopup.update();
          }
-@@ -565,6 +586,9 @@
+@@ -558,13 +536,16 @@
+             case CHAR_SELECT: {
+                 mainMenuScreen.update();
+                 if (CardCrawlGame.mainMenuScreen.fadedOut) {
+-                    AbstractDungeon.pathX = new ArrayList();
+-                    AbstractDungeon.pathY = new ArrayList();
++                    AbstractDungeon.pathX = new ArrayList<>();
++                    AbstractDungeon.pathY = new ArrayList<>();
+                     if (!Settings.isTrial) {
+                         if (loadingSave && !Settings.isDailyRun) {
                              AbstractDungeon.player = CardCrawlGame.createCharacter(chosenCharacter);
                              this.loadPlayerSave(AbstractDungeon.player);
                          } else {
@@ -110,7 +489,16 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
                              AbstractDungeon.player = CardCrawlGame.createCharacter(chosenCharacter);
                          }
                          for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
-@@ -653,6 +677,10 @@
+@@ -629,7 +610,7 @@
+                             }
+                         } else {
+                             this.getDungeon(nextDungeon, AbstractDungeon.player);
+-                            if (!nextDungeon.equals("Exordium") || Settings.isShowBuild || !TipTracker.tips.get("NEOW_SKIP").booleanValue()) {
++                            if (!nextDungeon.equals("Exordium") || Settings.isShowBuild || !TipTracker.tips.get("NEOW_SKIP")) {
+                                 AbstractDungeon.dungeonMapScreen.open(true);
+                                 TipTracker.neverShowAgain("NEOW_SKIP");
+                             }
+@@ -653,6 +634,10 @@
                  logger.info("Unknown Game Mode: " + mode.name());
              }
          }
@@ -121,20 +509,109 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          this.updateDebugSwitch();
          InputHelper.updateLast();
          if (Settings.isInfo) {
+@@ -756,19 +741,19 @@
+         if (this.saveFile.bottled_flame != null) {
+             AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_flame);
+             c.inBottleFlame = true;
+-            ((BottledFlame)AbstractDungeon.player.getRelic((String)"Bottled Flame")).card = c;
++            ((BottledFlame)AbstractDungeon.player.getRelic("Bottled Flame")).card = c;
+             ((BottledFlame)AbstractDungeon.player.getRelic("Bottled Flame")).setDescriptionAfterLoading();
+         }
+         if (this.saveFile.bottled_lightning != null) {
+             AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_lightning);
+             c.inBottleLightning = true;
+-            ((BottledLightning)AbstractDungeon.player.getRelic((String)"Bottled Lightning")).card = c;
++            ((BottledLightning)AbstractDungeon.player.getRelic("Bottled Lightning")).card = c;
+             ((BottledLightning)AbstractDungeon.player.getRelic("Bottled Lightning")).setDescriptionAfterLoading();
+         }
+         if (this.saveFile.bottled_tornado != null) {
+             AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_tornado);
+             c.inBottleTornado = true;
+-            ((BottledTornado)AbstractDungeon.player.getRelic((String)"Bottled Tornado")).card = c;
++            ((BottledTornado)AbstractDungeon.player.getRelic("Bottled Tornado")).card = c;
+             ((BottledTornado)AbstractDungeon.player.getRelic("Bottled Tornado")).setDescriptionAfterLoading();
+         }
+         metricData.clearData();
+@@ -879,10 +864,11 @@
+     public void resize(int width, int height) {
+     }
+ 
++    @SuppressWarnings("UnusedReturnValue")
+     public AbstractDungeon getDungeon(String key, AbstractPlayer p) {
+         switch (key) {
+             case "Exordium": {
+-                ArrayList<String> emptyList = new ArrayList<String>();
++                ArrayList<String> emptyList = new ArrayList<>();
+                 return new Exordium(p, emptyList);
+             }
+             case "TheCity": {
+@@ -895,6 +881,7 @@
+         return null;
+     }
+ 
++    @SuppressWarnings("UnusedReturnValue")
+     public AbstractDungeon getDungeon(String key, AbstractPlayer p, SaveFile saveFile) {
+         switch (key) {
+             case "Exordium": {
+@@ -920,18 +907,15 @@
+ 
+     @Override
+     public void dispose() {
+-        if (!Settings.isDemo) {
+-            // empty if block
+-        }
+     }
+ 
+     public static String generateRandomAlias() {
+         String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+-        String retVal = "";
++        StringBuilder retVal = new StringBuilder();
+         for (int i = 0; i < 16; ++i) {
+-            retVal = retVal + alphabet.charAt(MathUtils.random(0, alphabet.length() - 1));
++            retVal.append(alphabet.charAt(MathUtils.random(0, alphabet.length() - 1)));
+         }
+-        return retVal;
++        return retVal.toString();
+     }
+ 
+     static {
+@@ -966,15 +950,11 @@
+         logger = LogManager.getLogger(CardCrawlGame.class.getName());
+     }
+ 
+-    public static enum GameMode {
++    public enum GameMode {
+         CHAR_SELECT,
+         GAMEPLAY,
+         DUNGEON_TRANSITION,
+-        SPLASH;
+-        
+-
+-        private GameMode() {
+-        }
++        SPLASH
+     }
+ 
+ }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java com/megacrit/cardcrawl/core/EnergyManager.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-25 17:03:51.605367400 -0800
-+++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-25 15:43:03.701928700 -0800
-@@ -12,6 +12,9 @@
- import com.megacrit.cardcrawl.relics.AbstractRelic;
++++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-26 14:33:36.239969900 -0800
+@@ -3,13 +3,9 @@
+  */
+ package com.megacrit.cardcrawl.core;
+ 
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+-import com.megacrit.cardcrawl.actions.GameActionManager;
++import basemod.BaseMod;
+ import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+-import com.megacrit.cardcrawl.core.AbstractCreature;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.relics.AbstractRelic;
  import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
  
-+// BaseMod imports
-+import basemod.BaseMod;
-+
  public class EnergyManager {
-     public int energy;
-     public int energyMaster;
-@@ -36,6 +39,9 @@
+@@ -36,6 +32,9 @@
              EnergyPanel.setEnergy(this.energy);
          }
          AbstractDungeon.actionManager.updateEnergyGain(this.energy);
@@ -146,20 +623,442 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      public void use(int e) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java com/megacrit/cardcrawl/dungeons/AbstractDungeon.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-25 17:03:51.984731600 -0800
-+++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-25 17:09:14.419177600 -0800
-@@ -123,6 +123,9 @@
++++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-26 15:02:51.668041400 -0800
+@@ -3,18 +3,13 @@
+  */
+ package com.megacrit.cardcrawl.dungeons;
+ 
+-import com.badlogic.gdx.Application;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+ import com.badlogic.gdx.graphics.Color;
+ import com.badlogic.gdx.graphics.Texture;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.Interpolation;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.badlogic.gdx.math.RandomXS128;
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+ import com.megacrit.cardcrawl.actions.GameActionManager;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+ import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.cards.SoulGroup;
+@@ -27,34 +22,15 @@
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.credits.CreditsScreen;
+ import com.megacrit.cardcrawl.daily.DailyMods;
+-import com.megacrit.cardcrawl.dungeons.Exordium;
+-import com.megacrit.cardcrawl.events.AbstractEvent;
+-import com.megacrit.cardcrawl.events.AbstractImageEvent;
+-import com.megacrit.cardcrawl.events.AbstractTextEvent;
+-import com.megacrit.cardcrawl.events.GenericEventDialog;
+-import com.megacrit.cardcrawl.events.RoomEventDialog;
++import com.megacrit.cardcrawl.events.*;
+ import com.megacrit.cardcrawl.gashapon.GashaUnlockScreen;
+ import com.megacrit.cardcrawl.gashapon.GashaponRoom;
+-import com.megacrit.cardcrawl.helpers.CardHelper;
+-import com.megacrit.cardcrawl.helpers.CardLibrary;
+-import com.megacrit.cardcrawl.helpers.EventHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.helpers.MonsterHelper;
+-import com.megacrit.cardcrawl.helpers.PotionHelper;
+-import com.megacrit.cardcrawl.helpers.Prefs;
+-import com.megacrit.cardcrawl.helpers.RelicLibrary;
+-import com.megacrit.cardcrawl.helpers.TipTracker;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+-import com.megacrit.cardcrawl.map.DungeonMap;
+ import com.megacrit.cardcrawl.map.MapEdge;
+ import com.megacrit.cardcrawl.map.MapGenerator;
+ import com.megacrit.cardcrawl.map.MapRoomNode;
+ import com.megacrit.cardcrawl.map.RoomTypeAssigner;
+-import com.megacrit.cardcrawl.metrics.MetricData;
+ import com.megacrit.cardcrawl.metrics.Metrics;
+ import com.megacrit.cardcrawl.monsters.AbstractMonster;
+ import com.megacrit.cardcrawl.monsters.MonsterGroup;
+@@ -66,31 +42,10 @@
+ import com.megacrit.cardcrawl.relics.PeacePipe;
+ import com.megacrit.cardcrawl.relics.Shovel;
+ import com.megacrit.cardcrawl.rewards.RewardItem;
+-import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
+-import com.megacrit.cardcrawl.rewards.chests.CursedChest;
+-import com.megacrit.cardcrawl.rewards.chests.LargeChest;
+-import com.megacrit.cardcrawl.rewards.chests.MediumChest;
+-import com.megacrit.cardcrawl.rewards.chests.SmallChest;
+-import com.megacrit.cardcrawl.rooms.AbstractRoom;
+-import com.megacrit.cardcrawl.rooms.EmptyRoom;
+-import com.megacrit.cardcrawl.rooms.EventRoom;
+-import com.megacrit.cardcrawl.rooms.MonsterRoom;
+-import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
+-import com.megacrit.cardcrawl.rooms.MonsterRoomElite;
+-import com.megacrit.cardcrawl.rooms.RestRoom;
+-import com.megacrit.cardcrawl.rooms.ShopRoom;
+-import com.megacrit.cardcrawl.rooms.TreasureRoom;
+-import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
+-import com.megacrit.cardcrawl.rooms.VictoryRoom;
++import com.megacrit.cardcrawl.rewards.chests.*;
++import com.megacrit.cardcrawl.rooms.*;
+ import com.megacrit.cardcrawl.scenes.AbstractScene;
+-import com.megacrit.cardcrawl.screens.CardRewardScreen;
+-import com.megacrit.cardcrawl.screens.CombatRewardScreen;
+-import com.megacrit.cardcrawl.screens.DeathScreen;
+-import com.megacrit.cardcrawl.screens.DiscardPileViewScreen;
+-import com.megacrit.cardcrawl.screens.DrawPileViewScreen;
+-import com.megacrit.cardcrawl.screens.DungeonMapScreen;
+-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
+-import com.megacrit.cardcrawl.screens.options.ConfirmPopup;
++import com.megacrit.cardcrawl.screens.*;
+ import com.megacrit.cardcrawl.screens.options.SettingsScreen;
+ import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
+ import com.megacrit.cardcrawl.screens.saveAndContinue.SaveFile;
+@@ -100,11 +55,8 @@
+ import com.megacrit.cardcrawl.screens.stats.StatsScreen;
+ import com.megacrit.cardcrawl.shop.ShopScreen;
+ import com.megacrit.cardcrawl.ui.FtueTip;
+-import com.megacrit.cardcrawl.ui.buttons.CancelButton;
+-import com.megacrit.cardcrawl.ui.buttons.CardSelectConfirmButton;
+ import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
+ import com.megacrit.cardcrawl.ui.buttons.DynamicButton;
+-import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
+ import com.megacrit.cardcrawl.ui.panels.TopPanel;
+ import com.megacrit.cardcrawl.unlock.AbstractUnlock;
+ import com.megacrit.cardcrawl.unlock.UnlockCharacterScreen;
+@@ -112,17 +64,11 @@
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.GameSavedEffect;
+ import com.megacrit.cardcrawl.vfx.PlayerTurnEffect;
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.HashMap;
+-import java.util.Iterator;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Set;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-+// BaseMod imports
-+import basemod.BaseMod;
++import java.util.*;
 +
  public abstract class AbstractDungeon {
      private static final Logger logger = LogManager.getLogger(AbstractDungeon.class.getName());
      private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("AbstractDungeon");
-@@ -1358,9 +1361,9 @@
-             numCards = 4;
+@@ -270,7 +216,6 @@
+         id = levelId;
+         player = p;
+         topPanel.setPlayerName();
+-        topPanel.setDungeonName(CardCrawlGame.nextDungeon);
+         actionManager = new GameActionManager();
+         overlayMenu = new OverlayMenu(p);
+         dynamicBanner = new DynamicBanner();
+@@ -284,12 +229,6 @@
+         isDungeonBeaten = false;
+         isScreenUp = false;
+         acceptablePools.clear();
+-        String string = name;
+-        int n = -1;
+-        string.hashCode();
+-        switch (n) {
+-            default: 
+-        }
+         acceptablePools.add(1);
+         acceptablePools.add(2);
+         AbstractDungeon.dungeonTransitionSetup();
+@@ -318,7 +257,6 @@
+         AbstractDungeon.name = name;
+         player = p;
+         topPanel.setPlayerName();
+-        topPanel.setDungeonName(CardCrawlGame.nextDungeon);
+         actionManager = new GameActionManager();
+         overlayMenu = new OverlayMenu(p);
+         dynamicBanner = new DynamicBanner();
+@@ -414,7 +352,7 @@
+                 }
+             }
+             if (pathY.get(i) >= 15) continue;
+-            AbstractDungeon.map.get((int)AbstractDungeon.pathY.get((int)i).intValue()).get((int)AbstractDungeon.pathX.get((int)i).intValue()).taken = true;
++            AbstractDungeon.map.get(AbstractDungeon.pathY.get(i)).get(AbstractDungeon.pathX.get(i)).taken = true;
+             if (node != null && (connectedEdge = node.getEdgeConnectedTo(map.get(pathY.get(i)).get(pathX.get(i)))) != null) {
+                 connectedEdge.markAsTaken();
+             }
+@@ -469,13 +407,13 @@
+         if (player.hasRelic("Membership Card")) {
+             float tmp;
+             shopRoomChance = tmp = shopRoomChance * 1.5f;
+-            eventRoomChance -= (tmp -= shopRoomChance) / 2.0f;
++            eventRoomChance -= (tmp - shopRoomChance) / 2.0f;
          }
+         long startTime = System.currentTimeMillis();
+         int mapHeight = 15;
+         int mapWidth = 7;
+         int mapPathDensity = 6;
+-        ArrayList<AbstractRoom> roomList = new ArrayList<AbstractRoom>();
++        ArrayList<AbstractRoom> roomList = new ArrayList<>();
+         map = MapGenerator.generateDungeon(mapHeight, mapWidth, mapPathDensity, mapRng);
+         int count = 0;
+         for (ArrayList<MapRoomNode> a : map) {
+@@ -512,7 +450,7 @@
+         logger.info(" REST (" + AbstractDungeon.toPercentage(restRoomChance) + "): " + restCount);
+         int treasureCount = Math.round((float)availableRoomCount * treasureRoomChance);
+         logger.info(" TRSRE (" + AbstractDungeon.toPercentage(treasureRoomChance) + "): " + treasureCount);
+-        if (DailyMods.mods.get("Double Elites").booleanValue()) {
++        if (DailyMods.mods.get("Double Elites")) {
+             eliteCount = Math.round((float)availableRoomCount * (eliteRoomChance * 2.0f));
+             logger.info(" ELITE (" + AbstractDungeon.toPercentage(eliteRoomChance) + "): " + eliteCount);
+         } else if (ascensionLevel >= 1) {
+@@ -541,7 +479,7 @@
+     }
+ 
+     private static String toPercentage(float n) {
+-        return String.format("%.0f", Float.valueOf(n * 100.0f)) + "%";
++        return String.format("%.0f", n * 100.0f) + "%";
+     }
+ 
+     private static void firstRoomLogic() {
+@@ -603,7 +541,7 @@
+     }
+ 
+     public static ArrayList<MapRoomNode> identifyAvailableNodes(ArrayList<MapRoomNode> nodes) {
+-        ArrayList<MapRoomNode> nodesWithEdges = new ArrayList<MapRoomNode>();
++        ArrayList<MapRoomNode> nodesWithEdges = new ArrayList<>();
+         for (MapRoomNode node : nodes) {
+             if (!node.hasEdges()) continue;
+             nodesWithEdges.add(node);
+@@ -686,6 +624,9 @@
+                 break;
+             }
+         }
++
++        assert retVal != null;
++
+         if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
+             int campfireCount = 0;
+             for (AbstractRelic r : AbstractDungeon.player.relics) {
+@@ -752,6 +693,9 @@
+                 break;
+             }
+         }
++
++        assert retVal != null;
++
+         if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
+             int campfireCount = 0;
+             for (AbstractRelic r : AbstractDungeon.player.relics) {
+@@ -881,15 +825,15 @@
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard() {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         list.addAll(AbstractDungeon.srcCommonCardPool.group);
+         list.addAll(AbstractDungeon.srcUncommonCardPool.group);
+         list.addAll(AbstractDungeon.srcRareCardPool.group);
+-        return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
++        return list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard(AbstractCard.CardType type) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.type != type) continue;
+             list.add(c);
+@@ -902,11 +846,11 @@
+             if (c.type != type) continue;
+             list.add(c);
+         }
+-        return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
++        return list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomCard(AbstractCard.CardType type, Random rng) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.type != type) continue;
+             list.add(c);
+@@ -919,11 +863,11 @@
+             if (c.type != type) continue;
+             list.add(c);
+         }
+-        return (AbstractCard)list.get(rng.random(list.size() - 1));
++        return list.get(rng.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomCardWithSubtype(AbstractCard.CardSubType subType) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
+             if (c.subType != subType) continue;
+             list.add(c);
+@@ -936,28 +880,26 @@
+             if (c.subType != subType) continue;
+             list.add(c);
+         }
+-        return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
++        return list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCard() {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+-        list.addAll(AbstractDungeon.srcColorlessCardPool.group);
+-        return (AbstractCard)list.get(MathUtils.random(list.size() - 1));
++        ArrayList<AbstractCard> list = new ArrayList<>(AbstractDungeon.srcColorlessCardPool.group);
++        return list.get(MathUtils.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCard(Random rng) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
+-        list.addAll(AbstractDungeon.srcColorlessCardPool.group);
+-        return (AbstractCard)list.get(rng.random(list.size() - 1));
++        ArrayList<AbstractCard> list = new ArrayList<>(AbstractDungeon.srcColorlessCardPool.group);
++        return list.get(rng.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCardFromAvailable(AbstractCard prohibited, Random rng) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         for (AbstractCard c : AbstractDungeon.srcColorlessCardPool.group) {
+             if (Objects.equals(c.cardID, prohibited.cardID)) continue;
+             list.add(c);
+         }
+-        return (AbstractCard)list.get(rng.random(list.size() - 1));
++        return list.get(rng.random(list.size() - 1));
+     }
+ 
+     public static AbstractCard returnTrulyRandomColorlessCardFromAvailable(AbstractCard prohibited) {
+@@ -965,7 +907,7 @@
+     }
+ 
+     public static AbstractCard returnTrulyRandomCardFromAvailable(AbstractCard prohibited, Random rng) {
+-        ArrayList<AbstractCard> list = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> list = new ArrayList<>();
+         switch (prohibited.color) {
+             case COLORLESS: {
+                 for (AbstractCard c : AbstractDungeon.colorlessCardPool.group) {
+@@ -992,7 +934,7 @@
+                 }
+             }
+         }
+-        return ((AbstractCard)list.get(rng.random(list.size() - 1))).makeCopy();
++        return list.get(rng.random(list.size() - 1)).makeCopy();
+     }
+ 
+     public static AbstractCard returnTrulyRandomCardFromAvailable(AbstractCard prohibited) {
+@@ -1007,8 +949,8 @@
+ 
+     public void populateFirstStrongEnemy(ArrayList<MonsterInfo> monsters, ArrayList<String> exclusions) {
+         String m;
+-        while (exclusions.contains(m = MonsterInfo.roll(monsters, monsterRng.random()))) {
+-        }
++        //noinspection StatementWithEmptyBody
++        while (exclusions.contains(m = MonsterInfo.roll(monsters, monsterRng.random())));
+         monsterList.add(m);
+     }
+ 
+@@ -1074,7 +1016,7 @@
+     }
+ 
+     public static AbstractCard returnRandomCurse() {
+-        UnlockTracker.markCardAsSeen(CardLibrary.getCurse((int)1).cardID);
++        UnlockTracker.markCardAsSeen(CardLibrary.getCurse(1).cardID);
+         return CardLibrary.getCurse(1).makeCopy();
+     }
+ 
+@@ -1086,7 +1028,7 @@
+         rareCardPool.clear();
+         colorlessCardPool.clear();
+         curseCardPool.clear();
+-        ArrayList<AbstractCard> tmpPool = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> tmpPool = new ArrayList<>();
+         switch (AbstractDungeon.player.chosenClass) {
+             case IRONCLAD: {
+                 this.addRedCards(tmpPool);
+@@ -1157,7 +1099,7 @@
+     }
+ 
+     private void addColorlessCards() {
+-        AbstractCard card = null;
++        AbstractCard card;
+         for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
+             card = c.getValue();
+             if (card.color != AbstractCard.CardColor.COLORLESS || card.rarity == AbstractCard.CardRarity.BASIC) continue;
+@@ -1167,7 +1109,7 @@
+     }
+ 
+     private void addCurseCards() {
+-        AbstractCard card = null;
++        AbstractCard card;
+         for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
+             card = c.getValue();
+             if (card.type != AbstractCard.CardType.CURSE || Objects.equals(card.cardID, "Necronomicurse")) continue;
+@@ -1177,7 +1119,7 @@
+     }
+ 
+     private void addRedCards(ArrayList<AbstractCard> tmpPool) {
+-        AbstractCard card = null;
++        AbstractCard card;
+         for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
+             card = c.getValue();
+             if (card.color != AbstractCard.CardColor.RED || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
+@@ -1186,7 +1128,7 @@
+     }
+ 
+     private void addGreenCards(ArrayList<AbstractCard> tmpPool) {
+-        AbstractCard card = null;
++        AbstractCard card;
+         for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
+             card = c.getValue();
+             if (card.color != AbstractCard.CardColor.GREEN || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
+@@ -1195,7 +1137,7 @@
+     }
+ 
+     private void addBlueCards(ArrayList<AbstractCard> tmpPool) {
+-        AbstractCard card = null;
++        AbstractCard card;
+         for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
+             card = c.getValue();
+             if (card.color != AbstractCard.CardColor.BLUE || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
+@@ -1310,7 +1252,7 @@
+     }
+ 
+     public static ArrayList<AbstractCard> getBossRewardCards() {
+-        ArrayList<AbstractCard> retVal = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> retVal = new ArrayList<>();
+         int numCards = 3;
+         if (player.hasRelic("Question Card")) {
+             numCards = 4;
+@@ -1339,12 +1281,12 @@
+                 }
+             }
+             while (retVal.contains(card)) {
+-                logger.info("DUPE: " + card.originalName);
++                logger.info("DUPE: " + (card != null ? card.originalName : null));
+                 card = AbstractDungeon.getCard(rarity);
+             }
+             retVal.add(card);
+         }
+-        ArrayList<AbstractCard> retVal2 = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> retVal2 = new ArrayList<>();
+         for (AbstractCard c : retVal) {
+             retVal2.add(c.makeCopy());
+         }
+@@ -1352,26 +1294,24 @@
+     }
+ 
+     public static ArrayList<AbstractCard> getRewardCards() {
+-        ArrayList<AbstractCard> retVal = new ArrayList<AbstractCard>();
+-        int numCards = 3;
+-        if (player.hasRelic("Question Card")) {
+-            numCards = 4;
+-        }
++        ArrayList<AbstractCard> retVal = new ArrayList<>();
++        int numCards = player.hasRelic("Question Card") ? 4 : 3;
++
          for (int i = 0; i < numCards; ++i) {
 -            Iterator<E> rarity = AbstractDungeon.rollRarity();
 +            AbstractCard.CardRarity rarity = AbstractDungeon.rollRarity();
@@ -167,18 +1066,63 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
 -            switch (.$SwitchMap$com$megacrit$cardcrawl$cards$AbstractCard$CardRarity[rarity.ordinal()]) {
 +            switch (rarity.ordinal()) {
                  case 4: {
-                     card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
+-                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
++                    card = AbstractDungeon.getCard(rarity);
                      cardBlizzRandomizer = cardBlizzStartOffset;
-@@ -1388,7 +1391,7 @@
-                     continue;
+                     break;
                  }
-                 logger.info("FALLBACK FOR CARD RARITY HAS OCCURRED");
+                 case 3: {
+-                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
++                    card = AbstractDungeon.getCard(rarity);
+                     break;
+                 }
+                 case 2: {
+-                    card = AbstractDungeon.getCard((AbstractCard.CardRarity)((Object)rarity));
++                    card = AbstractDungeon.getCard(rarity);
+                     if ((cardBlizzRandomizer -= cardBlizzGrowth) > cardBlizzMaxOffset) break;
+                     cardBlizzRandomizer = cardBlizzMaxOffset;
+                     break;
+@@ -1380,33 +1320,15 @@
+                     logger.info("WTF?");
+                 }
+             }
+-            int dupeCount = 0;
+-            block11 : while (retVal.contains(card)) {
+-                logger.info("DUPE: " + card.originalName);
+-                if (dupeCount < 4) {
+-                    card = AbstractDungeon.getCard(rarity);
+-                    continue;
+-                }
+-                logger.info("FALLBACK FOR CARD RARITY HAS OCCURRED");
 -                switch (.$SwitchMap$com$megacrit$cardcrawl$cards$AbstractCard$CardRarity[rarity.ordinal()]) {
-+                switch (rarity.ordinal()) {
-                     case 4: {
-                         card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
-                         continue block11;
-@@ -1475,8 +1478,9 @@
+-                    case 4: {
+-                        card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
+-                        continue block11;
+-                    }
+-                    case 3: {
+-                        card = AbstractDungeon.getCard(AbstractCard.CardRarity.COMMON);
+-                        continue block11;
+-                    }
+-                    case 2: {
+-                        card = AbstractDungeon.getCard(AbstractCard.CardRarity.UNCOMMON);
+-                        continue block11;
+-                    }
+-                }
+-                card = AbstractDungeon.getCard(AbstractCard.CardRarity.COMMON);
++
++            while (retVal.contains(card)) {
++                logger.info("DUPE: " + (card != null ? card.originalName : null));
++                card = AbstractDungeon.getCard(rarity);
+             }
++
+             retVal.add(card);
+         }
+-        ArrayList<AbstractCard> retVal2 = new ArrayList<AbstractCard>();
++        ArrayList<AbstractCard> retVal2 = new ArrayList<>();
+         for (AbstractCard c : retVal) {
+             retVal2.add(c.makeCopy());
+         }
+@@ -1475,8 +1397,9 @@
      }
  
      public static AbstractCard getCardFromPool(AbstractCard.CardRarity rarity, AbstractCard.CardType type, boolean useRng) {
@@ -189,7 +1133,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              case RARE: {
                  retVal = rareCardPool.getRandomCard(type, useRng);
                  if (retVal != null) {
-@@ -1517,8 +1521,9 @@
+@@ -1517,8 +1440,9 @@
      }
  
      public static AbstractCard getColorlessCardFromPool(AbstractCard.CardRarity rarity) {
@@ -200,26 +1144,133 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              case RARE: {
                  retVal = colorlessCardPool.getRandomCard(true, rarity);
                  if (retVal != null) {
-@@ -1696,7 +1701,8 @@
+@@ -1577,33 +1501,40 @@
+                 logger.info("ERROR: Rarity incorrectly specified: " + rarity.name());
+                 break block15;
+             }
+-            if (color == AbstractCard.CardColor.COLORLESS) {
+-                Iterator<AbstractCard> i = AbstractDungeon.colorlessCardPool.group.iterator();
+-                while (i.hasNext()) {
+-                    AbstractCard e = i.next();
+-                    if (!e.cardID.equals(id)) continue;
+-                    i.remove();
+-                    logger.info(name + " removed from pool.");
+-                    return;
+-                }
+-            } else if (color == AbstractCard.CardColor.CURSE) {
+-                Iterator<AbstractCard> i = AbstractDungeon.curseCardPool.group.iterator();
+-                while (i.hasNext()) {
+-                    AbstractCard e = i.next();
+-                    if (!e.cardID.equals(id)) continue;
+-                    i.remove();
+-                    logger.info(name + " removed from pool.");
+-                    return;
++
++            switch (color) {
++                case COLORLESS: {
++                    Iterator<AbstractCard> i = AbstractDungeon.colorlessCardPool.group.iterator();
++                    while (i.hasNext()) {
++                        AbstractCard e = i.next();
++                        if (!e.cardID.equals(id)) continue;
++                        i.remove();
++                        logger.info(name + " removed from pool.");
++                        return;
++                    }
++                    break;
+                 }
+-            } else {
+-                logger.info("ERROR: Somebody used removeCardFromPool() incorrectly!!");
++                case CURSE: {
++                    Iterator<AbstractCard> i = AbstractDungeon.curseCardPool.group.iterator();
++                    while (i.hasNext()) {
++                        AbstractCard e = i.next();
++                        if (!e.cardID.equals(id)) continue;
++                        i.remove();
++                        logger.info(name + " removed from pool.");
++                        return;
++                    }
++                    break;
++                }
++                default:
++                    logger.info("ERROR: Somebody used removeCardFromPool() incorrectly!!");
++                    break;
+             }
+         }
+     }
+ 
+     public static AbstractCard.CardRarity rollRarity(Random rng) {
+         int roll = cardRng.random(99);
+-        return AbstractDungeon.getCurrRoom().getCardRarity(roll += cardBlizzRandomizer);
++        return AbstractDungeon.getCurrRoom().getCardRarity(roll + cardBlizzRandomizer);
+     }
+ 
+     public static AbstractCard.CardRarity rollRarity() {
+@@ -1696,7 +1627,8 @@
          GameActionManager.turn = 1;
          if (!CardCrawlGame.loadingSave) {
              this.incrementFloorBasedMetrics();
 -            if (!TipTracker.tips.get("INTENT_TIP").booleanValue() && ++floorNum == 6) {
 +            ++floorNum;
-+            if (!TipTracker.tips.get("INTENT_TIP").booleanValue() && floorNum == 6) {
++            if (!TipTracker.tips.get("INTENT_TIP") && floorNum == 6) {
                  TipTracker.neverShowAgain("INTENT_TIP");
              }
              StatsScreen.incrementFloorClimbed();
-@@ -2490,7 +2496,7 @@
+@@ -1804,8 +1736,7 @@
+     }
+ 
+     public static AbstractEvent getShrine() {
+-        ArrayList<String> tmp = new ArrayList<String>();
+-        tmp.addAll(shrineList);
++        ArrayList<String> tmp = new ArrayList<>(shrineList);
+         Iterator<String> iterator = specialOneTimeEventList.iterator();
+         block16 : while (iterator.hasNext()) {
+             String e;
+@@ -1843,7 +1774,7 @@
+             }
+             tmp.add(e);
+         }
+-        String tmpKey = (String)tmp.get(eventRng.random(tmp.size() - 1));
++        String tmpKey = tmp.get(eventRng.random(tmp.size() - 1));
+         shrineList.remove(tmpKey);
+         specialOneTimeEventList.remove(tmpKey);
+         logger.info("Removed event: " + tmpKey + " from pool.");
+@@ -1851,7 +1782,7 @@
+     }
+ 
+     public static AbstractEvent getEvent() {
+-        ArrayList<String> tmp = new ArrayList<String>();
++        ArrayList<String> tmp = new ArrayList<>();
+         Iterator<String> iterator = eventList.iterator();
+         block10 : while (iterator.hasNext()) {
+             String e;
+@@ -1877,7 +1808,7 @@
+         if (tmp.isEmpty()) {
+             return AbstractDungeon.getShrine();
+         }
+-        String tmpKey = (String)tmp.get(eventRng.random(tmp.size() - 1));
++        String tmpKey = tmp.get(eventRng.random(tmp.size() - 1));
+         eventList.remove(tmpKey);
+         logger.info("Removed event: " + tmpKey + " from pool.");
+         return EventHelper.getEvent(tmpKey);
+@@ -2386,7 +2317,7 @@
+         eliteMonsterList.clear();
+         bossList.clear();
+         AbstractRoom.blizzardPotionMod = 0;
+-        if (!DailyMods.mods.get("Restless Journey").booleanValue()) {
++        if (!DailyMods.mods.get("Restless Journey")) {
+             if (ascensionLevel >= 5) {
+                 player.heal(MathUtils.round((float)(AbstractDungeon.player.maxHealth - AbstractDungeon.player.currentHealth) * 0.75f), false);
+             } else {
+@@ -2490,7 +2421,7 @@
  
      static {
          floorNum = 0;
 -        unlocks = new ArrayList<E>();
-+        unlocks = new ArrayList<AbstractUnlock>();
++        unlocks = new ArrayList<>();
          shrineChance = 0.25f;
          firstChest = true;
          encounteredCursedChest = false;
-@@ -2505,30 +2511,30 @@
+@@ -2505,30 +2436,30 @@
          commonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
          uncommonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
          rareCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
@@ -229,12 +1280,12 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
 -        rareRelicPool = new ArrayList<E>();
 -        shopRelicPool = new ArrayList<E>();
 -        bossRelicPool = new ArrayList<E>();
-+        acceptablePools = new ArrayList<Integer>();
-+        commonRelicPool = new ArrayList<String>();
-+        uncommonRelicPool = new ArrayList<String>();
-+        rareRelicPool = new ArrayList<String>();
-+        shopRelicPool = new ArrayList<String>();
-+        bossRelicPool = new ArrayList<String>();
++        acceptablePools = new ArrayList<>();
++        commonRelicPool = new ArrayList<>();
++        uncommonRelicPool = new ArrayList<>();
++        rareRelicPool = new ArrayList<>();
++        shopRelicPool = new ArrayList<>();
++        bossRelicPool = new ArrayList<>();
          lastMonsterKey = null;
          lastCombatMetricKey = null;
 -        monsterList = new ArrayList<E>();
@@ -243,49 +1294,91 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
 -        eventList = new ArrayList<E>();
 -        shrineList = new ArrayList<E>();
 -        specialOneTimeEventList = new ArrayList<E>();
-+        monsterList = new ArrayList<String>();
-+        eliteMonsterList = new ArrayList<String>();
-+        bossList = new ArrayList<String>();
-+        eventList = new ArrayList<String>();
-+        shrineList = new ArrayList<String>();
-+        specialOneTimeEventList = new ArrayList<String>();
++        monsterList = new ArrayList<>();
++        eliteMonsterList = new ArrayList<>();
++        bossList = new ArrayList<>();
++        eventList = new ArrayList<>();
++        shrineList = new ArrayList<>();
++        specialOneTimeEventList = new ArrayList<>();
          actionManager = new GameActionManager();
 -        topLevelEffects = new ArrayList<E>();
 -        topLevelEffectsQueue = new ArrayList<E>();
 -        effectList = new ArrayList<E>();
 -        effectsQueue = new ArrayList<E>();
-+        topLevelEffects = new ArrayList<AbstractGameEffect>();
-+        topLevelEffectsQueue = new ArrayList<AbstractGameEffect>();
-+        effectList = new ArrayList<AbstractGameEffect>();
-+        effectsQueue = new ArrayList<AbstractGameEffect>();
++        topLevelEffects = new ArrayList<>();
++        topLevelEffectsQueue = new ArrayList<>();
++        effectList = new ArrayList<>();
++        effectsQueue = new ArrayList<>();
          turnPhaseEffectActive = false;
          firstRoomChosen = false;
          rs = RenderScene.NORMAL;
 -        pathX = new ArrayList<E>();
 -        pathY = new ArrayList<E>();
-+        pathX = new ArrayList<Integer>();
-+        pathY = new ArrayList<Integer>();
++        pathX = new ArrayList<>();
++        pathY = new ArrayList<>();
          topGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
          botGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
          floorY = 340.0f * Settings.scale;
-@@ -2555,7 +2561,7 @@
+@@ -2555,24 +2486,20 @@
          cardBlizzRandomizer = AbstractDungeon.cardBlizzStartOffset = 5;
          cardBlizzGrowth = 1;
          cardBlizzMaxOffset = -40;
 -        relicsToRemoveOnStart = new ArrayList<E>();
-+        relicsToRemoveOnStart = new ArrayList<String>();
++        relicsToRemoveOnStart = new ArrayList<>();
          bossCount = 0;
          isAscensionMode = false;
          ascensionLevel = 0;
+         LOGGER = LogManager.getLogger(AbstractDungeon.class.getName());
+     }
+ 
+-    public static enum RenderScene {
++    public enum RenderScene {
+         NORMAL,
+         EVENT,
+-        CAMPFIRE;
+-        
+-
+-        private RenderScene() {
+-        }
++        CAMPFIRE
+     }
+ 
+-    public static enum CurrentScreen {
++    public enum CurrentScreen {
+         NONE,
+         MASTER_DECK_VIEW,
+         SETTINGS,
+@@ -2592,11 +2519,7 @@
+         VICTORY,
+         UNLOCK,
+         CREDITS,
+-        GASHA_UNLOCK;
+-        
+-
+-        private CurrentScreen() {
+-        }
++        GASHA_UNLOCK
+     }
+ 
+ }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-25 17:03:53.696876600 -0800
-+++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-25 15:43:08.269124800 -0800
-@@ -12,12 +12,18 @@
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-26 15:06:57.391124700 -0800
+@@ -3,28 +3,29 @@
+  */
+ package com.megacrit.cardcrawl.map;
+ 
+-import com.megacrit.cardcrawl.map.EdgeComparator;
+-import com.megacrit.cardcrawl.map.MapEdge;
+-import com.megacrit.cardcrawl.map.MapRoomNode;
++import basemod.BaseMod;
+ import com.megacrit.cardcrawl.random.Random;
+-import java.util.ArrayList;
+-import java.util.Collections;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-+// BaseMod imports
-+import basemod.BaseMod;
++import java.util.ArrayList;
 +
  public class MapGenerator {
      private static final Logger logger = LogManager.getLogger(MapGenerator.class.getName());
@@ -300,20 +1393,183 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
          map = MapGenerator.filterRedundantEdgesFromRow(map);
          return map;
      }
+ 
+     private static ArrayList<ArrayList<MapRoomNode>> filterRedundantEdgesFromRow(ArrayList<ArrayList<MapRoomNode>> map) {
+-        ArrayList<MapEdge> existingEdges = new ArrayList<MapEdge>();
+-        ArrayList<MapEdge> deleteList = new ArrayList<MapEdge>();
++        ArrayList<MapEdge> existingEdges = new ArrayList<>();
++        ArrayList<MapEdge> deleteList = new ArrayList<>();
+         for (MapRoomNode node : map.get(0)) {
+             if (!node.hasEdges()) continue;
+             for (MapEdge edge : node.getEdges()) {
+@@ -43,9 +44,9 @@
+     }
+ 
+     private static ArrayList<ArrayList<MapRoomNode>> createNodes(int height, int width) {
+-        ArrayList<ArrayList<MapRoomNode>> nodes = new ArrayList<ArrayList<MapRoomNode>>();
++        ArrayList<ArrayList<MapRoomNode>> nodes = new ArrayList<>();
+         for (int y = 0; y < height; ++y) {
+-            ArrayList<MapRoomNode> row = new ArrayList<MapRoomNode>();
++            ArrayList<MapRoomNode> row = new ArrayList<>();
+             for (int x = 0; x < width; ++x) {
+                 row.add(new MapRoomNode(x, y));
+             }
+@@ -72,13 +73,13 @@
+     }
+ 
+     private static MapEdge getMaxEdge(ArrayList<MapEdge> edges) {
+-        Collections.sort(edges, new EdgeComparator());
++        edges.sort(new EdgeComparator());
+         assert (!edges.isEmpty());
+         return edges.get(edges.size() - 1);
+     }
+ 
+     private static MapEdge getMinEdge(ArrayList<MapEdge> edges) {
+-        Collections.sort(edges, new EdgeComparator());
++        edges.sort(new EdgeComparator());
+         assert (!edges.isEmpty());
+         return edges.get(0);
+     }
+@@ -134,7 +135,7 @@
+         if (edge.dstY + 1 >= nodes.size()) {
+             MapEdge newEdge = new MapEdge(edge.dstX, edge.dstY, currentNode.offsetX, currentNode.offsetY, 3, edge.dstY + 2, 0.0f, 0.0f, true);
+             currentNode.addEdge(newEdge);
+-            Collections.sort(currentNode.getEdges(), new EdgeComparator());
++            currentNode.getEdges().sort(new EdgeComparator());
+             return nodes;
+         }
+         int row_width = nodes.get(edge.dstY).size();
+@@ -180,9 +181,7 @@
+                         }
+                     }
+                     targetNodeCandidate = MapGenerator.getNode(newEdgeX, newEdgeY, nodes);
+-                    continue;
+                 }
+-                if (ancestor_gap < max_ancestor_gap) continue;
+             }
+         }
+         if (edge.dstX != 0 && (left_node = nodes.get(edge.dstY).get(edge.dstX - 1)).hasEdges()) {
+@@ -200,7 +199,7 @@
+         targetNodeCandidate = MapGenerator.getNode(newEdgeX, newEdgeY, nodes);
+         MapEdge newEdge = new MapEdge(edge.dstX, edge.dstY, currentNode.offsetX, currentNode.offsetY, newEdgeX, newEdgeY, targetNodeCandidate.offsetX, targetNodeCandidate.offsetY, false);
+         currentNode.addEdge(newEdge);
+-        Collections.sort(currentNode.getEdges(), new EdgeComparator());
++        currentNode.getEdges().sort(new EdgeComparator());
+         targetNodeCandidate.addParent(currentNode);
+         return MapGenerator._createPaths(nodes, newEdge, rng);
+     }
+@@ -210,11 +209,11 @@
+     }
+ 
+     private static String paddingGenerator(int length) {
+-        String str = "";
++        StringBuilder str = new StringBuilder();
+         for (int i = 0; i < length; ++i) {
+-            str = str + " ";
++            str.append(" ");
+         }
+-        return str;
++        return str.toString();
+     }
+ 
+     public static String toString(ArrayList<ArrayList<MapRoomNode>> nodes) {
+@@ -222,10 +221,10 @@
+     }
+ 
+     public static String toString(ArrayList<ArrayList<MapRoomNode>> nodes, Boolean showRoomSymbols) {
+-        String str = "";
++        StringBuilder str = new StringBuilder();
+         int left_padding_size = 5;
+         for (int row_num = nodes.size() - 1; row_num >= 0; --row_num) {
+-            str = str + "\n " + MapGenerator.paddingGenerator(left_padding_size);
++            str.append("\n ").append(MapGenerator.paddingGenerator(left_padding_size));
+             for (MapRoomNode node : nodes.get(row_num)) {
+                 String right = " ";
+                 Object mid = " ";
+@@ -240,10 +239,10 @@
+                     if (edge.dstX <= node.x) continue;
+                     right = "/";
+                 }
+-                str = str + left + (String)mid + right;
++                str.append(left).append(mid).append(right);
+             }
+-            str = str + "\n" + row_num + " ";
+-            str = str + MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length());
++            str.append("\n").append(row_num).append(" ");
++            str.append(MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length()));
+             for (MapRoomNode node : nodes.get(row_num)) {
+                 String node_symbol = " ";
+                 if (row_num == nodes.size() - 1) {
+@@ -256,10 +255,10 @@
+                 } else if (node.hasEdges()) {
+                     node_symbol = node.getRoomSymbol(showRoomSymbols);
+                 }
+-                str = str + " " + node_symbol + " ";
++                str.append(" ").append(node_symbol).append(" ");
+             }
+         }
+-        return str;
++        return str.toString();
+     }
+ 
+     private static int randRange(Random rng, int min, int max) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-25 17:03:53.878551100 -0800
-+++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-25 15:43:08.271126000 -0800
-@@ -25,6 +25,9 @@
++++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-26 14:43:20.613986200 -0800
+@@ -3,31 +3,27 @@
+  */
+ package com.megacrit.cardcrawl.monsters;
+ 
++import basemod.BaseMod;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+-import com.megacrit.cardcrawl.actions.GameActionManager;
+ import com.megacrit.cardcrawl.actions.IntentFlashAction;
+ import com.megacrit.cardcrawl.actions.common.ShowMoveNameAction;
+ import com.megacrit.cardcrawl.actions.utility.WaitAction;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.dungeons.TheCity;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+ import com.megacrit.cardcrawl.helpers.TipTracker;
+-import com.megacrit.cardcrawl.monsters.AbstractMonster;
+ import com.megacrit.cardcrawl.powers.AbstractPower;
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.HashMap;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-+// BaseMod imports
-+import basemod.BaseMod;
++import java.util.ArrayList;
++import java.util.Collections;
 +
  public class MonsterGroup {
      private static final Logger logger = LogManager.getLogger(MonsterGroup.class.getName());
-     public ArrayList<AbstractMonster> monsters = new ArrayList();
-@@ -123,7 +126,11 @@
+-    public ArrayList<AbstractMonster> monsters = new ArrayList();
++    public ArrayList<AbstractMonster> monsters = new ArrayList<>();
+     public AbstractMonster hoveredMonster = null;
+     private static final float WAIT_AFTER_MONSTERS_TIME = 1.5f;
+ 
+@@ -74,6 +70,7 @@
+         }
+     }
+ 
++    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+     public boolean areMonstersDead() {
+         for (AbstractMonster m : this.monsters) {
+             if (m.isDead || m.escaped) continue;
+@@ -116,14 +113,18 @@
+                 AbstractDungeon.actionManager.addToBottom(new ShowMoveNameAction(m));
+                 AbstractDungeon.actionManager.addToBottom(new IntentFlashAction(m));
+             }
+-            if (!(TipTracker.tips.get("INTENT_TIP").booleanValue() || AbstractDungeon.player.currentBlock != 0 || m.intent != AbstractMonster.Intent.ATTACK && m.intent != AbstractMonster.Intent.ATTACK_DEBUFF && m.intent != AbstractMonster.Intent.ATTACK_BUFF && m.intent != AbstractMonster.Intent.ATTACK_DEFEND)) {
++            if (!(TipTracker.tips.get("INTENT_TIP") || AbstractDungeon.player.currentBlock != 0 || m.intent != AbstractMonster.Intent.ATTACK && m.intent != AbstractMonster.Intent.ATTACK_DEBUFF && m.intent != AbstractMonster.Intent.ATTACK_BUFF && m.intent != AbstractMonster.Intent.ATTACK_DEFEND)) {
+                 if (AbstractDungeon.floorNum <= 5) {
+                     ++TipTracker.blockCounter;
+                 } else {
                      TipTracker.neverShowAgain("INTENT_TIP");
                  }
              }
@@ -326,20 +1582,97 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.j
          }
          if (!Settings.isDebug) {
              AbstractDungeon.actionManager.addToBottom(new WaitAction(1.5f));
+@@ -151,10 +152,7 @@
+             if (!m.isEscaping) continue;
+             return true;
+         }
+-        if (CardCrawlGame.dungeon instanceof TheCity) {
+-            return true;
+-        }
+-        return false;
++        return CardCrawlGame.dungeon instanceof TheCity;
+     }
+ 
+     public AbstractMonster getRandomMonster() {
+@@ -171,7 +169,7 @@
+         }
+         if (exception == null) {
+             if (aliveOnly) {
+-                ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++                ArrayList<AbstractMonster> tmp = new ArrayList<>();
+                 for (AbstractMonster m : this.monsters) {
+                     if (m.halfDead || m.isDying || m.isEscaping) continue;
+                     tmp.add(m);
+@@ -179,7 +177,7 @@
+                 if (tmp.size() <= 0) {
+                     return null;
+                 }
+-                return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++                return tmp.get(MathUtils.random(0, tmp.size() - 1));
+             }
+             return this.monsters.get(MathUtils.random(0, this.monsters.size() - 1));
+         }
+@@ -187,7 +185,7 @@
+             return this.monsters.get(0);
+         }
+         if (aliveOnly) {
+-            ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++            ArrayList<AbstractMonster> tmp = new ArrayList<>();
+             for (AbstractMonster m : this.monsters) {
+                 if (m.halfDead || m.isDying || m.isEscaping || exception.equals(m)) continue;
+                 tmp.add(m);
+@@ -195,14 +193,14 @@
+             if (tmp.size() == 0) {
+                 return null;
+             }
+-            return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++            return tmp.get(MathUtils.random(0, tmp.size() - 1));
+         }
+-        ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++        ArrayList<AbstractMonster> tmp = new ArrayList<>();
+         for (AbstractMonster m : this.monsters) {
+             if (exception.equals(m)) continue;
+             tmp.add(m);
+         }
+-        return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++        return tmp.get(MathUtils.random(0, tmp.size() - 1));
+     }
+ 
+     public void update() {
+@@ -279,7 +277,7 @@
+     }
+ 
+     public ArrayList<String> getMonsterNames() {
+-        ArrayList<String> arr = new ArrayList<String>();
++        ArrayList<String> arr = new ArrayList<>();
+         for (AbstractMonster m : this.monsters) {
+             arr.add(m.id);
+         }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java com/megacrit/cardcrawl/powers/IntangiblePower.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-25 17:03:54.909541500 -0800
-+++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-25 15:43:08.273130400 -0800
-@@ -17,6 +17,9 @@
- import com.megacrit.cardcrawl.localization.PowerStrings;
- import com.megacrit.cardcrawl.powers.AbstractPower;
++++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-26 14:34:04.619555600 -0800
+@@ -3,19 +3,15 @@
+  */
+ package com.megacrit.cardcrawl.powers;
  
-+// BaseMod imports
+-import com.badlogic.gdx.graphics.Texture;
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+-import com.megacrit.cardcrawl.actions.GameActionManager;
+ import com.megacrit.cardcrawl.actions.common.ReducePowerAction;
+ import com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction;
+ import com.megacrit.cardcrawl.cards.DamageInfo;
 +import com.megacrit.cardcrawl.characters.AbstractPlayer;
-+
+ import com.megacrit.cardcrawl.core.AbstractCreature;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.localization.PowerStrings;
+-import com.megacrit.cardcrawl.powers.AbstractPower;
+ 
  public class IntangiblePower
  extends AbstractPower {
-     public static final String POWER_ID = "Intangible";
-@@ -36,6 +39,18 @@
+@@ -36,6 +32,18 @@
          this.justApplied = true;
      }
  
@@ -360,18 +1693,41 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.
          if (damage > 0.0f) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-25 17:03:57.241281400 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-25 15:43:08.274644800 -0800
-@@ -29,6 +29,9 @@
- import com.megacrit.cardcrawl.screens.stats.StatsScreen;
- import com.megacrit.cardcrawl.screens.trial.TrialScreen;
++++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-26 14:34:12.137250000 -0800
+@@ -3,14 +3,11 @@
+  */
+ package com.megacrit.cardcrawl.ui.buttons;
  
-+// BaseModm imports
 +import basemod.BaseMod;
-+
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+@@ -18,16 +15,10 @@
+ import com.megacrit.cardcrawl.helpers.Hitbox;
+ import com.megacrit.cardcrawl.helpers.ImageMaster;
+ import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+-import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
+-import com.megacrit.cardcrawl.rooms.CampfireUI;
+ import com.megacrit.cardcrawl.rooms.RestRoom;
+ import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
+ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+-import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
+-import com.megacrit.cardcrawl.screens.stats.StatsScreen;
+-import com.megacrit.cardcrawl.screens.trial.TrialScreen;
+ 
  public class CancelButton {
      private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("Cancel Button");
-     public static final String[] TEXT = CancelButton.uiStrings.TEXT;
-@@ -95,6 +98,14 @@
+@@ -95,6 +86,14 @@
                          this.hide();
                          return;
                      }
@@ -388,18 +1744,66 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-25 17:03:57.298836100 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-25 15:43:08.276131300 -0800
-@@ -32,6 +32,9 @@
++++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-26 14:43:20.534216800 -0800
+@@ -3,32 +3,22 @@
+  */
+ package com.megacrit.cardcrawl.ui.buttons;
+ 
++import basemod.DevConsole;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+ import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.ShaderHelper;
+-import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.EndTurnGlowEffect;
++
  import java.util.ArrayList;
  import java.util.Iterator;
  
-+// BaseMod imports
-+import basemod.DevConsole;
-+
- public class EndTurnButton {
-     private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("End Turn Tip");
-     public static final String[] MSG = EndTurnButton.tutorialStrings.TEXT;
-@@ -91,7 +94,9 @@
+@@ -51,8 +41,7 @@
+     private boolean isHidden = true;
+     public boolean enabled = false;
+     private boolean isDisabled = false;
+-    private Color textColor;
+-    private ArrayList<EndTurnGlowEffect> glowList = new ArrayList();
++    private ArrayList<EndTurnGlowEffect> glowList = new ArrayList<>();
+     private static final float GLOW_INTERVAL = 1.2f;
+     private float glowTimer = 0.0f;
+     public boolean isGlowing = false;
+@@ -69,10 +58,7 @@
+         }
+         this.hitbox.move(this.current_x, this.current_y);
+         if (this.enabled) {
+-            this.isDisabled = false;
+-            if (AbstractDungeon.isScreenUp || AbstractDungeon.player.isDraggingCard || AbstractDungeon.player.inSingleTargetMode) {
+-                this.isDisabled = true;
+-            }
++            this.isDisabled = AbstractDungeon.isScreenUp || AbstractDungeon.player.isDraggingCard || AbstractDungeon.player.inSingleTargetMode;
+             if (AbstractDungeon.player.hoveredCard == null) {
+                 this.hitbox.update();
+             }
+@@ -91,7 +77,9 @@
                  }
              }
          }
@@ -410,20 +1814,54 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
              this.hitbox.clicked = false;
              if (!this.isDisabled && !AbstractDungeon.isScreenUp) {
                  this.disable(true);
+@@ -177,10 +165,11 @@
+     public void render(SpriteBatch sb) {
+         if (!Settings.hideEndTurn) {
+             float tmpY = this.current_y;
++            Color textColor;
+             if (this.isDisabled || !this.enabled) {
+-                this.textColor = this.label.equals(ENEMY_TURN_MSG) ? Settings.CREAM_COLOR : Color.LIGHT_GRAY;
++                textColor = this.label.equals(ENEMY_TURN_MSG) ? Settings.CREAM_COLOR : Color.LIGHT_GRAY;
+             } else {
+-                this.textColor = this.hitbox.hovered ? (this.isWarning ? Settings.RED_TEXT_COLOR : Color.CYAN) : (this.isGlowing ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
++                textColor = this.hitbox.hovered ? (this.isWarning ? Settings.RED_TEXT_COLOR : Color.CYAN) : (this.isGlowing ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
+                 if (Settings.COMMON_TIP && this.hitbox.hovered && !AbstractDungeon.isScreenUp) {
+                     TipHelper.renderGenericTip(this.current_x - 90.0f * Settings.scale, this.current_y + 300.0f * Settings.scale, LABEL[0] + " (E)", MSG[0] + AbstractDungeon.player.gameHandSize + MSG[1]);
+                 }
+@@ -214,7 +203,7 @@
+                 sb.draw(buttonImg, this.current_x - 128.0f, tmpY - 128.0f, 128.0f, 128.0f, 256.0f, 256.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 256, 256, false, false);
+                 sb.setBlendFunction(770, 771);
+             }
+-            FontHelper.renderFontCentered(sb, FontHelper.panelEndTurnFont, this.label, this.current_x - 0.0f * Settings.scale, tmpY - 3.0f * Settings.scale, this.textColor);
++            FontHelper.renderFontCentered(sb, FontHelper.panelEndTurnFont, this.label, this.current_x - 0.0f * Settings.scale, tmpY - 3.0f * Settings.scale, textColor);
+             if (!this.isHidden) {
+                 this.hitbox.render(sb);
+             }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-25 17:03:57.399933400 -0800
-+++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-25 15:43:08.278133400 -0800
-@@ -18,6 +18,9 @@
- import com.megacrit.cardcrawl.rooms.CampfireUI;
++++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-26 14:34:21.695347400 -0800
+@@ -3,11 +3,10 @@
+  */
+ package com.megacrit.cardcrawl.ui.campfire;
+ 
++import basemod.BaseMod;
+ import com.badlogic.gdx.graphics.Color;
+ import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+@@ -15,7 +14,6 @@
+ import com.megacrit.cardcrawl.helpers.Hitbox;
+ import com.megacrit.cardcrawl.helpers.InputHelper;
+ import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.rooms.CampfireUI;
  import com.megacrit.cardcrawl.rooms.RestRoom;
  
-+// BaseMod imports
-+import basemod.BaseMod;
-+
  public abstract class AbstractCampfireOption {
-     protected String label;
-     protected String description;
-@@ -58,7 +61,11 @@
+@@ -58,7 +56,11 @@
          if (this.hb.clicked) {
              this.hb.clicked = false;
              this.useOption();
@@ -438,18 +1876,69 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCam
  
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-25 17:03:57.447979600 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-25 15:43:08.279648900 -0800
-@@ -36,6 +36,9 @@
++++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-26 14:47:15.481301400 -0800
+@@ -3,36 +3,24 @@
+  */
+ package com.megacrit.cardcrawl.ui.panels;
+ 
++import basemod.DevConsole;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+-import com.megacrit.cardcrawl.screens.DiscardPileViewScreen;
+-import com.megacrit.cardcrawl.ui.panels.AbstractPanel;
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.BobEffect;
+ import com.megacrit.cardcrawl.vfx.DiscardGlowEffect;
+ import com.megacrit.cardcrawl.vfx.ThoughtBubble;
++
  import java.util.ArrayList;
  import java.util.Iterator;
  
-+// BaseMod imports
-+import basemod.DevConsole;
-+
- public class DiscardPilePanel
- extends AbstractPanel {
-     private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Discard Tip");
-@@ -89,12 +92,14 @@
+@@ -56,8 +44,8 @@
+     private float glowAlpha = 0.0f;
+     private GlyphLayout gl = new GlyphLayout();
+     private BobEffect bob = new BobEffect(1.0f);
+-    private ArrayList<DiscardGlowEffect> vfxAbove = new ArrayList();
+-    private ArrayList<DiscardGlowEffect> vfxBelow = new ArrayList();
++    private ArrayList<DiscardGlowEffect> vfxAbove = new ArrayList<>();
++    private ArrayList<DiscardGlowEffect> vfxBelow = new ArrayList<>();
+     private static final float DECK_TIP_X = 1550.0f * Settings.scale;
+     private static final float DECK_TIP_Y = 470.0f * Settings.scale;
+     private static final float HITBOX_W = 120.0f * Settings.scale;
+@@ -79,9 +67,6 @@
+             this.bannerHitbox.update();
+             this.updatePop();
+         }
+-        if (!this.hitbox.justHovered || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE) {
+-            // empty if block
+-        }
+         if (this.hitbox.hovered) {
+             if (!AbstractDungeon.isScreenUp) {
+                 AbstractDungeon.overlayMenu.hoveredTip = true;
+@@ -89,12 +74,14 @@
              if (InputHelper.justClickedLeft && AbstractDungeon.getMonsters() != null && !AbstractDungeon.isScreenUp && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.DISCARD_VIEW && !AbstractDungeon.getMonsters().areMonstersDead()) {
                  this.openDiscardPile();
              }
@@ -468,18 +1957,70 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-25 17:03:57.460491700 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-25 15:43:08.281151300 -0800
-@@ -39,6 +39,9 @@
++++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-26 14:47:15.451838300 -0800
+@@ -3,39 +3,26 @@
+  */
+ package com.megacrit.cardcrawl.ui.panels;
+ 
++import basemod.DevConsole;
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.relics.AbstractRelic;
+-import com.megacrit.cardcrawl.screens.DrawPileViewScreen;
+-import com.megacrit.cardcrawl.ui.panels.AbstractPanel;
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.BobEffect;
+ import com.megacrit.cardcrawl.vfx.GameDeckGlowEffect;
+ import com.megacrit.cardcrawl.vfx.ThoughtBubble;
++
  import java.util.ArrayList;
  import java.util.Iterator;
  
-+// BaseMod imports
-+import basemod.DevConsole;
-+
- public class DrawPilePanel
- extends AbstractPanel {
-     private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Draw Tip");
-@@ -91,12 +94,14 @@
+@@ -61,7 +48,7 @@
+     private static final float DECK_TIP_X = 50.0f * Settings.scale;
+     private static final float DECK_TIP_Y = 470.0f * Settings.scale;
+     private BobEffect bob = new BobEffect(1.0f);
+-    private ArrayList<GameDeckGlowEffect> vfxBelow = new ArrayList();
++    private ArrayList<GameDeckGlowEffect> vfxBelow = new ArrayList<>();
+     private static final float HITBOX_W = 120.0f * Settings.scale;
+     private static final float HITBOX_W2 = 450.0f * Settings.scale;
+     private Hitbox hitbox = new Hitbox(0.0f, 0.0f, HITBOX_W, HITBOX_W);
+@@ -81,9 +68,6 @@
+             this.bannerHitbox.update();
+             this.updatePop();
+         }
+-        if (!this.hitbox.justHovered || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE) {
+-            // empty if block
+-        }
+         if (this.hitbox.hovered) {
+             if (!AbstractDungeon.isScreenUp) {
+                 AbstractDungeon.overlayMenu.hoveredTip = true;
+@@ -91,12 +75,14 @@
              if (InputHelper.justClickedLeft && AbstractDungeon.getMonsters() != null && !AbstractDungeon.isScreenUp && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.GAME_DECK_VIEW && !AbstractDungeon.getMonsters().areMonstersDead()) {
                  this.openDrawPile();
              }
@@ -498,18 +2039,87 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-25 17:03:57.549076300 -0800
-+++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-25 15:43:08.283153900 -0800
-@@ -47,6 +47,9 @@
- import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
- import java.util.ArrayList;
++++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-26 15:07:04.607091200 -0800
+@@ -3,49 +3,23 @@
+  */
+ package com.megacrit.cardcrawl.ui.panels;
  
-+// BaseMod imports
 +import basemod.DevConsole;
-+    
+ import com.badlogic.gdx.Gdx;
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+-import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+-import com.megacrit.cardcrawl.helpers.FontHelper;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+-import com.megacrit.cardcrawl.helpers.ImageMaster;
+-import com.megacrit.cardcrawl.helpers.InputHelper;
+-import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.helpers.PowerTip;
+-import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
++import com.megacrit.cardcrawl.helpers.*;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.potions.AbstractPotion;
+ import com.megacrit.cardcrawl.potions.PotionPlaceholder;
+ import com.megacrit.cardcrawl.relics.AbstractRelic;
+-import com.megacrit.cardcrawl.screens.CombatRewardScreen;
+-import com.megacrit.cardcrawl.screens.DeathScreen;
+-import com.megacrit.cardcrawl.screens.DungeonMapScreen;
+-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
+ import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
+-import com.megacrit.cardcrawl.screens.options.SettingsScreen;
+-import com.megacrit.cardcrawl.screens.select.BossRelicSelectScreen;
+-import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
+ import com.megacrit.cardcrawl.screens.stats.CharStat;
+-import com.megacrit.cardcrawl.ui.buttons.CancelButton;
+-import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
+-import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+-import java.util.ArrayList;
+ 
  public class TopPanel {
      private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Top Panel Tips");
-     public static final String[] MSG = TopPanel.tutorialStrings.TEXT;
-@@ -354,7 +357,8 @@
+@@ -142,12 +116,13 @@
+         }
+         this.ascensionHb.move(floorX + 150.0f * Settings.scale, ICON_Y + ICON_W / 2.0f);
+         if (AbstractDungeon.isAscensionMode) {
+-            this.ascensionString = "";
++            StringBuilder str = new StringBuilder();
+             for (int i = 0; i < AbstractDungeon.ascensionLevel; ++i) {
+-                this.ascensionString = this.ascensionString + CharacterSelectScreen.A_TEXT[i];
++                str.append(CharacterSelectScreen.A_TEXT[i]);
+                 if (i == AbstractDungeon.ascensionLevel - 1) continue;
+-                this.ascensionString = this.ascensionString + " NL ";
++                str.append(" NL ");
+             }
++            this.ascensionString = str.toString();
+         }
+     }
+ 
+@@ -172,9 +147,6 @@
+         this.goldHb.move(this.goldIconX + GOLD_TIP_W / 2.0f, ICON_Y + ICON_W / 2.0f);
+     }
+ 
+-    public void setDungeonName(String dungeonName) {
+-    }
+-
+     public void update() {
+         if (AbstractDungeon.screen != null && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.UNLOCK) {
+             this.updateGold();
+@@ -354,7 +326,8 @@
              this.deckButtonDisabled = true;
              this.deckHb.hovered = false;
          }
@@ -519,7 +2129,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
                  AbstractDungeon.closeCurrentScreen();
                  AbstractDungeon.deckViewScreen.open();
-@@ -413,7 +417,8 @@
+@@ -413,7 +386,8 @@
              this.mapButtonDisabled = true;
              this.mapHb.hovered = false;
          }
