@@ -1,6 +1,8 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
+Currently supported version: `[EARLY_ACCESS_13]`
+
 ## Requirements ##
 #### General Use ####
 * Java 8+
