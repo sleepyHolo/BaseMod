@@ -156,10 +156,13 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add proper support for `IntangiblePower` to be applied to players
 
 #### v1.3.0 ####
-* Update to support [EARLY_ACCESS_13]
+* Update to support `[EARLY_ACCESS_13]`
 
 #### v1.3.1 ####
 * Fix bug that prevented the `deck r` command from working
+
+#### v1.3.1a ####
+* Pull in changes from `[EARLY_ACCESS_13]` hotfix 2
 
 ## Contributors ##
 * t-larson - Original author
