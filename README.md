@@ -166,6 +166,10 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 #### v1.3.1a ####
 * Pull in changes from `[EARLY_ACCESS_13]` hotfix 2
 
+#### v1.3.2 ####
+* A lot of behind the scenes work on settings pages. 
+* MODDERS: You shouldn't try to build complex settings pages right now, its probably going to get significantly cleaned up and reworked to be more simple soon.
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes

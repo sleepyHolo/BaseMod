@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 import java.util.function.Consumer;
 
+// DEPRECATED
 public class ModButton {
     private static final float HB_SHRINK = 14.0f;
     
