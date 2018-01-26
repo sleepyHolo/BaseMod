@@ -1,19 +1,15 @@
 package basemod;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.screens.options.Slider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -40,13 +36,13 @@ public class ModPanel {
      
     public ModPanel() {
         background = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
-        buttons = new ArrayList<ModButton>();
-        labels = new ArrayList<ModLabel>();
-        sliders = new ArrayList<ModSlider>();
-        colorDisplays = new ArrayList<ModColorDisplay>();
-        images = new ArrayList<ModImage>();
+        buttons = new ArrayList<>();
+        labels = new ArrayList<>();
+        sliders = new ArrayList<>();
+        colorDisplays = new ArrayList<>();
+        images = new ArrayList<>();
         
-        state = new HashMap<String, Integer>();
+        state = new HashMap<>();
     }
     
     // DEPRECATED

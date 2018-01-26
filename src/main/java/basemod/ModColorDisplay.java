@@ -1,6 +1,5 @@
 package basemod;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +7,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.InputHelper;
+
 import java.util.function.Consumer;
 
 public class ModColorDisplay {
@@ -26,7 +26,7 @@ public class ModColorDisplay {
     
     public Consumer<ModColorDisplay> click;
     public Texture texture;
-    public Texture outline = null;
+    public Texture outline;
 
     private Hitbox hb;
     

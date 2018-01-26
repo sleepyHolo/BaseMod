@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
 
     <name>BaseMod</name>
-    <description>Provides hooks and a console</description>
+    <description>Slay the Spire mod which provides hooks and a console.</description>
 
     <dependencies>
         <dependency>

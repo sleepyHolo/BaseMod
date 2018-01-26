@@ -3,11 +3,8 @@ package basemod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.InputHelper;
-import com.megacrit.cardcrawl.helpers.MathHelper;
+import com.megacrit.cardcrawl.helpers.*;
+
 import java.util.function.Consumer;
 
 public class ModSlider {
@@ -52,7 +49,7 @@ public class ModSlider {
         
         FontHelper.renderFontCentered(sb, FontHelper.tipBodyFont, label, BG_X - 170.0f * Settings.scale, y, Color.WHITE);
         
-        String renderVal = new Integer(Math.round(value * multiplier)).toString();
+        String renderVal = Integer.toString(Math.round(value * multiplier));
         if (sliderGrabbed) {
             FontHelper.renderFontCentered(sb, FontHelper.tipBodyFont, renderVal + suffix, BG_X + 170.0f * Settings.scale, y, Settings.GREEN_TEXT_COLOR);
         } else {

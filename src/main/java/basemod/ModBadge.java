@@ -1,7 +1,7 @@
 package basemod;
 
-import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
+import basemod.interfaces.RenderSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,15 +11,12 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
-import com.megacrit.cardcrawl.screens.mainMenu.EarlyAccessPopup;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import java.util.ArrayList;
+import com.megacrit.cardcrawl.screens.mainMenu.EarlyAccessPopup;
 
 public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
     private Texture texture;
     private String modName;
-    private String author;
-    private String description;
     private String tip;
     
     private float x;
@@ -32,9 +29,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
     
     public ModBadge(Texture t, float xPos, float yPos, String name, String auth, String desc, ModPanel modSettings) {
         modName = name;
-        author = auth;
-        description = desc;
-        tip = author + " NL " + description;
+        tip = auth + " NL " + desc;
         
         texture = t;
         x = xPos;

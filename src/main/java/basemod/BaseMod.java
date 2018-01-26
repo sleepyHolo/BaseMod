@@ -1,29 +1,30 @@
 package basemod;
 
 import basemod.interfaces.*;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import java.util.Objects;
 
 public class BaseMod {
     public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
@@ -70,17 +71,17 @@ public class BaseMod {
         
         initializeGson();
         
-        modBadges = new ArrayList<ModBadge>();
-        postCampfireSubscribers = new ArrayList<PostCampfireSubscriber>();
-        postDrawSubscribers = new ArrayList<PostDrawSubscriber>();
-        postEnergyRechargeSubscribers = new ArrayList<PostEnergyRechargeSubscriber>();
-        postInitializeSubscribers = new ArrayList<PostInitializeSubscriber>();
-        preMonsterTurnSubscribers = new ArrayList<PreMonsterTurnSubscriber>();
-        renderSubscribers = new ArrayList<RenderSubscriber>();
-        postRenderSubscribers = new ArrayList<PostRenderSubscriber>();
-        preStartGameSubscribers = new ArrayList<PreStartGameSubscriber>();
-        preUpdateSubscribers = new ArrayList<PreUpdateSubscriber>();
-        postUpdateSubscribers = new ArrayList<PostUpdateSubscriber>();
+        modBadges = new ArrayList<>();
+        postCampfireSubscribers = new ArrayList<>();
+        postDrawSubscribers = new ArrayList<>();
+        postEnergyRechargeSubscribers = new ArrayList<>();
+        postInitializeSubscribers = new ArrayList<>();
+        preMonsterTurnSubscribers = new ArrayList<>();
+        renderSubscribers = new ArrayList<>();
+        postRenderSubscribers = new ArrayList<>();
+        preStartGameSubscribers = new ArrayList<>();
+        preUpdateSubscribers = new ArrayList<>();
+        postUpdateSubscribers = new ArrayList<>();
            
         console = new DevConsole();
         
@@ -116,12 +117,12 @@ public class BaseMod {
     // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
     public static void loadCustomRelicStrings(String jsonString) {
         logger.info("loadCustomRelicStrings");
-        HashMap<String, RelicStrings> customRelicStrings = new HashMap<String, RelicStrings>();
         Type relicType = new TypeToken<HashMap<String, RelicStrings>>(){}.getType();
-        customRelicStrings.putAll(gson.fromJson(jsonString, relicType));
-        
+        HashMap<String, RelicStrings> customRelicStrings = new HashMap<>(gson.fromJson(jsonString, relicType));
+
+        //noinspection unchecked
         Map<String, RelicStrings> relicStrings = (Map<String, RelicStrings>) getPrivateStatic(LocalizedStrings.class, "relics");
-        relicStrings.putAll(customRelicStrings);
+        Objects.requireNonNull(relicStrings).putAll(customRelicStrings);
         setPrivateStaticFinal(LocalizedStrings.class, "relics", relicStrings);
     }
     
@@ -362,6 +363,7 @@ public class BaseMod {
     //
     
     // getPrivateStatic - read private static variables
+    @SuppressWarnings("SameParameterValue")
     private static Object getPrivateStatic(Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
@@ -375,6 +377,7 @@ public class BaseMod {
     }
     
     // setPrivateStaticFinal - modify private static (final) variables
+    @SuppressWarnings("SameParameterValue")
     private static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
