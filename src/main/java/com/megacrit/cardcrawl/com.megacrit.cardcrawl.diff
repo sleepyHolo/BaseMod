@@ -265,7 +265,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
  }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-25 17:03:51.601863900 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-26 15:06:57.385620500 -0800
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-26 22:03:35.664850600 -0800
 @@ -3,47 +3,30 @@
   */
  package com.megacrit.cardcrawl.core;
@@ -389,17 +389,16 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
      private float debugTimer;
      public static String preferenceDir;
      private static final Logger logger;
-@@ -253,6 +211,9 @@
+@@ -253,6 +211,8 @@
              if (Settings.isDebug) {
                  CardCrawlGame.splashScreen.isDone = true;
              }
-+            
-+            // BaseMod hook
++
 +            BaseMod.publishPostInitialize();
          }
          catch (Exception e) {
              ExceptionHandler.handleException(e, logger);
-@@ -288,9 +249,9 @@
+@@ -288,9 +248,9 @@
      public void migrateHelper(String file) {
          Preferences p = Gdx.app.getPreferences(file);
          Prefs p2 = SaveHelper.getPrefs(file);
@@ -411,18 +410,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
          }
          p2.flush();
      }
-@@ -341,6 +302,10 @@
+@@ -341,6 +301,9 @@
                  }
              }
              DrawMaster.draw(this.sb);
-+            
-+            // BaseMod hook
++
 +            BaseMod.publishRender(sb);
 +
              if (CardCrawlGame.cardPopup.isOpen) {
                  cardPopup.render(this.sb);
              }
-@@ -351,6 +316,7 @@
+@@ -351,6 +314,7 @@
              if (mode != GameMode.SPLASH) {
                  this.renderBlackFadeScreen(this.sb);
                  if (this.displayCursor) {
@@ -430,18 +428,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
                      if (isPopupOpen && isPopupOpen) {
                          InputHelper.mX = popupMX;
                          InputHelper.mY = popupMY;
-@@ -372,6 +338,10 @@
+@@ -372,6 +336,9 @@
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0f, 0.0f, (float)(- Settings.VERT_LETTERBOX_AMT), (float)Settings.HEIGHT);
                  this.sb.draw(ImageMaster.WHITE_SQUARE_IMG, (float)Settings.WIDTH, 0.0f, (float)Settings.VERT_LETTERBOX_AMT, (float)Settings.HEIGHT);
              }
-+            
-+            // BaseMod hook
++
 +            BaseMod.publishPostRender(sb);
 +            
              this.sb.end();
          }
          catch (Exception e) {
-@@ -421,6 +391,7 @@
+@@ -421,6 +388,7 @@
                      dungeonTransitionScreen = new DungeonTransitionScreen("Exordium");
                      TipTracker.refresh();
                      logger.info("New Transition Screen, Tip Tracker Refresh: " + (System.currentTimeMillis() - startTime) + "ms");
@@ -449,28 +446,36 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
                      startTime = System.currentTimeMillis();
                      CardCrawlGame.fadeIn(2.0f);
                      if (queueCredits) {
-@@ -462,6 +433,9 @@
+@@ -462,6 +430,8 @@
      }
  
      public static void startNewGame(AbstractPlayer.PlayerClass c) {
-+        // BaseMod modification
 +        BaseMod.publishPreStartGame();
 +        
          sound.fadeOut(DeathScreen.STINGER_KEY, DeathScreen.STINGER_ID);
          if (AbstractDungeon.scene != null) {
              AbstractDungeon.scene.fadeOutAmbiance();
-@@ -534,6 +508,10 @@
+@@ -485,6 +455,9 @@
+             if (i.rarity == AbstractCard.CardRarity.BASIC) continue;
+             CardHelper.obtain(i.cardID, i.rarity, i.color);
+         }
++
++        BaseMod.publishStartGame();
++
+         mode = GameMode.GAMEPLAY;
+         nextDungeon = "Exordium";
+         dungeonTransitionScreen = new DungeonTransitionScreen("Exordium");
+@@ -534,6 +507,9 @@
              this.displayCursor = !this.displayCursor;
          }
          InputHelper.updateFirst();
-+        
-+        // BaseMod hook
++
 +        BaseMod.publishPreUpdate();
 +        
          if (CardCrawlGame.cardPopup.isOpen) {
              cardPopup.update();
          }
-@@ -558,13 +536,16 @@
+@@ -558,19 +534,26 @@
              case CHAR_SELECT: {
                  mainMenuScreen.update();
                  if (CardCrawlGame.mainMenuScreen.fadedOut) {
@@ -479,37 +484,58 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
 +                    AbstractDungeon.pathX = new ArrayList<>();
 +                    AbstractDungeon.pathY = new ArrayList<>();
                      if (!Settings.isTrial) {
++                        BaseMod.publishPreStartGame();
++
                          if (loadingSave && !Settings.isDailyRun) {
                              AbstractDungeon.player = CardCrawlGame.createCharacter(chosenCharacter);
                              this.loadPlayerSave(AbstractDungeon.player);
                          } else {
-+                            // BaseMod modification
-+                            BaseMod.publishPreStartGame();
-+                            
++
                              AbstractDungeon.player = CardCrawlGame.createCharacter(chosenCharacter);
                          }
++
                          for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
-@@ -629,7 +610,7 @@
+                             if (c.rarity == AbstractCard.CardRarity.BASIC) continue;
+                             CardHelper.obtain(c.cardID, c.rarity, c.color);
+                         }
++
++                        BaseMod.publishStartGame();
++
+                         mode = GameMode.GAMEPLAY;
+                         nextDungeon = "Exordium";
+                         dungeonTransitionScreen = new DungeonTransitionScreen("Exordium");
+@@ -584,7 +567,7 @@
+                         elites3Slain = 0;
+                         break;
+                     }
+-                    if (!Settings.isTrial) break;
++
+                     Settings.trialName = CardCrawlGame.trial.name;
+                     AbstractDungeon.player = CardCrawlGame.createCharacter(CardCrawlGame.trial.c);
+                     AbstractDungeon.player.maxHealth = CardCrawlGame.trial.hp;
+@@ -629,7 +612,10 @@
                              }
                          } else {
                              this.getDungeon(nextDungeon, AbstractDungeon.player);
 -                            if (!nextDungeon.equals("Exordium") || Settings.isShowBuild || !TipTracker.tips.get("NEOW_SKIP").booleanValue()) {
++
++                            BaseMod.publishStartAct();
++
 +                            if (!nextDungeon.equals("Exordium") || Settings.isShowBuild || !TipTracker.tips.get("NEOW_SKIP")) {
                                  AbstractDungeon.dungeonMapScreen.open(true);
                                  TipTracker.neverShowAgain("NEOW_SKIP");
                              }
-@@ -653,6 +634,10 @@
+@@ -653,6 +639,9 @@
                  logger.info("Unknown Game Mode: " + mode.name());
              }
          }
 +
-+        // BaseMod hook
 +        BaseMod.publishPostUpdate();
 +        
          this.updateDebugSwitch();
          InputHelper.updateLast();
          if (Settings.isInfo) {
-@@ -756,19 +741,19 @@
+@@ -756,19 +745,19 @@
          if (this.saveFile.bottled_flame != null) {
              AbstractCard c = AbstractDungeon.player.masterDeck.findCardByName(this.saveFile.bottled_flame);
              c.inBottleFlame = true;
@@ -532,7 +558,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
              ((BottledTornado)AbstractDungeon.player.getRelic("Bottled Tornado")).setDescriptionAfterLoading();
          }
          metricData.clearData();
-@@ -879,10 +864,11 @@
+@@ -879,10 +868,11 @@
      public void resize(int width, int height) {
      }
  
@@ -545,7 +571,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
                  return new Exordium(p, emptyList);
              }
              case "TheCity": {
-@@ -895,6 +881,7 @@
+@@ -895,6 +885,7 @@
          return null;
      }
  
@@ -553,7 +579,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
      public AbstractDungeon getDungeon(String key, AbstractPlayer p, SaveFile saveFile) {
          switch (key) {
              case "Exordium": {
-@@ -920,18 +907,15 @@
+@@ -920,18 +911,15 @@
  
      @Override
      public void dispose() {
@@ -575,7 +601,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
      }
  
      static {
-@@ -966,15 +950,11 @@
+@@ -966,15 +954,11 @@
          logger = LogManager.getLogger(CardCrawlGame.class.getName());
      }
  
@@ -623,12 +649,13 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      public void use(int e) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java com/megacrit/cardcrawl/dungeons/AbstractDungeon.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-25 17:03:51.984731600 -0800
-+++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-26 15:02:51.668041400 -0800
-@@ -3,18 +3,13 @@
++++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-26 23:25:57.371068000 -0800
+@@ -3,18 +3,14 @@
   */
  package com.megacrit.cardcrawl.dungeons;
  
 -import com.badlogic.gdx.Application;
++import basemod.BaseMod;
  import com.badlogic.gdx.Gdx;
 -import com.badlogic.gdx.Graphics;
  import com.badlogic.gdx.graphics.Color;
@@ -643,7 +670,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  import com.megacrit.cardcrawl.cards.AbstractCard;
  import com.megacrit.cardcrawl.cards.CardGroup;
  import com.megacrit.cardcrawl.cards.SoulGroup;
-@@ -27,34 +22,15 @@
+@@ -27,34 +23,15 @@
  import com.megacrit.cardcrawl.core.Settings;
  import com.megacrit.cardcrawl.credits.CreditsScreen;
  import com.megacrit.cardcrawl.daily.DailyMods;
@@ -680,7 +707,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  import com.megacrit.cardcrawl.metrics.Metrics;
  import com.megacrit.cardcrawl.monsters.AbstractMonster;
  import com.megacrit.cardcrawl.monsters.MonsterGroup;
-@@ -66,31 +42,10 @@
+@@ -66,31 +43,10 @@
  import com.megacrit.cardcrawl.relics.PeacePipe;
  import com.megacrit.cardcrawl.relics.Shovel;
  import com.megacrit.cardcrawl.rewards.RewardItem;
@@ -715,7 +742,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  import com.megacrit.cardcrawl.screens.options.SettingsScreen;
  import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
  import com.megacrit.cardcrawl.screens.saveAndContinue.SaveFile;
-@@ -100,11 +55,8 @@
+@@ -100,11 +56,8 @@
  import com.megacrit.cardcrawl.screens.stats.StatsScreen;
  import com.megacrit.cardcrawl.shop.ShopScreen;
  import com.megacrit.cardcrawl.ui.FtueTip;
@@ -727,7 +754,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  import com.megacrit.cardcrawl.ui.panels.TopPanel;
  import com.megacrit.cardcrawl.unlock.AbstractUnlock;
  import com.megacrit.cardcrawl.unlock.UnlockCharacterScreen;
-@@ -112,17 +64,11 @@
+@@ -112,17 +65,11 @@
  import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
  import com.megacrit.cardcrawl.vfx.GameSavedEffect;
  import com.megacrit.cardcrawl.vfx.PlayerTurnEffect;
@@ -747,7 +774,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  public abstract class AbstractDungeon {
      private static final Logger logger = LogManager.getLogger(AbstractDungeon.class.getName());
      private static final UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("AbstractDungeon");
-@@ -270,7 +216,6 @@
+@@ -270,7 +217,6 @@
          id = levelId;
          player = p;
          topPanel.setPlayerName();
@@ -755,7 +782,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          actionManager = new GameActionManager();
          overlayMenu = new OverlayMenu(p);
          dynamicBanner = new DynamicBanner();
-@@ -284,12 +229,6 @@
+@@ -284,12 +230,6 @@
          isDungeonBeaten = false;
          isScreenUp = false;
          acceptablePools.clear();
@@ -768,7 +795,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          acceptablePools.add(1);
          acceptablePools.add(2);
          AbstractDungeon.dungeonTransitionSetup();
-@@ -318,7 +257,6 @@
+@@ -301,6 +241,9 @@
+         this.initializeEventImg();
+         this.initializeShrineList();
+         this.initializeCardPools();
++
++        BaseMod.publishPostDungeonInitialize();
++
+         if (id.equals("Exordium")) {
+             screen = CurrentScreen.NONE;
+             isScreenUp = false;
+@@ -318,7 +261,6 @@
          AbstractDungeon.name = name;
          player = p;
          topPanel.setPlayerName();
@@ -776,7 +813,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          actionManager = new GameActionManager();
          overlayMenu = new OverlayMenu(p);
          dynamicBanner = new DynamicBanner();
-@@ -414,7 +352,7 @@
+@@ -346,6 +288,9 @@
+         this.initializeEventImg();
+         this.initializeShrineList();
+         this.initializeCardPools();
++
++        BaseMod.publishPostDungeonInitialize();
++
+         screen = CurrentScreen.NONE;
+         isScreenUp = false;
+         logger.info("Dungeon load time: " + (System.currentTimeMillis() - startTime) + "ms");
+@@ -414,7 +359,7 @@
                  }
              }
              if (pathY.get(i) >= 15) continue;
@@ -785,7 +832,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              if (node != null && (connectedEdge = node.getEdgeConnectedTo(map.get(pathY.get(i)).get(pathX.get(i)))) != null) {
                  connectedEdge.markAsTaken();
              }
-@@ -469,13 +407,13 @@
+@@ -469,13 +414,13 @@
          if (player.hasRelic("Membership Card")) {
              float tmp;
              shopRoomChance = tmp = shopRoomChance * 1.5f;
@@ -801,7 +848,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          map = MapGenerator.generateDungeon(mapHeight, mapWidth, mapPathDensity, mapRng);
          int count = 0;
          for (ArrayList<MapRoomNode> a : map) {
-@@ -512,7 +450,7 @@
+@@ -512,7 +457,7 @@
          logger.info(" REST (" + AbstractDungeon.toPercentage(restRoomChance) + "): " + restCount);
          int treasureCount = Math.round((float)availableRoomCount * treasureRoomChance);
          logger.info(" TRSRE (" + AbstractDungeon.toPercentage(treasureRoomChance) + "): " + treasureCount);
@@ -810,7 +857,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              eliteCount = Math.round((float)availableRoomCount * (eliteRoomChance * 2.0f));
              logger.info(" ELITE (" + AbstractDungeon.toPercentage(eliteRoomChance) + "): " + eliteCount);
          } else if (ascensionLevel >= 1) {
-@@ -541,7 +479,7 @@
+@@ -541,7 +486,7 @@
      }
  
      private static String toPercentage(float n) {
@@ -819,7 +866,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
      }
  
      private static void firstRoomLogic() {
-@@ -603,7 +541,7 @@
+@@ -603,7 +548,7 @@
      }
  
      public static ArrayList<MapRoomNode> identifyAvailableNodes(ArrayList<MapRoomNode> nodes) {
@@ -828,7 +875,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (MapRoomNode node : nodes) {
              if (!node.hasEdges()) continue;
              nodesWithEdges.add(node);
-@@ -686,6 +624,9 @@
+@@ -686,6 +631,9 @@
                  break;
              }
          }
@@ -838,7 +885,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
              int campfireCount = 0;
              for (AbstractRelic r : AbstractDungeon.player.relics) {
-@@ -752,6 +693,9 @@
+@@ -752,6 +700,9 @@
                  break;
              }
          }
@@ -848,7 +895,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          if (retVal.equals("Peace Pipe") || retVal.equals("Shovel") || retVal.equals("Girya")) {
              int campfireCount = 0;
              for (AbstractRelic r : AbstractDungeon.player.relics) {
-@@ -881,15 +825,15 @@
+@@ -881,15 +832,15 @@
      }
  
      public static AbstractCard returnTrulyRandomCard() {
@@ -867,7 +914,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
              if (c.type != type) continue;
              list.add(c);
-@@ -902,11 +846,11 @@
+@@ -902,11 +853,11 @@
              if (c.type != type) continue;
              list.add(c);
          }
@@ -881,7 +928,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
              if (c.type != type) continue;
              list.add(c);
-@@ -919,11 +863,11 @@
+@@ -919,11 +870,11 @@
              if (c.type != type) continue;
              list.add(c);
          }
@@ -895,7 +942,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (AbstractCard c : AbstractDungeon.srcCommonCardPool.group) {
              if (c.subType != subType) continue;
              list.add(c);
-@@ -936,28 +880,26 @@
+@@ -936,28 +887,26 @@
              if (c.subType != subType) continue;
              list.add(c);
          }
@@ -931,7 +978,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
      }
  
      public static AbstractCard returnTrulyRandomColorlessCardFromAvailable(AbstractCard prohibited) {
-@@ -965,7 +907,7 @@
+@@ -965,7 +914,7 @@
      }
  
      public static AbstractCard returnTrulyRandomCardFromAvailable(AbstractCard prohibited, Random rng) {
@@ -940,7 +987,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          switch (prohibited.color) {
              case COLORLESS: {
                  for (AbstractCard c : AbstractDungeon.colorlessCardPool.group) {
-@@ -992,7 +934,7 @@
+@@ -992,7 +941,7 @@
                  }
              }
          }
@@ -949,7 +996,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
      }
  
      public static AbstractCard returnTrulyRandomCardFromAvailable(AbstractCard prohibited) {
-@@ -1007,8 +949,8 @@
+@@ -1007,8 +956,8 @@
  
      public void populateFirstStrongEnemy(ArrayList<MonsterInfo> monsters, ArrayList<String> exclusions) {
          String m;
@@ -960,7 +1007,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          monsterList.add(m);
      }
  
-@@ -1074,7 +1016,7 @@
+@@ -1074,7 +1023,7 @@
      }
  
      public static AbstractCard returnRandomCurse() {
@@ -969,7 +1016,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          return CardLibrary.getCurse(1).makeCopy();
      }
  
-@@ -1086,7 +1028,7 @@
+@@ -1086,7 +1035,7 @@
          rareCardPool.clear();
          colorlessCardPool.clear();
          curseCardPool.clear();
@@ -978,7 +1025,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          switch (AbstractDungeon.player.chosenClass) {
              case IRONCLAD: {
                  this.addRedCards(tmpPool);
-@@ -1157,7 +1099,7 @@
+@@ -1157,7 +1106,7 @@
      }
  
      private void addColorlessCards() {
@@ -987,7 +1034,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
              card = c.getValue();
              if (card.color != AbstractCard.CardColor.COLORLESS || card.rarity == AbstractCard.CardRarity.BASIC) continue;
-@@ -1167,7 +1109,7 @@
+@@ -1167,7 +1116,7 @@
      }
  
      private void addCurseCards() {
@@ -996,7 +1043,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
              card = c.getValue();
              if (card.type != AbstractCard.CardType.CURSE || Objects.equals(card.cardID, "Necronomicurse")) continue;
-@@ -1177,7 +1119,7 @@
+@@ -1177,7 +1126,7 @@
      }
  
      private void addRedCards(ArrayList<AbstractCard> tmpPool) {
@@ -1005,7 +1052,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
              card = c.getValue();
              if (card.color != AbstractCard.CardColor.RED || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
-@@ -1186,7 +1128,7 @@
+@@ -1186,7 +1135,7 @@
      }
  
      private void addGreenCards(ArrayList<AbstractCard> tmpPool) {
@@ -1014,7 +1061,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
              card = c.getValue();
              if (card.color != AbstractCard.CardColor.GREEN || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
-@@ -1195,7 +1137,7 @@
+@@ -1195,7 +1144,7 @@
      }
  
      private void addBlueCards(ArrayList<AbstractCard> tmpPool) {
@@ -1023,7 +1070,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
              card = c.getValue();
              if (card.color != AbstractCard.CardColor.BLUE || card.rarity == AbstractCard.CardRarity.BASIC || UnlockTracker.isCardLocked(c.getKey()) && !Settings.isDailyRun) continue;
-@@ -1310,7 +1252,7 @@
+@@ -1310,7 +1259,7 @@
      }
  
      public static ArrayList<AbstractCard> getBossRewardCards() {
@@ -1032,7 +1079,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          int numCards = 3;
          if (player.hasRelic("Question Card")) {
              numCards = 4;
-@@ -1339,12 +1281,12 @@
+@@ -1339,12 +1288,12 @@
                  }
              }
              while (retVal.contains(card)) {
@@ -1047,7 +1094,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (AbstractCard c : retVal) {
              retVal2.add(c.makeCopy());
          }
-@@ -1352,26 +1294,24 @@
+@@ -1352,26 +1301,24 @@
      }
  
      public static ArrayList<AbstractCard> getRewardCards() {
@@ -1082,7 +1129,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
                      if ((cardBlizzRandomizer -= cardBlizzGrowth) > cardBlizzMaxOffset) break;
                      cardBlizzRandomizer = cardBlizzMaxOffset;
                      break;
-@@ -1380,33 +1320,15 @@
+@@ -1380,33 +1327,15 @@
                      logger.info("WTF?");
                  }
              }
@@ -1122,7 +1169,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          for (AbstractCard c : retVal) {
              retVal2.add(c.makeCopy());
          }
-@@ -1475,8 +1397,9 @@
+@@ -1475,8 +1404,9 @@
      }
  
      public static AbstractCard getCardFromPool(AbstractCard.CardRarity rarity, AbstractCard.CardType type, boolean useRng) {
@@ -1133,7 +1180,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              case RARE: {
                  retVal = rareCardPool.getRandomCard(type, useRng);
                  if (retVal != null) {
-@@ -1517,8 +1440,9 @@
+@@ -1517,8 +1447,9 @@
      }
  
      public static AbstractCard getColorlessCardFromPool(AbstractCard.CardRarity rarity) {
@@ -1144,7 +1191,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              case RARE: {
                  retVal = colorlessCardPool.getRandomCard(true, rarity);
                  if (retVal != null) {
-@@ -1577,33 +1501,40 @@
+@@ -1577,33 +1508,40 @@
                  logger.info("ERROR: Rarity incorrectly specified: " + rarity.name());
                  break block15;
              }
@@ -1205,7 +1252,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
      }
  
      public static AbstractCard.CardRarity rollRarity() {
-@@ -1696,7 +1627,8 @@
+@@ -1696,7 +1634,8 @@
          GameActionManager.turn = 1;
          if (!CardCrawlGame.loadingSave) {
              this.incrementFloorBasedMetrics();
@@ -1215,7 +1262,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
                  TipTracker.neverShowAgain("INTENT_TIP");
              }
              StatsScreen.incrementFloorClimbed();
-@@ -1804,8 +1736,7 @@
+@@ -1804,8 +1743,7 @@
      }
  
      public static AbstractEvent getShrine() {
@@ -1225,7 +1272,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          Iterator<String> iterator = specialOneTimeEventList.iterator();
          block16 : while (iterator.hasNext()) {
              String e;
-@@ -1843,7 +1774,7 @@
+@@ -1843,7 +1781,7 @@
              }
              tmp.add(e);
          }
@@ -1234,7 +1281,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          shrineList.remove(tmpKey);
          specialOneTimeEventList.remove(tmpKey);
          logger.info("Removed event: " + tmpKey + " from pool.");
-@@ -1851,7 +1782,7 @@
+@@ -1851,7 +1789,7 @@
      }
  
      public static AbstractEvent getEvent() {
@@ -1243,7 +1290,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          Iterator<String> iterator = eventList.iterator();
          block10 : while (iterator.hasNext()) {
              String e;
-@@ -1877,7 +1808,7 @@
+@@ -1877,7 +1815,7 @@
          if (tmp.isEmpty()) {
              return AbstractDungeon.getShrine();
          }
@@ -1252,7 +1299,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          eventList.remove(tmpKey);
          logger.info("Removed event: " + tmpKey + " from pool.");
          return EventHelper.getEvent(tmpKey);
-@@ -2386,7 +2317,7 @@
+@@ -2386,7 +2324,7 @@
          eliteMonsterList.clear();
          bossList.clear();
          AbstractRoom.blizzardPotionMod = 0;
@@ -1261,7 +1308,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
              if (ascensionLevel >= 5) {
                  player.heal(MathUtils.round((float)(AbstractDungeon.player.maxHealth - AbstractDungeon.player.currentHealth) * 0.75f), false);
              } else {
-@@ -2490,7 +2421,7 @@
+@@ -2490,7 +2428,7 @@
  
      static {
          floorNum = 0;
@@ -1270,7 +1317,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          shrineChance = 0.25f;
          firstChest = true;
          encounteredCursedChest = false;
-@@ -2505,30 +2436,30 @@
+@@ -2505,30 +2443,30 @@
          commonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
          uncommonCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
          rareCardPool = new CardGroup(CardGroup.CardGroupType.CARD_POOL);
@@ -1319,7 +1366,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          topGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
          botGradientColor = new Color(1.0f, 1.0f, 1.0f, 0.25f);
          floorY = 340.0f * Settings.scale;
-@@ -2555,24 +2486,20 @@
+@@ -2555,24 +2493,20 @@
          cardBlizzRandomizer = AbstractDungeon.cardBlizzStartOffset = 5;
          cardBlizzGrowth = 1;
          cardBlizzMaxOffset = -40;
@@ -1348,7 +1395,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
          NONE,
          MASTER_DECK_VIEW,
          SETTINGS,
-@@ -2592,11 +2519,7 @@
+@@ -2592,11 +2526,7 @@
          VICTORY,
          UNLOCK,
          CREDITS,

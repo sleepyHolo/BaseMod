@@ -31,7 +31,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.3.3 NL Provides hooks and a console";
+    private static final String DESCRIPTION = "v1.3.4 NL Provides hooks and a console.";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
@@ -42,14 +42,17 @@ public class BaseMod {
     private static InputProcessor oldInputProcessor = null;
     
     private static ArrayList<ModBadge> modBadges;
+    private static ArrayList<StartActSubscriber> startActSubscribers;
     private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
     private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
+    private static ArrayList<PostDungeonInitializeSubscriber> postDungeonInitializeSubscribers;
     private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
     private static ArrayList<PreMonsterTurnSubscriber> preMonsterTurnSubscribers;
     private static ArrayList<RenderSubscriber> renderSubscribers;
     private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
     private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
+    private static ArrayList<StartGameSubscriber> startGameSubscribers;
     private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
     private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;  
     
@@ -72,14 +75,17 @@ public class BaseMod {
         initializeGson();
         
         modBadges = new ArrayList<>();
+        startActSubscribers = new ArrayList<>();
         postCampfireSubscribers = new ArrayList<>();
         postDrawSubscribers = new ArrayList<>();
+        postDungeonInitializeSubscribers = new ArrayList<>();
         postEnergyRechargeSubscribers = new ArrayList<>();
         postInitializeSubscribers = new ArrayList<>();
         preMonsterTurnSubscribers = new ArrayList<>();
         renderSubscribers = new ArrayList<>();
         postRenderSubscribers = new ArrayList<>();
         preStartGameSubscribers = new ArrayList<>();
+        startGameSubscribers = new ArrayList<>();
         preUpdateSubscribers = new ArrayList<>();
         postUpdateSubscribers = new ArrayList<>();
            
@@ -101,10 +107,10 @@ public class BaseMod {
     public static void registerModBadge(Texture t, String name, String author, String desc, ModPanel settingsPanel) {
         logger.info("registerModBadge : " + name);
         int modBadgeCount = modBadges.size();
-        int col = (modBadgeCount%BADGES_PER_ROW);
-        int row = (modBadgeCount/BADGES_PER_ROW);
-        float x = (BADGES_X*Settings.scale) + (col*BADGE_W*Settings.scale);
-        float y = (BADGES_Y*Settings.scale) - (row*BADGE_H*Settings.scale);
+        int col = (modBadgeCount % BADGES_PER_ROW);
+        int row = (modBadgeCount / BADGES_PER_ROW);
+        float x = (BADGES_X * Settings.scale) + (col * BADGE_W * Settings.scale);
+        float y = (BADGES_Y * Settings.scale) - (row * BADGE_H * Settings.scale);
         
         ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
         modBadges.add(badge);
@@ -129,7 +135,15 @@ public class BaseMod {
     //
     // Publishers
     //
-    
+
+    // publishStartAct -
+    public static void publishStartAct() {
+        logger.info("publishStartAct");
+        for (StartActSubscriber sub : startActSubscribers) {
+            sub.receiveStartAct();
+        }
+    }
+
     // publishPostCampfire - false allows an additional option to be selected
     public static boolean publishPostCampfire() {
         logger.info("publishPostCampfire");
@@ -152,7 +166,16 @@ public class BaseMod {
             sub.receivePostDraw(c);
         }
     }
-    
+
+    // publishPostDungeonInitialize -
+    public static void publishPostDungeonInitialize() {
+        logger.info("publishPostDungeonInitialize");
+
+        for (PostDungeonInitializeSubscriber sub : postDungeonInitializeSubscribers) {
+            sub.receivePostDungeonInitialize();
+        }
+    }
+
     // publishPostEnergyRecharge -
     public static void publishPostEnergyRecharge() {
         logger.info("publishPostEnergyRecharge");
@@ -231,15 +254,22 @@ public class BaseMod {
     public static void publishPreStartGame() {
         logger.info("publishPreStartGame");
         
-        // BaseMod pre start game handling
-        mapPathDensityMultiplier = 1.0f;
-        
         // Publish
         for (PreStartGameSubscriber sub : preStartGameSubscribers) {
             sub.receivePreStartGame();
         }
     }
-    
+
+    public static void publishStartGame() {
+        logger.info("publishStartGame");
+
+        for (StartGameSubscriber sub : startGameSubscribers) {
+            sub.receiveStartGame();
+        }
+
+        logger.info("mapDensityMultiplier: " + mapPathDensityMultiplier);
+    }
+
     // publishPreUpdate -
     public static void publishPreUpdate() {
         for (PreUpdateSubscriber sub : preUpdateSubscribers) {
@@ -257,7 +287,17 @@ public class BaseMod {
     //
     // Subsciption handlers
     //
-    
+
+    // subscribeToStartAct -
+    public static void subscribeToStartAct(StartActSubscriber sub) {
+        startActSubscribers.add(sub);
+    }
+
+    // unsubscribeFromStartAct -
+    public static void unsubscribeFromStartAct(StartActSubscriber sub) {
+        startActSubscribers.remove(sub);
+    }
+
     // subscribeToPostCampfire -
     public static void subscribeToPostCampfire(PostCampfireSubscriber sub) {
         postCampfireSubscribers.add(sub);
@@ -277,7 +317,17 @@ public class BaseMod {
     public static void unsubscribeFromPostDraw(PostDrawSubscriber sub) {
         postDrawSubscribers.remove(sub);
     }
-    
+
+    // subscribeToPostDungeonInitialize -
+    public static void subscribeToPostDungeonInitialize(PostDungeonInitializeSubscriber sub) {
+        postDungeonInitializeSubscribers.add(sub);
+    }
+
+    // unsubcribeFromPostDungeonInitialize -
+    public static void unsubscribeFromPostDungeonInitialize(PostDungeonInitializeSubscriber sub) {
+        postDungeonInitializeSubscribers.remove(sub);
+    }
+
     // subscribeToPostEnergyRecharge -
     public static void subscribeToPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
         postEnergyRechargeSubscribers.add(sub);
@@ -327,7 +377,17 @@ public class BaseMod {
     public static void unsubscribeFromPostRender(PostRenderSubscriber sub) {
         postRenderSubscribers.remove(sub);
     }
-    
+
+    // subscribeToStartGame -
+    public static void subscribeToStartGame(StartGameSubscriber sub) {
+        startGameSubscribers.add(sub);
+    }
+
+    // unsubscribeFromStartGame -
+    public static void unsubscribeFromStartGame(StartGameSubscriber sub) {
+        startGameSubscribers.remove(sub);
+    }
+
     // subscribeToPreStartGame -
     public static void subscribeToPreStartGame(PreStartGameSubscriber sub) {
         preStartGameSubscribers.add(sub);

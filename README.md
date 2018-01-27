@@ -47,21 +47,24 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 
 #### Subscriptions ####
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
-* `void receivePostDraw(AbstractCard)` - After a card is drawn
-* `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged
-* `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`
+* `boolean receivePostCampfire()` - After a campfire action is performed. Returning false will allow another action to be performed.
+* `void receivePostDraw(AbstractCard)` - After a card is drawn.
+* `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged.
+* `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`.
 * `boolean receivePreMonsterTurn(AbstractMonster)` - Before each monster takes its turn. Returning false will skip the monsters turn.
-* `void receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else
-* `void receivePostRender(SpriteBatch)` - Above everything
-* `void receivePreStartGame()` - When starting a new game, before generating the dungeon
-* `void receivePreUpdate()` - Immediately after input is handled
-* `void receivePostUpdate()` - Immediately before input is disposed
+* `void receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else.
+* `void receivePostRender(SpriteBatch)` - Above everything.
+* `void receivePreStartGame()` - When starting a new game, before generating/loading the player.
+* `void receiveStartGame()` - When starting a new game or continuing, after generating/loading the player and before dungeon generation.
+* `void receivePreUpdate()` - Immediately after input is read.
+* `void receivePostUpdate()` - Immediately before input is disposed.
 
 ### Mod Badges ###
 32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
 * `BaseMod.registerModBadge(Texture texture, String modName, String author, String description, ModPanel settingsPanel)`
 * `ModPanel.addButton(float x, float y, Consumer<ModButton> clickEvent)`
 * `ModPanel.addLabel(String text, float x, float y, Consumer<ModLabel> updateEvent)`
+* There is more here, but it is a big mess and is going to be cleaned up soon.
 
 Example of setting up a basic mod badge with settings panel:
 
@@ -174,6 +177,15 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Fix non-id parameters on commands being cases sensitive
 * Change backspace behavior on console
 * Fix scaling for new settings panel elements introduced in v1.3.2
+
+#### v1.3.4 ####
+* Add `StartActSubscriber` interface and related code
+* Add `PostDungeonInitializeSubscriber` interface and related code
+* Add `StartGameSubscriber` interface and related code
+* Fix bug that would prevent `publishPreStartGame()` from occuring in some cases
+* Cleanup/refactor part 1
+* Add IDEA project files
+* Remove `_build.bat` since this can be automated in IDEA
 
 ## Contributors ##
 * t-larson - Original author
