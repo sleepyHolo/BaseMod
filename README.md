@@ -49,6 +49,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
 * `boolean receivePostCampfire()` - After a campfire action is performed. Returning false will allow another action to be performed.
 * `void receivePostDraw(AbstractCard)` - After a card is drawn.
+* `void receivePostDungeonInitialize()` - After dungeon initialization completes.
 * `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged.
 * `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`.
 * `boolean receivePreMonsterTurn(AbstractMonster)` - Before each monster takes its turn. Returning false will skip the monsters turn.
