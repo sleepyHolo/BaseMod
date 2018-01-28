@@ -184,9 +184,12 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `PostDungeonInitializeSubscriber` interface and related code
 * Add `StartGameSubscriber` interface and related code
 * Fix bug that would prevent `publishPreStartGame()` from occuring in some cases
-* Cleanup/refactor part 1
+* Cleanup part 1
 * Add IDEA project files
 * Remove `_build.bat` since this can be automated in IDEA
+
+#### v1.3.5 ####
+* Add support for CustomRelic outline images
 
 ## Contributors ##
 * t-larson - Original author
