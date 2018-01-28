@@ -11,14 +11,15 @@ Currently supported version: `[EARLY_ACCESS_013]`
 * Java 8
 * Maven
 * CFR 124 (run this with Java 8, doesn't work well with 9)
+* ModTheSpireLib (https://github.com/kiooeht/ModTheSpireLib)
 
 ## Building ##
-1. Decompile the `com.megacrit.cardcrawl` package from `desktop-1.0.jar`
-2. Put the decompiled files in `../_lib/decompiled` relative to the repo
+1. (If you haven't already) `mvn install` ModTheSpireLib. Altenatively, modify pom.xml to point to a local copy of the JAR.
+2. Copy `desktop-1.0.jar` from your Slay the Spire folder into `../_lib` relative to the repo.
 3. Run `mvn package`
 
 ## Installation ##
-1. Copy `target/BaseMod.jar` to your ModTheSpire mods directory.
+1. Copy `target/BaseMod.jar` to your ModTheSpire mods directory. Maven will automatically do this after packaging if your mods directory is located at `../_ModTheSpire/mods` relative to the repo.
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.

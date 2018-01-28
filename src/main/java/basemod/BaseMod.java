@@ -35,7 +35,7 @@ public class BaseMod {
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.3.4 NL Provides hooks and a console.";
+    private static final String DESCRIPTION = "v1.3.6 NL Provides hooks and a console.";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
