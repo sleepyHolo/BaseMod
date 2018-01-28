@@ -191,6 +191,9 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 #### v1.3.5 ####
 * Add support for CustomRelic outline images
 
+#### v1.3.6 ####
+* Prevent Girya from stacking above 3 if `receivePostCampfire()` returns false
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes

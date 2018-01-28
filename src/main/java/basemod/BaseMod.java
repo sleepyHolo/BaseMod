@@ -7,14 +7,18 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.rooms.CampfireUI;
+import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -100,7 +104,7 @@ public class BaseMod {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
     }
-    
+
     //
     // Mod badges
     //
@@ -424,7 +428,7 @@ public class BaseMod {
     
     // getPrivateStatic - read private static variables
     @SuppressWarnings("SameParameterValue")
-    private static Object getPrivateStatic(Class objClass, String fieldName) {
+    public static Object getPrivateStatic(Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
@@ -438,7 +442,7 @@ public class BaseMod {
     
     // setPrivateStaticFinal - modify private static (final) variables
     @SuppressWarnings("SameParameterValue")
-    private static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
+    public static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             
@@ -450,6 +454,31 @@ public class BaseMod {
             targetField.set(null, newValue);
         } catch (Exception e) {
             logger.error("Exception occured when setting private static (final) field " + fieldName + " of " + objClass.getName(), e);
+        }
+    }
+
+    // getPrivate - read private varibles of an object
+    @SuppressWarnings("SameParameterValue")
+    public static Object getPrivate(Object obj, Class objClass, String fieldName) {
+        try {
+            Field targetField = objClass.getDeclaredField(fieldName);
+            targetField.setAccessible(true);
+            return targetField.get(obj);
+        } catch (Exception e) {
+            logger.error("Exception occured when getting private field " + fieldName + " of " + objClass.getName(), e);
+        }
+
+        return null;
+    }
+    @SuppressWarnings("SameParameterValue")
+    // setPrivate - set private variables of an object
+    public static void setPrivate(Object obj, Class objClass, String fieldName, Object newValue) {
+        try {
+            Field targetField = objClass.getDeclaredField(fieldName);
+            targetField.setAccessible(true);
+            targetField.set(obj, newValue);
+        } catch (Exception e) {
+            logger.error("Exception occured when setting private field " + fieldName + " of " + objClass.getName(), e);
         }
     }
 }
