@@ -1,6 +1,6 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java com/megacrit/cardcrawl/characters/AbstractPlayer.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-25 17:03:51.334096300 -0800
-+++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-26 14:49:36.764862200 -0800
++++ com/megacrit/cardcrawl/characters/AbstractPlayer.java	2018-01-28 21:51:47.203684500 -0800
 @@ -3,89 +3,50 @@
   */
  package com.megacrit.cardcrawl.characters;
@@ -265,7 +265,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/characters/AbstractPlay
  }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java com/megacrit/cardcrawl/core/CardCrawlGame.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-25 17:03:51.601863900 -0800
-+++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-26 22:03:35.664850600 -0800
++++ com/megacrit/cardcrawl/core/CardCrawlGame.java	2018-01-28 21:51:47.208689300 -0800
 @@ -3,47 +3,30 @@
   */
  package com.megacrit.cardcrawl.core;
@@ -621,7 +621,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/CardCrawlGame.java
  }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java com/megacrit/cardcrawl/core/EnergyManager.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-25 17:03:51.605367400 -0800
-+++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-26 14:33:36.239969900 -0800
++++ com/megacrit/cardcrawl/core/EnergyManager.java	2018-01-28 21:51:47.211693400 -0800
 @@ -3,13 +3,9 @@
   */
  package com.megacrit.cardcrawl.core;
@@ -649,7 +649,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/core/EnergyManager.java
      public void use(int e) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java com/megacrit/cardcrawl/dungeons/AbstractDungeon.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-25 17:03:51.984731600 -0800
-+++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-26 23:25:57.371068000 -0800
++++ com/megacrit/cardcrawl/dungeons/AbstractDungeon.java	2018-01-28 21:51:47.218699000 -0800
 @@ -3,18 +3,14 @@
   */
  package com.megacrit.cardcrawl.dungeons;
@@ -1410,7 +1410,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/dungeons/AbstractDungeo
  }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-25 17:03:53.696876600 -0800
-+++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-26 15:06:57.391124700 -0800
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-01-28 21:51:47.222888900 -0800
 @@ -3,28 +3,29 @@
   */
  package com.megacrit.cardcrawl.map;
@@ -1562,7 +1562,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
      private static int randRange(Random rng, int min, int max) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-25 17:03:53.878551100 -0800
-+++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-26 14:43:20.613986200 -0800
++++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-01-28 21:51:47.226522100 -0800
 @@ -3,31 +3,27 @@
   */
  package com.megacrit.cardcrawl.monsters;
@@ -1697,7 +1697,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.j
          }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java com/megacrit/cardcrawl/powers/IntangiblePower.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-25 17:03:54.909541500 -0800
-+++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-26 14:34:04.619555600 -0800
++++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-01-28 21:51:47.230025700 -0800
 @@ -3,19 +3,15 @@
   */
  package com.megacrit.cardcrawl.powers;
@@ -1740,7 +1740,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.
          if (damage > 0.0f) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-25 17:03:57.241281400 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-26 14:34:12.137250000 -0800
++++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-01-28 21:51:47.233770300 -0800
 @@ -3,14 +3,11 @@
   */
  package com.megacrit.cardcrawl.ui.buttons;
@@ -1791,7 +1791,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-25 17:03:57.298836100 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-26 14:43:20.534216800 -0800
++++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-01-28 21:51:47.236772600 -0800
 @@ -3,32 +3,22 @@
   */
  package com.megacrit.cardcrawl.ui.buttons;
@@ -1886,7 +1886,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
              }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-25 17:03:57.399933400 -0800
-+++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-26 14:34:21.695347400 -0800
++++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-01-28 21:51:47.240288800 -0800
 @@ -3,11 +3,10 @@
   */
  package com.megacrit.cardcrawl.ui.campfire;
@@ -1923,7 +1923,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCam
  
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-25 17:03:57.447979600 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-26 14:47:15.481301400 -0800
++++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-01-28 21:51:47.243335000 -0800
 @@ -3,36 +3,24 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
@@ -2004,7 +2004,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-25 17:03:57.460491700 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-26 14:47:15.451838300 -0800
++++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-01-28 21:51:47.246338000 -0800
 @@ -3,39 +3,26 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
@@ -2086,7 +2086,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  InputHelper.justClickedLeft = false;
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-25 17:03:57.549076300 -0800
-+++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-26 15:07:04.607091200 -0800
++++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-01-28 21:51:47.249385100 -0800
 @@ -3,49 +3,23 @@
   */
  package com.megacrit.cardcrawl.ui.panels;

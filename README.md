@@ -16,7 +16,9 @@ Currently supported version: `[EARLY_ACCESS_013]`
 ## Building ##
 1. (If you haven't already) `mvn install` ModTheSpireLib. Altenatively, modify pom.xml to point to a local copy of the JAR.
 2. Copy `desktop-1.0.jar` from your Slay the Spire folder into `../_lib` relative to the repo.
-3. Run `mvn package`
+3. Decompile `desktop-1.0.jar` with `java -jar "cfr_0_124.jar" --comments false --showversion false --caseinsensitivefs true --outputdir "decompiled" --jarfilter com.megacrit.cardcrawl.* "desktop-1.0.jar"`
+4. Run `_patch.bat` to automatically apply diffs
+5. Run `mvn package`
 
 ## Installation ##
 1. Copy `target/BaseMod.jar` to your ModTheSpire mods directory. Maven will automatically do this after packaging if your mods directory is located at `../_ModTheSpire/mods` relative to the repo.
