@@ -208,7 +208,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                     multiDamage[i] = 999;
                 }
                 
-                AbstractDungeon.actionManager.addToBottom(new DamageAllEnemiesAction(AbstractDungeon.player, multiDamage, DamageInfo.DamageType.HP_LOSS, AbstractGameAction.AttackEffect.NONE));
+                AbstractDungeon.actionManager.addToTop(new DamageAllEnemiesAction(AbstractDungeon.player, multiDamage, DamageInfo.DamageType.HP_LOSS, AbstractGameAction.AttackEffect.NONE));
             }
         }
     }

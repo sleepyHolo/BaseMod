@@ -197,6 +197,11 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 #### v1.3.6 ####
 * Prevent Girya from stacking above 3 if `receivePostCampfire()` returns false
 
+#### v1.4.0 ####
+* Update to support `[EARLY_ACCESS_14]`
+* Mostly switch to using SpirePatch for inserting hooks
+* Speed up `kill all` command
+
 ## Contributors ##
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes

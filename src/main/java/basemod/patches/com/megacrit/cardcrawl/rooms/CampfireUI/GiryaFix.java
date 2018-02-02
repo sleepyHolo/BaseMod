@@ -1,4 +1,4 @@
-package basemod.patches;
+package basemod.patches.com.megacrit.cardcrawl.rooms.CampfireUI;
 
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
