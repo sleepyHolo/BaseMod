@@ -1,11 +1,12 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
-Currently supported version: `[EARLY_ACCESS_013]`
+Currently supported version: `[EARLY_ACCESS_014]`
 
 ## Requirements ##
 #### General Use ####
 * Java 8+
+* ModTheSpire v2.1.0+ (https://github.com/kiooeht/ModTheSpire/releases)
 
 #### Development ####
 * Java 8
@@ -201,6 +202,9 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Update to support `[EARLY_ACCESS_14]`
 * Mostly switch to using SpirePatch for inserting hooks
 * Speed up `kill all` command
+
+#### v1.4.1 ####
+* Add `kill self` command
 
 ## Contributors ##
 * t-larson - Original author

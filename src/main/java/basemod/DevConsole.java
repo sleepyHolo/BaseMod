@@ -16,9 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
-import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
-import com.megacrit.cardcrawl.actions.common.DrawCardAction;
-import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
+import com.megacrit.cardcrawl.actions.common.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.Settings;
@@ -200,15 +198,17 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             if (tokens.length != 2) {
                 return;
             }
-            
+
             if (tokens[1].toLowerCase().equals("all")) {
                 int monsterCount = AbstractDungeon.getCurrRoom().monsters.monsters.size();
                 int[] multiDamage = new int[monsterCount];
                 for (int i = 0; i < monsterCount; ++i) {
                     multiDamage[i] = 999;
                 }
-                
+
                 AbstractDungeon.actionManager.addToTop(new DamageAllEnemiesAction(AbstractDungeon.player, multiDamage, DamageInfo.DamageType.HP_LOSS, AbstractGameAction.AttackEffect.NONE));
+            } else if (tokens[1].toLowerCase().equals("self")) {
+                AbstractDungeon.actionManager.addToBottom(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, 999));
             }
         }
     }
