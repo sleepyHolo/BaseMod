@@ -19,10 +19,15 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.map.MapEdge;
+import com.megacrit.cardcrawl.map.MapRoomNode;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import org.apache.logging.log4j.LogManager;
@@ -100,6 +105,14 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             }
             case "draw": {
                 cmdDraw(tokens);
+                break;
+            }
+            case "fight": {
+                cmdFight(tokens);
+                break;
+            }
+            case "potion": {
+                cmdPotion(tokens);
                 break;
             }
             default: {
@@ -208,7 +221,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
 
                 AbstractDungeon.actionManager.addToTop(new DamageAllEnemiesAction(AbstractDungeon.player, multiDamage, DamageInfo.DamageType.HP_LOSS, AbstractGameAction.AttackEffect.NONE));
             } else if (tokens[1].toLowerCase().equals("self")) {
-                AbstractDungeon.actionManager.addToBottom(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, 999));
+                AbstractDungeon.actionManager.addToTop(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, 999));
             }
         }
     }
@@ -291,6 +304,56 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             
             AbstractDungeon.actionManager.addToTop(new DrawCardAction(AbstractDungeon.player, ConvertHelper.tryParseInt(tokens[1], 0)));
         }
+    }
+
+
+    private static void cmdFight(String[] tokens) {
+        if (tokens.length < 2) {
+            return;
+        }
+
+        String[] encounterArray = Arrays.copyOfRange(tokens, 1, tokens.length);
+        String encounterName = String.join(" ", encounterArray);
+        AbstractDungeon.monsterList.add(0, encounterName);
+
+        MapRoomNode cur = AbstractDungeon.currMapNode;
+        MapRoomNode node = new MapRoomNode(cur.x, cur.y);
+        node.room = new MonsterRoom();
+
+        ArrayList<MapEdge> curEdges = cur.getEdges();
+        for (MapEdge edge : curEdges) {
+            node.addEdge(edge);
+        }
+
+        AbstractDungeon.nextRoom = node;
+        AbstractDungeon.nextRoomTransitionStart();
+    }
+
+    private static void cmdPotion(String[] tokens) {
+        if (tokens.length != 3) {
+            return;
+        }
+
+        int i;
+        try {
+            i = Integer.parseInt(tokens[1]);
+        } catch (Exception e) {
+            return;
+        }
+
+        AbstractPotion p = PotionHelper.getPotion(tokens[2] + " Potion");
+
+        if (p == null) {
+            return;
+        }
+
+        CardCrawlGame.sound.play("POTION_1");
+        p.moveInstantly(AbstractDungeon.player.potions[i].currentX, AbstractDungeon.player.potions[i].currentY);
+        p.isObtained = true;
+        p.isDone = true;
+        p.isAnimating = false;
+        p.flash();
+        AbstractDungeon.player.potions[i] = p;
     }
     
     public void receivePostEnergyRecharge() {

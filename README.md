@@ -32,6 +32,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `energy add [amount]` gain energy
 * `energy inf` toggles infinite energy
 * `energy r [amount]` lose energy
+* `fight [name]` enter combat with the specified encounter
 * `gold add [amount]` gain gold
 * `gold r [amount]` lose gold
 * `hand add [id] {upgrades}` add card to hand with (optional: integer # of upgrades)
@@ -40,6 +41,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `info` toggle Settings.isInfo
 * `kill all` kills all enemies in the current combat
 * `kill self` kills your character
+* `potion [pos] [id]` gain specified potion in specified slot
 * `relic add [id]` generate relic
 * `relic list` logs all relic pools
 * `relic r [id]` lose relic
@@ -210,6 +212,11 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 #### v1.4.2 ####
 * Add support for adding custom localization strings of any type
 * Code cleanup
+
+#### v1.4.3 ####
+* Add `potion` command
+* Add `fight` command
+* Speed up `kill self` command
 
 ## Contributors ##
 * t-larson - Original author
