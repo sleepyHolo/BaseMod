@@ -39,6 +39,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `hand r [id]` exhaust card from hand
 * `info` toggle Settings.isInfo
 * `kill all` kills all enemies in the current combat
+* `kill self` kills your character
 * `relic add [id]` generate relic
 * `relic list` logs all relic pools
 * `relic r [id]` lose relic
@@ -205,6 +206,10 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 
 #### v1.4.1 ####
 * Add `kill self` command
+
+#### v1.4.2 ####
+* Add support for adding custom localization strings of any type
+* Code cleanup
 
 ## Contributors ##
 * t-larson - Original author

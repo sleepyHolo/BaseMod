@@ -7,18 +7,13 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.rooms.CampfireUI;
-import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,23 +23,25 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class BaseMod {
     public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
     
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.3.6 NL Provides hooks and a console.";
+    private static final String DESCRIPTION = "v1.4.2 NL Provides hooks and a console.";
     
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
     private static final float BADGES_Y = 250.0f;
     public static final float BADGE_W = 40.0f;
     public static final float BADGE_H = 40.0f;
-    
+
     private static InputProcessor oldInputProcessor = null;
-    
+
+    private static HashMap<Type, String> typeMaps;
+    private static HashMap<Type, Type> typeTokens;
+
     private static ArrayList<ModBadge> modBadges;
     private static ArrayList<StartActSubscriber> startActSubscribers;
     private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
@@ -62,23 +59,80 @@ public class BaseMod {
     
     public static DevConsole console;
     public static Gson gson;
-    
     public static boolean modSettingsUp = false;
     
     // Map generation
     public static float mapPathDensityMultiplier = 1.0f;
-    public static int mapFirstEliteCampfireRoom = 4;
-    public static int mapLastCampfireRoom = 13;
-    public static int mapTreasureRoom = 8;
+
+    // Not implemented
+    //public static int mapFirstEliteCampfireRoom = 4;
+    //public static int mapLastCampfireRoom = 13;
+    //public static int mapTreasureRoom = 8;
+    
+    // 
+    // Initialization
+    //
     
     // initialize -
     public static void initialize() {
         logger.info("========================= BASEMOD INIT =========================");
         logger.info("isModded: " + Settings.isModded);
-        
-        initializeGson();
-        
+
         modBadges = new ArrayList<>();
+
+        initializeGson();
+        initializeTypeMaps();
+        initializeSubscriptions();
+
+        console = new DevConsole();
+        
+        logger.info("================================================================");
+    }
+    
+    // initializeGson -
+    private static void initializeGson() {
+        logger.info("initializeGson");
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
+    }
+
+    // initializeTypeTokens -
+    private static void initializeTypeMaps() {
+        logger.info("initializeTypeMaps");
+
+        typeMaps = new HashMap<>();
+        typeMaps.put(AchievementStrings.class, "acheivements");
+        typeMaps.put(CardStrings.class, "cards");
+        typeMaps.put(CharacterStrings.class, "characters");
+        typeMaps.put(CreditStrings.class, "credits");
+        typeMaps.put(EventStrings.class, "events");
+        typeMaps.put(KeywordStrings.class, "keywords");
+        typeMaps.put(MonsterStrings.class, "monsters");
+        typeMaps.put(PotionStrings.class, "potions");
+        typeMaps.put(PowerStrings.class, "powers");
+        typeMaps.put(RelicStrings.class, "relics");
+        typeMaps.put(ScoreBonusStrings.class, "scoreBonuses");
+        typeMaps.put(TutorialStrings.class, "tutorials");
+        typeMaps.put(UIStrings.class, "ui");
+
+        typeTokens = new HashMap<>();
+        typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>(){}.getType());
+        typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>(){}.getType());
+        typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>(){}.getType());
+        typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>(){}.getType());
+        typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>(){}.getType());
+        typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>(){}.getType());
+        typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>(){}.getType());
+        typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>(){}.getType());
+        typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>(){}.getType());
+        typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>(){}.getType());
+        typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>(){}.getType());
+        typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>(){}.getType());
+        typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>(){}.getType());
+    }
+
+    // initializeSubscriptions -
+    private static void initializeSubscriptions() {
         startActSubscribers = new ArrayList<>();
         postCampfireSubscribers = new ArrayList<>();
         postDrawSubscribers = new ArrayList<>();
@@ -92,19 +146,8 @@ public class BaseMod {
         startGameSubscribers = new ArrayList<>();
         preUpdateSubscribers = new ArrayList<>();
         postUpdateSubscribers = new ArrayList<>();
-           
-        console = new DevConsole();
-        
-        logger.info("================================================================");
     }
     
-    // initializeGson -
-    private static void initializeGson() {
-        logger.info("initializeGson");
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gson = gsonBuilder.create();
-    }
-
     //
     // Mod badges
     //
@@ -123,19 +166,24 @@ public class BaseMod {
     //
     // Localization
     //
-    
-    // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
-    public static void loadCustomRelicStrings(String jsonString) {
-        logger.info("loadCustomRelicStrings");
-        Type relicType = new TypeToken<HashMap<String, RelicStrings>>(){}.getType();
-        HashMap<String, RelicStrings> customRelicStrings = new HashMap<>(gson.fromJson(jsonString, relicType));
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    private static void loadJsonStrings(Type stringType, String jsonString) {
+        logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
 
-        //noinspection unchecked
-        Map<String, RelicStrings> relicStrings = (Map<String, RelicStrings>) getPrivateStatic(LocalizedStrings.class, "relics");
-        Objects.requireNonNull(relicStrings).putAll(customRelicStrings);
-        setPrivateStaticFinal(LocalizedStrings.class, "relics", relicStrings);
+        String typeMap = typeMaps.get(stringType);
+        Type typeToken = typeTokens.get(stringType);
+
+        Map localizationStrings = (Map) getPrivateStatic(LocalizedStrings.class, typeMap);
+        localizationStrings.putAll(new HashMap(gson.fromJson(jsonString, typeToken)));
+        setPrivateStaticFinal(LocalizedStrings.class, typeMap, localizationStrings);
     }
-    
+
+    // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
+    @Deprecated
+    public static void loadCustomRelicStrings(String jsonString) {
+        loadJsonStrings(RelicStrings.class, jsonString);
+    }
+
     //
     // Publishers
     //
@@ -427,7 +475,6 @@ public class BaseMod {
     //
     
     // getPrivateStatic - read private static variables
-    @SuppressWarnings("SameParameterValue")
     public static Object getPrivateStatic(Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
@@ -440,8 +487,7 @@ public class BaseMod {
         return null;
     }
     
-    // setPrivateStaticFinal - modify private static (final) variables
-    @SuppressWarnings("SameParameterValue")
+    // setPrivateStaticFinal - modify (private) static (final) variables
     public static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
@@ -458,7 +504,6 @@ public class BaseMod {
     }
 
     // getPrivate - read private varibles of an object
-    @SuppressWarnings("SameParameterValue")
     public static Object getPrivate(Object obj, Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
@@ -470,7 +515,7 @@ public class BaseMod {
 
         return null;
     }
-    @SuppressWarnings("SameParameterValue")
+
     // setPrivate - set private variables of an object
     public static void setPrivate(Object obj, Class objClass, String fieldName, Object newValue) {
         try {

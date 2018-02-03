@@ -1,6 +1,6 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-01 17:51:02.277229900 -0800
-+++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-01 19:41:09.591252000 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-02 14:37:58.279680900 -0800
++++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-01 19:41:29.043025200 -0800
 @@ -3,28 +3,29 @@
   */
  package com.megacrit.cardcrawl.map;
@@ -160,17 +160,60 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
  
      private static int randRange(Random rng, int min, int max) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-01 17:51:02.474919900 -0800
-+++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-01 19:41:09.598190400 -0800
-@@ -3,6 +3,7 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-02 14:37:58.541432500 -0800
++++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-03 00:24:09.041768100 -0800
+@@ -3,31 +3,28 @@
   */
  package com.megacrit.cardcrawl.monsters;
  
 +import basemod.BaseMod;
  import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  import com.badlogic.gdx.math.MathUtils;
- import com.megacrit.cardcrawl.actions.AbstractGameAction;
-@@ -123,7 +124,10 @@
+-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+-import com.megacrit.cardcrawl.actions.GameActionManager;
+ import com.megacrit.cardcrawl.actions.IntentFlashAction;
+ import com.megacrit.cardcrawl.actions.common.ShowMoveNameAction;
+ import com.megacrit.cardcrawl.actions.utility.WaitAction;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.dungeons.TheCity;
+-import com.megacrit.cardcrawl.helpers.Hitbox;
+ import com.megacrit.cardcrawl.helpers.TipTracker;
+ import com.megacrit.cardcrawl.monsters.AbstractMonster;
+ import com.megacrit.cardcrawl.powers.AbstractPower;
+ import java.util.ArrayList;
+ import java.util.Collections;
+-import java.util.HashMap;
++
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+ public class MonsterGroup {
+     private static final Logger logger = LogManager.getLogger(MonsterGroup.class.getName());
+-    public ArrayList<AbstractMonster> monsters = new ArrayList();
++    public ArrayList<AbstractMonster> monsters = new ArrayList<>();
+     public AbstractMonster hoveredMonster = null;
+     private static final float WAIT_AFTER_MONSTERS_TIME = 1.5f;
+ 
+@@ -74,6 +71,7 @@
+         }
+     }
+ 
++    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+     public boolean areMonstersDead() {
+         for (AbstractMonster m : this.monsters) {
+             if (m.isDead || m.escaped) continue;
+@@ -116,14 +114,17 @@
+                 AbstractDungeon.actionManager.addToBottom(new ShowMoveNameAction(m));
+                 AbstractDungeon.actionManager.addToBottom(new IntentFlashAction(m));
+             }
+-            if (!(TipTracker.tips.get("INTENT_TIP").booleanValue() || AbstractDungeon.player.currentBlock != 0 || m.intent != AbstractMonster.Intent.ATTACK && m.intent != AbstractMonster.Intent.ATTACK_DEBUFF && m.intent != AbstractMonster.Intent.ATTACK_BUFF && m.intent != AbstractMonster.Intent.ATTACK_DEFEND)) {
++            if (!(TipTracker.tips.get("INTENT_TIP")|| AbstractDungeon.player.currentBlock != 0 || m.intent != AbstractMonster.Intent.ATTACK && m.intent != AbstractMonster.Intent.ATTACK_DEBUFF && m.intent != AbstractMonster.Intent.ATTACK_BUFF && m.intent != AbstractMonster.Intent.ATTACK_DEFEND)) {
+                 if (AbstractDungeon.floorNum <= 5) {
+                     ++TipTracker.blockCounter;
+                 } else {
                      TipTracker.neverShowAgain("INTENT_TIP");
                  }
              }
@@ -182,14 +225,80 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.j
          }
          if (!Settings.isDebug) {
              AbstractDungeon.actionManager.addToBottom(new WaitAction(1.5f));
-@@ -286,4 +290,3 @@
+@@ -151,10 +152,8 @@
+             if (!m.isEscaping) continue;
+             return true;
+         }
+-        if (CardCrawlGame.dungeon instanceof TheCity) {
+-            return true;
+-        }
+-        return false;
++
++        return (CardCrawlGame.dungeon instanceof TheCity);
+     }
+ 
+     public AbstractMonster getRandomMonster() {
+@@ -171,7 +170,7 @@
+         }
+         if (exception == null) {
+             if (aliveOnly) {
+-                ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++                ArrayList<AbstractMonster> tmp = new ArrayList<>();
+                 for (AbstractMonster m : this.monsters) {
+                     if (m.halfDead || m.isDying || m.isEscaping) continue;
+                     tmp.add(m);
+@@ -179,7 +178,7 @@
+                 if (tmp.size() <= 0) {
+                     return null;
+                 }
+-                return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++                return tmp.get(MathUtils.random(0, tmp.size() - 1));
+             }
+             return this.monsters.get(MathUtils.random(0, this.monsters.size() - 1));
+         }
+@@ -187,7 +186,7 @@
+             return this.monsters.get(0);
+         }
+         if (aliveOnly) {
+-            ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++            ArrayList<AbstractMonster> tmp = new ArrayList<>();
+             for (AbstractMonster m : this.monsters) {
+                 if (m.halfDead || m.isDying || m.isEscaping || exception.equals(m)) continue;
+                 tmp.add(m);
+@@ -195,14 +194,14 @@
+             if (tmp.size() == 0) {
+                 return null;
+             }
+-            return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++            return tmp.get(MathUtils.random(0, tmp.size() - 1));
+         }
+-        ArrayList<AbstractMonster> tmp = new ArrayList<AbstractMonster>();
++        ArrayList<AbstractMonster> tmp = new ArrayList<>();
+         for (AbstractMonster m : this.monsters) {
+             if (exception.equals(m)) continue;
+             tmp.add(m);
+         }
+-        return (AbstractMonster)tmp.get(MathUtils.random(0, tmp.size() - 1));
++        return tmp.get(MathUtils.random(0, tmp.size() - 1));
+     }
+ 
+     public void update() {
+@@ -279,11 +278,10 @@
+     }
+ 
+     public ArrayList<String> getMonsterNames() {
+-        ArrayList<String> arr = new ArrayList<String>();
++        ArrayList<String> arr = new ArrayList<>();
+         for (AbstractMonster m : this.monsters) {
+             arr.add(m.id);
+         }
          return arr;
      }
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java com/megacrit/cardcrawl/powers/IntangiblePower.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-01 17:51:03.636036000 -0800
-+++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-01 19:41:09.601493200 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-02 14:38:00.192518000 -0800
++++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-01 19:41:29.051562700 -0800
 @@ -3,19 +3,15 @@
   */
  package com.megacrit.cardcrawl.powers;
@@ -231,8 +340,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.
      public float atDamageReceive(float damage, DamageInfo.DamageType type) {
          if (damage > 0.0f) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-01 17:51:06.244542000 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-01 19:41:09.604430000 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-02 14:38:03.617699200 -0800
++++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-01 19:41:29.054065100 -0800
 @@ -3,14 +3,11 @@
   */
  package com.megacrit.cardcrawl.ui.buttons;
@@ -282,8 +391,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                          return;
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-01 17:51:06.300595900 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-01 19:41:09.607442700 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-02 14:38:03.679258100 -0800
++++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-01 19:41:29.057068100 -0800
 @@ -3,32 +3,22 @@
   */
  package com.megacrit.cardcrawl.ui.buttons;
@@ -377,8 +486,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
                  this.hitbox.render(sb);
              }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-01 17:51:06.381173400 -0800
-+++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-01 19:41:09.610435700 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-02 14:38:03.806881000 -0800
++++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-01 19:41:29.060583000 -0800
 @@ -3,11 +3,10 @@
   */
  package com.megacrit.cardcrawl.ui.campfire;
@@ -414,17 +523,42 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCam
      }
  
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-01 17:51:06.437727200 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-01 19:41:09.613438900 -0800
-@@ -3,6 +3,7 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-02 14:38:03.874946400 -0800
++++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-03 00:24:09.046579500 -0800
+@@ -3,20 +3,14 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
  
 +import basemod.DevConsole;
  import com.badlogic.gdx.Gdx;
- import com.badlogic.gdx.Graphics;
- import com.badlogic.gdx.Input;
-@@ -37,7 +38,7 @@
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.helpers.FontHelper;
+@@ -24,10 +18,8 @@
+ import com.megacrit.cardcrawl.helpers.ImageMaster;
+ import com.megacrit.cardcrawl.helpers.InputHelper;
+ import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+-import com.megacrit.cardcrawl.screens.DiscardPileViewScreen;
+ import com.megacrit.cardcrawl.ui.panels.AbstractPanel;
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.BobEffect;
+@@ -37,7 +29,7 @@
  import java.util.Iterator;
  
  public class DiscardPilePanel
@@ -433,7 +567,28 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
      private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Discard Tip");
      public static final String[] MSG = DiscardPilePanel.tutorialStrings.TEXT;
      public static final String[] LABEL = DiscardPilePanel.tutorialStrings.LABEL;
-@@ -90,13 +91,13 @@
+@@ -56,8 +48,8 @@
+     private float glowAlpha = 0.0f;
+     private GlyphLayout gl = new GlyphLayout();
+     private BobEffect bob = new BobEffect(1.0f);
+-    private ArrayList<DiscardGlowEffect> vfxAbove = new ArrayList();
+-    private ArrayList<DiscardGlowEffect> vfxBelow = new ArrayList();
++    private ArrayList<DiscardGlowEffect> vfxAbove = new ArrayList<>();
++    private ArrayList<DiscardGlowEffect> vfxBelow = new ArrayList<>();
+     private static final float DECK_TIP_X = 1550.0f * Settings.scale;
+     private static final float DECK_TIP_Y = 470.0f * Settings.scale;
+     private static final float HITBOX_W = 120.0f * Settings.scale;
+@@ -79,9 +71,6 @@
+             this.bannerHitbox.update();
+             this.updatePop();
+         }
+-        if (!this.hitbox.justHovered || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE) {
+-            // empty if block
+-        }
+         if (this.hitbox.hovered) {
+             if (!AbstractDungeon.isScreenUp) {
+                 AbstractDungeon.overlayMenu.hoveredTip = true;
+@@ -90,13 +79,13 @@
                  AbstractDungeon.previousScreen = AbstractDungeon.isScreenUp ? AbstractDungeon.screen : null;
                  this.openDiscardPile();
              }
@@ -449,23 +604,50 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
                  this.hitbox.hovered = false;
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
-@@ -198,4 +199,3 @@
+@@ -198,4 +187,3 @@
          }
      }
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-01 17:51:06.451740600 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-01 19:41:09.616356700 -0800
-@@ -3,6 +3,7 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-02 14:38:03.889460000 -0800
++++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-03 00:24:09.036514400 -0800
+@@ -3,21 +3,15 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
  
 +import basemod.DevConsole;
  import com.badlogic.gdx.Gdx;
- import com.badlogic.gdx.Graphics;
- import com.badlogic.gdx.Input;
-@@ -40,7 +41,7 @@
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+ import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+ import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.helpers.FontHelper;
+@@ -26,11 +20,9 @@
+ import com.megacrit.cardcrawl.helpers.InputHelper;
+ import com.megacrit.cardcrawl.helpers.MathHelper;
+ import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.relics.AbstractRelic;
+-import com.megacrit.cardcrawl.screens.DrawPileViewScreen;
+ import com.megacrit.cardcrawl.ui.panels.AbstractPanel;
+ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+ import com.megacrit.cardcrawl.vfx.BobEffect;
+@@ -40,7 +32,7 @@
  import java.util.Iterator;
  
  public class DrawPilePanel
@@ -474,7 +656,26 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
      private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Draw Tip");
      public static final String[] MSG = DrawPilePanel.tutorialStrings.TEXT;
      public static final String[] LABEL = DrawPilePanel.tutorialStrings.LABEL;
-@@ -92,13 +93,13 @@
+@@ -61,7 +53,7 @@
+     private static final float DECK_TIP_X = 50.0f * Settings.scale;
+     private static final float DECK_TIP_Y = 470.0f * Settings.scale;
+     private BobEffect bob = new BobEffect(1.0f);
+-    private ArrayList<GameDeckGlowEffect> vfxBelow = new ArrayList();
++    private ArrayList<GameDeckGlowEffect> vfxBelow = new ArrayList<>();
+     private static final float HITBOX_W = 120.0f * Settings.scale;
+     private static final float HITBOX_W2 = 450.0f * Settings.scale;
+     private Hitbox hitbox = new Hitbox(0.0f, 0.0f, HITBOX_W, HITBOX_W);
+@@ -81,9 +73,6 @@
+             this.bannerHitbox.update();
+             this.updatePop();
+         }
+-        if (!this.hitbox.justHovered || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE) {
+-            // empty if block
+-        }
+         if (this.hitbox.hovered) {
+             if (!AbstractDungeon.isScreenUp) {
+                 AbstractDungeon.overlayMenu.hoveredTip = true;
+@@ -92,13 +81,13 @@
                  AbstractDungeon.previousScreen = AbstractDungeon.isScreenUp ? AbstractDungeon.screen : null;
                  this.openDrawPile();
              }
@@ -490,23 +691,92 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
                  this.hitbox.hovered = false;
                  this.bannerHitbox.hovered = false;
                  InputHelper.justClickedLeft = false;
-@@ -201,4 +202,3 @@
+@@ -201,4 +190,3 @@
          }
      }
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-01 17:51:06.552337600 -0800
-+++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-01 19:41:09.627316500 -0800
-@@ -3,6 +3,7 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-02 14:38:04.000065500 -0800
++++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-03 00:24:09.052083900 -0800
+@@ -3,21 +3,13 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
  
 +import basemod.DevConsole;
  import com.badlogic.gdx.Gdx;
- import com.badlogic.gdx.Graphics;
- import com.badlogic.gdx.Input;
-@@ -354,7 +355,7 @@
+-import com.badlogic.gdx.Graphics;
+-import com.badlogic.gdx.Input;
+ import com.badlogic.gdx.graphics.Color;
+-import com.badlogic.gdx.graphics.Texture;
+-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+ import com.badlogic.gdx.math.MathUtils;
+-import com.megacrit.cardcrawl.audio.SoundMaster;
+-import com.megacrit.cardcrawl.cards.AbstractCard;
+-import com.megacrit.cardcrawl.cards.CardGroup;
+-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+ import com.megacrit.cardcrawl.core.CardCrawlGame;
+-import com.megacrit.cardcrawl.core.OverlayMenu;
+ import com.megacrit.cardcrawl.core.Settings;
+ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+ import com.megacrit.cardcrawl.helpers.FontHelper;
+@@ -25,27 +17,15 @@
+ import com.megacrit.cardcrawl.helpers.ImageMaster;
+ import com.megacrit.cardcrawl.helpers.InputHelper;
+ import com.megacrit.cardcrawl.helpers.MathHelper;
+-import com.megacrit.cardcrawl.helpers.PowerTip;
+ import com.megacrit.cardcrawl.helpers.TipHelper;
+-import com.megacrit.cardcrawl.localization.LocalizedStrings;
+ import com.megacrit.cardcrawl.localization.TutorialStrings;
+ import com.megacrit.cardcrawl.localization.UIStrings;
+ import com.megacrit.cardcrawl.potions.AbstractPotion;
+ import com.megacrit.cardcrawl.potions.PotionPlaceholder;
+ import com.megacrit.cardcrawl.relics.AbstractRelic;
+-import com.megacrit.cardcrawl.screens.CombatRewardScreen;
+-import com.megacrit.cardcrawl.screens.DeathScreen;
+-import com.megacrit.cardcrawl.screens.DungeonMapScreen;
+-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
+ import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
+-import com.megacrit.cardcrawl.screens.options.SettingsScreen;
+-import com.megacrit.cardcrawl.screens.select.BossRelicSelectScreen;
+-import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
+ import com.megacrit.cardcrawl.screens.stats.CharStat;
+-import com.megacrit.cardcrawl.ui.buttons.CancelButton;
+-import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
+ import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+-import java.util.ArrayList;
+ 
+ public class TopPanel {
+     private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Top Panel Tips");
+@@ -142,12 +122,14 @@
+         }
+         this.ascensionHb.move(floorX + 150.0f * Settings.scale, ICON_Y + ICON_W / 2.0f);
+         if (AbstractDungeon.isAscensionMode) {
+-            this.ascensionString = "";
++            StringBuilder ascensionStringBuilder = new StringBuilder();
+             for (int i = 0; i < AbstractDungeon.ascensionLevel; ++i) {
+-                this.ascensionString = this.ascensionString + CharacterSelectScreen.A_TEXT[i];
++                ascensionStringBuilder.append(CharacterSelectScreen.A_TEXT[i]);
+                 if (i == AbstractDungeon.ascensionLevel - 1) continue;
+-                this.ascensionString = this.ascensionString + " NL ";
++                ascensionStringBuilder.append(" NL ");
+             }
++
++            this.ascensionString = ascensionStringBuilder.toString();
+         }
+     }
+ 
+@@ -172,6 +154,7 @@
+         this.goldHb.move(this.goldIconX + GOLD_TIP_W / 2.0f, ICON_Y + ICON_W / 2.0f);
+     }
+ 
++    @SuppressWarnings("EmptyMethod")
+     public void setDungeonName(String dungeonName) {
+     }
+ 
+@@ -354,7 +337,7 @@
              this.deckButtonDisabled = true;
              this.deckHb.hovered = false;
          }
@@ -515,7 +785,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
                  AbstractDungeon.closeCurrentScreen();
                  AbstractDungeon.deckViewScreen.open();
-@@ -413,7 +414,7 @@
+@@ -413,7 +396,7 @@
              this.mapButtonDisabled = true;
              this.mapHb.hovered = false;
          }
