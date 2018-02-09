@@ -11,7 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="Maven: com.megacrit.cardcrawl:slaythespire:014">
+      <library name="Maven: com.megacrit.cardcrawl:slaythespire:015">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../_lib/desktop-1.0.jar!/" />
         </CLASSES>

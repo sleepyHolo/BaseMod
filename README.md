@@ -1,7 +1,7 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
-Currently supported version: `[EARLY_ACCESS_014]`
+Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 
 ## Requirements ##
 #### General Use ####
@@ -169,13 +169,13 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add proper support for `IntangiblePower` to be applied to players
 
 #### v1.3.0 ####
-* Update to support `[EARLY_ACCESS_13]`
+* Update to support `[EARLY_ACCESS_013]`
 
 #### v1.3.1 ####
 * Fix bug that prevented the `deck r` command from working
 
 #### v1.3.1a ####
-* Pull in changes from `[EARLY_ACCESS_13]` hotfix 2
+* Pull in changes from `[EARLY_ACCESS_013]` hotfix 2
 
 #### v1.3.2 ####
 * A lot of behind the scenes work on settings pages. 
@@ -202,7 +202,7 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Prevent Girya from stacking above 3 if `receivePostCampfire()` returns false
 
 #### v1.4.0 ####
-* Update to support `[EARLY_ACCESS_14]`
+* Update to support `[EARLY_ACCESS_014]`
 * Mostly switch to using SpirePatch for inserting hooks
 * Speed up `kill all` command
 
@@ -217,6 +217,9 @@ registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 * Add `potion` command
 * Add `fight` command
 * Speed up `kill self` command
+
+#### v1.5.0 ####
+* Update to support `[EARLY_ACCESS_015]`
 
 ## Contributors ##
 * t-larson - Original author

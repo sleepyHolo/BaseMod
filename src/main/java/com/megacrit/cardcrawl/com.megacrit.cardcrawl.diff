@@ -1,5 +1,5 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java com/megacrit/cardcrawl/map/MapGenerator.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-02 14:37:58.279680900 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-08 20:13:23.981675900 -0800
 +++ com/megacrit/cardcrawl/map/MapGenerator.java	2018-02-01 19:41:29.043025200 -0800
 @@ -3,28 +3,29 @@
   */
@@ -67,16 +67,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
          assert (!edges.isEmpty());
          return edges.get(0);
      }
-@@ -126,15 +127,15 @@
-     }
- 
-     private static ArrayList<ArrayList<MapRoomNode>> _createPaths(ArrayList<ArrayList<MapRoomNode>> nodes, MapEdge edge, Random rng) {
--        MapRoomNode left_node;
-         int max;
-         int min;
-+        MapRoomNode left_node;
-         MapRoomNode right_node;
-         MapRoomNode currentNode = MapGenerator.getNode(edge.dstX, edge.dstY, nodes);
+@@ -134,7 +135,7 @@
          if (edge.dstY + 1 >= nodes.size()) {
              MapEdge newEdge = new MapEdge(edge.dstX, edge.dstY, currentNode.offsetX, currentNode.offsetY, 3, edge.dstY + 2, 0.0f, 0.0f, true);
              currentNode.addEdge(newEdge);
@@ -104,63 +95,17 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/map/MapGenerator.java c
          targetNodeCandidate.addParent(currentNode);
          return MapGenerator._createPaths(nodes, newEdge, rng);
      }
-@@ -210,11 +209,11 @@
-     }
- 
-     private static String paddingGenerator(int length) {
--        String str = "";
-+        StringBuilder str = new StringBuilder();
-         for (int i = 0; i < length; ++i) {
--            str = str + " ";
-+            str.append(" ");
-         }
--        return str;
-+        return str.toString();
-     }
- 
-     public static String toString(ArrayList<ArrayList<MapRoomNode>> nodes) {
-@@ -222,10 +221,10 @@
-     }
- 
-     public static String toString(ArrayList<ArrayList<MapRoomNode>> nodes, Boolean showRoomSymbols) {
--        String str = "";
-+        StringBuilder str = new StringBuilder();
-         int left_padding_size = 5;
-         for (int row_num = nodes.size() - 1; row_num >= 0; --row_num) {
--            str = str + "\n " + MapGenerator.paddingGenerator(left_padding_size);
-+            str.append("\n ").append(MapGenerator.paddingGenerator(left_padding_size));
-             for (MapRoomNode node : nodes.get(row_num)) {
-                 String right = " ";
-                 Object mid = " ";
-@@ -240,10 +239,10 @@
+@@ -240,7 +239,7 @@
                      if (edge.dstX <= node.x) continue;
                      right = "/";
                  }
--                str = str + left + (String)mid + right;
+-                str.append(left).append((String)mid).append(right);
 +                str.append(left).append(mid).append(right);
              }
--            str = str + "\n" + row_num + " ";
--            str = str + MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length());
-+            str.append("\n").append(row_num).append(" ");
-+            str.append(MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length()));
-             for (MapRoomNode node : nodes.get(row_num)) {
-                 String node_symbol = " ";
-                 if (row_num == nodes.size() - 1) {
-@@ -256,10 +255,10 @@
-                 } else if (node.hasEdges()) {
-                     node_symbol = node.getRoomSymbol(showRoomSymbols);
-                 }
--                str = str + " " + node_symbol + " ";
-+                str.append(" ").append(node_symbol).append(" ");
-             }
-         }
--        return str;
-+        return str.toString();
-     }
- 
-     private static int randRange(Random rng, int min, int max) {
+             str.append("\n").append(row_num).append(" ");
+             str.append(MapGenerator.paddingGenerator(left_padding_size - String.valueOf(row_num).length()));
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java com/megacrit/cardcrawl/monsters/MonsterGroup.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-02 14:37:58.541432500 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-08 20:13:24.265449300 -0800
 +++ com/megacrit/cardcrawl/monsters/MonsterGroup.java	2018-02-03 00:24:09.041768100 -0800
 @@ -3,31 +3,28 @@
   */
@@ -297,7 +242,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/monsters/MonsterGroup.j
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java com/megacrit/cardcrawl/powers/IntangiblePower.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-02 14:38:00.192518000 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-08 20:13:26.086697800 -0800
 +++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-01 19:41:29.051562700 -0800
 @@ -3,19 +3,15 @@
   */
@@ -340,7 +285,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.
      public float atDamageReceive(float damage, DamageInfo.DamageType type) {
          if (damage > 0.0f) {
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java com/megacrit/cardcrawl/ui/buttons/CancelButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-02 14:38:03.617699200 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-08 20:13:30.163113200 -0800
 +++ com/megacrit/cardcrawl/ui/buttons/CancelButton.java	2018-02-01 19:41:29.054065100 -0800
 @@ -3,14 +3,11 @@
   */
@@ -391,8 +336,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/CancelButton
                          return;
                      }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-02 14:38:03.679258100 -0800
-+++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-01 19:41:29.057068100 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-08 20:13:30.322266400 -0800
++++ com/megacrit/cardcrawl/ui/buttons/EndTurnButton.java	2018-02-08 20:21:33.369300000 -0800
 @@ -3,32 +3,22 @@
   */
  package com.megacrit.cardcrawl.ui.buttons;
@@ -473,7 +418,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
              } else {
 -                this.textColor = this.hitbox.hovered ? (this.isWarning ? Settings.RED_TEXT_COLOR : Color.CYAN) : (this.isGlowing ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
 +                textColor = this.hitbox.hovered ? (this.isWarning ? Settings.RED_TEXT_COLOR : Color.CYAN) : (this.isGlowing ? Settings.GOLD_COLOR : Settings.CREAM_COLOR);
-                 if (Settings.COMMON_TIP && this.hitbox.hovered && !AbstractDungeon.isScreenUp) {
+                 if (this.hitbox.hovered && !AbstractDungeon.isScreenUp) {
                      TipHelper.renderGenericTip(this.current_x - 90.0f * Settings.scale, this.current_y + 300.0f * Settings.scale, LABEL[0] + " (E)", MSG[0] + AbstractDungeon.player.gameHandSize + MSG[1]);
                  }
 @@ -214,7 +203,7 @@
@@ -486,7 +431,7 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/buttons/EndTurnButto
                  this.hitbox.render(sb);
              }
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-02 14:38:03.806881000 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-08 20:13:30.433873200 -0800
 +++ com/megacrit/cardcrawl/ui/campfire/AbstractCampfireOption.java	2018-02-01 19:41:29.060583000 -0800
 @@ -3,11 +3,10 @@
   */
@@ -523,8 +468,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/campfire/AbstractCam
      }
  
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-02 14:38:03.874946400 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-03 00:24:09.046579500 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-08 20:13:30.518955100 -0800
++++ com/megacrit/cardcrawl/ui/panels/DiscardPilePanel.java	2018-02-08 20:22:04.035360200 -0800
 @@ -3,20 +3,14 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
@@ -610,8 +555,8 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DiscardPilePa
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-02 14:38:03.889460000 -0800
-+++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-03 00:24:09.036514400 -0800
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-08 20:13:30.537973500 -0800
++++ com/megacrit/cardcrawl/ui/panels/DrawPilePanel.java	2018-02-08 20:22:04.040865300 -0800
 @@ -3,21 +3,15 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
@@ -697,100 +642,47 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/DrawPilePanel
  }
 -
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java com/megacrit/cardcrawl/ui/panels/TopPanel.java
---- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-02 14:38:04.000065500 -0800
-+++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-03 00:24:09.052083900 -0800
-@@ -3,21 +3,13 @@
+--- ../../../_lib/decompiled/com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-08 20:13:30.672602800 -0800
++++ com/megacrit/cardcrawl/ui/panels/TopPanel.java	2018-02-08 20:33:59.382660600 -0800
+@@ -3,6 +3,7 @@
   */
  package com.megacrit.cardcrawl.ui.panels;
  
 +import basemod.DevConsole;
  import com.badlogic.gdx.Gdx;
--import com.badlogic.gdx.Graphics;
--import com.badlogic.gdx.Input;
- import com.badlogic.gdx.graphics.Color;
--import com.badlogic.gdx.graphics.Texture;
--import com.badlogic.gdx.graphics.g2d.BitmapFont;
- import com.badlogic.gdx.graphics.g2d.GlyphLayout;
- import com.badlogic.gdx.graphics.g2d.SpriteBatch;
- import com.badlogic.gdx.math.MathUtils;
--import com.megacrit.cardcrawl.audio.SoundMaster;
--import com.megacrit.cardcrawl.cards.AbstractCard;
--import com.megacrit.cardcrawl.cards.CardGroup;
--import com.megacrit.cardcrawl.characters.AbstractPlayer;
- import com.megacrit.cardcrawl.core.CardCrawlGame;
--import com.megacrit.cardcrawl.core.OverlayMenu;
- import com.megacrit.cardcrawl.core.Settings;
- import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
- import com.megacrit.cardcrawl.helpers.FontHelper;
-@@ -25,27 +17,15 @@
- import com.megacrit.cardcrawl.helpers.ImageMaster;
- import com.megacrit.cardcrawl.helpers.InputHelper;
- import com.megacrit.cardcrawl.helpers.MathHelper;
--import com.megacrit.cardcrawl.helpers.PowerTip;
- import com.megacrit.cardcrawl.helpers.TipHelper;
--import com.megacrit.cardcrawl.localization.LocalizedStrings;
- import com.megacrit.cardcrawl.localization.TutorialStrings;
- import com.megacrit.cardcrawl.localization.UIStrings;
- import com.megacrit.cardcrawl.potions.AbstractPotion;
- import com.megacrit.cardcrawl.potions.PotionPlaceholder;
- import com.megacrit.cardcrawl.relics.AbstractRelic;
--import com.megacrit.cardcrawl.screens.CombatRewardScreen;
--import com.megacrit.cardcrawl.screens.DeathScreen;
--import com.megacrit.cardcrawl.screens.DungeonMapScreen;
--import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
- import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
--import com.megacrit.cardcrawl.screens.options.SettingsScreen;
--import com.megacrit.cardcrawl.screens.select.BossRelicSelectScreen;
--import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
- import com.megacrit.cardcrawl.screens.stats.CharStat;
--import com.megacrit.cardcrawl.ui.buttons.CancelButton;
--import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
- import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
--import java.util.ArrayList;
- 
- public class TopPanel {
-     private static final TutorialStrings tutorialStrings = CardCrawlGame.languagePack.getTutorialString("Top Panel Tips");
-@@ -142,12 +122,14 @@
-         }
-         this.ascensionHb.move(floorX + 150.0f * Settings.scale, ICON_Y + ICON_W / 2.0f);
-         if (AbstractDungeon.isAscensionMode) {
--            this.ascensionString = "";
-+            StringBuilder ascensionStringBuilder = new StringBuilder();
-             for (int i = 0; i < AbstractDungeon.ascensionLevel; ++i) {
--                this.ascensionString = this.ascensionString + CharacterSelectScreen.A_TEXT[i];
-+                ascensionStringBuilder.append(CharacterSelectScreen.A_TEXT[i]);
-                 if (i == AbstractDungeon.ascensionLevel - 1) continue;
--                this.ascensionString = this.ascensionString + " NL ";
-+                ascensionStringBuilder.append(" NL ");
-             }
-+
-+            this.ascensionString = ascensionStringBuilder.toString();
-         }
-     }
- 
-@@ -172,6 +154,7 @@
-         this.goldHb.move(this.goldIconX + GOLD_TIP_W / 2.0f, ICON_Y + ICON_W / 2.0f);
-     }
- 
-+    @SuppressWarnings("EmptyMethod")
-     public void setDungeonName(String dungeonName) {
-     }
- 
-@@ -354,7 +337,7 @@
+ import com.badlogic.gdx.Graphics;
+ import com.badlogic.gdx.Input;
+@@ -384,7 +385,7 @@
              this.deckButtonDisabled = true;
              this.deckHb.hovered = false;
          }
 -        if (this.deckHb.hovered && InputHelper.justClickedLeft || Gdx.input.isKeyJustPressed(32)) {
-+        if (this.deckHb.hovered && InputHelper.justClickedLeft || (Gdx.input.isKeyJustPressed(32) && !DevConsole.visible)) {
++        if (this.deckHb.hovered && InputHelper.justClickedLeft || Gdx.input.isKeyJustPressed(32) && !DevConsole.visible) {
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
                  AbstractDungeon.closeCurrentScreen();
                  AbstractDungeon.deckViewScreen.open();
-@@ -413,7 +396,7 @@
+@@ -443,7 +444,7 @@
              this.mapButtonDisabled = true;
              this.mapHb.hovered = false;
          }
 -        if (this.mapHb.hovered && InputHelper.justClickedLeft || Gdx.input.isKeyJustPressed(41)) {
-+        if (this.mapHb.hovered && InputHelper.justClickedLeft || (Gdx.input.isKeyJustPressed(41) && !DevConsole.visible)) {
++        if (this.mapHb.hovered && InputHelper.justClickedLeft || Gdx.input.isKeyJustPressed(41) && !DevConsole.visible) {
              if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP && !AbstractDungeon.dungeonMapScreen.dismissable) {
                  CardCrawlGame.sound.play("CARD_REJECT");
              } else if (!AbstractDungeon.isScreenUp) {
+@@ -524,8 +525,8 @@
+             this.renderPotions(sb);
+             this.potionUi.render(sb);
+             this.twitch.ifPresent(twitchPanel -> {
+-                twitchPanel.render(sb);
+-            }
++                        twitchPanel.render(sb);
++                    }
+             );
+         }
+     }
+@@ -685,4 +686,3 @@
+         logger = LogManager.getLogger(TopPanel.class.getName());
+     }
+ }
+-
