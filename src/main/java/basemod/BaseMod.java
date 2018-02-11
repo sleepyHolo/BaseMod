@@ -204,7 +204,6 @@ public class BaseMod {
     // red remove -
     public static ArrayList<AbstractCard> getRedCardsToRemove() {
     	ArrayList<AbstractCard> redToRemove = new ArrayList<AbstractCard>();
-    	redToRemove.add(new Headbutt());
     	return redToRemove;
     }
     
