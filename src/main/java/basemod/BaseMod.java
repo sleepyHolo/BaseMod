@@ -11,9 +11,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.red.Headbutt;
+import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +59,9 @@ public class BaseMod {
     private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
     private static ArrayList<StartGameSubscriber> startGameSubscribers;
     private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
-    private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;  
+    private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;
+    private static ArrayList<PostCreateStartingDeckSubscriber> postCreateStartingDeckSubscribers;
+    private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
     
     public static DevConsole console;
     public static Gson gson;
@@ -146,6 +152,8 @@ public class BaseMod {
         startGameSubscribers = new ArrayList<>();
         preUpdateSubscribers = new ArrayList<>();
         postUpdateSubscribers = new ArrayList<>();
+        postCreateStartingDeckSubscribers = new ArrayList<>();
+        postCreateStartingRelicsSubscribers = new ArrayList<>();
     }
     
     //
@@ -182,6 +190,52 @@ public class BaseMod {
     @Deprecated
     public static void loadCustomRelicStrings(String jsonString) {
         loadJsonStrings(RelicStrings.class, jsonString);
+    }
+    
+    //
+    // Cards
+    //
+    
+    // red add -
+    public static ArrayList<AbstractCard> getRedCardsToAdd() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // red remove -
+    public static ArrayList<AbstractCard> getRedCardsToRemove() {
+    	ArrayList<AbstractCard> redToRemove = new ArrayList<AbstractCard>();
+    	redToRemove.add(new Headbutt());
+    	return redToRemove;
+    }
+    
+    // green add -
+    public static ArrayList<AbstractCard> getGreenCardsToAdd() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // green remove -
+    public static ArrayList<AbstractCard> getGreenCardsToRemove() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // colorless add -
+    public static ArrayList<AbstractCard> getColorlessCardsToAdd() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // colorless remove -
+    public static ArrayList<AbstractCard> getColorlessCardsToRemove() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // curse add -
+    public static ArrayList<AbstractCard> getCurseCardsToAdd() {
+    	return new ArrayList<AbstractCard>();
+    }
+    
+    // curse remove -
+    public static ArrayList<AbstractCard> getCurseCardsToRemove() {
+    	return new ArrayList<AbstractCard>();
     }
 
     //
@@ -336,6 +390,97 @@ public class BaseMod {
         }
     }
     
+    // publishPostCreateStartingDeck -
+    public static void publishPostCreateStartingDeck(PlayerClass chosenClass, ArrayList<String> cards) {
+    	logger.info("postCreateStartingDeck for: " + chosenClass);
+    	
+    	boolean clearDefault = false;
+    	ArrayList<String> cardsToAdd = new ArrayList<String>();
+    	
+    	for (PostCreateStartingDeckSubscriber sub : postCreateStartingDeckSubscribers) {
+    		logger.info("postCreateStartingDeck modifying starting deck for: " + sub);
+    		switch (chosenClass) {
+    		case IRONCLAD:
+    			if (sub instanceof PostCreateIroncladStartingDeckSubscriber) {
+    				if (sub.receivePostCreateStartingDeck(cardsToAdd)) {
+    					clearDefault = true;
+    				}
+    			}
+    			break;
+    		case THE_SILENT:
+    			if (sub instanceof PostCreateSilentStartingDeckSubscriber) {
+    				if (sub.receivePostCreateStartingDeck(cardsToAdd)) {
+    					clearDefault = true;
+    				}
+    			}
+    			break;
+    		default:
+    			break;
+    		}
+    	}
+    	
+    	String logString = "postCreateStartingDeck adding [ ";
+    	for (String card : cardsToAdd) {
+    		logString += (card + " ");
+    	}
+    	logString += "]";
+    	logger.info(logString);
+    	
+    	if (clearDefault) {
+    		logger.info("postCreateStartingDeck clearing initial deck");
+    		cards.clear();
+    	}
+    	cards.addAll(cardsToAdd);
+    }
+    
+    // publishPostCreateStartingRelics -
+    public static void publishPostCreateStartingRelics(PlayerClass chosenClass, ArrayList<String> relics) {
+    	logger.info("postCreateStartingRelics for: " + chosenClass);
+    	
+    	boolean clearDefault = false;
+    	ArrayList<String> relicsToAdd = new ArrayList<String>();
+    	
+    	for (PostCreateStartingRelicsSubscriber sub : postCreateStartingRelicsSubscribers) {
+    		logger.info("postCreateStartingRelics modifying starting relics for: " + sub);
+    		switch (chosenClass) {
+    		case IRONCLAD:
+    			if (sub instanceof PostCreateIroncladStartingRelicsSubscriber) {
+    				if (sub.receivePostCreateStartingRelics(relicsToAdd)) {
+    					clearDefault = true;
+    				}
+    			}
+    			break;
+    		case THE_SILENT:
+    			if (sub instanceof PostCreateSilentStartingRelicsSubscriber) {
+    				if (sub.receivePostCreateStartingRelics(relicsToAdd)) {
+    					clearDefault = true;
+    				}
+    			}
+    			break;
+    		default:
+    			break;
+    		}
+    	}
+    	
+    	String logString = "postCreateStartingRelics adding [ ";
+    	for (String relic : relicsToAdd) {
+    		logString += (relic + " ");
+    	}
+    	logString += "]";
+    	logger.info(logString);
+    	
+    	// mark as seen
+    	for (String relic : relicsToAdd) {
+    		UnlockTracker.markRelicAsSeen(relic);
+    	}
+    	
+    	if (clearDefault) {
+    		logger.info("postCreateStartingRelics clearing initial relics");
+    		relics.clear();
+    	}
+    	relics.addAll(relicsToAdd);
+    }
+    
     //
     // Subsciption handlers
     //
@@ -469,6 +614,27 @@ public class BaseMod {
     public static void unsubscribeFromPostUpdate(PostUpdateSubscriber sub) {
         postUpdateSubscribers.remove(sub);
     }
+    
+    // subscribeToPostCreateStartingDeck -
+    public static void subscribeToPostCreateStartingDeck(PostCreateStartingDeckSubscriber sub) {
+    	postCreateStartingDeckSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateStartingDeck -
+    public static void unsubscribeToPostCreateStartingDeck(PostCreateStartingDeckSubscriber sub) {
+    	postCreateStartingDeckSubscribers.remove(sub);
+    }
+    
+    // subscribeToPostCreateStartingRelics -
+    public static void subscribeToPostCreateStartingRelics(PostCreateStartingRelicsSubscriber sub) {
+    	postCreateStartingRelicsSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateStartingRelics -
+    public static void unsubscribeToPostCreateStartingRelics(PostCreateStartingRelicsSubscriber sub) {
+    	postCreateStartingRelicsSubscribers.remove(sub);
+    }
+    
     
     //
     // Reflection hacks
