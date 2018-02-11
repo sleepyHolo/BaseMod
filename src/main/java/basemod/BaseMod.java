@@ -16,6 +16,8 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.shop.StorePotion;
+import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +64,8 @@ public class BaseMod {
     private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;
     private static ArrayList<PostCreateStartingDeckSubscriber> postCreateStartingDeckSubscribers;
     private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
+    private static ArrayList<PostCreateShopRelicSubscriber> postCreateShopRelicSubscribers;
+    private static ArrayList<PostCreateShopPotionSubscriber> postCreateShopPotionSubscribers;
     
     public static DevConsole console;
     public static Gson gson;
@@ -154,6 +158,8 @@ public class BaseMod {
         postUpdateSubscribers = new ArrayList<>();
         postCreateStartingDeckSubscribers = new ArrayList<>();
         postCreateStartingRelicsSubscribers = new ArrayList<>();
+        postCreateShopRelicSubscribers = new ArrayList<>();
+        postCreateShopPotionSubscribers = new ArrayList<>();
     }
     
     //
@@ -480,6 +486,28 @@ public class BaseMod {
     	relics.addAll(relicsToAdd);
     }
     
+    // publishPostCreateShopRelic -
+    public static StoreRelic publishPostCreateShopRelic(StoreRelic relic, int relicNumber) {
+    	StoreRelic resultRelic = relic;
+    	
+    	for (PostCreateShopRelicSubscriber sub : postCreateShopRelicSubscribers) {
+    		resultRelic = sub.recieveCreateShopRelic(relic, relicNumber);
+    	}
+    	
+    	return resultRelic;
+    }
+    
+    // publishPostCreateShopPotion -
+    public static StorePotion publishPostCreateShopPotion(StorePotion pot, int potionNumber) {
+    	StorePotion resultPotion = pot;
+    	
+    	for (PostCreateShopPotionSubscriber sub : postCreateShopPotionSubscribers) {
+    		resultPotion = sub.receieveCreateShopPotion(pot, potionNumber);
+    	}
+    	
+    	return resultPotion;
+    }
+    
     //
     // Subsciption handlers
     //
@@ -634,6 +662,25 @@ public class BaseMod {
     	postCreateStartingRelicsSubscribers.remove(sub);
     }
     
+    // subscribeToPostCreateShopRelic -
+    public static void subscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
+    	postCreateShopRelicSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateShopRelic
+    public static void unsubscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
+    	postCreateShopRelicSubscribers.remove(sub);
+    }
+    
+    // subscribeToPostCreateShopPotion -
+    public static void subscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
+    	postCreateShopPotionSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateShopRelic
+    public static void unsubscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
+    	postCreateShopPotionSubscribers.remove(sub);
+    }
     
     //
     // Reflection hacks
