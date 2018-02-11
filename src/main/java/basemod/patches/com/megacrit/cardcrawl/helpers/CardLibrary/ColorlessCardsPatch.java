@@ -9,7 +9,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="addColorlessCards")
 public class ColorlessCardsPatch {
 
-    public static void Postfix(Object __obj_instance) {
+    public static void Postfix() {
     	// add new cards
 		for (AbstractCard card : BaseMod.getColorlessCardsToAdd()) {
 			CardLibrary.add(card);
