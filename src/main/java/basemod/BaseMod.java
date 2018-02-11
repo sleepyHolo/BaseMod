@@ -14,8 +14,11 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.red.Headbutt;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import org.apache.logging.log4j.LogManager;
@@ -432,6 +435,17 @@ public class BaseMod {
     	cards.addAll(cardsToAdd);
     }
     
+    public static ArrayList<String> relicsThatNeedSpecificPlayer = new ArrayList<>();
+    
+    // populate relics that require a specific player for copy list
+    static {
+    	String[] relicsThatNeedSpecificPlayerStrArr = {"Ancient Tea Set", "Art of War", "Happy Flower", "Lantern", "Dodecahedron", "Sundial", "Cursed Key", "Ectoplasm", "Mark of Pain", "Philosopher's Stone", "Runic Dome", "Sozu", "Velvet Choker"};
+    	for (int i = 0; i < relicsThatNeedSpecificPlayerStrArr.length; i++) {
+    		relicsThatNeedSpecificPlayer.add(relicsThatNeedSpecificPlayerStrArr[i]);
+    	}
+    }
+    
+    
     // publishPostCreateStartingRelics -
     public static void publishPostCreateStartingRelics(PlayerClass chosenClass, ArrayList<String> relics) {
     	logger.info("postCreateStartingRelics for: " + chosenClass);
@@ -473,15 +487,47 @@ public class BaseMod {
     		UnlockTracker.markRelicAsSeen(relic);
     	}
     	
+    	// the default setup for adding starting relics does not do
+    	// equip triggers on the relics so we circumvent that by
+    	// adding relics ourself on dungeon initialize and force
+    	// the equip trigger
+		subscribeToPostDungeonInitialize(new PostDungeonInitializeSubscriber() {
+
+			@Override
+			public void receivePostDungeonInitialize() {
+				int relicIndex = AbstractDungeon.player.relics.size();
+				int relicRemoveIndex = relicsToAdd.size() - 1;
+				while (relicsToAdd.size() > 0) {
+					System.out.println("Attempting to add: " + relicsToAdd.get(relicRemoveIndex));
+					AbstractRelic relic = RelicLibrary.getRelic(relicsToAdd.remove(relicRemoveIndex));
+					System.out.println("Found relic is: " + relic);
+					AbstractRelic relicCopy;
+					// without checking if the relic wants to have a player class provided
+					// the makeCopy() method would return null in cases where the relic
+					// didn't implement it
+					if (relicsThatNeedSpecificPlayer.contains(relic.name)) {
+						relicCopy = relic.makeCopy(AbstractDungeon.player.chosenClass);
+					} else {
+						relicCopy = relic.makeCopy();
+					}
+					relicCopy.instantObtain(AbstractDungeon.player, relicIndex, true);
+					relicRemoveIndex--;
+					relicIndex++;
+				}
+			}
+			
+		});
+    	
     	if (clearDefault) {
     		logger.info("postCreateStartingRelics clearing initial relics");
     		relics.clear();
     	}
-    	relics.addAll(relicsToAdd);
+    	
+    	AbstractDungeon.relicsToRemoveOnStart.addAll(relicsToAdd);
     }
     
     //
-    // Subsciption handlers
+    // Subscription handlers
     //
 
     // subscribeToStartAct -
