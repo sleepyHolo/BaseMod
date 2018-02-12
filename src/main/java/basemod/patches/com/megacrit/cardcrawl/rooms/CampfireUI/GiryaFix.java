@@ -1,6 +1,7 @@
 package basemod.patches.com.megacrit.cardcrawl.rooms.CampfireUI;
 
-import basemod.BaseMod;
+import basemod.ReflectionHacks;
+
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -20,14 +21,14 @@ public class GiryaFix {
 
             if ((liftCount == 2) && isLifting) {
                 @SuppressWarnings("unchecked")
-                ArrayList<AbstractCampfireOption> campfireButtons = (ArrayList<AbstractCampfireOption>) BaseMod.getPrivate(me, CampfireUI.class, "buttons");
+                ArrayList<AbstractCampfireOption> campfireButtons = (ArrayList<AbstractCampfireOption>) ReflectionHacks.getPrivate(me, CampfireUI.class, "buttons");
                 if (campfireButtons != null) {
                     campfireButtons.remove(campfireButtons.size() - 1);
                     if (campfireButtons.size() == 3) {
                         campfireButtons.get(campfireButtons.size() - 1).setPosition(950.0F * Settings.scale, 450.0F * Settings.scale);
                     }
 
-                    BaseMod.setPrivate(me, CampfireUI.class, "buttons", campfireButtons);
+                    ReflectionHacks.setPrivate(me, CampfireUI.class, "buttons", campfireButtons);
                 }
             }
         }

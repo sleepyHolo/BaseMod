@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
-import basemod.BaseMod;
+import basemod.ReflectionHacks;
 
 public abstract class CustomCard extends AbstractCard {
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
@@ -21,7 +21,7 @@ public abstract class CustomCard extends AbstractCard {
 		int tw = cardTexture.getWidth();
 		int th = cardTexture.getHeight();
 		TextureAtlas.AtlasRegion cardImg = new AtlasRegion(cardTexture, 0, 0, tw, th);
-		BaseMod.setPrivateInherited(this, CustomCard.class, "portrait", cardImg);
+		ReflectionHacks.setPrivateInherited(this, CustomCard.class, "portrait", cardImg);
 	}
 	
 }

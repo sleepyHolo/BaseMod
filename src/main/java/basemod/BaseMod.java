@@ -23,8 +23,6 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +59,7 @@ public class BaseMod {
     private static ArrayList<PostCreateShopRelicSubscriber> postCreateShopRelicSubscribers;
     private static ArrayList<PostCreateShopPotionSubscriber> postCreateShopPotionSubscribers;
     private static ArrayList<EditCardsSubscriber> editCardsSubscribers;
+    private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<AbstractCard> redToRemove;
@@ -169,6 +168,7 @@ public class BaseMod {
         postCreateShopRelicSubscribers = new ArrayList<>();
         postCreateShopPotionSubscribers = new ArrayList<>();
         editCardsSubscribers = new ArrayList<>();
+        editRelicsSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -208,9 +208,9 @@ public class BaseMod {
         String typeMap = typeMaps.get(stringType);
         Type typeToken = typeTokens.get(stringType);
 
-        Map localizationStrings = (Map) getPrivateStatic(LocalizedStrings.class, typeMap);
+        Map localizationStrings = (Map) ReflectionHacks.getPrivateStatic(LocalizedStrings.class, typeMap);
         localizationStrings.putAll(new HashMap(gson.fromJson(jsonString, typeToken)));
-        setPrivateStaticFinal(LocalizedStrings.class, typeMap, localizationStrings);
+        ReflectionHacks.setPrivateStaticFinal(LocalizedStrings.class, typeMap, localizationStrings);
     }
 
     // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
@@ -329,9 +329,17 @@ public class BaseMod {
     // remove relic -
     @SuppressWarnings("unchecked")
 	public static void removeRelic(AbstractRelic relic, RelicType type) {
+    	// note that this has to use reflection hacks to change the private
+    	// variables in RelicLibrary to successfully remove the relics
+    	//
+    	// this could be accomplished without reflection hacks by creating a
+    	// @SpirePatch to enable relic removal functionality
+    	//
+    	// as of right now I'm not sure which method is preferable
+    	// removeCard is using the @SpirePatch method
     	switch(type) {
     	case SHARED:
-    		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "sharedRelics");
+    		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "sharedRelics");
     		if (sharedRelics.containsKey(relic.relicId)) {
     			sharedRelics.remove(relic.relicId);
     			RelicLibrary.totalRelicCount--;
@@ -339,7 +347,7 @@ public class BaseMod {
     		}
     		break;
     	case RED:
-    		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "redRelics");
+    		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "redRelics");
     		if (redRelics.containsKey(relic.relicId)) {
     			redRelics.remove(relic.relicId);
     			RelicLibrary.totalRelicCount--;
@@ -347,7 +355,7 @@ public class BaseMod {
     		}
     		break;
     	case GREEN:
-    		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "greenRelics");
+    		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "greenRelics");
     		if (greenRelics.containsKey(relic.relicId)) {
     			greenRelics.remove(relic.relicId);
     			RelicLibrary.totalRelicCount--;
@@ -684,6 +692,15 @@ public class BaseMod {
 		}
     }
     
+    // publishEditRelics -
+    public static void publishEditRelics() {
+    	logger.info("begin editing relics");
+    	
+    	for (EditRelicsSubscriber sub : editRelicsSubscribers) {
+    		sub.receiveEditRelics();
+    	}
+    }
+    
     //
     // Subscription handlers
     //
@@ -868,83 +885,14 @@ public class BaseMod {
     	editCardsSubscribers.remove(sub);
     }
     
-    //
-    // Reflection hacks
-    //
-    
-    // getPrivateStatic - read private static variables
-    @SuppressWarnings("rawtypes")
-	public static Object getPrivateStatic(Class objClass, String fieldName) {
-        try {
-            Field targetField = objClass.getDeclaredField(fieldName);
-            targetField.setAccessible(true);
-            return targetField.get(null);
-        } catch (Exception e) {
-            logger.error("Exception occured when getting private static field " + fieldName + " of " + objClass.getName(), e);
-        }
-        
-        return null;
+    // subscribeToEditRelics -
+    public static void subscribeToEditRelics(EditRelicsSubscriber sub) {
+    	editRelicsSubscribers.add(sub);
     }
     
-    // setPrivateStatic - modify private static variables
-    @SuppressWarnings("rawtypes")
-	public static void setPrivateStatic(Class objClass, String fieldName, Object newValue) {
-    	setPrivateStaticFinal(objClass, fieldName, newValue);
-    }
-    
-    // setPrivateStaticFinal - modify (private) static (final) variables
-    @SuppressWarnings("rawtypes")
-	public static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
-        try {
-            Field targetField = objClass.getDeclaredField(fieldName);
-            
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(targetField, targetField.getModifiers() & ~Modifier.FINAL);
-            
-            targetField.setAccessible(true);
-            targetField.set(null, newValue);
-        } catch (Exception e) {
-            logger.error("Exception occured when setting private static (final) field " + fieldName + " of " + objClass.getName(), e);
-        }
-    }
-
-    // getPrivate - read private varibles of an object
-    @SuppressWarnings("rawtypes")
-	public static Object getPrivate(Object obj, Class objClass, String fieldName) {
-        try {
-            Field targetField = objClass.getDeclaredField(fieldName);
-            targetField.setAccessible(true);
-            return targetField.get(obj);
-        } catch (Exception e) {
-            logger.error("Exception occured when getting private field " + fieldName + " of " + objClass.getName(), e);
-        }
-
-        return null;
-    }
-
-    // setPrivate - set private variables of an object
-    @SuppressWarnings("rawtypes")
-	public static void setPrivate(Object obj, Class objClass, String fieldName, Object newValue) {
-        try {
-            Field targetField = objClass.getDeclaredField(fieldName);
-            targetField.setAccessible(true);
-            targetField.set(obj, newValue);
-        } catch (Exception e) {
-            logger.error("Exception occured when setting private field " + fieldName + " of " + objClass.getName(), e);
-        }
-    }
-    
-    // setPrivateInherited - set private variable of superclass of an object
-    @SuppressWarnings("rawtypes")
-	public static void setPrivateInherited(Object obj, Class objClass, String fieldName, Object newValue) {
-    	try {
-    		Field targetField = objClass.getSuperclass().getDeclaredField(fieldName);
-    		targetField.setAccessible(true);
-    		targetField.set(obj, newValue);
-    	} catch (Exception e) {
-    		logger.error("Exception occured when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
-    	}
+    // unsubscribeToEditRelics -
+    public static void unsubscribeToEditRelics(EditRelicsSubscriber sub) {
+    	editRelicsSubscribers.remove(sub);
     }
 
 }
