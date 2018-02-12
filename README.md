@@ -54,6 +54,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 
 #### Subscriptions ####
 Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
+All interfaces are in the package `basemod.interfaces`
 * `boolean receivePostCampfire()` - After a campfire action is performed. Returning false will allow another action to be performed.
 * `void receivePostDraw(AbstractCard)` - After a card is drawn.
 * `void receivePostDungeonInitialize()` - After dungeon initialization completes.
@@ -66,6 +67,12 @@ Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubsc
 * `void receiveStartGame()` - When starting a new game or continuing, after generating/loading the player and before dungeon generation.
 * `void receivePreUpdate()` - Immediately after input is read.
 * `void receivePostUpdate()` - Immediately before input is disposed.
+* `boolean receivePostCreateStartingDeck(cardsToAdd)` - Immediately after the character's starting deck is created. Returning true will remove all the cards from the default starting deck. Add the cards you want to be in the starting deck to `cardsToAdd`.
+* `boolean receievePostCreateStartingRelics(relicsToAdd)` - Immediately after the character's starting relics are created. Returning true will remove all the default relics from the player. Add the relics you want to be in the starting deck to `relicsToAdd`.
+* `void receivePostCreateShopRelics(relics, sceenInstance)` - Immediately after the shop generates its relics. Modifying `relics` will change the relics in the shop. `screenInstance` is an instance of the `ShopScreen`.
+* `void receivePostCreateShopPotions(potions, screenInstance)` - Immediately after the shop generates its potions. Modifying `potions` will change the potions in the shop. `screenInstance` is an instance of the `ShopScreen`.
+* `void receiveEditCards` - When you should register any cards to add or remove with `BaseMod.addCard` and `BaseMod.removeCard`. Do **NOT** initialize any cards or register any cards to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly.
+* `void receiveEditRelics` - When you should register any relics to add or remove with `BaseMod.addRelic` and `BaseMod.removeRelic`. Do **NOT** initialize any relics or register any relics to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly.
 
 ### Mod Badges ###
 32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
@@ -103,10 +110,19 @@ settingsPanel.addButton(350.0f, 650.0f, (me) -> {
 Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
 registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 ```
+Take a look at `basemod.BaseModInit` to see the code used to create the `ModBadge` for BaseMod.
 
 ### Custom Relics ###
 * `CustomRelic(String id, Texture texture, AbstractRelic.RelicTier tier, AbstractRelic.LandingSound sfx)`
-* `BaseMod.loadCustomRelicStrings(String json)`
+* `BaseMod.addRelic(AbstractRelic relic, RelicType type)` (note: `CustomRelic` extends `AbstractRelic`) and `RelicType` indicates if this relic is shared between both characters or `RED` only or `GREEN` only.
+* `BaseMod.removeRelic(AbstractRelic relic, RelicType type)` removes a relic from the game (note: removing a relic used by an event is currently untested/undefined behavior)
+* `BaseMod.removeRelic(AbstractRelic relic)` removes a relic from the game without having to know its `RelicType`
+
+### Custom Cards ###
+* `CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool)`
+* `BaseMod.addCard(AbstractCard card)` (note: `CustomCard` extends `AbstractCard`).
+* `BaseMod.removeCard(AbstractCard card)` removes a card from the game (note: removing a card used by an event is currently untested/undefined behavior)
+
 
 ## Changelog ##
 #### v1.0.0 ####

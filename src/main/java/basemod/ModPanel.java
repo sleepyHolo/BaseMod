@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class ModPanel {
-    private static final float ROW_LEFT = 475.0f;
-    private static final float ROW_TOP = 650.0f;
-    private static final float ROW_HEIGHT = 64.0f;
     
     private static Texture background;
     private ArrayList<ModButton> buttons;
