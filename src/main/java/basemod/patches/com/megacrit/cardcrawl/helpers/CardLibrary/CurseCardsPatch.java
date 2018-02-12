@@ -21,6 +21,7 @@ public class CurseCardsPatch {
 		for (AbstractCard card : BaseMod.getCurseCardsToRemove()) {
 			// for some reason curses is set to private so we use reflection to access it
 			Object cursesObj = BaseMod.getPrivateStatic(CardLibrary.class, "curses");
+			@SuppressWarnings("unchecked")
 			HashMap<String, AbstractCard> curses = (HashMap<String, AbstractCard>) cursesObj;
 			curses.remove(card.cardID);
 			CardLibrary.curseCards--;

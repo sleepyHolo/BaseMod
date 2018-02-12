@@ -17,7 +17,6 @@ public class ModButton {
     
     private Consumer<ModButton> click;
     private Hitbox hb;
-    private String text;
     private Texture texture;
     private float x;
     private float y;

@@ -2,9 +2,6 @@ package basemod;
 
 import basemod.helpers.RelicType;
 import basemod.interfaces.*;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.gson.Gson;
@@ -204,8 +201,8 @@ public class BaseMod {
     //
     // Localization
     //
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
-    private static void loadJsonStrings(Type stringType, String jsonString) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void loadJsonStrings(Type stringType, String jsonString) {
         logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
 
         String typeMap = typeMaps.get(stringType);
@@ -267,7 +264,8 @@ public class BaseMod {
     }
     
     // add card
-    public static void addCard(AbstractCard card) {
+    @SuppressWarnings("incomplete-switch")
+	public static void addCard(AbstractCard card) {
     	switch (card.color) {
     	case RED:
     		redToAdd.add(card);
@@ -285,7 +283,8 @@ public class BaseMod {
     }
     
     // remove card
-    public static void removeCard(AbstractCard card) {
+    @SuppressWarnings("incomplete-switch")
+	public static void removeCard(AbstractCard card) {
     	switch (card.color) {
     	case RED:
     		redToRemove.add(card);
@@ -328,7 +327,8 @@ public class BaseMod {
     
     
     // remove relic -
-    public static void removeRelic(AbstractRelic relic, RelicType type) {
+    @SuppressWarnings("unchecked")
+	public static void removeRelic(AbstractRelic relic, RelicType type) {
     	switch(type) {
     	case SHARED:
     		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "sharedRelics");
@@ -873,7 +873,8 @@ public class BaseMod {
     //
     
     // getPrivateStatic - read private static variables
-    public static Object getPrivateStatic(Class objClass, String fieldName) {
+    @SuppressWarnings("rawtypes")
+	public static Object getPrivateStatic(Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
@@ -886,12 +887,14 @@ public class BaseMod {
     }
     
     // setPrivateStatic - modify private static variables
-    public static void setPrivateStatic(Class objClass, String fieldName, Object newValue) {
+    @SuppressWarnings("rawtypes")
+	public static void setPrivateStatic(Class objClass, String fieldName, Object newValue) {
     	setPrivateStaticFinal(objClass, fieldName, newValue);
     }
     
     // setPrivateStaticFinal - modify (private) static (final) variables
-    public static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
+    @SuppressWarnings("rawtypes")
+	public static void setPrivateStaticFinal(Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             
@@ -907,7 +910,8 @@ public class BaseMod {
     }
 
     // getPrivate - read private varibles of an object
-    public static Object getPrivate(Object obj, Class objClass, String fieldName) {
+    @SuppressWarnings("rawtypes")
+	public static Object getPrivate(Object obj, Class objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
@@ -920,7 +924,8 @@ public class BaseMod {
     }
 
     // setPrivate - set private variables of an object
-    public static void setPrivate(Object obj, Class objClass, String fieldName, Object newValue) {
+    @SuppressWarnings("rawtypes")
+	public static void setPrivate(Object obj, Class objClass, String fieldName, Object newValue) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
@@ -931,7 +936,8 @@ public class BaseMod {
     }
     
     // setPrivateInherited - set private variable of superclass of an object
-    public static void setPrivateInherited(Object obj, Class objClass, String fieldName, Object newValue) {
+    @SuppressWarnings("rawtypes")
+	public static void setPrivateInherited(Object obj, Class objClass, String fieldName, Object newValue) {
     	try {
     		Field targetField = objClass.getSuperclass().getDeclaredField(fieldName);
     		targetField.setAccessible(true);

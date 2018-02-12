@@ -19,7 +19,8 @@ public class PostInitializeStarterRelicsHook {
 	@SpireInsertPatch(loc=271, localvars={"relics"})
     public static void Insert(Object mObj, PlayerClass chosenClass, Object relicsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
-    	ArrayList<String> theRelics = (ArrayList<String>) relicsObj;
+    	@SuppressWarnings("unchecked")
+		ArrayList<String> theRelics = (ArrayList<String>) relicsObj;
     	logger.info("Adding relics to player");
         BaseMod.publishPostCreateStartingRelics(me.chosenClass, theRelics);
     }

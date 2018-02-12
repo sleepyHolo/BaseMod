@@ -13,7 +13,8 @@ public class PostInitializeStarterDeckHook {
     @SpireInsertPatch(loc=246, localvars={"cards"})
     public static void Insert(Object mObj, Object cardsObj) {
     	AbstractPlayer  me = (AbstractPlayer) mObj;
-    	ArrayList<String> theCards = (ArrayList<String>) cardsObj;
+    	@SuppressWarnings("unchecked")
+		ArrayList<String> theCards = (ArrayList<String>) cardsObj;
         BaseMod.publishPostCreateStartingDeck(me.chosenClass, theCards);
     }
 }
