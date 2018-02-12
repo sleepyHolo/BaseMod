@@ -5,14 +5,12 @@ import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -38,17 +36,11 @@ import java.util.Map;
 public class BaseMod {
     public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
     
-    private static final String MODNAME = "BaseMod";
-    private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.5.0 NL Provides hooks and a console.";
-    
     private static final int BADGES_PER_ROW = 16;
     private static final float BADGES_X = 640.0f;
     private static final float BADGES_Y = 250.0f;
     public static final float BADGE_W = 40.0f;
     public static final float BADGE_H = 40.0f;
-
-    private static InputProcessor oldInputProcessor = null;
 
     private static HashMap<Type, String> typeMaps;
     private static HashMap<Type, Type> typeTokens;
@@ -947,45 +939,6 @@ public class BaseMod {
     	} catch (Exception e) {
     		logger.error("Exception occured when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
     	}
-    }
-    
-    /**
-     * 
-     * Handles the creation of the ModBadge and settings panel for BaseMod
-     *
-     */
-    public static class BaseModInit implements PostInitializeSubscriber {
-
-		@Override
-		public void receivePostInitialize() {
-	        // BaseMod post initialize handling
-	        ModPanel settingsPanel = new ModPanel();
-	        settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
-	            if (me.parent.waitingOnEvent) {
-	                me.text = "Press key";
-	            } else {
-	                me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
-	            }
-	        });
-	        
-	        settingsPanel.addButton(350.0f, 650.0f, (me) -> {
-	            me.parent.waitingOnEvent = true;
-	            oldInputProcessor = Gdx.input.getInputProcessor();
-	            Gdx.input.setInputProcessor(new InputAdapter() {
-	                @Override
-	                public boolean keyUp(int keycode) {
-	                    DevConsole.toggleKey = keycode;
-	                    me.parent.waitingOnEvent = false;
-	                    Gdx.input.setInputProcessor(oldInputProcessor);
-	                    return true;
-	                }
-	            });
-	        });
-	        
-	        Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
-	        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
-		}
-    	
     }
 
 }
