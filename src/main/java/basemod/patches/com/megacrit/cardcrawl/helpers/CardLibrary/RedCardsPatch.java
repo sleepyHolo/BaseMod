@@ -14,12 +14,9 @@ public class RedCardsPatch {
 			CardLibrary.add(card);
 		}
 		
-		System.out.println("About to remove");
-		
 		// remove old cards
-		for (String card : BaseMod.getRedCardsToRemove()) {
-			System.out.println("Removing: " + card);
-			CardLibrary.cards.remove(card);
+		for (AbstractCard card : BaseMod.getRedCardsToRemove()) {
+			CardLibrary.cards.remove(card.cardID);
 			CardLibrary.redCards--;
 			CardLibrary.totalCardCount--;
 		}

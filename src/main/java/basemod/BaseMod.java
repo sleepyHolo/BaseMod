@@ -71,15 +71,16 @@ public class BaseMod {
     private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
     private static ArrayList<PostCreateShopRelicSubscriber> postCreateShopRelicSubscribers;
     private static ArrayList<PostCreateShopPotionSubscriber> postCreateShopPotionSubscribers;
+    private static ArrayList<EditCardsSubscriber> editCardsSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
-    private static ArrayList<String> redToRemove;
+    private static ArrayList<AbstractCard> redToRemove;
     private static ArrayList<AbstractCard> greenToAdd;
-    private static ArrayList<String> greenToRemove;
+    private static ArrayList<AbstractCard> greenToRemove;
     private static ArrayList<AbstractCard> colorlessToAdd;
-    private static ArrayList<String> colorlessToRemove;
+    private static ArrayList<AbstractCard> colorlessToRemove;
     private static ArrayList<AbstractCard> curseToAdd;
-    private static ArrayList<String> curseToRemove;
+    private static ArrayList<AbstractCard> curseToRemove;
     
     public static DevConsole console;
     public static Gson gson;
@@ -108,6 +109,9 @@ public class BaseMod {
         initializeTypeMaps();
         initializeSubscriptions();
         initializeCardLists();
+        
+        BaseModInit baseModInit = new BaseModInit();
+        BaseMod.subscribeToPostInitialize(baseModInit);
 
         console = new DevConsole();
         
@@ -175,6 +179,7 @@ public class BaseMod {
         postCreateStartingRelicsSubscribers = new ArrayList<>();
         postCreateShopRelicSubscribers = new ArrayList<>();
         postCreateShopPotionSubscribers = new ArrayList<>();
+        editCardsSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -235,7 +240,7 @@ public class BaseMod {
     }
     
     // red remove -
-    public static ArrayList<String> getRedCardsToRemove() {
+    public static ArrayList<AbstractCard> getRedCardsToRemove() {
     	return redToRemove;
     }
     
@@ -245,7 +250,7 @@ public class BaseMod {
     }
     
     // green remove -
-    public static ArrayList<String> getGreenCardsToRemove() {
+    public static ArrayList<AbstractCard> getGreenCardsToRemove() {
     	return greenToRemove;
     }
     
@@ -255,7 +260,7 @@ public class BaseMod {
     }
     
     // colorless remove -
-    public static ArrayList<String> getColorlessCardsToRemove() {
+    public static ArrayList<AbstractCard> getColorlessCardsToRemove() {
     	return colorlessToRemove;
     }
     
@@ -265,7 +270,7 @@ public class BaseMod {
     }
     
     // curse remove -
-    public static ArrayList<String> getCurseCardsToRemove() {
+    public static ArrayList<AbstractCard> getCurseCardsToRemove() {
     	return curseToRemove;
     }
     
@@ -288,8 +293,8 @@ public class BaseMod {
     }
     
     // remove card
-    public static void removeCard(String card, CardColor color) {
-    	switch (color) {
+    public static void removeCard(AbstractCard card) {
+    	switch (card.color) {
     	case RED:
     		redToRemove.add(card);
     		break;
@@ -456,33 +461,6 @@ public class BaseMod {
     // publishPostInitialize -
     public static void publishPostInitialize() {
         logger.info("publishPostInitialize");
-        
-        // BaseMod post initialize handling
-        ModPanel settingsPanel = new ModPanel();
-        settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
-            if (me.parent.waitingOnEvent) {
-                me.text = "Press key";
-            } else {
-                me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
-            }
-        });
-        
-        settingsPanel.addButton(350.0f, 650.0f, (me) -> {
-            me.parent.waitingOnEvent = true;
-            oldInputProcessor = Gdx.input.getInputProcessor();
-            Gdx.input.setInputProcessor(new InputAdapter() {
-                @Override
-                public boolean keyUp(int keycode) {
-                    DevConsole.toggleKey = keycode;
-                    me.parent.waitingOnEvent = false;
-                    Gdx.input.setInputProcessor(oldInputProcessor);
-                    return true;
-                }
-            });
-        });
-        
-        Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
-        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         
         // Publish
         for (PostInitializeSubscriber sub : postInitializeSubscribers) {
@@ -705,6 +683,15 @@ public class BaseMod {
     	}
     }
     
+    // publishEditCards -
+    public static void publishEditCards() {
+    	logger.info("begin editing cards");
+		
+		for (EditCardsSubscriber sub : editCardsSubscribers) {
+			sub.receiveEditCards();
+		}
+    }
+    
     //
     // Subscription handlers
     //
@@ -879,6 +866,16 @@ public class BaseMod {
     	postCreateShopPotionSubscribers.remove(sub);
     }
     
+    // subscribeToEditCards -
+    public static void subscribeToEditCards(EditCardsSubscriber sub) {
+    	editCardsSubscribers.add(sub);
+    }
+    
+    // unsubscribeToEditCards -
+    public static void unsubscribeToEditCards(EditCardsSubscriber sub) {
+    	editCardsSubscribers.remove(sub);
+    }
+    
     //
     // Reflection hacks
     //
@@ -951,4 +948,44 @@ public class BaseMod {
     		logger.error("Exception occured when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
     	}
     }
+    
+    /**
+     * 
+     * Handles the creation of the ModBadge and settings panel for BaseMod
+     *
+     */
+    public static class BaseModInit implements PostInitializeSubscriber {
+
+		@Override
+		public void receivePostInitialize() {
+	        // BaseMod post initialize handling
+	        ModPanel settingsPanel = new ModPanel();
+	        settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
+	            if (me.parent.waitingOnEvent) {
+	                me.text = "Press key";
+	            } else {
+	                me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
+	            }
+	        });
+	        
+	        settingsPanel.addButton(350.0f, 650.0f, (me) -> {
+	            me.parent.waitingOnEvent = true;
+	            oldInputProcessor = Gdx.input.getInputProcessor();
+	            Gdx.input.setInputProcessor(new InputAdapter() {
+	                @Override
+	                public boolean keyUp(int keycode) {
+	                    DevConsole.toggleKey = keycode;
+	                    me.parent.waitingOnEvent = false;
+	                    Gdx.input.setInputProcessor(oldInputProcessor);
+	                    return true;
+	                }
+	            });
+	        });
+	        
+	        Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
+	        registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
+		}
+    	
+    }
+
 }
