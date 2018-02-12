@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -487,25 +488,21 @@ public class BaseMod {
     }
     
     // publishPostCreateShopRelic -
-    public static StoreRelic publishPostCreateShopRelic(StoreRelic relic, int relicNumber) {
-    	StoreRelic resultRelic = relic;
-    	
+    public static void publishPostCreateShopRelics(ArrayList<StoreRelic> relics, ShopScreen screenInstance) {
+    	logger.info("postCreateShopRelics for: " + relics);
+
     	for (PostCreateShopRelicSubscriber sub : postCreateShopRelicSubscribers) {
-    		resultRelic = sub.recieveCreateShopRelic(relic, relicNumber);
+    		sub.receiveCreateShopRelics(relics, screenInstance);
     	}
-    	
-    	return resultRelic;
     }
     
     // publishPostCreateShopPotion -
-    public static StorePotion publishPostCreateShopPotion(StorePotion pot, int potionNumber) {
-    	StorePotion resultPotion = pot;
+    public static void publishPostCreateShopPotions(ArrayList<StorePotion> potions, ShopScreen screenInstance) {
+    	logger.info("postCreateShopPotions for: " + potions);
     	
     	for (PostCreateShopPotionSubscriber sub : postCreateShopPotionSubscribers) {
-    		resultPotion = sub.receieveCreateShopPotion(pot, potionNumber);
+    		sub.receiveCreateShopPotions(potions, screenInstance);
     	}
-    	
-    	return resultPotion;
     }
     
     //
