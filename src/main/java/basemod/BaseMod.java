@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 import com.megacrit.cardcrawl.cards.red.Headbutt;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
@@ -66,6 +67,15 @@ public class BaseMod {
     private static ArrayList<PostCreateStartingDeckSubscriber> postCreateStartingDeckSubscribers;
     private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
     
+    private static ArrayList<AbstractCard> redToAdd;
+    private static ArrayList<String> redToRemove;
+    private static ArrayList<AbstractCard> greenToAdd;
+    private static ArrayList<String> greenToRemove;
+    private static ArrayList<AbstractCard> colorlessToAdd;
+    private static ArrayList<String> colorlessToRemove;
+    private static ArrayList<AbstractCard> curseToAdd;
+    private static ArrayList<String> curseToRemove;
+    
     public static DevConsole console;
     public static Gson gson;
     public static boolean modSettingsUp = false;
@@ -92,6 +102,7 @@ public class BaseMod {
         initializeGson();
         initializeTypeMaps();
         initializeSubscriptions();
+        initializeCardLists();
 
         console = new DevConsole();
         
@@ -159,6 +170,18 @@ public class BaseMod {
         postCreateStartingRelicsSubscribers = new ArrayList<>();
     }
     
+    // initializeCardLists -
+    private static void initializeCardLists() {
+    	redToAdd = new ArrayList<>();
+    	redToRemove = new ArrayList<>();
+    	greenToAdd = new ArrayList<>();
+    	greenToRemove = new ArrayList<>();
+    	colorlessToAdd = new ArrayList<>();
+    	colorlessToRemove = new ArrayList<>();
+    	curseToAdd = new ArrayList<>();
+    	curseToRemove = new ArrayList<>();
+    }
+    
     //
     // Mod badges
     //
@@ -201,43 +224,78 @@ public class BaseMod {
     
     // red add -
     public static ArrayList<AbstractCard> getRedCardsToAdd() {
-    	return new ArrayList<AbstractCard>();
+    	return redToAdd;
     }
     
     // red remove -
-    public static ArrayList<AbstractCard> getRedCardsToRemove() {
-    	ArrayList<AbstractCard> redToRemove = new ArrayList<AbstractCard>();
+    public static ArrayList<String> getRedCardsToRemove() {
     	return redToRemove;
     }
     
     // green add -
     public static ArrayList<AbstractCard> getGreenCardsToAdd() {
-    	return new ArrayList<AbstractCard>();
+    	return greenToAdd;
     }
     
     // green remove -
-    public static ArrayList<AbstractCard> getGreenCardsToRemove() {
-    	return new ArrayList<AbstractCard>();
+    public static ArrayList<String> getGreenCardsToRemove() {
+    	return greenToRemove;
     }
     
     // colorless add -
     public static ArrayList<AbstractCard> getColorlessCardsToAdd() {
-    	return new ArrayList<AbstractCard>();
+    	return colorlessToAdd;
     }
     
     // colorless remove -
-    public static ArrayList<AbstractCard> getColorlessCardsToRemove() {
-    	return new ArrayList<AbstractCard>();
+    public static ArrayList<String> getColorlessCardsToRemove() {
+    	return colorlessToRemove;
     }
     
     // curse add -
     public static ArrayList<AbstractCard> getCurseCardsToAdd() {
-    	return new ArrayList<AbstractCard>();
+    	return curseToAdd;
     }
     
     // curse remove -
-    public static ArrayList<AbstractCard> getCurseCardsToRemove() {
-    	return new ArrayList<AbstractCard>();
+    public static ArrayList<String> getCurseCardsToRemove() {
+    	return curseToRemove;
+    }
+    
+    // add card
+    public static void addCard(AbstractCard card) {
+    	switch (card.color) {
+    	case RED:
+    		redToAdd.add(card);
+    		break;
+    	case GREEN:
+    		greenToAdd.add(card);
+    		break;
+    	case COLORLESS:
+    		colorlessToAdd.add(card);
+    		break;
+    	case CURSE:
+    		curseToAdd.add(card);
+    		break;
+    	}
+    }
+    
+    // remove card
+    public static void removeCard(String card, CardColor color) {
+    	switch (color) {
+    	case RED:
+    		redToRemove.add(card);
+    		break;
+    	case GREEN:
+    		greenToRemove.add(card);
+    		break;
+    	case COLORLESS:
+    		colorlessToRemove.add(card);
+    		break;
+    	case CURSE:
+    		curseToRemove.add(card);
+    		break;
+    	}
     }
 
     //
@@ -696,6 +754,11 @@ public class BaseMod {
         }
         
         return null;
+    }
+    
+    // setPrivateStatic - modify private static variables
+    public static void setPrivateStatic(Class objClass, String fieldName, Object newValue) {
+    	setPrivateStaticFinal(objClass, fieldName, newValue);
     }
     
     // setPrivateStaticFinal - modify (private) static (final) variables
