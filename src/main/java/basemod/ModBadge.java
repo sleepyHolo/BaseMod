@@ -2,6 +2,10 @@ package basemod;
 
 import basemod.interfaces.PreUpdateSubscriber;
 import basemod.interfaces.RenderSubscriber;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +19,8 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.EarlyAccessPopup;
 
 public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
+	public static final Logger logger = LogManager.getLogger(ModBadge.class.getName());
+	
     private Texture texture;
     private String modName;
     private String tip;
@@ -40,8 +46,12 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
         hb = new Hitbox(x, y, w*Settings.scale, h*Settings.scale);
         modPanel = modSettings;
         
+        logger.info("initialized mod badge for: " + modName);
+        
         BaseMod.subscribeToRender(this);
         BaseMod.subscribeToPreUpdate(this);
+        
+        logger.info("setup hooks for " + modName + " mod badge");
     }
     
     public void receiveRender(SpriteBatch sb) {
@@ -59,6 +69,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
             hb.update();
             
             if (hb.justHovered) {
+            	logger.info(modName + " badge hovered");
                 CardCrawlGame.sound.playV("UI_HOVER", 0.75f);
             }
             
@@ -81,6 +92,8 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
     }
     
     private void onClick() {
+    	logger.info(modName + " badge clicked");
+    	
         if (modPanel != null) {
             modPanel.oldInputProcessor = Gdx.input.getInputProcessor();
             BaseMod.modSettingsUp = true;
