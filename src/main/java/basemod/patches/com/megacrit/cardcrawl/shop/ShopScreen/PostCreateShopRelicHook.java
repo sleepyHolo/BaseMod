@@ -2,7 +2,6 @@ package basemod.patches.com.megacrit.cardcrawl.shop.ShopScreen;
 
 import java.util.ArrayList;
 
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StoreRelic;
