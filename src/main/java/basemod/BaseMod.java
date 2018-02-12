@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.helpers.RelicType;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -303,7 +304,103 @@ public class BaseMod {
     		break;
     	}
     }
-
+    
+    //
+    // Relics
+    //
+    // these adders and removers prevent modders from having to deal with RelicLibrary's need to keep track
+    // of counts and multiple lists by abstracting it away to simple addRelic and removeRelic calls
+    //
+    
+    // add relic -
+    public static void addRelic(AbstractRelic relic, RelicType type) {
+    	switch (type) {
+    	case SHARED:
+    		RelicLibrary.add(relic);
+    		break;
+    	case RED:
+    		RelicLibrary.addRed(relic);
+    		break;
+    	case GREEN:
+    		RelicLibrary.addGreen(relic);
+    		break;
+    	default:
+    		logger.info("tried to add relic of unsupported type: " + relic + " " + type);
+    	}
+    }
+    
+    
+    // remove relic -
+    public static void removeRelic(AbstractRelic relic, RelicType type) {
+    	switch(type) {
+    	case SHARED:
+    		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "sharedRelics");
+    		if (sharedRelics.containsKey(relic.relicId)) {
+    			sharedRelics.remove(relic.relicId);
+    			RelicLibrary.totalRelicCount--;
+    			removeRelicFromTierList(relic);
+    		}
+    		break;
+    	case RED:
+    		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "redRelics");
+    		if (redRelics.containsKey(relic.relicId)) {
+    			redRelics.remove(relic.relicId);
+    			RelicLibrary.totalRelicCount--;
+    			removeRelicFromTierList(relic);
+    		}
+    		break;
+    	case GREEN:
+    		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) getPrivateStatic(RelicLibrary.class, "greenRelics");
+    		if (greenRelics.containsKey(relic.relicId)) {
+    			greenRelics.remove(relic.relicId);
+    			RelicLibrary.totalRelicCount--;
+    			removeRelicFromTierList(relic);
+    		}
+    		break;
+    	default:
+    		logger.info("tried to remove relic of unsupported type: " + relic + " " + type);
+    	}
+    }
+    
+    private static void removeRelicFromTierList(AbstractRelic relic) {
+    	switch (relic.tier) {
+    	case STARTER:
+    		RelicLibrary.starterList.remove(relic.relicId);
+    		break;
+    	case COMMON:
+    		RelicLibrary.commonList.remove(relic.relicId);
+    		break;
+    	case UNCOMMON:
+    		RelicLibrary.uncommonList.remove(relic.relicId);
+    		break;
+    	case RARE:
+    		RelicLibrary.rareList.remove(relic.relicId);
+    		break;
+    	case SHOP:
+    		RelicLibrary.shopList.remove(relic.relicId);
+    		break;
+    	case SPECIAL:
+    		RelicLibrary.specialList.remove(relic.relicId);
+    		break;
+    	case BOSS:
+    		RelicLibrary.bossList.remove(relic.relicId);
+    		break;
+    	case DEPRECATED:
+    		logger.info(relic.relicId + " is deprecated.");
+    		break;
+    	default:
+    		logger.info(relic.relicId + "is undefined tier.");
+    	}
+    }
+    
+    // force remove relic -
+    public static void removeRelic(AbstractRelic relic) {
+    	removeRelic(relic, RelicType.SHARED);
+    	removeRelic(relic, RelicType.RED);
+    	removeRelic(relic, RelicType.GREEN);
+    }
+    
+    
     //
     // Publishers
     //
@@ -842,5 +939,16 @@ public class BaseMod {
         } catch (Exception e) {
             logger.error("Exception occured when setting private field " + fieldName + " of " + objClass.getName(), e);
         }
+    }
+    
+    // setPrivateInherited - set private variable of superclass of an object
+    public static void setPrivateInherited(Object obj, Class objClass, String fieldName, Object newValue) {
+    	try {
+    		Field targetField = objClass.getSuperclass().getDeclaredField(fieldName);
+    		targetField.setAccessible(true);
+    		targetField.set(obj, newValue);
+    	} catch (Exception e) {
+    		logger.error("Exception occured when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
+    	}
     }
 }
