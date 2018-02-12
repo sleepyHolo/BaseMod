@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
-import com.megacrit.cardcrawl.cards.red.Headbutt;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -20,6 +19,9 @@ import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.shop.ShopScreen;
+import com.megacrit.cardcrawl.shop.StorePotion;
+import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import org.apache.logging.log4j.LogManager;
@@ -66,6 +68,8 @@ public class BaseMod {
     private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;
     private static ArrayList<PostCreateStartingDeckSubscriber> postCreateStartingDeckSubscribers;
     private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
+    private static ArrayList<PostCreateShopRelicSubscriber> postCreateShopRelicSubscribers;
+    private static ArrayList<PostCreateShopPotionSubscriber> postCreateShopPotionSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<String> redToRemove;
@@ -168,6 +172,8 @@ public class BaseMod {
         postUpdateSubscribers = new ArrayList<>();
         postCreateStartingDeckSubscribers = new ArrayList<>();
         postCreateStartingRelicsSubscribers = new ArrayList<>();
+        postCreateShopRelicSubscribers = new ArrayList<>();
+        postCreateShopPotionSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -584,6 +590,24 @@ public class BaseMod {
     	AbstractDungeon.relicsToRemoveOnStart.addAll(relicsToAdd);
     }
     
+    // publishPostCreateShopRelic -
+    public static void publishPostCreateShopRelics(ArrayList<StoreRelic> relics, ShopScreen screenInstance) {
+    	logger.info("postCreateShopRelics for: " + relics);
+
+    	for (PostCreateShopRelicSubscriber sub : postCreateShopRelicSubscribers) {
+    		sub.receiveCreateShopRelics(relics, screenInstance);
+    	}
+    }
+    
+    // publishPostCreateShopPotion -
+    public static void publishPostCreateShopPotions(ArrayList<StorePotion> potions, ShopScreen screenInstance) {
+    	logger.info("postCreateShopPotions for: " + potions);
+    	
+    	for (PostCreateShopPotionSubscriber sub : postCreateShopPotionSubscribers) {
+    		sub.receiveCreateShopPotions(potions, screenInstance);
+    	}
+    }
+    
     //
     // Subscription handlers
     //
@@ -738,6 +762,25 @@ public class BaseMod {
     	postCreateStartingRelicsSubscribers.remove(sub);
     }
     
+    // subscribeToPostCreateShopRelic -
+    public static void subscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
+    	postCreateShopRelicSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateShopRelic
+    public static void unsubscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
+    	postCreateShopRelicSubscribers.remove(sub);
+    }
+    
+    // subscribeToPostCreateShopPotion -
+    public static void subscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
+    	postCreateShopPotionSubscribers.add(sub);
+    }
+    
+    // unsubscribeToPostCreateShopRelic
+    public static void unsubscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
+    	postCreateShopPotionSubscribers.remove(sub);
+    }
     
     //
     // Reflection hacks
