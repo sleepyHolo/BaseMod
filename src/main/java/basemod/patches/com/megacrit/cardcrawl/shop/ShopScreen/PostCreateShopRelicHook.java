@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.shop.ShopScreen", method="initRelics")
 public class PostCreateShopRelicHook {
@@ -20,7 +21,7 @@ public class PostCreateShopRelicHook {
 	public static void Postfix(Object __obj_instance) {
 		ShopScreen me = (ShopScreen) __obj_instance;
 		BaseMod.publishPostCreateShopRelics(
-					(ArrayList<StoreRelic>) BaseMod.getPrivate(me,  ShopScreen.class, "relics"),
+					(ArrayList<StoreRelic>) ReflectionHacks.getPrivate(me,  ShopScreen.class, "relics"),
 					me
 				);
 	}

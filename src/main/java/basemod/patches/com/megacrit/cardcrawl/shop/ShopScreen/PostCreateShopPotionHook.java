@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.shop.ShopScreen", method="initPotions")
 public class PostCreateShopPotionHook {
@@ -20,7 +21,7 @@ public class PostCreateShopPotionHook {
 	public static void Postfix(Object __obj_instance) {
 		ShopScreen me = (ShopScreen) __obj_instance;
 		BaseMod.publishPostCreateShopPotions(
-					(ArrayList<StorePotion>) BaseMod.getPrivate(me, ShopScreen.class, "potions"),
+					(ArrayList<StorePotion>) ReflectionHacks.getPrivate(me, ShopScreen.class, "potions"),
 					me
 				);
 	}
