@@ -5,7 +5,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="getTitle")
+@SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="getTitle")
 public class GetTitleSwitch {
 
 	public static Object Postfix(Object __original_ret, Object plyrClassObj) {
