@@ -3,7 +3,7 @@
 
     <groupId>basemod</groupId>
     <artifactId>basemod</artifactId>
-    <version>1.4.3</version>
+    <version>1.5.1</version>
     <packaging>jar</packaging>
 
     <name>BaseMod</name>

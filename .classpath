@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Davis/git/_lib/desktop-1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Davis/git/_lib/ModTheSpire.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Davis/git/_lib/ModTheSpireLib.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
