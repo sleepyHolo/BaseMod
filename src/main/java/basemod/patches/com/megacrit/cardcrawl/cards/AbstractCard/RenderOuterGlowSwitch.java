@@ -33,12 +33,12 @@ public class RenderOuterGlowSwitch {
 			}
 			try {
 				// use reflection hacks to invoke renderHelper (with float scale)
-				Field drawX;
-				drawX = card.getClass().getSuperclass().getSuperclass().getDeclaredField("drawX");
-				drawX.setAccessible(true);
-				Field drawY;
-				drawY = card.getClass().getSuperclass().getSuperclass().getDeclaredField("drawY");
-				drawY.setAccessible(true);
+				Field current_x;
+				current_x = card.getClass().getSuperclass().getSuperclass().getDeclaredField("current_x");
+				current_x.setAccessible(true);
+				Field current_y;
+				current_y = card.getClass().getSuperclass().getSuperclass().getDeclaredField("current_y");
+				current_y.setAccessible(true);
 				Field tintColor;
 				tintColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("tintColor");
 				tintColor.setAccessible(true);
@@ -46,9 +46,11 @@ public class RenderOuterGlowSwitch {
 						Color.class, Texture.class, float.class, float.class, float.class);
 				renderHelperMethod.setAccessible(true);
 				renderHelperMethod.invoke(card, sb, glowColor, card.getCardBg(),
-						drawX.get(card), drawY.get(card), 1.0F + ((Color)tintColor.get(card)).a / 5.0f);
+						((Float)current_x.get(card)) - 256.0f, ((Float)current_y.get(card)) - 256.0f, 1.0F + ((Color)tintColor.get(card)).a / 5.0f);
 			} catch (Exception e) {
 				logger.error("could not render outer glow for card " + card.getClass().toString() + " with color " + color.toString());
+				logger.error("with exception: " + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
