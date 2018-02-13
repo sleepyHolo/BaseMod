@@ -12,14 +12,15 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 @SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="initializeStarterDeck")
 public class PostInitializeStarterDeckHookSwitch {
     @SpireInsertPatch(loc=246, localvars={"cards"})
-    public static void Insert(Object mObj, @ByRef Object cardsObj) {
+    public static void Insert(Object mObj, @ByRef Object[] cardsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
     	@SuppressWarnings("unchecked")
-		ArrayList<String> theCards = (ArrayList<String>) cardsObj;
+		ArrayList<String> theCards = (ArrayList<String>) cardsObj[0];
         AbstractPlayer.PlayerClass selection = me.chosenClass;
         if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
 				!selection.toString().equals("CROWBOT")) {
         	theCards = BaseMod.getStartingDeck(me.chosenClass.toString());
+        	cardsObj[0] = theCards;
         } else {
         	BaseMod.publishPostCreateStartingDeck(me.chosenClass, theCards);
         }

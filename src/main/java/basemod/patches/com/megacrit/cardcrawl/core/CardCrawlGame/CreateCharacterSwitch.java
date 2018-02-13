@@ -12,13 +12,13 @@ import basemod.BaseMod;
 public class CreateCharacterSwitch {
 
 	@SpireInsertPatch(loc=996, localvars={"p"})
-	public static void Insert(Object selectionObj, @ByRef Object pObj) {
+	public static void Insert(Object selectionObj, @ByRef Object[] pObj) {
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) selectionObj;
-		@SuppressWarnings("unused")
-		AbstractPlayer p = (AbstractPlayer) pObj;
+		AbstractPlayer p = (AbstractPlayer) pObj[0];
 		if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
 				!selection.toString().equals("CROWBOT")) {
 			p = BaseMod.createCharacter(selection.toString(), CardCrawlGame.playerName);
+			pObj[0] = p;
 		}
 	}
 	

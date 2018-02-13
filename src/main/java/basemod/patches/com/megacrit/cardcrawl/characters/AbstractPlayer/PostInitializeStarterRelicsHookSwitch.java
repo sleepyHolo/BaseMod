@@ -13,13 +13,14 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 @SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="initializeStarterRelics", paramtypes={"com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass"})
 public class PostInitializeStarterRelicsHookSwitch {
 	@SpireInsertPatch(loc=271, localvars={"relics"})
-    public static void Insert(Object mObj, PlayerClass chosenClass, @ByRef Object relicsObj) {
+    public static void Insert(Object mObj, PlayerClass chosenClass, @ByRef Object[] relicsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
     	@SuppressWarnings("unchecked")
-		ArrayList<String> theRelics = (ArrayList<String>) relicsObj;
+		ArrayList<String> theRelics = (ArrayList<String>) relicsObj[0];
     	if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
 				!chosenClass.toString().equals("CROWBOT")) {
         	theRelics = BaseMod.getStartingRelics(me.chosenClass.toString());
+        	relicsObj[0] = theRelics;
         } else {
         	BaseMod.publishPostCreateStartingRelics(me.chosenClass, theRelics);
         }
