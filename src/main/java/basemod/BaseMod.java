@@ -8,7 +8,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
+import com.megacrit.cardcrawl.characters.Ironclad;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
@@ -23,6 +26,9 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +66,7 @@ public class BaseMod {
     private static ArrayList<PostCreateShopPotionSubscriber> postCreateShopPotionSubscribers;
     private static ArrayList<EditCardsSubscriber> editCardsSubscribers;
     private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
+    private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<AbstractCard> redToRemove;
@@ -69,6 +76,14 @@ public class BaseMod {
     private static ArrayList<AbstractCard> colorlessToRemove;
     private static ArrayList<AbstractCard> curseToAdd;
     private static ArrayList<AbstractCard> curseToRemove;
+    
+	@SuppressWarnings("rawtypes")
+	private static HashMap<String, Class> playerClassMap;
+	private static HashMap<String, String> playerTitleStringMap;
+	private static HashMap<String, String> playerClassStringMap;
+    
+    @SuppressWarnings("unused")
+	private static HashMap<String, String> playerColorMap;
     
     public static DevConsole console;
     public static Gson gson;
@@ -97,6 +112,7 @@ public class BaseMod {
         initializeTypeMaps();
         initializeSubscriptions();
         initializeCardLists();
+        initializeCharacterMap();
         
         BaseModInit baseModInit = new BaseModInit();
         BaseMod.subscribeToPostInitialize(baseModInit);
@@ -169,6 +185,7 @@ public class BaseMod {
         postCreateShopPotionSubscribers = new ArrayList<>();
         editCardsSubscribers = new ArrayList<>();
         editRelicsSubscribers = new ArrayList<>();
+        editCharactersSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -181,6 +198,15 @@ public class BaseMod {
     	colorlessToRemove = new ArrayList<>();
     	curseToAdd = new ArrayList<>();
     	curseToRemove = new ArrayList<>();
+    }
+    
+    // initializeCharacterMap -
+    private static void initializeCharacterMap() {
+    	playerClassMap = new HashMap<>();
+    	playerTitleStringMap = new HashMap<>();
+       	playerClassStringMap = new HashMap<>();
+    	playerColorMap = new HashMap<>();
+
     }
     
     //
@@ -405,6 +431,114 @@ public class BaseMod {
     	removeRelic(relic, RelicType.GREEN);
     }
     
+    //
+    // Characters
+    //
+    
+    // add character - the String characterID *must* be the exact same as what you put in the PlayerClass enum
+    public static void addCharacter(@SuppressWarnings("rawtypes") Class characterClass, String titleString, String classString, String characterID) {
+    	playerClassMap.put(characterID, characterClass);
+    	playerTitleStringMap.put(characterID, titleString);
+    	playerClassStringMap.put(characterID, classString);
+    }
+    
+    // I have no idea if this implementation comes even remotely close to working
+    public static void removeCharacter(String characterID) {
+    	playerClassMap.remove(characterID);
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual player class
+    // used by CardCrawlGame when creating the player for the game
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static AbstractPlayer createCharacter(String playerClass, String playerName) {
+    	Class playerClassAsClass = playerClassMap.get(playerClass);
+    	Constructor ctor;
+		try {
+			ctor = playerClassAsClass.getConstructor(String.class, AbstractPlayer.PlayerClass.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// if we fail to get the constructor using java reflections just start the run as the Ironclad
+			logger.error("could not get constructor for " + playerClassAsClass.getName());
+			logger.info("running as the Ironclad instead");
+			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
+			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
+		}
+    	// note that we create the player with a PlayerClass of IRONCLAD
+    	// this DOES NOT make the player an IRONCLAD
+    	// it is simply done because the constructor for AbstractPlayer requires a PlayerClass
+    	// and we don't have to patch that out since we are overriding the use of PlayerClass
+    	// everywhere else in the game
+    	AbstractPlayer thePlayer;
+		try {
+			thePlayer = (AbstractPlayer) ctor.newInstance(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			// if we fail to instantiate using java reflections just start the run as the Ironclad
+			logger.error("could not instantiate " + playerClassAsClass.getName() + " with the constructor " + ctor.getName());
+			logger.info("running as the Ironclad instead");
+			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
+			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
+		}
+    	return thePlayer;
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual title string for that class
+    // used by AbstractPlayer when getting the title string for the player
+    public static String getTitle(String playerClass) {
+    	return playerTitleStringMap.get(playerClass);
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual starting deck for that class
+    @SuppressWarnings("unchecked")
+	public static ArrayList<String> getStartingDeck(String playerClass) {
+    	@SuppressWarnings("rawtypes")
+		Class playerClassAsClass = playerClassMap.get(playerClass);
+    	Method getStartingDeck;
+		try {
+			getStartingDeck = playerClassAsClass.getMethod("getStartingDeck");
+		} catch (NoSuchMethodException | SecurityException e1) {
+			// if we fail to get the getStartingDeck method using java reflections just start with the Ironclad deck
+			logger.error("could not get starting deck method for " + playerClassAsClass.getName());
+			return Ironclad.getStartingDeck();
+		}
+    	Object startingDeckObj;
+    	try {
+			startingDeckObj = getStartingDeck.invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// if we fail to get the starting deck using java reflections just start with the Ironclad deck
+			logger.error("could not get starting deck for " + playerClassAsClass.getName());
+			return Ironclad.getStartingDeck();
+		}
+    	return (ArrayList<String>) startingDeckObj;
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual starting relics for that class
+    @SuppressWarnings("unchecked")
+	public static ArrayList<String> getStartingRelics(String playerClass) {
+    	@SuppressWarnings("rawtypes")
+		Class playerClassAsClass = playerClassMap.get(playerClass);
+    	Method getStartingRelics;
+		try {
+			getStartingRelics = playerClassAsClass.getMethod("getStartingRelics");
+		} catch (NoSuchMethodException | SecurityException e1) {
+			// if we fail to get the getStartingRelics method using java reflections just start with the Ironclad relics
+			logger.error("could not get starting relic method for " + playerClassAsClass.getName());
+			return Ironclad.getStartingRelics();
+		}
+    	Object startingRelicsObj;
+    	try {
+    		startingRelicsObj = getStartingRelics.invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// if we fail to get the starting relics using java reflections just start with the Ironclad relics
+			logger.error("could not get starting deck for " + playerClassAsClass.getName());
+			return Ironclad.getStartingRelics();
+		}
+    	return (ArrayList<String>) startingRelicsObj;
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual class ID for that class
+    public static String getClass(String playerClass) {
+    	return playerClassStringMap.get(playerClass);
+    }
     
     //
     // Publishers
@@ -894,5 +1028,17 @@ public class BaseMod {
     public static void unsubscribeToEditRelics(EditRelicsSubscriber sub) {
     	editRelicsSubscribers.remove(sub);
     }
+    
+    // subscribeToEditCharacters -
+    public static void subscribeToEditCharacters(EditCharactersSubscriber sub) {
+    	editCharactersSubscribers.add(sub);
+    }
+    
+    // unsubscribeToEditCharacters -
+    public static void unsubscribeToEditCharacters(EditCharactersSubscriber sub) {
+    	editCharactersSubscribers.remove(sub);
+    }
+    
+    
 
 }
