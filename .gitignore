@@ -22,6 +22,8 @@
 hs_err_pid*
 
 # Custom
+.classpath
+.project
 .idea/tasks.xml
 .idea/workspace.xml
 src/main/java/com/megacrit/**/*.java

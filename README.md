@@ -237,6 +237,14 @@ Take a look at `basemod.BaseModInit` to see the code used to create the `ModBadg
 #### v1.5.0 ####
 * Update to support `[EARLY_ACCESS_015]`
 
+#### v1.5.1 (daviscook477) ####
+* Code cleanup + bugfixes
+* Add hooks for modifying the player's initial deck and initial relics
+* Add hooks for changing the relics and potions sold by the shop
+* Add methods for abstracting the manipulation of RelicLibrary
+* Initial support for custom cards
+
 ## Contributors ##
 * t-larson - Original author
-* FlipskiZ - `hand` command, bug fixes
+* FlipskiZ - `hand` command, bugfixes
+* daviscook477 - Custom cards, hooks, code cleanup, bugfixes
