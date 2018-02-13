@@ -11,7 +11,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="createCharacter")
 public class CreateCharacterSwitch {
 
-	@SpireInsertPatch(loc=996, localvars={"p"})
+	@SpireInsertPatch(loc=999, localvars={"p"})
 	public static void Insert(Object selectionObj, @ByRef Object[] pObj) {
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) selectionObj;
 		AbstractPlayer p = (AbstractPlayer) pObj[0];
