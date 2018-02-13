@@ -16,8 +16,8 @@ public class ColorlessCardsPatch {
 		}
 		
 		// remove old cards
-		for (AbstractCard card : BaseMod.getColorlessCardsToRemove()) {
-			CardLibrary.cards.remove(card.cardID);
+		for (String cardID : BaseMod.getColorlessCardsToRemove()) {
+			CardLibrary.cards.remove(cardID);
 			CardLibrary.colorlessCards--;
 			CardLibrary.totalCardCount--;
 		}

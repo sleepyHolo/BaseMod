@@ -1,5 +1,5 @@
 package basemod.interfaces;
 
 public interface EditCharactersSubscriber {
-	void receieveEditCharacters();
+	void receiveEditCharacters();
 }

@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
@@ -69,22 +70,38 @@ public class BaseMod {
     private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
-    private static ArrayList<AbstractCard> redToRemove;
+    private static ArrayList<String> redToRemove;
     private static ArrayList<AbstractCard> greenToAdd;
-    private static ArrayList<AbstractCard> greenToRemove;
+    private static ArrayList<String> greenToRemove;
     private static ArrayList<AbstractCard> colorlessToAdd;
-    private static ArrayList<AbstractCard> colorlessToRemove;
+    private static ArrayList<String> colorlessToRemove;
     private static ArrayList<AbstractCard> curseToAdd;
-    private static ArrayList<AbstractCard> curseToRemove;
+    private static ArrayList<String> curseToRemove;
+    private static ArrayList<AbstractCard> customToAdd;
+    private static ArrayList<String> customToRemove;
+    private static ArrayList<String> customToRemoveColors;
     
 	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> playerClassMap;
 	private static HashMap<String, String> playerTitleStringMap;
 	private static HashMap<String, String> playerClassStringMap;
-    
-    @SuppressWarnings("unused")
 	private static HashMap<String, String> playerColorMap;
+	private static HashMap<String, String> playerSelectTextMap;
+	
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameColorMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameOutlineColorMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorDescBoxColorMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorGlowColorMap;
+	private static HashMap<String, Integer> colorCardCountMap;
+	private static HashMap<String, Integer> colorCardSeenCountMap;
+    private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorAttackBgMap;
+    private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgMap;
+    private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgMap;
+    private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbMap;
     
+	
     public static DevConsole console;
     public static Gson gson;
     public static boolean modSettingsUp = false;
@@ -113,10 +130,14 @@ public class BaseMod {
         initializeSubscriptions();
         initializeCardLists();
         initializeCharacterMap();
+        initializeColorMap();
         
         BaseModInit baseModInit = new BaseModInit();
         BaseMod.subscribeToPostInitialize(baseModInit);
 
+        EditCharactersInit editCharactersInit = new EditCharactersInit();
+        BaseMod.subscribeToPostInitialize(editCharactersInit);
+        
         console = new DevConsole();
         
         logger.info("================================================================");
@@ -198,6 +219,9 @@ public class BaseMod {
     	colorlessToRemove = new ArrayList<>();
     	curseToAdd = new ArrayList<>();
     	curseToRemove = new ArrayList<>();
+    	customToAdd = new ArrayList<>();
+    	customToRemove = new ArrayList<>();
+    	customToRemoveColors = new ArrayList<>();
     }
     
     // initializeCharacterMap -
@@ -206,7 +230,23 @@ public class BaseMod {
     	playerTitleStringMap = new HashMap<>();
        	playerClassStringMap = new HashMap<>();
     	playerColorMap = new HashMap<>();
-
+    	playerSelectTextMap = new HashMap<>();
+    }
+    
+    // initializeColorMap -
+    private static void initializeColorMap() {
+    	colorBgColorMap = new HashMap<>();
+    	colorBackColorMap = new HashMap<>();
+    	colorFrameColorMap = new HashMap<>();
+    	colorFrameOutlineColorMap = new HashMap<>();
+    	colorDescBoxColorMap = new HashMap<>();
+    	colorGlowColorMap = new HashMap<>();
+    	colorCardCountMap = new HashMap<>();
+    	colorCardSeenCountMap = new HashMap<>();
+    	colorAttackBgMap = new HashMap<>();
+    	colorSkillBgMap = new HashMap<>();
+    	colorPowerBgMap = new HashMap<>();
+    	colorEnergyOrbMap = new HashMap<>();
     }
     
     //
@@ -255,7 +295,7 @@ public class BaseMod {
     }
     
     // red remove -
-    public static ArrayList<AbstractCard> getRedCardsToRemove() {
+    public static ArrayList<String> getRedCardsToRemove() {
     	return redToRemove;
     }
     
@@ -265,7 +305,7 @@ public class BaseMod {
     }
     
     // green remove -
-    public static ArrayList<AbstractCard> getGreenCardsToRemove() {
+    public static ArrayList<String> getGreenCardsToRemove() {
     	return greenToRemove;
     }
     
@@ -275,7 +315,7 @@ public class BaseMod {
     }
     
     // colorless remove -
-    public static ArrayList<AbstractCard> getColorlessCardsToRemove() {
+    public static ArrayList<String> getColorlessCardsToRemove() {
     	return colorlessToRemove;
     }
     
@@ -285,12 +325,26 @@ public class BaseMod {
     }
     
     // curse remove -
-    public static ArrayList<AbstractCard> getCurseCardsToRemove() {
+    public static ArrayList<String> getCurseCardsToRemove() {
     	return curseToRemove;
     }
     
+    // custom add -
+    public static ArrayList<AbstractCard> getCustomCardsToAdd() {
+    	return customToAdd;
+    }
+    
+    // custom remove -
+    public static ArrayList<String> getCustomCardsToRemove() {
+    	return customToRemove;
+    }
+    
+ // custom remove colors -
+    public static ArrayList<String> getCustomCardsToRemoveColors() {
+    	return customToRemoveColors;
+    }
+    
     // add card
-    @SuppressWarnings("incomplete-switch")
 	public static void addCard(AbstractCard card) {
     	switch (card.color) {
     	case RED:
@@ -305,24 +359,30 @@ public class BaseMod {
     	case CURSE:
     		curseToAdd.add(card);
     		break;
+    	default:
+    		customToAdd.add(card);
+    		break;
     	}
     }
     
     // remove card
-    @SuppressWarnings("incomplete-switch")
-	public static void removeCard(AbstractCard card) {
-    	switch (card.color) {
-    	case RED:
+	public static void removeCard(String card, String color) {
+    	switch (color) {
+    	case "RED":
     		redToRemove.add(card);
     		break;
-    	case GREEN:
+    	case "GREEN":
     		greenToRemove.add(card);
     		break;
-    	case COLORLESS:
+    	case "COLORLESS":
     		colorlessToRemove.add(card);
     		break;
-    	case CURSE:
+    	case "CURSE":
     		curseToRemove.add(card);
+    		break;
+    	default:
+    		customToRemove.add(card);
+    		customToRemoveColors.add(color);
     		break;
     	}
     }
@@ -436,10 +496,12 @@ public class BaseMod {
     //
     
     // add character - the String characterID *must* be the exact same as what you put in the PlayerClass enum
-    public static void addCharacter(@SuppressWarnings("rawtypes") Class characterClass, String titleString, String classString, String characterID) {
+    public static void addCharacter(@SuppressWarnings("rawtypes") Class characterClass, String titleString, String classString, String color, String selectText, String characterID) {
     	playerClassMap.put(characterID, characterClass);
     	playerTitleStringMap.put(characterID, titleString);
     	playerClassStringMap.put(characterID, classString);
+    	playerColorMap.put(characterID, color);
+    	playerSelectTextMap.put(characterID, selectText);
     }
     
     // I have no idea if this implementation comes even remotely close to working
@@ -462,19 +524,16 @@ public class BaseMod {
 			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
 			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
 		}
-    	// note that we create the player with a PlayerClass of IRONCLAD
-    	// this DOES NOT make the player an IRONCLAD
-    	// it is simply done because the constructor for AbstractPlayer requires a PlayerClass
-    	// and we don't have to patch that out since we are overriding the use of PlayerClass
-    	// everywhere else in the game
     	AbstractPlayer thePlayer;
 		try {
-			thePlayer = (AbstractPlayer) ctor.newInstance(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
+			thePlayer = (AbstractPlayer) ctor.newInstance(new Object[] {playerName, PlayerClass.valueOf(playerClass)});
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			// if we fail to instantiate using java reflections just start the run as the Ironclad
 			logger.error("could not instantiate " + playerClassAsClass.getName() + " with the constructor " + ctor.getName());
 			logger.info("running as the Ironclad instead");
+			logger.error("error was: " + e.getMessage());
+			e.printStackTrace();
 			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
 			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
 		}
@@ -538,6 +597,148 @@ public class BaseMod {
     // convert a playerClass String (fake ENUM) into the actual class ID for that class
     public static String getClass(String playerClass) {
     	return playerClassStringMap.get(playerClass);
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual color String (fake ENUM) for that class
+    public static String getColor(String playerClass) {
+    	return playerColorMap.get(playerClass);
+    }
+    
+    // convert a playerClass String (fake ENUM) into the actual player class
+    public static Class getPlayerClass(String playerClass) {
+    	return playerClassMap.get(playerClass);
+    }
+    
+    // generate character options for CharacterSelectScreen based on added players
+    public static ArrayList<CharacterOption> generateCharacterOptions() {
+    	ArrayList<CharacterOption> options = new ArrayList<>();
+    	for (String character : playerClassMap.keySet()) {
+    		options.add(new CharacterOption(playerSelectTextMap.get(character), 
+    				AbstractPlayer.PlayerClass.valueOf(character),
+    				"ironcladButton.png", "ironcladPortrait.jpg"));
+    	}
+    	return options;
+    }
+    
+    //
+    // Colors
+    //
+    
+    // add a color -
+    public static void addColor(String color, 
+    		com.badlogic.gdx.graphics.Color bgColor,
+    		com.badlogic.gdx.graphics.Color backColor,
+    		com.badlogic.gdx.graphics.Color frameColor,
+    		com.badlogic.gdx.graphics.Color frameOutlineColor,
+    		com.badlogic.gdx.graphics.Color descBoxColor,
+    		com.badlogic.gdx.graphics.Color glowColor,
+    		com.badlogic.gdx.graphics.Texture attackBg,
+    		com.badlogic.gdx.graphics.Texture skillBg,
+    		com.badlogic.gdx.graphics.Texture powerBg,
+    		com.badlogic.gdx.graphics.Texture energyOrb) {
+    	colorBgColorMap.put(color, bgColor);
+    	colorBackColorMap.put(color, backColor);
+    	colorFrameColorMap.put(color, frameColor);
+    	colorFrameOutlineColorMap.put(color, frameOutlineColor);
+    	colorDescBoxColorMap.put(color, descBoxColor);
+    	colorGlowColorMap.put(color, glowColor);
+    	colorCardCountMap.put(color, 0);
+    	colorCardSeenCountMap.put(color, 0);
+    	colorAttackBgMap.put(color, attackBg);
+    	colorSkillBgMap.put(color, skillBg);
+    	colorPowerBgMap.put(color, powerBg);
+    	colorEnergyOrbMap.put(color, energyOrb);
+    }
+    
+    // remove a custom color -
+    // removing existing colors not currently supported
+    public static void removeColor(String color) {
+    	colorBgColorMap.remove(color);
+    	colorBackColorMap.remove(color);
+    	colorFrameColorMap.remove(color);
+    	colorFrameOutlineColorMap.remove(color);
+    	colorDescBoxColorMap.remove(color);
+    	colorGlowColorMap.remove(color);
+    	colorCardCountMap.remove(color);
+    	colorCardSeenCountMap.remove(color);
+    	colorAttackBgMap.remove(color);
+    	colorSkillBgMap.remove(color);
+    	colorPowerBgMap.remove(color);
+    	colorEnergyOrbMap.remove(color);
+    }
+    
+    // convert a color String (fake ENUM) into a background color
+    public static com.badlogic.gdx.graphics.Color getBgColor(String color) {
+    	return colorBgColorMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into a back color
+    public static com.badlogic.gdx.graphics.Color getBackColor(String color) {
+    	return colorBackColorMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into a frame color
+    public static com.badlogic.gdx.graphics.Color getFrameColor(String color) {
+    	return colorFrameColorMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into a frame outline color
+    public static com.badlogic.gdx.graphics.Color getFrameOutlineColor(String color) {
+    	return colorFrameOutlineColorMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into a desc box color
+    public static com.badlogic.gdx.graphics.Color getDescBoxColor(String color) {
+    	return colorDescBoxColorMap.get(color);
+    }
+    
+    // increment the card count for a color String (fake ENUM)
+    public static void incrementCardCount(String color) {
+    	Integer count = colorCardCountMap.get(color);
+    	if (count != null) {
+    		colorCardCountMap.put(color, count+1);
+    	}
+    }
+    
+    // decrement the card count for a color String (fake ENUM)
+    public static void decrementCardCount(String color) {
+    	Integer count = colorCardCountMap.get(color);
+    	if (count != null) {
+    		colorCardCountMap.put(color, count-1);
+    	}
+    }
+    
+    // increment the seen card count for a color String (fake ENUM)
+    public static void incrementSeenCardCount(String color) {
+    	Integer count = colorCardSeenCountMap.get(color);
+    	if (count != null) {
+    		colorCardSeenCountMap.put(color, count+1);
+    	}
+    }
+    
+    // convert a color String (fake ENUM) into an attack background texture
+    public static com.badlogic.gdx.graphics.Texture getAttackBg(String color) {
+    	return colorAttackBgMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into an attack background texture
+    public static com.badlogic.gdx.graphics.Texture getSkillBg(String color) {
+    	return colorSkillBgMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into an attack background texture
+    public static com.badlogic.gdx.graphics.Texture getPowerBg(String color) {
+    	return colorPowerBgMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into a glow color
+    public static com.badlogic.gdx.graphics.Color getGlowColor(String color) {
+    	return colorGlowColorMap.get(color);
+    }
+    
+    // convert a color String (fake ENUM) into an energy texture
+    public static com.badlogic.gdx.graphics.Texture getEnergyOrb(String color) {
+    	return colorEnergyOrbMap.get(color);
     }
     
     //
@@ -835,6 +1036,15 @@ public class BaseMod {
     	}
     }
     
+    // publishEditCharacters -
+    public static void publishEditCharacters() {
+    	logger.info("begin editing characters");
+    	
+    	for (EditCharactersSubscriber sub : editCharactersSubscribers) {
+    		sub.receiveEditCharacters();
+    	}
+    }
+
     //
     // Subscription handlers
     //

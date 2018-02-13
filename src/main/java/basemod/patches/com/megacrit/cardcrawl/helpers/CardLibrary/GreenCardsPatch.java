@@ -15,8 +15,8 @@ public class GreenCardsPatch {
 		}
 		
 		// remove old cards
-		for (AbstractCard card : BaseMod.getGreenCardsToRemove()) {
-			CardLibrary.cards.remove(card.cardID);
+		for (String cardID : BaseMod.getGreenCardsToRemove()) {
+			CardLibrary.cards.remove(cardID);
 			CardLibrary.greenCards--;
 			CardLibrary.totalCardCount--;
 		}
