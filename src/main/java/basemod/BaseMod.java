@@ -622,7 +622,8 @@ public class BaseMod {
     }
     
     // convert a playerClass String (fake ENUM) into the actual player class
-    public static Class getPlayerClass(String playerClass) {
+    @SuppressWarnings("rawtypes")
+	public static Class getPlayerClass(String playerClass) {
     	return playerClassMap.get(playerClass);
     }
     
