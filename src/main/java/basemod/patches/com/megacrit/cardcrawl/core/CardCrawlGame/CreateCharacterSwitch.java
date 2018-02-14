@@ -16,7 +16,7 @@ public class CreateCharacterSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
 	@SpireInsertPatch(loc=999, localvars={"p"})
-	public static void Insert(Object selectionObj, @ByRef(cls="com.megacrit.cardcrawl.characters.AbstractPlayer") Object[] pObj) {
+	public static void Insert(Object selectionObj, @ByRef(type="com.megacrit.cardcrawl.characters.AbstractPlayer") Object[] pObj) {
 		logger.info("hooking into character creation");
 		
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) selectionObj;
