@@ -26,7 +26,7 @@ public class CtorSwitch {
 				Field colorField;
 				colorField = trailEffect.getClass().getSuperclass().getDeclaredField("color");
 				colorField.setAccessible(true);
-				colorField.set(trailEffect, new Color(1.0F, 0.4F, 0.1F, 1.0F));
+				colorField.set(trailEffect, BaseMod.getTrailVfxColor(BaseMod.getColor(chosenClass.toString())));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				logger.error("could not set card trail effect color for " + chosenClass.toString());
 				logger.error("with exception: " + e.getMessage());

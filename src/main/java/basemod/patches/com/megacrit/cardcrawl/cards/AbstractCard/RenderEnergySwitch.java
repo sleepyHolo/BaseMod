@@ -29,8 +29,19 @@ public class RenderEnergySwitch {
 		SpriteBatch sb = (SpriteBatch) sbObj;
 		if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
 				&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-			Texture orbTexture = BaseMod.getEnergyOrb(color.toString());
-			if (orbTexture == null) {
+			Texture orbTexture;
+			try {
+				Texture baseModTexture = BaseMod.getEnergyOrbTexture(color.toString());
+				if (baseModTexture == null) {
+					orbTexture = new Texture(BaseMod.getEnergyOrb(color.toString()));
+					BaseMod.saveEnergyOrbTexture(color.toString(), orbTexture);
+				} else {
+					orbTexture = baseModTexture;
+				}
+			} catch (NullPointerException e) {
+				logger.error("could not load texture for energy orb for card " + card.getClass().toString() + " with color " + color.toString());
+				logger.error("exception is: " + e.getMessage());
+				e.printStackTrace();
 				orbTexture = ImageMaster.CARD_COLORLESS_ORB;
 			}
 			try {

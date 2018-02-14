@@ -32,8 +32,20 @@ public class RenderAttackBgSwitch {
 		SpriteBatch sb = (SpriteBatch) sbObj;
 		if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
 				&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-			Texture bgTexture = BaseMod.getAttackBg(color.toString());
-			if (bgTexture == null) {
+			Texture bgTexture;
+			try {
+				Texture baseModTexture = BaseMod.getAttackBgTexture(color.toString());
+				if (baseModTexture == null) {
+					bgTexture = new Texture(BaseMod.getAttackBg(color.toString()));
+					BaseMod.saveAttackBgTexture(color.toString(), bgTexture);
+				} else {
+					bgTexture = baseModTexture;
+				}
+				
+			} catch (NullPointerException e) {
+				logger.error("could not load texture for attack bg on card " + card.getClass().toString() + " with color " + color.toString());
+				logger.error("exception is: " + e.getMessage());
+				e.printStackTrace();
 				bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
 			}
 			try {
