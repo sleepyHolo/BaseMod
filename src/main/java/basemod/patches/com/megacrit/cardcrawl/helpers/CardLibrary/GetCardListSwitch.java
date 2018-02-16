@@ -20,7 +20,7 @@ public class GetCardListSwitch {
 				!type.toString().equals("RED") && !type.toString().equals("GREEN") &&
 				!type.toString().equals("BLUE") && !type.toString().equals("STATUS")) {
 			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
-				if(((AbstractCard) c.getValue()).color.toString().equals(type.toString())) {
+				if(c.getValue().color.toString().equals(type.toString())) {
 					retVal.add(c.getValue());
 				}
 			}

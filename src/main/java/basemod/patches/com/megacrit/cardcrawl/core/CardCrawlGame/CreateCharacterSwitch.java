@@ -20,12 +20,12 @@ public class CreateCharacterSwitch {
 		logger.info("hooking into character creation");
 		
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) selectionObj;
-		AbstractPlayer p = (AbstractPlayer) pObj[0];
+		AbstractPlayer p;
 		if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
 				!selection.toString().equals("CROWBOT")) {
 			logger.info("creating character " + selection.toString());
 			p = BaseMod.createCharacter(selection.toString(), CardCrawlGame.playerName);
-			pObj[0] = (Object) p;
+			pObj[0] = p;
 		}
 	}
 	

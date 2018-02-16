@@ -264,9 +264,12 @@ The process for creating custom player characters is fairly involved but still n
 * Add methods for abstracting the manipulation of RelicLibrary
 * Initial support for custom cards
 
-#### v1.5.2 (daviscook477) ####
-* More code cleanup
-* Add hooks for adding custom player characters and the corresponding hooks for adding a new colors for custom cards
+#### v1.6.3  ####
+This is a fast forward to v1.6.3 of daviscook477's fork with a few additional changes
+* Update to support weekly patch 12 (daviscook477)
+* Add hooks for adding custom player characters and the corresponding hooks for adding a new colors for custom cards (daviscook477)
+* More code cleanup (daviscook477)
+* Even more code cleanup (t-larson)
 
 ## Contributors ##
 * t-larson - Original author

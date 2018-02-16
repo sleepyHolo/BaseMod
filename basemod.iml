@@ -19,7 +19,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Maven: com.evacipated.cardcrawl:ModTheSpireLib:1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: com.evacipated.cardcrawl:ModTheSpire:2.2.1" level="project" />
   </component>
 </module>
