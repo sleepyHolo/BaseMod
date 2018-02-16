@@ -68,6 +68,7 @@ public class BaseMod {
     private static ArrayList<EditCardsSubscriber> editCardsSubscribers;
     private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
     private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
+    private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<String> redToRemove;
@@ -214,6 +215,7 @@ public class BaseMod {
         editCardsSubscribers = new ArrayList<>();
         editRelicsSubscribers = new ArrayList<>();
         editCharactersSubscribers = new ArrayList<>();
+        editStringsSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -295,6 +297,7 @@ public class BaseMod {
     }
 
     // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
+    // should be done inside the callback of an implementation of EditStringsSubscriber
     public static void loadCustomStrings(@SuppressWarnings("rawtypes") Class stringType, String jsonString) {
         loadJsonStrings(stringType, jsonString);
     }
@@ -1115,6 +1118,14 @@ public class BaseMod {
     		sub.receiveEditCharacters();
     	}
     }
+    // publishEditStrings -
+    public static void publishEditStrings() {
+    	logger.info("begin editing localization strings");
+    	
+    	for (EditStringsSubscriber sub : editStringsSubscribers) {
+    		sub.receiveEditStrings();
+    	}
+    }
 
     //
     // Subscription handlers
@@ -1320,6 +1331,14 @@ public class BaseMod {
     	editCharactersSubscribers.remove(sub);
     }
     
+    // subscribeToEditStrings
+    public static void subscribeToEditStrings(EditStringsSubscriber sub) {
+    	editStringsSubscribers.add(sub);
+    }
     
+    // unsubscribeToEditStrings
+    public static void unsubscribeToEditStrings(EditStringsSubscriber sub) {
+    	editStringsSubscribers.remove(sub);
+    }
 
 }
