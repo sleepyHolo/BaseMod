@@ -9,7 +9,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 public class PostDrawHook {
     @SpireInsertPatch(loc=1038, localvars={"c"})
     public static void Insert(Object mObj, int numCards, Object cObj) {
-        AbstractCard c = (AbstractCard) cObj;
+    	AbstractCard c = (AbstractCard) cObj;
         BaseMod.publishPostDraw(c);
     }
 }

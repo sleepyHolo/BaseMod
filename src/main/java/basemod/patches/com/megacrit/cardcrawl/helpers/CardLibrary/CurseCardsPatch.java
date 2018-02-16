@@ -19,12 +19,12 @@ public class CurseCardsPatch {
 		}
 		
 		// remove old cards
-		for (AbstractCard card : BaseMod.getCurseCardsToRemove()) {
+		for (String cardID : BaseMod.getCurseCardsToRemove()) {
 			// for some reason curses is set to private so we use reflection to access it
 			Object cursesObj = ReflectionHacks.getPrivateStatic(CardLibrary.class, "curses");
 			@SuppressWarnings("unchecked")
 			HashMap<String, AbstractCard> curses = (HashMap<String, AbstractCard>) cursesObj;
-			curses.remove(card.cardID);
+			curses.remove(cardID);
 			CardLibrary.curseCards--;
 			CardLibrary.totalCardCount--;
 		}
