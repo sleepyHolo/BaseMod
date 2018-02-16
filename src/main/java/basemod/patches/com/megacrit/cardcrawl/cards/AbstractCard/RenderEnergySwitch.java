@@ -22,7 +22,7 @@ import basemod.BaseMod;
 public class RenderEnergySwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(loc = 2540, localvars = { "drawX", "drawY" })
+	@SpireInsertPatch(loc = 2545, localvars = { "drawX", "drawY" })
 	public static void Insert(Object __obj_instance, Object sbObj, float drawX, float drawY) {
 		AbstractCard card = (AbstractCard) __obj_instance;
 		CardColor color = card.color;
