@@ -281,6 +281,7 @@ public class BaseMod {
     //
     // Localization
     //
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void loadJsonStrings(Type stringType, String jsonString) {
         logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
@@ -294,9 +295,8 @@ public class BaseMod {
     }
 
     // loadCustomRelicStrings - loads custom RelicStrings from provided JSON
-    @Deprecated
-    public static void loadCustomRelicStrings(String jsonString) {
-        loadJsonStrings(RelicStrings.class, jsonString);
+    public static void loadCustomStrings(@SuppressWarnings("rawtypes") Class stringType, String jsonString) {
+        loadJsonStrings(stringType, jsonString);
     }
     
     //
