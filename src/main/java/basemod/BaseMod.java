@@ -111,8 +111,7 @@ public class BaseMod {
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgTextureMap;
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
-    
-	
+
     public static DevConsole console;
     public static Gson gson;
     public static boolean modSettingsUp = false;
@@ -126,9 +125,6 @@ public class BaseMod {
     
     // initialize -
     public static void initialize() {
-        logger.info("========================= BASEMOD INIT =========================");
-        logger.info("isModded: " + Settings.isModded);
-
         modBadges = new ArrayList<>();
 
         initializeGson();
@@ -145,8 +141,6 @@ public class BaseMod {
         BaseMod.subscribeToPostInitialize(editCharactersInit);
         
         console = new DevConsole();
-        
-        logger.info("================================================================");
     }
     
     // initializeGson -

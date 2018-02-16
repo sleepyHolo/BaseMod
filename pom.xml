@@ -3,7 +3,7 @@
 
     <groupId>basemod</groupId>
     <artifactId>basemod</artifactId>
-    <version>1.6.3</version>
+    <version>1.6.4</version>
     <packaging>jar</packaging>
 
     <name>BaseMod</name>
@@ -21,6 +21,11 @@
             <groupId>com.evacipated.cardcrawl</groupId>
             <artifactId>ModTheSpire</artifactId>
             <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.22.0-GA</version>
         </dependency>
     </dependencies>
 
