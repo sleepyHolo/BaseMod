@@ -6,7 +6,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="startNewGame")
 public class StartGameHook {
-    @SpireInsertPatch(loc=612)
+    @SpireInsertPatch(loc=610)
     public static void Insert(Object __obj_instance) {
         BaseMod.publishStartGame();
     }
