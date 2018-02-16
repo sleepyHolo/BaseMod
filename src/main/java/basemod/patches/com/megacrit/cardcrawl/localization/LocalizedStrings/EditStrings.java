@@ -6,7 +6,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.localization.LocalizedStrings", method="ctor")
 public class EditStrings {
-	public static void Postfix() {
+	public static void Postfix(Object __obj_instance) {
 		BaseMod.publishEditStrings();
 	}
 }
