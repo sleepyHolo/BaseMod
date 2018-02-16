@@ -1,6 +1,6 @@
 diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java com/megacrit/cardcrawl/powers/IntangiblePower.java
 --- ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-15 23:11:22.201608300 -0800
-+++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-01 19:41:29.051562700 -0800
++++ com/megacrit/cardcrawl/powers/IntangiblePower.java	2018-02-16 02:37:29.200167900 -0800
 @@ -3,19 +3,15 @@
   */
  package com.megacrit.cardcrawl.powers;
@@ -41,12 +41,3 @@ diff -ru ../../../_lib/decompiled/com/megacrit/cardcrawl/powers/IntangiblePower.
      @Override
      public float atDamageReceive(float damage, DamageInfo.DamageType type) {
          if (damage > 0.0f) {
-@@ -46,7 +54,7 @@
- 
-     @Override
-     public void updateDescription() {
--        this.description = DESCRIPTIONS[0];
-+        this.description = this.amount == 1 ? DESCRIPTIONS[2] : DESCRIPTIONS[0] + this.amount + DESCRIPTIONS[1];
-     }
- 
-     @Override
