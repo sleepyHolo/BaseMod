@@ -16,7 +16,7 @@ import basemod.interfaces.PostInitializeSubscriber;
 public class BaseModInit implements PostInitializeSubscriber {
     private static final String MODNAME = "BaseMod";
     private static final String AUTHOR = "t-larson";
-    private static final String DESCRIPTION = "v1.5.0 NL Provides hooks and a console.";
+    private static final String DESCRIPTION = "v1.5.1 NL Provides hooks and a console.";
 	
     private InputProcessor oldInputProcessor;
 	
