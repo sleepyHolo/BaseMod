@@ -12,10 +12,10 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 * Java 8
 * Maven
 * CFR 124 (run this with Java 8, doesn't work well with 9)
-* ModTheSpireLib (https://github.com/kiooeht/ModTheSpireLib)
+* ModTheSpire (https://github.com/kiooeht/ModTheSpire)
 
 ## Building ##
-1. (If you haven't already) `mvn install` ModTheSpireLib. Altenatively, modify pom.xml to point to a local copy of the JAR.
+1. (If you haven't already) `mvn install` ModTheSpire Altenatively, modify pom.xml to point to a local copy of the JAR.
 2. Copy `desktop-1.0.jar` from your Slay the Spire folder into `../_lib` relative to the repo.
 3. Decompile `desktop-1.0.jar` with `java -jar "cfr_0_124.jar" --comments false --showversion false --caseinsensitivefs true --outputdir "decompiled" --jarfilter com.megacrit.cardcrawl.* "desktop-1.0.jar"`
 4. Run `_patch.bat` to automatically apply diffs
