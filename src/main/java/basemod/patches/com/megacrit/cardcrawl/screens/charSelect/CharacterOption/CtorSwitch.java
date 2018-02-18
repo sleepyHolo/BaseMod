@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -38,7 +39,19 @@ public class CtorSwitch {
 				logger.error("with exception: " + e.getMessage());
 				e.printStackTrace();
 			}
-			
+
+			try {
+				// fix texture loading
+				Field buttonImgField;
+				buttonImgField = option.getClass().getDeclaredField("buttonImg");
+				buttonImgField.setAccessible(true);
+				buttonImgField.set(option, new Texture(BaseMod.getPlayerButton(chosenClass.toString())));
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				logger.error("could not create character select button for " + chosenClass.toString());
+				logger.error("with exception: " + e.getMessage());
+				e.printStackTrace();
+			}
+
 		}
 	}
 }

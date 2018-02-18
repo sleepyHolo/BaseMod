@@ -632,6 +632,16 @@ public class BaseMod {
     	return playerClassMap.get(playerClass);
     }
     
+    // convert a playerClass String (fake ENUM) into the player select button
+    public static String getPlayerButton(String playerClass) {
+    	return playerSelectButtonMap.get(playerClass);
+    }
+    
+    // convert a playerClass String (fake ENUM) into the player portrait
+    public static String getPlayerPortrait(String playerClass) {
+    	return playerPortraitMap.get(playerClass);
+    }
+    
     // generate character options for CharacterSelectScreen based on added players
     public static ArrayList<CharacterOption> generateCharacterOptions() {
     	ArrayList<CharacterOption> options = new ArrayList<>();
@@ -640,8 +650,9 @@ public class BaseMod {
     		// so we override that with "../../.."
     		CharacterOption option = new CharacterOption(playerSelectTextMap.get(character), 
     				AbstractPlayer.PlayerClass.valueOf(character),
-    				"../../../" + playerSelectButtonMap.get(character),
-    				"../../../" + playerPortraitMap.get(character));
+    				// note that these will fail so we patch this in basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
+    				playerSelectButtonMap.get(character),
+    				playerPortraitMap.get(character));
     		options.add(option);
     	}
     	return options;
