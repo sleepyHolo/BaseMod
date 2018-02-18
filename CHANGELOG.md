@@ -137,3 +137,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Switch `MapGenerator` to use an instrument patch rather than overwriting base file
 * Switch `MonsterGroup` to use an instrument patch rather than overwriting base file
 * Switch `TopPanel` to use an instrument patch rather than overwriting base file
+
+#### v1.6.5 ####
+* Switch `IntangiblePower` to use an instrument patch rather than overwriting base file
+* Rewrite `IntangiblePower` changes to make it not mess up intents
+* Remove diff, _diff.bat, _patch.bat since they are no longer needed
