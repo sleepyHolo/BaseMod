@@ -11,7 +11,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.screens.charSelect.CharacterOption", method="updateHitbox")
 public class UpdateHitboxBgImg {
 
-	@SpireInsertPatch(rloc=50)
+	@SpireInsertPatch(rloc=49)
 	public static void Insert(Object __obj_instance) {
 		AbstractPlayer.PlayerClass chosenClass = CardCrawlGame.chosenCharacter;
 		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&

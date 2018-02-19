@@ -15,11 +15,13 @@ import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.screens.charSelect.CharacterOption", method="ctor", paramtypes={"String", "AbstractPlayer.PlayerClass, String, String"})
+@SpirePatch(cls="com.megacrit.cardcrawl.screens.charSelect.CharacterOption", method="ctor",
+		paramtypes={"java.lang.String", "com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass",
+				"java.lang.String", "java.lang.String"})
 public class CtorSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(rloc=21)
+	@SpireInsertPatch(rloc=20)
 	public static void Insert(Object __obj_instance, String optionName, Object cObj, String buttonUrl, String portraiImg) {
 		CharacterOption option = (CharacterOption) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = (AbstractPlayer.PlayerClass) cObj;

@@ -27,6 +27,11 @@
     </dependency>
   </dependencies>
   
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  
   <build>
     <finalName>BaseMod</finalName>
     <plugins>
@@ -35,6 +40,7 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.2</version>
         <executions>
+        
           <execution>
             <id>BaseMod-TestMod</id>
             <phase>package</phase>
@@ -53,11 +59,14 @@
                   <artifact>basemod:BaseMod</artifact>
                   <includes>
                     <include>basemod/test/**</include>
+                    <include>img/**</include>
+                    <include>localization/**</include>
                   </includes>
                 </filter>
               </filters>
             </configuration>
           </execution>
+          
           <execution>
             <id>BaseMod</id>
             <phase>package</phase>
