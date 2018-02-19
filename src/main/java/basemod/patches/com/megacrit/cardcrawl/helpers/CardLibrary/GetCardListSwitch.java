@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.helpers.CardLibrary.LibraryType;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="getCardList")
 public class GetCardListSwitch {
-	@SpireInsertPatch(rloc=644, localvars={"retVal"})
+	@SpireInsertPatch(rloc=45, localvars={"retVal"})
 	public static void Insert(Object typeObj, Object retValObj) {
 		LibraryType type = (LibraryType) typeObj;
 		@SuppressWarnings("unchecked")
