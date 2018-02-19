@@ -31,6 +31,8 @@
 
     <build>
         <finalName>BaseMod</finalName>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <sourceDirectory>src/main/resources</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
