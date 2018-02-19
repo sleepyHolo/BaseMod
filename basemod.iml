@@ -11,15 +11,15 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="Maven: com.megacrit.cardcrawl:slaythespire:015">
+      <library name="Maven: com.megacrit.cardcrawl:slaythespire:016">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../_lib/desktop-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/desktop-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Maven: com.evacipated.cardcrawl:ModTheSpireLib:1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.evacipated.cardcrawl:ModTheSpire:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />
   </component>
 </module>

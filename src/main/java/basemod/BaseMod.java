@@ -33,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,8 +111,7 @@ public class BaseMod {
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgTextureMap;
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
-    
-	
+
     public static DevConsole console;
     public static Gson gson;
     public static boolean modSettingsUp = false;
@@ -119,20 +119,12 @@ public class BaseMod {
     // Map generation
     public static float mapPathDensityMultiplier = 1.0f;
 
-    // Not implemented
-    //public static int mapFirstEliteCampfireRoom = 4;
-    //public static int mapLastCampfireRoom = 13;
-    //public static int mapTreasureRoom = 8;
-    
     // 
     // Initialization
     //
     
     // initialize -
     public static void initialize() {
-        logger.info("========================= BASEMOD INIT =========================");
-        logger.info("isModded: " + Settings.isModded);
-
         modBadges = new ArrayList<>();
 
         initializeGson();
@@ -149,8 +141,6 @@ public class BaseMod {
         BaseMod.subscribeToPostInitialize(editCharactersInit);
         
         console = new DevConsole();
-        
-        logger.info("================================================================");
     }
     
     // initializeGson -
@@ -286,7 +276,7 @@ public class BaseMod {
     // Localization
     //
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes", "ConstantConditions"})
 	private static void loadJsonStrings(Type stringType, String jsonString) {
         logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
 
@@ -432,7 +422,7 @@ public class BaseMod {
     
     
     // remove relic -
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
 	public static void removeRelic(AbstractRelic relic, RelicType type) {
     	// note that this has to use reflection hacks to change the private
     	// variables in RelicLibrary to successfully remove the relics
@@ -475,25 +465,25 @@ public class BaseMod {
     private static void removeRelicFromTierList(AbstractRelic relic) {
     	switch (relic.tier) {
     	case STARTER:
-    		RelicLibrary.starterList.remove(relic.relicId);
+    		RelicLibrary.starterList.remove(relic);
     		break;
     	case COMMON:
-    		RelicLibrary.commonList.remove(relic.relicId);
+    		RelicLibrary.commonList.remove(relic);
     		break;
     	case UNCOMMON:
-    		RelicLibrary.uncommonList.remove(relic.relicId);
+    		RelicLibrary.uncommonList.remove(relic);
     		break;
     	case RARE:
-    		RelicLibrary.rareList.remove(relic.relicId);
+    		RelicLibrary.rareList.remove(relic);
     		break;
     	case SHOP:
-    		RelicLibrary.shopList.remove(relic.relicId);
+    		RelicLibrary.shopList.remove(relic);
     		break;
     	case SPECIAL:
-    		RelicLibrary.specialList.remove(relic.relicId);
+    		RelicLibrary.specialList.remove(relic);
     		break;
     	case BOSS:
-    		RelicLibrary.bossList.remove(relic.relicId);
+    		RelicLibrary.bossList.remove(relic);
     		break;
     	case DEPRECATED:
     		logger.info(relic.relicId + " is deprecated.");
@@ -958,7 +948,7 @@ public class BaseMod {
     	logger.info("postCreateStartingDeck for: " + chosenClass);
     	
     	boolean clearDefault = false;
-    	ArrayList<String> cardsToAdd = new ArrayList<String>();
+    	ArrayList<String> cardsToAdd = new ArrayList<>();
     	
     	for (PostCreateStartingDeckSubscriber sub : postCreateStartingDeckSubscribers) {
     		logger.info("postCreateStartingDeck modifying starting deck for: " + sub);
@@ -982,12 +972,12 @@ public class BaseMod {
     		}
     	}
     	
-    	String logString = "postCreateStartingDeck adding [ ";
+    	StringBuilder logString = new StringBuilder("postCreateStartingDeck adding [ ");
     	for (String card : cardsToAdd) {
-    		logString += (card + " ");
+    		logString.append(card).append(" ");
     	}
-    	logString += "]";
-    	logger.info(logString);
+    	logString.append("]");
+    	logger.info(logString.toString());
     	
     	if (clearDefault) {
     		logger.info("postCreateStartingDeck clearing initial deck");
@@ -1001,9 +991,7 @@ public class BaseMod {
     // populate relics that require a specific player for copy list
     static {
     	String[] relicsThatNeedSpecificPlayerStrArr = {"Ancient Tea Set", "Art of War", "Happy Flower", "Lantern", "Dodecahedron", "Sundial", "Cursed Key", "Ectoplasm", "Mark of Pain", "Philosopher's Stone", "Runic Dome", "Sozu", "Velvet Choker"};
-    	for (int i = 0; i < relicsThatNeedSpecificPlayerStrArr.length; i++) {
-    		relicsThatNeedSpecificPlayer.add(relicsThatNeedSpecificPlayerStrArr[i]);
-    	}
+        Collections.addAll(relicsThatNeedSpecificPlayer, relicsThatNeedSpecificPlayerStrArr);
     }
     
     
@@ -1012,7 +1000,7 @@ public class BaseMod {
     	logger.info("postCreateStartingRelics for: " + chosenClass);
     	
     	boolean clearDefault = false;
-    	ArrayList<String> relicsToAdd = new ArrayList<String>();
+    	ArrayList<String> relicsToAdd = new ArrayList<>();
     	
     	for (PostCreateStartingRelicsSubscriber sub : postCreateStartingRelicsSubscribers) {
     		logger.info("postCreateStartingRelics modifying starting relics for: " + sub);
@@ -1036,12 +1024,12 @@ public class BaseMod {
     		}
     	}
     	
-    	String logString = "postCreateStartingRelics adding [ ";
+    	StringBuilder logString = new StringBuilder("postCreateStartingRelics adding [ ");
     	for (String relic : relicsToAdd) {
-    		logString += (relic + " ");
+    		logString.append(relic).append(" ");
     	}
-    	logString += "]";
-    	logger.info(logString);
+    	logString.append("]");
+    	logger.info(logString.toString());
     	
     	// mark as seen
     	for (String relic : relicsToAdd) {
@@ -1052,32 +1040,27 @@ public class BaseMod {
     	// equip triggers on the relics so we circumvent that by
     	// adding relics ourself on dungeon initialize and force
     	// the equip trigger
-		subscribeToPostDungeonInitialize(new PostDungeonInitializeSubscriber() {
-
-			@Override
-			public void receivePostDungeonInitialize() {
-				int relicIndex = AbstractDungeon.player.relics.size();
-				int relicRemoveIndex = relicsToAdd.size() - 1;
-				while (relicsToAdd.size() > 0) {
-					System.out.println("Attempting to add: " + relicsToAdd.get(relicRemoveIndex));
-					AbstractRelic relic = RelicLibrary.getRelic(relicsToAdd.remove(relicRemoveIndex));
-					System.out.println("Found relic is: " + relic);
-					AbstractRelic relicCopy;
-					// without checking if the relic wants to have a player class provided
-					// the makeCopy() method would return null in cases where the relic
-					// didn't implement it
-					if (relicsThatNeedSpecificPlayer.contains(relic.name)) {
-						relicCopy = relic.makeCopy(AbstractDungeon.player.chosenClass);
-					} else {
-						relicCopy = relic.makeCopy();
-					}
-					relicCopy.instantObtain(AbstractDungeon.player, relicIndex, true);
-					relicRemoveIndex--;
-					relicIndex++;
-				}
-			}
-			
-		});
+		subscribeToPostDungeonInitialize(() -> {
+            int relicIndex = AbstractDungeon.player.relics.size();
+            int relicRemoveIndex = relicsToAdd.size() - 1;
+            while (relicsToAdd.size() > 0) {
+                System.out.println("Attempting to add: " + relicsToAdd.get(relicRemoveIndex));
+                AbstractRelic relic = RelicLibrary.getRelic(relicsToAdd.remove(relicRemoveIndex));
+                System.out.println("Found relic is: " + relic);
+                AbstractRelic relicCopy;
+                // without checking if the relic wants to have a player class provided
+                // the makeCopy() method would return null in cases where the relic
+                // didn't implement it
+                if (relicsThatNeedSpecificPlayer.contains(relic.name)) {
+                    relicCopy = relic.makeCopy(AbstractDungeon.player.chosenClass);
+                } else {
+                    relicCopy = relic.makeCopy();
+                }
+                relicCopy.instantObtain(AbstractDungeon.player, relicIndex, true);
+                relicRemoveIndex--;
+                relicIndex++;
+            }
+        });
     	
     	if (clearDefault) {
     		logger.info("postCreateStartingRelics clearing initial relics");

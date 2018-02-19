@@ -6,7 +6,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.core.EnergyManager", method="recharge")
 public class PostEnergyRechargeHook {
-    @SpireInsertPatch(loc=39)
+    @SpireInsertPatch(rloc=10)
     public static void Insert(Object __obj_instance) {
         BaseMod.publishPostEnergyRecharge();
     }

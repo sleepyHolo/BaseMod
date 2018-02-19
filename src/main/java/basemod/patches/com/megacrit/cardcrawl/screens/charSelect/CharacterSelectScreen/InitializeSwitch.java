@@ -18,7 +18,7 @@ import basemod.BaseMod;
 public class InitializeSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(loc=66)
+	@SpireInsertPatch(rloc=13)
 	public static void Insert(Object __obj_instance) {
 		logger.info("modifying character select screen");
 		CharacterSelectScreen screen = (CharacterSelectScreen) __obj_instance;

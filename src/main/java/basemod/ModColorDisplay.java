@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.helpers.InputHelper;
 import java.util.function.Consumer;
 
 public class ModColorDisplay {
-    private static final float HB_SHRINK = 16.0f;
+    public float hbShrink = 16.0f;
     
     public float r = 1.0f;
     public float g = 1.0f;
@@ -37,18 +37,30 @@ public class ModColorDisplay {
         this.x = x;
         this.y = y;
         this.w = texture.getWidth();
-        this.h = texture.getWidth();
+        this.h = texture.getHeight();
         
         this.click = click;
         
-        float hbx = (x + HB_SHRINK) * Settings.scale;
-        float hby = (y + HB_SHRINK) * Settings.scale;
-        float hbw = (w - 2*HB_SHRINK) * Settings.scale;
-        float hbh = (h - 2*HB_SHRINK) * Settings.scale;
+        float hbx = (x + hbShrink) * Settings.scale;
+        float hby = (y + hbShrink) * Settings.scale;
+        float hbw = (w - 2*hbShrink) * Settings.scale;
+        float hbh = (h - 2*hbShrink) * Settings.scale;
         
         this.hb = new Hitbox(hbx, hby, hbw, hbh);
     }
-    
+
+    public ModColorDisplay(float x, float y, float hbShrink, Texture texture, Texture outline, Consumer<ModColorDisplay> click) {
+        this(x, y, texture, outline, click);
+        this.hbShrink = hbShrink;
+
+        float hbx = (x + hbShrink) * Settings.scale;
+        float hby = (y + hbShrink) * Settings.scale;
+        float hbw = (w - 2*hbShrink) * Settings.scale;
+        float hbh = (h - 2*hbShrink) * Settings.scale;
+
+        this.hb = new Hitbox(hbx, hby, hbw, hbh);
+    }
+
     public void render(SpriteBatch sb) {
         if (outline != null) {
             sb.setColor(new Color(0.0f, 0.0f, 0.0f, aOutline));

@@ -17,7 +17,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="initializeCardPools")
 public class InitializeCardPoolsSwitch {
 
-	@SpireInsertPatch(loc=1393, localvars={"tmpPool"})
+	@SpireInsertPatch(rloc=26, localvars={"tmpPool"})
 	public static void Insert(Object __obj_instance, Object tmpPoolObj) {
 		AbstractPlayer player = AbstractDungeon.player;
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;
@@ -26,11 +26,11 @@ public class InitializeCardPoolsSwitch {
 		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
 				!chosenClass.toString().equals("CROWBOT")) {
 			String color = BaseMod.getColor(chosenClass.toString());
-			AbstractCard card = null;
+			AbstractCard card;
 			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
-				card = (AbstractCard) c.getValue();
+				card = c.getValue();
 				if ((card.color.toString().equals(color)) && (card.rarity != AbstractCard.CardRarity.BASIC) && (
-						(!UnlockTracker.isCardLocked((String) c.getKey())) || (Settings.isDailyRun))) {
+						(!UnlockTracker.isCardLocked(c.getKey())) || (Settings.isDailyRun))) {
 					tmpPool.add(card);
 				}
 			}

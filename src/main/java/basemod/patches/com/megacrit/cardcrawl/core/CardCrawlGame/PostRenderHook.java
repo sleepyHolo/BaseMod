@@ -7,7 +7,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="render")
 public class PostRenderHook {
-    @SpireInsertPatch(loc=443, localvars={"sb"})
+    @SpireInsertPatch(rloc=97, localvars={"sb"})
     public static void Insert(Object __obj_instance, SpriteBatch sb) {
         BaseMod.publishPostRender(sb);
     }

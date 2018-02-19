@@ -10,7 +10,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls = "com.megacrit.cardcrawl.helpers.CardLibrary", method = "add")
 public class AddSwitch {
-	@SpireInsertPatch(loc = 537)
+	@SpireInsertPatch(rloc = 37)
 	public static void Insert(Object cardObj) {
 		AbstractCard card = (AbstractCard) cardObj;
 		CardColor color = card.color;

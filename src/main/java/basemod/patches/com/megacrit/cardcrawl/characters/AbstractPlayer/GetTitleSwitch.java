@@ -12,7 +12,7 @@ public class GetTitleSwitch {
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) plyrClassObj;
 		if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
 				!selection.toString().equals("CROWBOT")) {
-			return (Object) BaseMod.getTitle(selection.toString());
+			return BaseMod.getTitle(selection.toString());
 		} else {
 			return __original_ret;
 		}

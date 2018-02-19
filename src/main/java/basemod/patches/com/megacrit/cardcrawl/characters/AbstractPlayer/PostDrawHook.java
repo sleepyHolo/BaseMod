@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="draw", paramtypes={"int"})
 public class PostDrawHook {
-    @SpireInsertPatch(loc=1038, localvars={"c"})
+    @SpireInsertPatch(rloc=31, localvars={"c"})
     public static void Insert(Object mObj, int numCards, Object cObj) {
     	AbstractCard c = (AbstractCard) cObj;
         BaseMod.publishPostDraw(c);
