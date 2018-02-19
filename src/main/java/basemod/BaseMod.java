@@ -1,7 +1,17 @@
 package basemod;
 
-import basemod.helpers.RelicType;
-import basemod.interfaces.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
@@ -16,26 +26,57 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
-import com.megacrit.cardcrawl.localization.*;
+import com.megacrit.cardcrawl.localization.AchievementStrings;
+import com.megacrit.cardcrawl.localization.CardStrings;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.localization.CreditStrings;
+import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.localization.KeywordStrings;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import com.megacrit.cardcrawl.localization.MonsterStrings;
+import com.megacrit.cardcrawl.localization.PotionStrings;
+import com.megacrit.cardcrawl.localization.PowerStrings;
+import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
+import com.megacrit.cardcrawl.localization.TutorialStrings;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import basemod.helpers.RelicType;
+import basemod.interfaces.EditCardsSubscriber;
+import basemod.interfaces.EditCharactersSubscriber;
+import basemod.interfaces.EditRelicsSubscriber;
+import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.PostBattleSubscriber;
+import basemod.interfaces.PostCampfireSubscriber;
+import basemod.interfaces.PostCreateIroncladStartingDeckSubscriber;
+import basemod.interfaces.PostCreateIroncladStartingRelicsSubscriber;
+import basemod.interfaces.PostCreateShopPotionSubscriber;
+import basemod.interfaces.PostCreateShopRelicSubscriber;
+import basemod.interfaces.PostCreateSilentStartingDeckSubscriber;
+import basemod.interfaces.PostCreateSilentStartingRelicsSubscriber;
+import basemod.interfaces.PostCreateStartingDeckSubscriber;
+import basemod.interfaces.PostCreateStartingRelicsSubscriber;
+import basemod.interfaces.PostDrawSubscriber;
+import basemod.interfaces.PostDungeonInitializeSubscriber;
+import basemod.interfaces.PostEnergyRechargeSubscriber;
+import basemod.interfaces.PostExhaustSubscriber;
+import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PostRenderSubscriber;
+import basemod.interfaces.PostUpdateSubscriber;
+import basemod.interfaces.PreMonsterTurnSubscriber;
+import basemod.interfaces.PreStartGameSubscriber;
+import basemod.interfaces.PreUpdateSubscriber;
+import basemod.interfaces.RenderSubscriber;
+import basemod.interfaces.StartActSubscriber;
+import basemod.interfaces.StartGameSubscriber;
 
 @SpireInitializer
 public class BaseMod {
@@ -54,6 +95,7 @@ public class BaseMod {
     private static ArrayList<StartActSubscriber> startActSubscribers;
     private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
     private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
+    private static ArrayList<PostExhaustSubscriber> postExhaustSubscribers;
     private static ArrayList<PostDungeonInitializeSubscriber> postDungeonInitializeSubscribers;
     private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
@@ -72,6 +114,7 @@ public class BaseMod {
     private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
     private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
     private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
+    private static ArrayList<PostBattleSubscriber> postBattleSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<String> redToRemove;
@@ -190,6 +233,7 @@ public class BaseMod {
         startActSubscribers = new ArrayList<>();
         postCampfireSubscribers = new ArrayList<>();
         postDrawSubscribers = new ArrayList<>();
+        postExhaustSubscribers = new ArrayList<>();
         postDungeonInitializeSubscribers = new ArrayList<>();
         postEnergyRechargeSubscribers = new ArrayList<>();
         postInitializeSubscribers = new ArrayList<>();
@@ -208,6 +252,7 @@ public class BaseMod {
         editRelicsSubscribers = new ArrayList<>();
         editCharactersSubscribers = new ArrayList<>();
         editStringsSubscribers = new ArrayList<>();
+        postBattleSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -852,6 +897,14 @@ public class BaseMod {
             sub.receivePostDraw(c);
         }
     }
+    
+    // publishPostExhaust -
+    public static void publishPostExhaust(AbstractCard c) {
+    	logger.info("publishPostExhaust");
+    	for (PostExhaustSubscriber sub : postExhaustSubscribers) {
+    		sub.receivePostExhaust(c);
+    	}
+    }
 
     // publishPostDungeonInitialize -
     public static void publishPostDungeonInitialize() {
@@ -1122,6 +1175,15 @@ public class BaseMod {
     		sub.receiveEditStrings();
     	}
     }
+    
+    // publishPostBattle -
+    public static void publishPostBattle(AbstractRoom battleRoom) {
+    	logger.info("publish post combat");
+    	
+    	for(PostBattleSubscriber sub : postBattleSubscribers) {
+    		sub.receivePostBattle(battleRoom);
+    	}
+    }
 
     //
     // Subscription handlers
@@ -1155,6 +1217,16 @@ public class BaseMod {
     // unsubscribeFromPostDraw -
     public static void unsubscribeFromPostDraw(PostDrawSubscriber sub) {
         postDrawSubscribers.remove(sub);
+    }
+    
+    // subscribeToPostExhaust -
+    public static void subscribeToPostExhaust(PostExhaustSubscriber sub) {
+        postExhaustSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromPostExhaust -
+    public static void unsubscribeFromPostExhaust(PostExhaustSubscriber sub) {
+        postExhaustSubscribers.remove(sub);
     }
 
     // subscribeToPostDungeonInitialize -
@@ -1336,5 +1408,15 @@ public class BaseMod {
     public static void unsubscribeToEditStrings(EditStringsSubscriber sub) {
     	editStringsSubscribers.remove(sub);
     }
+    
+    // subscribeToPostBattle
+    public static void subscribeToPostBattle(PostBattleSubscriber sub) {
+    	postBattleSubscribers.add(sub);
+    }
 
+    // unsubscribeToPostBattle
+    public static void unsubscribeToPostBattle(PostBattleSubscriber sub) {
+    	postBattleSubscribers.remove(sub);
+    }
+    
 }
