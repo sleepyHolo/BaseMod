@@ -17,7 +17,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="initializeCardPools")
 public class InitializeCardPoolsSwitch {
 
-	@SpireInsertPatch(loc=1393, localvars={"tmpPool"})
+	@SpireInsertPatch(rloc=26, localvars={"tmpPool"})
 	public static void Insert(Object __obj_instance, Object tmpPoolObj) {
 		AbstractPlayer player = AbstractDungeon.player;
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;

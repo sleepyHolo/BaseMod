@@ -18,7 +18,7 @@ import basemod.BaseMod;
 public class CtorSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(loc=87)
+	@SpireInsertPatch(rloc=49)
 	public static void Insert(Object __obj_instance, String optionName, Object cObj, String buttonUrl, String portraiImg) {
 		CharacterOption option = (CharacterOption) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = (AbstractPlayer.PlayerClass) cObj;

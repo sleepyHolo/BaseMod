@@ -21,7 +21,7 @@ import basemod.BaseMod;
 public class InitializeButtonsSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(loc=71)
+	@SpireInsertPatch(rloc=14)
 	public static void Insert(Object __obj_instance) {
 		CampfireUI ui = (CampfireUI) __obj_instance;
 		AbstractPlayer.PlayerClass selection = CardCrawlGame.chosenCharacter;

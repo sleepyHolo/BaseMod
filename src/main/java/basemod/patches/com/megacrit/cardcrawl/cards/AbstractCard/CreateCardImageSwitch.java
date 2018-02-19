@@ -16,7 +16,7 @@ import basemod.BaseMod;
 public class CreateCardImageSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(loc = 844)
+	@SpireInsertPatch(rloc = 41)
 	public static void Insert(Object __obj_instance) {
 		AbstractCard card = (AbstractCard) __obj_instance;
 		CardColor color = card.color;

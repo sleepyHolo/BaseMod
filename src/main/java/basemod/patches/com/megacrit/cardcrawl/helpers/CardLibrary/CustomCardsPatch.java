@@ -11,7 +11,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="initialize")
 public class CustomCardsPatch {
-	@SpireInsertPatch(loc=233)
+	@SpireInsertPatch(rloc=10)
 	public static void Insert() {
 		// add new cards
 		for (AbstractCard card : BaseMod.getCustomCardsToAdd()) {
