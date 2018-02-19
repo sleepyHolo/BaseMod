@@ -18,7 +18,7 @@ public class FixPlayerIntangiblePower {
                 if (execute) {
                     execute = false;
                     String newMethodBody = "" +
-                        "public void atEndOfRound() {" +
+                        "public void atEndOfTurn() {" +
                         "   if (this.owner instanceof com.megacrit.cardcrawl.characters.AbstractPlayer) {" +
                         "       com.megacrit.cardcrawl.dungeons.AbstractDungeon.actionManager.addToBottom(" +
                         "           new com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction(" +
