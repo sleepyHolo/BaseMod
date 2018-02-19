@@ -31,8 +31,7 @@
 
     <build>
         <finalName>TestMod</finalName>
-        <sourceDirectory>test/main/java</sourceDirectory>
-        <sourceDirectory>test/main/resources</sourceDirectory>
+        <sourceDirectory>test/main/java, test/main/resources</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
