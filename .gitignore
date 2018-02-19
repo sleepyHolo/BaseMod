@@ -29,3 +29,6 @@ hs_err_pid*
 src/main/java/com/megacrit/**/*.java
 target/
 /bin/
+
+# Mvn Shade Files
+dependency-reduced-pom.xml

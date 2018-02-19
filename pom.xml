@@ -1,65 +1,112 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0">
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>basemod</groupId>
-    <artifactId>basemod</artifactId>
-    <version>1.6.5</version>
-    <packaging>jar</packaging>
-
-    <name>BaseMod</name>
-    <description>Slay the Spire mod which provides hooks and a console.</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.megacrit.cardcrawl</groupId>
-            <artifactId>slaythespire</artifactId>
-            <version>016</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../lib/desktop-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.evacipated.cardcrawl</groupId>
-            <artifactId>ModTheSpire</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.22.0-GA</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <finalName>BaseMod</finalName>
-       <sourceDirectory>src/main/java, src/main/resources</sourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <copy file="target/BaseMod.jar" tofile="../_ModTheSpire/mods/BaseMod.jar"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>basemod</groupId>
+  <artifactId>BaseMod</artifactId>
+  <version>1.6.5</version>
+  <packaging>jar</packaging>
+  
+  <name>BaseMod</name>
+  <description>Slay the Spire mod which tests BaseMod.</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>com.megacrit.cardcrawl</groupId>
+      <artifactId>slaythespire</artifactId>
+      <version>016</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/../lib/desktop-1.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.evacipated.cardcrawl</groupId>
+      <artifactId>ModTheSpire</artifactId>
+      <version>2.2.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/../lib/ModTheSpire.jar</systemPath>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <finalName>BaseMod</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.2</version>
+        <executions>
+          <execution>
+            <id>BaseMod-TestMod</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <outputFile>target/TestMod.jar</outputFile>
+              <artifactSet>
+                <includes>
+                  <include>basemod:BaseMod:jar</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>basemod:BaseMod</artifact>
+                  <includes>
+                    <include>basemod/test/**</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+          <execution>
+            <id>BaseMod</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>basemod.test.TestMod</mainClass>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                  <resource>TestMod.jar</resource>
+                  <file>target/${project.artifactId}-TestMod.jar</file>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>basemod:BaseMod</artifact>
+                  <excludes>
+                    <exclude>basemod/test/***</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <copy file="target/BaseMod.jar" tofile="../_ModTheSpire/mods/BaseMod.jar"/>
+                <copy file="target/TestMod.jar" tofile="../_ModTheSpire/mods/TestMod.jar"/>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
 </project>
