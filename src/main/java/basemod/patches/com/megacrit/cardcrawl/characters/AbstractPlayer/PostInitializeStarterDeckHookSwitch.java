@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="initializeStarterDeck")
 public class PostInitializeStarterDeckHookSwitch {
-    @SpireInsertPatch(rloc=12, localvars={"cards"})
+    @SpireInsertPatch(rloc=13, localvars={"cards"})
     public static void Insert(Object mObj, @ByRef ArrayList<String>[] cardsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
 		ArrayList<String> theCards = cardsObj[0];
