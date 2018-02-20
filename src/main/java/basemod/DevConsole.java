@@ -278,22 +278,32 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             if (tokens[1].toLowerCase().equals("add")) {
                 AbstractCard c = CardLibrary.getCard(cardName);
                 if (c != null) {
-                    c = c.makeCopy();
-                
-                    if (upgradeIndex != tokens.length) {
-                        int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
-                        for (int i = 0; i < upgradeCount; i++) {
-                            c.upgrade();
-                        }
-                    }
+                	// card count
+                	int count = 1;
+                	if (upgradeIndex + 1 < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex + 1], 0) != 0) {
+                		count = ConvertHelper.tryParseInt(tokens[upgradeIndex + 1], 0);
+                	}
+                	
+                	for (int i = 0; i < count; i++) {
+                		c = c.makeCopy();
                         
-                    AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
+                        if (upgradeIndex != tokens.length) {
+                            int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
+                            for (int j = 0; j < upgradeCount; j++) {
+                                c.upgrade();
+                            }
+                        }
+                            
+                        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
+                	}
                 }
             } else if (tokens[1].toLowerCase().equals("r")) {
+            	// remove all cards
             	if (tokens[2].equals("all")) {
             		for (String str : AbstractDungeon.player.masterDeck.getCardNames()) {
             			AbstractDungeon.player.masterDeck.removeCard(str);
             		}
+            	// remove single card
             	} else {
                     AbstractDungeon.player.masterDeck.removeCard(cardName);
             	}

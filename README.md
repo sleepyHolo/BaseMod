@@ -26,7 +26,7 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
-* `deck add [id] {upgrades}` add card to deck (optional: integer # of upgrades)
+* `deck add [id] {upgrades} {cardcount}` add card to deck (optional: integer # of upgrades) (optional: integer # of times you want to add this card) to add multiples of an unupgraded card use -1 as the upgrade amount
 * `deck r [id]` remove card from deck
 * `draw [num]` draw cards
 * `energy add [amount]` gain energy
