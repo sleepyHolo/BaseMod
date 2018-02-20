@@ -290,7 +290,13 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                     AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float)Settings.WIDTH / 2.0f, (float)Settings.HEIGHT / 2.0f));
                 }
             } else if (tokens[1].toLowerCase().equals("r")) {
-                AbstractDungeon.player.masterDeck.removeCard(cardName);
+            	if (tokens[2].equals("all")) {
+            		for (String str : AbstractDungeon.player.masterDeck.getCardNames()) {
+            			AbstractDungeon.player.masterDeck.removeCard(str);
+            		}
+            	} else {
+                    AbstractDungeon.player.masterDeck.removeCard(cardName);
+            	}
             }
         }
     }
