@@ -1415,7 +1415,7 @@ public class BaseMod {
     }
 
     // unsubscribeToPostBattle
-    public static void unsubscribeToPostBattle(PostBattleSubscriber sub) {
+    public static void unsubscribeFromPostBattle(PostBattleSubscriber sub) {
     	postBattleSubscribers.remove(sub);
     }
     
