@@ -49,6 +49,7 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
+import basemod.abstracts.CustomUnlockBundle;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
@@ -75,6 +76,7 @@ import basemod.interfaces.PreMonsterTurnSubscriber;
 import basemod.interfaces.PreStartGameSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
 import basemod.interfaces.RenderSubscriber;
+import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
 import basemod.interfaces.StartGameSubscriber;
 
@@ -115,6 +117,7 @@ public class BaseMod {
     private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
     private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
     private static ArrayList<PostBattleSubscriber> postBattleSubscribers;
+    private static ArrayList<SetUnlocksSubscriber> setUnlocksSubscribers;
     
     private static ArrayList<AbstractCard> redToAdd;
     private static ArrayList<String> redToRemove;
@@ -155,6 +158,8 @@ public class BaseMod {
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
     private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
 
+    private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
+    
     public static DevConsole console;
     public static Gson gson;
     public static boolean modSettingsUp = false;
@@ -176,6 +181,7 @@ public class BaseMod {
         initializeCardLists();
         initializeCharacterMap();
         initializeColorMap();
+        initializeUnlocks();
         
         BaseModInit baseModInit = new BaseModInit();
         BaseMod.subscribeToPostInitialize(baseModInit);
@@ -253,6 +259,7 @@ public class BaseMod {
         editCharactersSubscribers = new ArrayList<>();
         editStringsSubscribers = new ArrayList<>();
         postBattleSubscribers = new ArrayList<>();
+        setUnlocksSubscribers = new ArrayList<>();
     }
     
     // initializeCardLists -
@@ -300,6 +307,11 @@ public class BaseMod {
     	colorSkillBgTextureMap = new HashMap<>();
     	colorPowerBgTextureMap = new HashMap<>();
     	colorEnergyOrbTextureMap = new HashMap<>();
+    }
+    
+    // initializeUnlocks
+    private static void initializeUnlocks() {
+    	unlockBundles = new HashMap<>();
     }
     
     //
@@ -543,6 +555,36 @@ public class BaseMod {
     	removeRelic(relic, RelicType.SHARED);
     	removeRelic(relic, RelicType.RED);
     	removeRelic(relic, RelicType.GREEN);
+    }
+    
+    //
+    // Unlocks
+    //
+    
+    // add new unlock bundle
+    public static void addUnlockBundle(CustomUnlockBundle bundle, AbstractPlayer.PlayerClass c, int unlockLevel) {
+    	if (!unlockBundles.containsKey(c)) {
+    		HashMap<Integer, CustomUnlockBundle> newBundles = new HashMap<>();
+    		newBundles.put(unlockLevel, bundle);
+    		unlockBundles.put(c, newBundles);
+    	} else {
+    		HashMap<Integer, CustomUnlockBundle> bundles = unlockBundles.get(c);
+    		bundles.put(unlockLevel, bundle);
+    	}
+    }
+    
+    // remove old unlock bundle
+    public static void removeUnlockBundle(AbstractPlayer.PlayerClass c, int unlockLevel) {
+    	if (unlockBundles.containsKey(c)) {
+    		unlockBundles.get(c).remove(unlockLevel);
+    	}
+    }
+    
+    // get unlock bundle for class and level
+    public static CustomUnlockBundle getUnlockBundleFor(AbstractPlayer.PlayerClass c, int unlockLevel) {
+    	HashMap<Integer, CustomUnlockBundle> levelMap = unlockBundles.get(c);
+    	if (levelMap == null) return null;
+    	return levelMap.get(unlockLevel);
     }
     
     //
@@ -1184,6 +1226,15 @@ public class BaseMod {
     		sub.receivePostBattle(battleRoom);
     	}
     }
+    
+    // publishPostRefresh -
+    public static void publishPostRefresh() {
+    	logger.info("publish post refresh - refreshing unlocks");
+    	
+    	for(SetUnlocksSubscriber sub : setUnlocksSubscribers) {
+    		sub.receiveSetUnlocks();
+    	}
+    }
 
     //
     // Subscription handlers
@@ -1417,6 +1468,16 @@ public class BaseMod {
     // unsubscribeToPostBattle
     public static void unsubscribeFromPostBattle(PostBattleSubscriber sub) {
     	postBattleSubscribers.remove(sub);
+    }
+    
+    // subscribeToSetUnlocks
+    public static void subscribeToSetUnlocks(SetUnlocksSubscriber sub) {
+    	setUnlocksSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromSetUnlocks
+    public static void unsubscribeFromSetUnlocks(SetUnlocksSubscriber sub) {
+    	setUnlocksSubscribers.remove(sub);
     }
     
 }
