@@ -55,6 +55,7 @@ import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.OnCardUseSubscriber;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostCampfireSubscriber;
 import basemod.interfaces.PostCreateIroncladStartingDeckSubscriber;
@@ -98,6 +99,7 @@ public class BaseMod {
     private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
     private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
     private static ArrayList<PostExhaustSubscriber> postExhaustSubscribers;
+    private static ArrayList<OnCardUseSubscriber> onCardUseSubscribers;
     private static ArrayList<PostDungeonInitializeSubscriber> postDungeonInitializeSubscribers;
     private static ArrayList<PostEnergyRechargeSubscriber> postEnergyRechargeSubscribers;
     private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
@@ -240,6 +242,7 @@ public class BaseMod {
         postCampfireSubscribers = new ArrayList<>();
         postDrawSubscribers = new ArrayList<>();
         postExhaustSubscribers = new ArrayList<>();
+        onCardUseSubscribers = new ArrayList<>();
         postDungeonInitializeSubscribers = new ArrayList<>();
         postEnergyRechargeSubscribers = new ArrayList<>();
         postInitializeSubscribers = new ArrayList<>();
@@ -1235,6 +1238,15 @@ public class BaseMod {
     		sub.receiveSetUnlocks();
     	}
     }
+    
+    // publishOnCardUse -
+    public static void publishOnCardUse(AbstractCard c) {
+    	logger.info("publish on card use");
+    	
+    	for (OnCardUseSubscriber sub : onCardUseSubscribers) {
+    		sub.receiveCardUsed(c);
+    	}
+    }
 
     //
     // Subscription handlers
@@ -1478,6 +1490,16 @@ public class BaseMod {
     // unsubscribeFromSetUnlocks
     public static void unsubscribeFromSetUnlocks(SetUnlocksSubscriber sub) {
     	setUnlocksSubscribers.remove(sub);
+    }
+    
+    // subscribeToOnCardUse
+    public static void subscribeToOnCardUse(OnCardUseSubscriber sub) {
+    	onCardUseSubscribers.add(sub);
+    }
+    
+    // unsubscribeFromOnCardUse
+    public static void unsubscribeFromOnCardUse(OnCardUseSubscriber sub) {
+    	onCardUseSubscribers.remove(sub);
     }
     
 }
