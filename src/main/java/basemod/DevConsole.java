@@ -53,6 +53,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     private static ShapeRenderer consoleBackground = null;
     
     private static boolean infiniteEnergy = false;
+    public static boolean forceUnlocks = false;
     
     public static boolean visible = false;
     public static int toggleKey = Keys.GRAVE;
@@ -114,6 +115,10 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             case "potion": {
                 cmdPotion(tokens);
                 break;
+            }
+            case "unlock": {
+            	cmdUnlock(tokens);
+            	break;
             }
             default: {
                 // TODO: Implement command hook
@@ -260,6 +265,16 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
                 }
             }
         }
+    }
+    
+    private static void cmdUnlock(String[] tokens) {
+    	if (tokens.length < 2) {
+    		return;
+    	}
+    	
+    	if (tokens[1].toLowerCase().equals("always")) {
+    		forceUnlocks = !forceUnlocks;
+    	}
     }
     
     private static void cmdDeck(String[] tokens) {
