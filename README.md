@@ -28,6 +28,7 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `deck add [id] {upgrades} {cardcount}` add card to deck (optional: integer # of upgrades) (optional: integer # of times you want to add this card) to add multiples of an unupgraded card use -1 as the upgrade amount
 * `deck r [id]` remove card from deck
+* `deck r all` remove all cards from deck
 * `draw [num]` draw cards
 * `energy add [amount]` gain energy
 * `energy inf` toggles infinite energy
@@ -45,6 +46,7 @@ Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `relic add [id]` generate relic
 * `relic list` logs all relic pools
 * `relic r [id]` lose relic
+* `unlock always` always gain an unlock on death
 
 ## For Modders ##
 ### Hooks ###
@@ -58,6 +60,8 @@ All interfaces are in the package `basemod.interfaces` (also **receive** is prob
 * `boolean receiveStartAct()` - After a new act is started.
 * `boolean receivePostCampfire()` - After a campfire action is performed. Returning false will allow another action to be performed.
 * `void receivePostDraw(AbstractCard)` - After a card is drawn.
+* `void receivePostExhaust(AbstractCard)` - After a card is exhausted.
+* `void receiveCardUse(AbstractCard)` - Directly after a card is used (can be used to add additional functionality to cards on use).
 * `void receivePostDungeonInitialize()` - After dungeon initialization completes.
 * `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged.
 * `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`.
@@ -75,6 +79,7 @@ All interfaces are in the package `basemod.interfaces` (also **receive** is prob
 * `void receiveEditCards` - When you should register any cards to add or remove with `BaseMod.addCard` and `BaseMod.removeCard`. Do **NOT** initialize any cards or register any cards to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing any cards involved in game events is **undefined behavior** currently.
 * `void receiveEditRelics` - When you should register any relics to add or remove with `BaseMod.addRelic` and `BaseMod.removeRelic`. Do **NOT** initialize any relics or register any relics to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing any relics involved in game events is **undefined behavior** currently.
 * `void receiveEditCharacters` - When you should register any characters to add or remove with `BaseMod.addCharacter` and `BaseMod.removeCharacter`. Do **NOT** initialize any characters or register any relics to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing the default characters **IS NOT** supported at this time.
+* `void receiveSetUnlocks` - When you should register any custom unlocks. Note that removing any unlocks that exist in the base game won't work (it shouldn't crash but it won't do anything). Do **NOT** set up any custom unlocks outside of this handler. Slay The Spire needs some things to be done in certain orders and this handler ensures that happens correctly.
 
 ### Mod Badges ###
 32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
