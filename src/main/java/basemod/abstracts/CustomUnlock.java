@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.unlock.AbstractUnlock;
 public class CustomUnlock extends AbstractUnlock {
 
 	public CustomUnlock(String cardID) {
+		this.type = AbstractUnlock.UnlockType.CARD;
 		this.card = CardLibrary.getCard(cardID);
 		this.key = this.card.cardID;
 		this.title = this.card.name;

@@ -54,6 +54,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     
     private static boolean infiniteEnergy = false;
     public static boolean forceUnlocks = false;
+    public static int unlockLevel = -1;
     
     public static boolean visible = false;
     public static int toggleKey = Keys.GRAVE;
@@ -274,6 +275,8 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     	
     	if (tokens[1].toLowerCase().equals("always")) {
     		forceUnlocks = !forceUnlocks;
+    	} else if (tokens[1].toLowerCase().equals("level") && tokens.length > 2) {
+    		unlockLevel = ConvertHelper.tryParseInt(tokens[2]);
     	}
     }
     
