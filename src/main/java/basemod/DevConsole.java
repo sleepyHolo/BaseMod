@@ -50,6 +50,7 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
     private static Color consoleColor = Color.BLACK;
     private static InputProcessor consoleInputProcessor; 
     private static InputProcessor otherInputProcessor = null;
+    private static ShapeRenderer consoleBackground = null;
     
     private static boolean infiniteEnergy = false;
     
@@ -394,7 +395,10 @@ public class DevConsole implements PostEnergyRechargeSubscriber, PostInitializeS
             // Should probably just make a background texture for the console so this doesn't need to be done
             sb.end();
             
-            ShapeRenderer consoleBackground = new ShapeRenderer();
+            if (consoleBackground == null) {
+            	consoleBackground = new ShapeRenderer();
+            }
+
             consoleBackground.begin(ShapeType.Filled);
             consoleBackground.setColor(consoleColor);
             consoleBackground.rect(CONSOLE_X, CONSOLE_Y, (CONSOLE_W * Settings.scale), (CONSOLE_H * Settings.scale));
