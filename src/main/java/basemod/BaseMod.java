@@ -1,5 +1,6 @@
 package basemod;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -163,6 +164,9 @@ public class BaseMod {
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
+
+	/* should be final but the compiler doesn't like me */
+	public static String save_path = "saves" + File.separator;
 
 	public static DevConsole console;
 	public static Gson gson;
@@ -348,12 +352,14 @@ public class BaseMod {
 	}
 
 	public static boolean saveExists() {
+		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
-			String filepath = SaveAndContinue.save_path + playerClass + ".autosave";
+			String filepath = save_path + playerClass + ".autosave";
+			System.out.println("looing for " + filepath);
 			boolean fileExists = Gdx.files.local(filepath).exists();
 			// delete corrupted saves
-			if ((fileExists) && (SaveAndContinue.loadSaveFile(
-							AbstractPlayer.PlayerClass.valueOf(playerClass)) == null)) {
+			if ((fileExists)
+					&& (SaveAndContinue.loadSaveFile(AbstractPlayer.PlayerClass.valueOf(playerClass)) == null)) {
 				SaveAndContinue.deleteSave(AbstractPlayer.PlayerClass.valueOf(playerClass));
 			}
 			if (fileExists) {
@@ -362,10 +368,10 @@ public class BaseMod {
 		}
 		return false;
 	}
-	
+
 	public static AbstractPlayer.PlayerClass getSaveClass() {
 		for (String playerClass : playerClassMap.keySet()) {
-			String filepath = SaveAndContinue.save_path + playerClass + ".autosave";
+			String filepath = save_path + playerClass + ".autosave";
 			if (Gdx.files.local(filepath).exists()) {
 				return AbstractPlayer.PlayerClass.valueOf(playerClass);
 			}

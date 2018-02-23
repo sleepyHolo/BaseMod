@@ -12,7 +12,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.options.ExitGameButton;
 import com.megacrit.cardcrawl.screens.options.OptionsPanel;
-import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
 
 import basemod.BaseMod;
 
@@ -26,7 +25,8 @@ public class RefreshSwitch {
 			AbstractPlayer.PlayerClass selection = AbstractDungeon.player.chosenClass;
 			if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
 					!selection.toString().equals("CROWBOT")) {
-				if (!Gdx.files.local(SaveAndContinue.save_path + selection.name() + ".autosave").exists()) {
+				System.out.println("looking for file: " + (BaseMod.save_path + selection.name() + ".autosave"));
+				if (!Gdx.files.local(BaseMod.save_path + selection.name() + ".autosave").exists()) {
 					try {
 						Field exitBtn = panel.getClass().getDeclaredField("exitBtn");
 						exitBtn.setAccessible(true);

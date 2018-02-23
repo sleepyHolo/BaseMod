@@ -20,7 +20,7 @@ import basemod.BaseMod;
 public class RenderOuterGlowSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(rloc = 8)
+	@SpireInsertPatch(rloc = 9)
 	public static void Insert(Object __obj_instance, Object sbObj) {
 		AbstractCard card = (AbstractCard) __obj_instance;
 		CardColor color = card.color;
