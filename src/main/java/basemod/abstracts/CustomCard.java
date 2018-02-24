@@ -1,5 +1,7 @@
 package basemod.abstracts;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -8,6 +10,13 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import basemod.ReflectionHacks;
 
 public abstract class CustomCard extends AbstractCard {
+	
+	public static HashMap<String, Texture> imgMap;
+	
+	static {
+		imgMap = new HashMap<>();
+	}
+	
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
 		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
 	
@@ -16,7 +25,13 @@ public abstract class CustomCard extends AbstractCard {
 	
 	// loadCardImage - copy of hack here: https://github.com/t-larson/STS-ModLoader/blob/master/modloader/CustomCard.java
 	public void loadCardImage(String img) {
-		Texture cardTexture = new Texture(img);
+		Texture cardTexture;
+		if (imgMap.containsKey(img)) {
+			cardTexture = imgMap.get(img);
+		} else {
+			cardTexture = new Texture(img);
+			imgMap.put(img, cardTexture);
+		}
 		cardTexture.setFilter(Texture.TextureFilter.Linear,  Texture.TextureFilter.Linear);
 		int tw = cardTexture.getWidth();
 		int th = cardTexture.getHeight();

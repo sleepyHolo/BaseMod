@@ -75,9 +75,11 @@ public class EverythingFix
                 	 CardGroup group = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
                      group.group = CardLibrary.getCardList(CardLibrary.LibraryType.valueOf(colors[icolor].name()));
                      
-                     Method lockStatusHelper = screen.getClass().getDeclaredMethod("lockStatusHelper");
+                     Class[] cArg = new Class[1];
+                     cArg[0] = CardGroup.class;
+                     Method lockStatusHelper = screen.getClass().getDeclaredMethod("lockStatusHelper", cArg);
                      lockStatusHelper.setAccessible(true);
-                     lockStatusHelper.invoke(screen, group.group);
+                     lockStatusHelper.invoke(screen, group);
                  }
     		 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
     			 e.printStackTrace();
