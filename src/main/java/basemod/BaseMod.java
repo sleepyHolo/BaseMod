@@ -47,6 +47,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
+import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
@@ -144,6 +145,8 @@ public class BaseMod {
 	private static HashMap<String, String> playerSelectTextMap;
 	private static HashMap<String, String> playerSelectButtonMap;
 	private static HashMap<String, String> playerPortraitMap;
+
+	public static HashMap<String, CharStat> playerStatsMap;
 
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
@@ -316,6 +319,7 @@ public class BaseMod {
 		playerSelectTextMap = new HashMap<>();
 		playerSelectButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
+		playerStatsMap = new HashMap<>();
 	}
 
 	// initializeColorMap -
@@ -825,6 +829,20 @@ public class BaseMod {
 		return options;
 	}
 
+	// generate stats for StatsScreen based on added players
+	public static ArrayList<CharStat> generateCharacterStats() {
+		ArrayList<CharStat> stats = new ArrayList<>();
+		for (String character : playerClassMap.keySet()) {
+			CharStat stat = playerStatsMap.get(character);
+			if (stat == null) {
+				stat = new CharStat(AbstractPlayer.PlayerClass.valueOf(character));
+				playerStatsMap.put(character, stat);
+			}
+			stats.add(stat);
+		}
+		return stats;
+	}
+
 	//
 	// Colors
 	//
@@ -910,8 +928,11 @@ public class BaseMod {
 	// increment the card count for a color String (fake ENUM)
 	public static void incrementCardCount(String color) {
 		Integer count = colorCardCountMap.get(color);
+		System.out.println("incrementing card count for " + color + " to " + colorCardCountMap.get(color));
 		if (count != null) {
 			colorCardCountMap.put(color, count + 1);
+		} else {
+			colorCardCountMap.put(color, 0);
 		}
 	}
 
@@ -920,7 +941,15 @@ public class BaseMod {
 		Integer count = colorCardCountMap.get(color);
 		if (count != null) {
 			colorCardCountMap.put(color, count - 1);
+			if (colorCardCountMap.get(color) < 0) {
+				colorCardCountMap.remove(color);
+			}
 		}
+	}
+
+	// get card count for a color String (fake ENUM)
+	public static Integer getCardCount(String color) {
+		return colorCardCountMap.get(color);
 	}
 
 	// increment the seen card count for a color String (fake ENUM)
@@ -928,7 +957,14 @@ public class BaseMod {
 		Integer count = colorCardSeenCountMap.get(color);
 		if (count != null) {
 			colorCardSeenCountMap.put(color, count + 1);
+		} else {
+			colorCardSeenCountMap.put(color, 0);
 		}
+	}
+
+	// get seen card count for a color String (fake ENUM)
+	public static Integer getSeenCardCount(String color) {
+		return colorCardSeenCountMap.get(color);
 	}
 
 	// convert a color String (fake ENUM) into a glow color
@@ -955,18 +991,21 @@ public class BaseMod {
 	public static String getEnergyOrb(String color) {
 		return colorEnergyOrbMap.get(color);
 	}
-	
-	// convert a color String (fake ENUM) into an attack background portrait texture path
+
+	// convert a color String (fake ENUM) into an attack background portrait
+	// texture path
 	public static String getAttackBgPortrait(String color) {
 		return colorAttackBgPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an skill background portrait texture path
+	// convert a color String (fake ENUM) into an skill background portrait
+	// texture path
 	public static String getSkillBgPortrait(String color) {
 		return colorSkillBgPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an power background portrait texture path
+	// convert a color String (fake ENUM) into an power background portrait
+	// texture path
 	public static String getPowerBgPortrait(String color) {
 		return colorPowerBgPortraitMap.get(color);
 	}
@@ -995,7 +1034,7 @@ public class BaseMod {
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(String color) {
 		return colorEnergyOrbTextureMap.get(color);
 	}
-	
+
 	// convert a color String (fake ENUM) into an attack background texture
 	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(String color) {
 		return colorAttackBgPortraitTextureMap.get(color);
@@ -1055,7 +1094,7 @@ public class BaseMod {
 	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbPortraitTextureMap.put(color, tex);
 	}
-	
+
 	//
 	// Publishers
 	//
