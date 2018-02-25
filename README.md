@@ -24,6 +24,9 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 ## Installation ##
 1. Copy `target/BaseMod.jar` to your ModTheSpire mods directory. Maven will automatically do this after packaging if your mods directory is located at `../_ModTheSpire/mods` relative to the repo.
 
+# Wiki
+Take a look at the wiki (https://github.com/daviscook477/BaseMod/wiki) to get started using BaseMod as either a console or a modding platform!
+
 ## Console ##
 Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
 * `deck add [id] {upgrades} {cardcount}` add card to deck (optional: integer # of upgrades) (optional: integer # of times you want to add this card) to add multiples of an unupgraded card use -1 as the upgrade amount
