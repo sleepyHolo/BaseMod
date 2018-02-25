@@ -13,13 +13,32 @@ public abstract class CustomCard extends AbstractCard {
 	
 	public static HashMap<String, Texture> imgMap;
 	
+	public static final String PORTRAIT_ENDING = "_p";
+	
+	public static Texture getPortraitImage(CustomCard card) {
+		int endingIndex = card.textureImg.lastIndexOf(".");
+		String newPath = card.textureImg.substring(0, endingIndex) + 
+				PORTRAIT_ENDING + card.textureImg.substring(endingIndex); 
+		System.out.println("Finding texture: " + newPath);
+		Texture portraitTexture;
+		try {
+			portraitTexture = new Texture(newPath);
+		} catch (Exception e) {
+			portraitTexture = null;
+		}
+		return portraitTexture;
+	}
+	
 	static {
 		imgMap = new HashMap<>();
 	}
 	
+	public String textureImg;
+	
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
 		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
-	
+		
+		this.textureImg = img;
 		loadCardImage(img);
 	}
 	

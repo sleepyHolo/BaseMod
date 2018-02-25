@@ -158,10 +158,18 @@ public class BaseMod {
 	private static HashMap<String, String> colorSkillBgMap;
 	private static HashMap<String, String> colorPowerBgMap;
 	private static HashMap<String, String> colorEnergyOrbMap;
+	private static HashMap<String, String> colorAttackBgPortraitMap;
+	private static HashMap<String, String> colorSkillBgPortraitMap;
+	private static HashMap<String, String> colorPowerBgPortraitMap;
+	private static HashMap<String, String> colorEnergyOrbPortraitMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorAttackBgTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorAttackBgPortraitTextureMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgPortraitTextureMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgPortraitTextureMap;
+	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 
@@ -325,10 +333,18 @@ public class BaseMod {
 		colorSkillBgMap = new HashMap<>();
 		colorPowerBgMap = new HashMap<>();
 		colorEnergyOrbMap = new HashMap<>();
+		colorAttackBgPortraitMap = new HashMap<>();
+		colorSkillBgPortraitMap = new HashMap<>();
+		colorPowerBgPortraitMap = new HashMap<>();
+		colorEnergyOrbPortraitMap = new HashMap<>();
 		colorAttackBgTextureMap = new HashMap<>();
 		colorSkillBgTextureMap = new HashMap<>();
 		colorPowerBgTextureMap = new HashMap<>();
 		colorEnergyOrbTextureMap = new HashMap<>();
+		colorAttackBgPortraitTextureMap = new HashMap<>();
+		colorSkillBgPortraitTextureMap = new HashMap<>();
+		colorPowerBgPortraitTextureMap = new HashMap<>();
+		colorEnergyOrbPortraitTextureMap = new HashMap<>();
 	}
 
 	// initializeUnlocks
@@ -818,7 +834,8 @@ public class BaseMod {
 			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
 			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
 			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor, String attackBg,
-			String skillBg, String powerBg, String energyOrb) {
+			String skillBg, String powerBg, String energyOrb, String attackBgPortrait, String skillBgPortrait,
+			String powerBgPortrait, String energyOrbPortrait) {
 		colorBgColorMap.put(color, bgColor);
 		colorBackColorMap.put(color, backColor);
 		colorFrameColorMap.put(color, frameColor);
@@ -832,6 +849,10 @@ public class BaseMod {
 		colorSkillBgMap.put(color, skillBg);
 		colorPowerBgMap.put(color, powerBg);
 		colorEnergyOrbMap.put(color, energyOrb);
+		colorAttackBgPortraitMap.put(color, attackBgPortrait);
+		colorSkillBgPortraitMap.put(color, skillBgPortrait);
+		colorPowerBgPortraitMap.put(color, powerBgPortrait);
+		colorEnergyOrbPortraitMap.put(color, energyOrbPortrait);
 	}
 
 	// remove a custom color -
@@ -850,6 +871,10 @@ public class BaseMod {
 		colorSkillBgMap.remove(color);
 		colorPowerBgMap.remove(color);
 		colorEnergyOrbMap.remove(color);
+		colorAttackBgPortraitMap.remove(color);
+		colorSkillBgPortraitMap.remove(color);
+		colorPowerBgPortraitMap.remove(color);
+		colorEnergyOrbPortraitMap.remove(color);
 	}
 
 	// convert a color String (fake ENUM) into a background color
@@ -930,6 +955,26 @@ public class BaseMod {
 	public static String getEnergyOrb(String color) {
 		return colorEnergyOrbMap.get(color);
 	}
+	
+	// convert a color String (fake ENUM) into an attack background portrait texture path
+	public static String getAttackBgPortrait(String color) {
+		return colorAttackBgPortraitMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an skill background portrait texture path
+	public static String getSkillBgPortrait(String color) {
+		return colorSkillBgPortraitMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an power background portrait texture path
+	public static String getPowerBgPortrait(String color) {
+		return colorPowerBgPortraitMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an energy portrait texture path
+	public static String getEnergyOrbPortrait(String color) {
+		return colorEnergyOrbPortraitMap.get(color);
+	}
 
 	// convert a color String (fake ENUM) into an attack background texture
 	public static com.badlogic.gdx.graphics.Texture getAttackBgTexture(String color) {
@@ -949,6 +994,26 @@ public class BaseMod {
 	// convert a color String (fake ENUM) into an energy texture
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(String color) {
 		return colorEnergyOrbTextureMap.get(color);
+	}
+	
+	// convert a color String (fake ENUM) into an attack background texture
+	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(String color) {
+		return colorAttackBgPortraitTextureMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an skill background texture
+	public static com.badlogic.gdx.graphics.Texture getSkillBgPortraitTexture(String color) {
+		return colorSkillBgPortraitTextureMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an power background texture
+	public static com.badlogic.gdx.graphics.Texture getPowerBgPortraitTexture(String color) {
+		return colorPowerBgPortraitTextureMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an energy texture
+	public static com.badlogic.gdx.graphics.Texture getEnergyOrbPortraitTexture(String color) {
+		return colorEnergyOrbPortraitTextureMap.get(color);
 	}
 
 	// save a attack background texture for a color String (fake ENUM)
@@ -971,6 +1036,26 @@ public class BaseMod {
 		colorEnergyOrbTextureMap.put(color, tex);
 	}
 
+	// save a attack background texture for a color String (fake ENUM)
+	public static void saveAttackBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		colorAttackBgPortraitTextureMap.put(color, tex);
+	}
+
+	// save a skill background texture for a color String (fake ENUM)
+	public static void saveSkillBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		colorSkillBgPortraitTextureMap.put(color, tex);
+	}
+
+	// save a power background texture for a color String (fake ENUM)
+	public static void savePowerBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		colorPowerBgPortraitTextureMap.put(color, tex);
+	}
+
+	// save an energy orb texture for a color String (fake ENUM)
+	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		colorEnergyOrbPortraitTextureMap.put(color, tex);
+	}
+	
 	//
 	// Publishers
 	//

@@ -218,6 +218,10 @@ public class TestMod implements
         		makePath(ASSET_FOLDER, ATTACK_PURPLE), 
         		makePath(ASSET_FOLDER, SKILL_PURPLE),
         		makePath(ASSET_FOLDER, POWER_PURPLE),
+        		makePath(ASSET_FOLDER, ENERGY_ORB_PURPLE),
+        		makePath(ASSET_FOLDER, ATTACK_PURPLE), 
+        		makePath(ASSET_FOLDER, SKILL_PURPLE),
+        		makePath(ASSET_FOLDER, POWER_PURPLE),
         		makePath(ASSET_FOLDER, ENERGY_ORB_PURPLE));
 		loudWrite(writer, "End setting up new colors");
 	}
