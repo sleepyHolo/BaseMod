@@ -78,9 +78,11 @@ import basemod.interfaces.PostDungeonInitializeSubscriber;
 import basemod.interfaces.PostEnergyRechargeSubscriber;
 import basemod.interfaces.PostExhaustSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PostPotionUseSubscriber;
 import basemod.interfaces.PostRenderSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
 import basemod.interfaces.PreMonsterTurnSubscriber;
+import basemod.interfaces.PrePotionUseSubscriber;
 import basemod.interfaces.PreStartGameSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
 import basemod.interfaces.RenderSubscriber;
@@ -100,7 +102,7 @@ public class BaseMod {
 
 	private static HashMap<Type, String> typeMaps;
 	private static HashMap<Type, Type> typeTokens;
-
+	
 	private static ArrayList<ModBadge> modBadges;
 	private static ArrayList<StartActSubscriber> startActSubscribers;
 	private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
@@ -127,6 +129,8 @@ public class BaseMod {
 	private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
 	private static ArrayList<PostBattleSubscriber> postBattleSubscribers;
 	private static ArrayList<SetUnlocksSubscriber> setUnlocksSubscribers;
+	private static ArrayList<PostPotionUseSubscriber> postPotionUseSubscribers;
+	private static ArrayList<PrePotionUseSubscriber> prePotionUseSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -185,7 +189,7 @@ public class BaseMod {
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
-
+	
 	/* should be final but the compiler doesn't like me */
 	public static String save_path = "saves" + File.separator;
 
@@ -195,7 +199,10 @@ public class BaseMod {
 
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
-
+	
+	// Pouch size
+	
+	public static int pouchSize=3;
 	//
 	// Initialization
 	//
@@ -218,7 +225,6 @@ public class BaseMod {
 
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
-
 		console = new DevConsole();
 	}
 
@@ -304,6 +310,8 @@ public class BaseMod {
 		editStringsSubscribers = new ArrayList<>();
 		postBattleSubscribers = new ArrayList<>();
 		setUnlocksSubscribers = new ArrayList<>();
+		postPotionUseSubscribers = new ArrayList<>();
+		prePotionUseSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -1121,6 +1129,10 @@ public class BaseMod {
     //Potions 
     // 
     
+	public static void setPouchSize(int size) {
+		pouchSize=size;
+	}
+	
 	public static ArrayList<String> getPotionsToRemove() { 
 	      return potionsToRemove; 
 	} 
@@ -1498,7 +1510,25 @@ public class BaseMod {
 			sub.receiveCardUsed(c);
 		}
 	}
-
+	
+	// publishPostUsePotion -
+	public static void publishPostUsePotion(AbstractPotion p) {
+		logger.info("publish on post potion use");
+		logger.info(p.ID);
+		for (PostPotionUseSubscriber sub : postPotionUseSubscribers) {
+			sub.receivePostUsePotion(p);
+		}
+	}
+	
+	// publishPostUsePotion -
+	public static void publishPreUsePotion(AbstractPotion p) {
+		logger.info("publish on pre potion use");
+		
+		for (PrePotionUseSubscriber sub : prePotionUseSubscribers) {
+			sub.receivePreUsePotion(p);
+		}
+	}
+		
 	//
 	// Subscription handlers
 	//
@@ -1752,5 +1782,14 @@ public class BaseMod {
 	public static void unsubscribeFromOnCardUse(OnCardUseSubscriber sub) {
 		onCardUseSubscribers.remove(sub);
 	}
+	
+	// subscribeToPostPotionUse
+	public static void subscribeToPostPotionUse(PostPotionUseSubscriber sub) {
+		postPotionUseSubscribers.add(sub);
+	}
 
+	// unsubscribeFromOnPostPotionUse
+	public static void unsubscribeFromPostPotionUse(PostPotionUseSubscriber sub) {
+		postPotionUseSubscribers.remove(sub);
+	}
 }
