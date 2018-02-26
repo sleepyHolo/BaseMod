@@ -28,99 +28,15 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 Take a look at the wiki (https://github.com/daviscook477/BaseMod/wiki) to get started using BaseMod as either a console or a modding platform!
 
 ## Console ##
-Default hotkey is `` ` ``, can be changed from BaseMod's settings screen.
-* `deck add [id] {upgrades} {cardcount}` add card to deck (optional: integer # of upgrades) (optional: integer # of times you want to add this card) to add multiples of an unupgraded card use -1 as the upgrade amount
-* `deck r [id]` remove card from deck
-* `deck r all` remove all cards from deck
-* `draw [num]` draw cards
-* `energy add [amount]` gain energy
-* `energy inf` toggles infinite energy
-* `energy r [amount]` lose energy
-* `fight [name]` enter combat with the specified encounter
-* `gold add [amount]` gain gold
-* `gold r [amount]` lose gold
-* `hand add [id] {upgrades}` add card to hand with (optional: integer # of upgrades)
-* `hand r all` exhaust entire hand
-* `hand r [id]` exhaust card from hand
-* `info` toggle Settings.isInfo
-* `kill all` kills all enemies in the current combat
-* `kill self` kills your character
-* `potion [pos] [id]` gain specified potion in specified slot
-* `relic add [id]` generate relic
-* `relic list` logs all relic pools
-* `relic r [id]` lose relic
-* `unlock always` always gain an unlock on death
+Take a look at the Console page on the wiki (https://github.com/daviscook477/BaseMod/wiki/Console) to start using the console to test things out!
 
 ## For Modders ##
-### Hooks ###
-#### Subscription handling ####
-* `BaseMod.subscribeTo...(this)`
-* `BaseMod.unsubscribeFrom...(this)`
 
-#### Subscriptions ####
-Implement the appropriate interface (ex. `basemod.interfaces.PostInitializeSubscriber`)
-All interfaces are in the package `basemod.interfaces` (also **receive** is probably misspelled somewhere so sorry about that)
-* `boolean receiveStartAct()` - After a new act is started.
-* `boolean receivePostCampfire()` - After a campfire action is performed. Returning false will allow another action to be performed.
-* `void receivePostDraw(AbstractCard)` - After a card is drawn.
-* `void receivePostExhaust(AbstractCard)` - After a card is exhausted.
-* `void receiveCardUse(AbstractCard)` - Directly after a card is used (can be used to add additional functionality to cards on use).
-* `void receivePostDungeonInitialize()` - After dungeon initialization completes.
-* `void receivePostEnergyRecharge()` - At the start of every player turn, after energy has recharged.
-* `void receivePostInitialize()` - One time only, at the end of `CardCrawlGame.initialize()`.
-* `boolean receivePreMonsterTurn(AbstractMonster)` - Before each monster takes its turn. Returning false will skip the monsters turn.
-* `void receiveRender(SpriteBatch)` - Under tips and the cursor, above everything else.
-* `void receivePostRender(SpriteBatch)` - Above everything.
-* `void receivePreStartGame()` - When starting a new game, before generating/loading the player.
-* `void receiveStartGame()` - When starting a new game or continuing, after generating/loading the player and before dungeon generation.
-* `void receivePreUpdate()` - Immediately after input is read.
-* `void receivePostUpdate()` - Immediately before input is disposed.
-* `boolean receivePostCreateStartingDeck(cardsToAdd)` - Immediately after the character's starting deck is created. Returning true will remove all the cards from the default starting deck. Add the cards you want to be in the starting deck to `cardsToAdd`.
-* `boolean receievePostCreateStartingRelics(relicsToAdd)` - Immediately after the character's starting relics are created. Returning true will remove all the default relics from the player. Add the relics you want to be in the starting deck to `relicsToAdd`.
-* `void receivePostCreateShopRelics(relics, sceenInstance)` - Immediately after the shop generates its relics. Modifying `relics` will change the relics in the shop. `screenInstance` is an instance of the `ShopScreen`.
-* `void receivePostCreateShopPotions(potions, screenInstance)` - Immediately after the shop generates its potions. Modifying `potions` will change the potions in the shop. `screenInstance` is an instance of the `ShopScreen`.
-* `void receiveEditCards` - When you should register any cards to add or remove with `BaseMod.addCard` and `BaseMod.removeCard`. Do **NOT** initialize any cards or register any cards to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing any cards involved in game events is **undefined behavior** currently.
-* `void receiveEditRelics` - When you should register any relics to add or remove with `BaseMod.addRelic` and `BaseMod.removeRelic`. Do **NOT** initialize any relics or register any relics to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing any relics involved in game events is **undefined behavior** currently.
-* `void receiveEditCharacters` - When you should register any characters to add or remove with `BaseMod.addCharacter` and `BaseMod.removeCharacter`. Do **NOT** initialize any characters or register any relics to add or remove outside of this handler. Slay the Spire needs some things to be done in certain orders and this handler ensures that happens correctly. Note that removing the default characters **IS NOT** supported at this time.
-* `void receiveSetUnlocks` - When you should register any custom unlocks. Note that removing any unlocks that exist in the base game won't work (it shouldn't crash but it won't do anything). Do **NOT** set up any custom unlocks outside of this handler. Slay The Spire needs some things to be done in certain orders and this handler ensures that happens correctly.
+### Hooks ###
+Take a look here for the hooks that are available (https://github.com/daviscook477/BaseMod/wiki/Hooks)
 
 ### Mod Badges ###
-32x32 images that display under the title on the main menu. Clicking one opens that mods settings menu.
-* `BaseMod.registerModBadge(Texture texture, String modName, String author, String description, ModPanel settingsPanel)`
-* `ModPanel.addButton(float x, float y, Consumer<ModButton> clickEvent)`
-* `ModPanel.addLabel(String text, float x, float y, Consumer<ModLabel> updateEvent)`
-* There is more here, but it is a big mess and is going to be cleaned up soon.
-
-Example of setting up a basic mod badge with settings panel:
-
-```java
-ModPanel settingsPanel = new ModPanel();
-settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
-    if (me.parent.waitingOnEvent) {
-        me.text = "Press key";
-    } else {
-        me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
-    }
-});
-
-settingsPanel.addButton(350.0f, 650.0f, (me) -> {
-    me.parent.waitingOnEvent = true;
-    oldInputProcessor = Gdx.input.getInputProcessor();
-    Gdx.input.setInputProcessor(new InputAdapter() {
-        @Override
-        public boolean keyUp(int keycode) {
-            DevConsole.toggleKey = keycode;
-            me.parent.waitingOnEvent = false;
-            Gdx.input.setInputProcessor(oldInputProcessor);
-            return true;
-        }
-    });
-});
-
-Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
-registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
-```
-Take a look at `basemod.BaseModInit` to see the code used to create the `ModBadge` for BaseMod.
+Take alook here for how to set up a Mod Badge (https://github.com/daviscook477/BaseMod/wiki/Mod-Badges)
 
 ### Custom Relics ###
 * `CustomRelic(String id, Texture texture, AbstractRelic.RelicTier tier, AbstractRelic.LandingSound sfx)`
@@ -156,3 +72,4 @@ The process for creating custom player characters is fairly involved but still n
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes
 * daviscook477 - Custom players, custom colors, custom cards, more API hooks, code cleanup, bugfixes
+* Haashi - custom potion support and better dev console potion support
