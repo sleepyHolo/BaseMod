@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set; 
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color; 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
@@ -43,6 +45,7 @@ import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
 import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.potions.AbstractPotion; 
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
@@ -136,6 +139,8 @@ public class BaseMod {
 	private static ArrayList<AbstractCard> customToAdd;
 	private static ArrayList<String> customToRemove;
 	private static ArrayList<String> customToRemoveColors;
+	
+	private static ArrayList<String> potionsToRemove; 
 
 	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> playerClassMap;
@@ -147,6 +152,11 @@ public class BaseMod {
 	private static HashMap<String, String> playerPortraitMap;
 
 	public static HashMap<String, CharStat> playerStatsMap;
+	
+	private static HashMap<String, Class> potionClassMap; 
+	private static HashMap<String, Color> potionHybridColorMap; 
+	private static HashMap<String, Color> potionLiquidColorMap; 
+	private static HashMap<String, Color> potionSpotsColorMap; 
 
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
@@ -201,7 +211,8 @@ public class BaseMod {
 		initializeCharacterMap();
 		initializeColorMap();
 		initializeUnlocks();
-
+		initializePotionMap();
+		initializePotionList();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
 
@@ -355,7 +366,18 @@ public class BaseMod {
 	private static void initializeUnlocks() {
 		unlockBundles = new HashMap<>();
 	}
-
+	
+	private static void initializePotionMap() { 
+	      potionClassMap = new HashMap<String, Class>(); 
+	      potionHybridColorMap = new HashMap<String, Color>(); 
+	      potionLiquidColorMap = new HashMap<String, Color>(); 
+	      potionSpotsColorMap = new HashMap<String, Color>(); 
+	} 
+	
+	private static void initializePotionList() { 
+	      potionsToRemove= new ArrayList<>(); 
+	} 
+	
 	//
 	// Mod badges
 	//
@@ -1094,7 +1116,45 @@ public class BaseMod {
 	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbPortraitTextureMap.put(color, tex);
 	}
-
+	
+	// 
+    //Potions 
+    // 
+    
+	public static ArrayList<String> getPotionsToRemove() { 
+	      return potionsToRemove; 
+	} 
+	
+	public static void removePotion(String potionID) { 
+	      potionsToRemove.add(potionID); 
+	}
+	
+	//add the Potion to the map (fake ENUM) 
+    public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
+	    potionClassMap.put(potionID, potionClass); 
+	    potionLiquidColorMap.put(potionID, liquidColor); 
+	    potionHybridColorMap.put(potionID,hybridColor); 
+	    potionSpotsColorMap.put(potionID, spotsColor); 
+	} 
+    //(fake ENUM) return Class corresponding to potionID 
+    public static Class getPotionClass(String potionID) { 
+    	return potionClassMap.get(potionID); 
+    } 
+    //(fake ENUM) return Colors corresponding to potionID 
+    public static Color getPotionLiquidColor(String potionID) { 
+    	return potionLiquidColorMap.get(potionID); 
+    } 
+    public static Color getPotionHybridColor(String potionID) { 
+    	return potionHybridColorMap.get(potionID); 
+    } 
+    public static Color getPotionSpotsColor(String potionID) { 
+    	return potionSpotsColorMap.get(potionID); 
+    } 
+  //get all entry in fake ENUM 
+    public static Set<String> getPotionIDs() { 
+    	return potionClassMap.keySet(); 
+    } 
+  
 	//
 	// Publishers
 	//
