@@ -423,7 +423,7 @@ public class DevConsole
 	}
 
 	private static void cmdPotion(String[] tokens) {
-		if (tokens.length != 3) {
+		if (tokens.length < 3) { 
 			return;
 		}
 
@@ -434,7 +434,18 @@ public class DevConsole
 			return;
 		}
 
-		AbstractPotion p = PotionHelper.getPotion(tokens[2] + " Potion");
+		String potionID=""; 
+        for(int k=2;k<tokens.length;k++) { 
+          potionID=potionID.concat(tokens[k]); 
+          if(k!=tokens.length-1) { 
+            potionID=potionID.concat(" "); 
+          } 
+        } 
+         
+        AbstractPotion p=null; 
+        if(PotionHelper.potions.contains(potionID)) { 
+            p = PotionHelper.getPotion(potionID); 
+        }
 
 		if (p == null) {
 			return;
