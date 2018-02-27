@@ -11,7 +11,7 @@ public class PrePotionUseHookTargetMode {
 	@SpireInsertPatch(rloc=20,localvars= {"potion"})
 	public static void Insert(Object __obj_instance, Object potion) {
 		AbstractPotion p = (AbstractPotion)potion;
-		BaseMod.publishPreUsePotion(p);;
+		BaseMod.publishPrePotionUse(p);;
 	}
 	
 }

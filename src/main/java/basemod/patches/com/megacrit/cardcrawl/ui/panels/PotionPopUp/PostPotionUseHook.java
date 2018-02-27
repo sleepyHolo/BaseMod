@@ -11,7 +11,7 @@ public class PostPotionUseHook {
 	@SpireInsertPatch(rloc=21,localvars= {"potion"})
 	public static void Insert(Object __obj_instance, Object potion) {
 		AbstractPotion p = (AbstractPotion)potion;
-		BaseMod.publishPostUsePotion(p);;
+		BaseMod.publishPostPotionUse(p);;
 	}
 	
 }

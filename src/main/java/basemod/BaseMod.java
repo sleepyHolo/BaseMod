@@ -62,6 +62,7 @@ import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.PotionGetSubscriber;
 import basemod.interfaces.OnCardUseSubscriber;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostCampfireSubscriber;
@@ -131,6 +132,7 @@ public class BaseMod {
 	private static ArrayList<SetUnlocksSubscriber> setUnlocksSubscribers;
 	private static ArrayList<PostPotionUseSubscriber> postPotionUseSubscribers;
 	private static ArrayList<PrePotionUseSubscriber> prePotionUseSubscribers;
+	private static ArrayList<PotionGetSubscriber> potionGetSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -200,9 +202,6 @@ public class BaseMod {
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
 	
-	// Pouch size
-	
-	public static int pouchSize=3;
 	//
 	// Initialization
 	//
@@ -312,6 +311,7 @@ public class BaseMod {
 		setUnlocksSubscribers = new ArrayList<>();
 		postPotionUseSubscribers = new ArrayList<>();
 		prePotionUseSubscribers = new ArrayList<>();
+		potionGetSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -1128,10 +1128,6 @@ public class BaseMod {
 	// 
     //Potions 
     // 
-    
-	public static void setPouchSize(int size) {
-		pouchSize=size;
-	}
 	
 	public static ArrayList<String> getPotionsToRemove() { 
 	      return potionsToRemove; 
@@ -1512,20 +1508,28 @@ public class BaseMod {
 	}
 	
 	// publishPostUsePotion -
-	public static void publishPostUsePotion(AbstractPotion p) {
+	public static void publishPostPotionUse(AbstractPotion p) {
 		logger.info("publish on post potion use");
-		logger.info(p.ID);
 		for (PostPotionUseSubscriber sub : postPotionUseSubscribers) {
-			sub.receivePostUsePotion(p);
+			sub.receivePostPotionUse(p);
 		}
 	}
 	
-	// publishPostUsePotion -
-	public static void publishPreUsePotion(AbstractPotion p) {
+	// publishPostPotionUse -
+	public static void publishPrePotionUse(AbstractPotion p) {
 		logger.info("publish on pre potion use");
 		
 		for (PrePotionUseSubscriber sub : prePotionUseSubscribers) {
-			sub.receivePreUsePotion(p);
+			sub.receivePrePotionUse(p);
+		}
+	}
+	
+	// publishPostPotionUse -
+	public static void publishPotionGet(AbstractPotion p) {
+		logger.info("publish on potion get");
+		
+		for (PotionGetSubscriber sub : potionGetSubscribers) {
+			sub.receivePotionGet(p);
 		}
 	}
 		
@@ -1791,5 +1795,25 @@ public class BaseMod {
 	// unsubscribeFromOnPostPotionUse
 	public static void unsubscribeFromPostPotionUse(PostPotionUseSubscriber sub) {
 		postPotionUseSubscribers.remove(sub);
+	}
+	
+	// subscribeToprePotionUse
+	public static void subscribeToPrePotionUse(PrePotionUseSubscriber sub) {
+		prePotionUseSubscribers.add(sub);
+	}
+
+	// unsubscribeFromOnprePotionUse
+	public static void unsubscribeFromPrePotionUse(PrePotionUseSubscriber sub) {
+		prePotionUseSubscribers.remove(sub);
+	}
+		
+	// subscribeToPotionGet
+	public static void subscribeToPotionGet(PotionGetSubscriber sub) {
+		potionGetSubscribers.add(sub);
+	}
+
+	// unsubscribeToPotionGet
+	public static void unsubscribeFromPotionGet(PotionGetSubscriber sub) {
+		potionGetSubscribers.remove(sub);
 	}
 }

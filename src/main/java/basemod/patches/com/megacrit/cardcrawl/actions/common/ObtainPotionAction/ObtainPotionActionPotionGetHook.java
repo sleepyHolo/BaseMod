@@ -1,4 +1,4 @@
-package basemod.patches.com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+package basemod.patches.com.megacrit.cardcrawl.actions.common.ObtainPotionAction;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -6,12 +6,11 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.PotionPopUp", method="updateTargetMode")
-public class PostPotionUseHookTargetMode {
-	@SpireInsertPatch(rloc=24,localvars= {"potion"})
+@SpirePatch(cls="com.megacrit.cardcrawl.actions.common.ObtainPotionAction", method="update")
+public class ObtainPotionActionPotionGetHook {
+	@SpireInsertPatch(rloc=20,localvars= {"potion"})
 	public static void Insert(Object __obj_instance, Object potion) {
 		AbstractPotion p = (AbstractPotion)potion;
-		BaseMod.publishPostPotionUse(p);;
+		BaseMod.publishPotionGet(p);;
 	}
-	
 }
