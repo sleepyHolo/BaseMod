@@ -11,6 +11,8 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import basemod.BaseMod;
+import basemod.abstracts.CustomCard;
+import basemod.abstracts.CustomCardWithRender;
 
 public class BackgroundFix {
 
@@ -26,40 +28,59 @@ public class BackgroundFix {
 				cardField.setAccessible(true);
 				AbstractCard card = (AbstractCard) cardField.get(popup);
 				AbstractCard.CardColor color = card.color;
-				switch (card.type) {
-				case ATTACK:
-					if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-							&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-						Texture bgTexture = BaseMod.getAttackBgPortraitTexture(color.toString());
-						if (bgTexture == null) {
-							bgTexture = new Texture(BaseMod.getAttackBgPortrait(color.toString()));
-							BaseMod.saveAttackBgPortraitTexture(color.toString(), bgTexture);
+				if(card instanceof CustomCardWithRender) {
+					((CustomCardWithRender)card).renderCardPortrait(sb);
+				} else {
+					switch (card.type) {
+					case ATTACK:
+						if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+								&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+							Texture bgTexture = BaseMod.getAttackBgPortraitTexture(color.toString());
+							if (bgTexture == null) {
+								bgTexture = new Texture(BaseMod.getAttackBgPortrait(color.toString()));
+								BaseMod.saveAttackBgPortraitTexture(color.toString(), bgTexture);
+							}
+							sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
 						}
-						sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
-					}
-					break;
-				case POWER:
-					if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-							&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-						Texture bgTexture = BaseMod.getPowerBgPortraitTexture(color.toString());
-						if (bgTexture == null) {
-							bgTexture = new Texture(BaseMod.getPowerBgPortrait(color.toString()));
-							BaseMod.savePowerBgPortraitTexture(color.toString(), bgTexture);
+						break;
+					case POWER:
+						if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+								&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+							Texture bgTexture = BaseMod.getPowerBgPortraitTexture(color.toString());
+							if (bgTexture == null) {
+								bgTexture = new Texture(BaseMod.getPowerBgPortrait(color.toString()));
+								BaseMod.savePowerBgPortraitTexture(color.toString(), bgTexture);
+							}
+							sb.draw(bgTexture, 
+									Settings.WIDTH / 2.0F - 512.0F, 
+									Settings.HEIGHT / 2.0F - 512.0F, 
+									512.0F,
+									512.0F, 
+									1024.0F, 
+									1024.0F, 
+									Settings.scale,
+									Settings.scale, 
+									0.0F, 
+									0, 
+									0, 
+									1024, 
+									1024, 
+									false, 
+									false);
 						}
-						sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
-					}
-					break;
-				default:
-					if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-							&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-						Texture bgTexture = BaseMod.getSkillBgPortraitTexture(color.toString());
-						if (bgTexture == null) {
-							bgTexture = new Texture(BaseMod.getSkillBgPortrait(color.toString()));
-							BaseMod.saveSkillBgPortraitTexture(color.toString(), bgTexture);
+						break;
+					default:
+						if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+								&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+							Texture bgTexture = BaseMod.getSkillBgPortraitTexture(color.toString());
+							if (bgTexture == null) {
+								bgTexture = new Texture(BaseMod.getSkillBgPortrait(color.toString()));
+								BaseMod.saveSkillBgPortraitTexture(color.toString(), bgTexture);
+							}
+							sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
 						}
-						sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
+						break;
 					}
-					break;
 				}
 			} catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
 				e.printStackTrace();
