@@ -86,6 +86,7 @@ import basemod.interfaces.PreMonsterTurnSubscriber;
 import basemod.interfaces.PrePotionUseSubscriber;
 import basemod.interfaces.PreStartGameSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
+import basemod.interfaces.RelicGetSubscriber;
 import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
@@ -133,6 +134,7 @@ public class BaseMod {
 	private static ArrayList<PostPotionUseSubscriber> postPotionUseSubscribers;
 	private static ArrayList<PrePotionUseSubscriber> prePotionUseSubscribers;
 	private static ArrayList<PotionGetSubscriber> potionGetSubscribers;
+	private static ArrayList<RelicGetSubscriber> relicGetSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -312,6 +314,7 @@ public class BaseMod {
 		postPotionUseSubscribers = new ArrayList<>();
 		prePotionUseSubscribers = new ArrayList<>();
 		potionGetSubscribers = new ArrayList<>();
+		relicGetSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -1524,7 +1527,7 @@ public class BaseMod {
 		}
 	}
 	
-	// publishPostPotionUse -
+	// publishPotionGet -
 	public static void publishPotionGet(AbstractPotion p) {
 		logger.info("publish on potion get");
 		
@@ -1532,7 +1535,15 @@ public class BaseMod {
 			sub.receivePotionGet(p);
 		}
 	}
-		
+	
+	// publishRelicGet -
+	public static void publishRelicGet(AbstractRelic r) {
+		logger.info("publish on relic get");
+		for (RelicGetSubscriber sub : relicGetSubscribers) {
+			sub.receiveRelicGet(r);
+		}
+	}
+	
 	//
 	// Subscription handlers
 	//
@@ -1815,5 +1826,15 @@ public class BaseMod {
 	// unsubscribeToPotionGet
 	public static void unsubscribeFromPotionGet(PotionGetSubscriber sub) {
 		potionGetSubscribers.remove(sub);
+	}
+	
+	// subscribeTorelicGet
+	public static void subscribeTorelicGet(RelicGetSubscriber sub) {
+		relicGetSubscribers.add(sub);
+	}
+
+	// unsubscribeTorelicGet
+	public static void unsubscribeFromrelicGet(RelicGetSubscriber sub) {
+		relicGetSubscribers.remove(sub);
 	}
 }
