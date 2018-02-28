@@ -8,7 +8,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.gashapon.NeowReward", method="getPotion")
 public class NeowRewardPotionGetHook {
-	@SpireInsertPatch(rloc=7)
+	@SpireInsertPatch(rloc=9)
 	public static void Insert(Object __obj_instance, Object p) {
 		AbstractPotion potion = (AbstractPotion)p;
 		BaseMod.publishPotionGet(potion);;

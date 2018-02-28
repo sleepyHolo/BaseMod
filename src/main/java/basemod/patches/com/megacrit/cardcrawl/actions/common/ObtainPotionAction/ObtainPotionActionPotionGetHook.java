@@ -8,7 +8,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.actions.common.ObtainPotionAction", method="update")
 public class ObtainPotionActionPotionGetHook {
-	@SpireInsertPatch(rloc=20,localvars= {"potion"})
+	@SpireInsertPatch(rloc=18,localvars= {"potion"})
 	public static void Insert(Object __obj_instance, Object potion) {
 		AbstractPotion p = (AbstractPotion)potion;
 		BaseMod.publishPotionGet(p);;

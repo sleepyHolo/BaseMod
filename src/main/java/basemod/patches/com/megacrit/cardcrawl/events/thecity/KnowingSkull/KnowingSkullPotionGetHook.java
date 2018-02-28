@@ -8,7 +8,7 @@ import basemod.BaseMod;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.events.thecity.KnowingSkull", method="obtainReward")
 public class KnowingSkullPotionGetHook {
-	@SpireInsertPatch(rloc=7,localvars= {"i"})
+	@SpireInsertPatch(rloc=8,localvars= {"i"})
 	public static void Insert(Object __obj_instance, int slot, int i) {
 		BaseMod.publishPotionGet(AbstractDungeon.player.potions[i]);;
 	}
