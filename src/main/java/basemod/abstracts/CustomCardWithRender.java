@@ -21,7 +21,11 @@ public CustomCardWithRender(String id, String name, String img, String bgTexture
 	}
 
 	private Texture getTextureFromString(String textureString) {
-		return new Texture(Gdx.files.internal(textureString));
+		if (imgMap.containsKey(textureString)) {
+			return imgMap.get(textureString);
+		}else {
+			return imgMap.put(textureString, new Texture(Gdx.files.internal(textureString)));
+		}
 	}
 
 	public static HashMap<String, Texture> imgMap;
