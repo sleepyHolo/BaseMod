@@ -2,20 +2,29 @@ package basemod.abstracts;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import basemod.ReflectionHacks;
+import basemod.patches.com.megacrit.cardcrawl.helpers.CustomCardRender.CustomCardRenderHelper;
 
 public abstract class CustomCardWithRender extends CustomCard {
-public CustomCardWithRender(String id, String name, String img, int cost, String rawDescription, CardType type,
-			CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
+public CustomCardWithRender(String id, String name, String img, String bgTexture, String bgTexture_p,
+		int cost, String rawDescription, CardType type, CardColor color, 
+		CardRarity rarity, CardTarget target, int cardPool) {
 		super(id, name, img, cost, rawDescription, type, color, rarity, target, cardPool);
-		// TODO Auto-generated constructor stub
+		
+		this.bGTexture = this.getTextureFromString(bgTexture);
+		this.bGTexture_p = this.getTextureFromString(bgTexture_p);
 	}
 
-public static HashMap<String, Texture> imgMap;
+	private Texture getTextureFromString(String textureString) {
+		return new Texture(Gdx.files.internal(textureString));
+	}
+
+	public static HashMap<String, Texture> imgMap;
 	
 	public static final String PORTRAIT_ENDING = "_p";
 	
@@ -55,10 +64,14 @@ public static HashMap<String, Texture> imgMap;
 		ReflectionHacks.setPrivateInherited(this, CustomCard.class, "portrait", cardImg);
 	}
 	
-	public abstract void renderCard(SpriteBatch sb, float x, float y);
+	public void renderCard(SpriteBatch sb, float x, float y) {
+		CustomCardRenderHelper.renderCardBG(sb, x, y, this);
+	}
 	
-	public abstract void renderCardPortrait(SpriteBatch sb);
+	public void renderCardPortrait(SpriteBatch sb) {
+		CustomCardRenderHelper.renderCardBGPortrait(sb, this);
+	}
 	
-	public Texture renderBGTexture = null;
-	public Texture renderBGTexture_p = null;
+	public Texture bGTexture = null;
+	public Texture bGTexture_p = null;
 }

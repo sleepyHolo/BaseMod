@@ -35,6 +35,7 @@ public class RenderAttackBgSwitch {
 		//This checks whether or not the card that is being rendered is a CustomCardWithRender and uses that cards render method to render the new background color
 		if(card instanceof CustomCardWithRender) {
 			CustomCardWithRender custCard = (CustomCardWithRender)card;
+			
 			custCard.renderCard(sb, x, y);
 		}else {
 			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
