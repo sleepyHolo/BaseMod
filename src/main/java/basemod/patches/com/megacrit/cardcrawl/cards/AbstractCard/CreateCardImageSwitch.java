@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 
 import basemod.BaseMod;
+import basemod.abstracts.CustomCardWithRender;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
@@ -28,23 +29,43 @@ public class CreateCardImageSwitch {
 			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
 					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
 				try {
-					Field bgColor;
-					bgColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("bgColor");
-					bgColor.setAccessible(true);
-					bgColor.set(card, BaseMod.getBgColor(color.toString()));
-					Field backColor;
-					backColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("backColor");
-					backColor.setAccessible(true);
-					backColor.set(card, BaseMod.getBackColor(color.toString()));
-					Field frameColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("frameColor");
-					frameColor.setAccessible(true);
-					frameColor.set(card, BaseMod.getFrameColor(color.toString()));
-					Field frameOutlineColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("frameOutlineColor");
-					frameOutlineColor.setAccessible(true);
-					frameOutlineColor.set(card, BaseMod.getFrameOutlineColor(color.toString()));
-					Field descBoxColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("descBoxColor");
-					descBoxColor.setAccessible(true);
-					descBoxColor.set(card, BaseMod.getDescBoxColor(color.toString()));
+					if(card instanceof CustomCardWithRender) {
+						Field bgColor;		
+						bgColor = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("bgColor");
+						bgColor.setAccessible(true);
+						bgColor.set(card, BaseMod.getBgColor(color.toString()));
+						Field backColor;
+						backColor = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("backColor");
+						backColor.setAccessible(true);
+						backColor.set(card, BaseMod.getBackColor(color.toString()));
+						Field frameColor = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("frameColor");
+						frameColor.setAccessible(true);
+						frameColor.set(card, BaseMod.getFrameColor(color.toString()));
+						Field frameOutlineColor = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("frameOutlineColor");
+						frameOutlineColor.setAccessible(true);
+						frameOutlineColor.set(card, BaseMod.getFrameOutlineColor(color.toString()));
+						Field descBoxColor = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("descBoxColor");
+						descBoxColor.setAccessible(true);
+						descBoxColor.set(card, BaseMod.getDescBoxColor(color.toString()));
+					} else {
+						Field bgColor;		
+						bgColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("bgColor");
+						bgColor.setAccessible(true);
+						bgColor.set(card, BaseMod.getBgColor(color.toString()));
+						Field backColor;
+						backColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("backColor");
+						backColor.setAccessible(true);
+						backColor.set(card, BaseMod.getBackColor(color.toString()));
+						Field frameColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("frameColor");
+						frameColor.setAccessible(true);
+						frameColor.set(card, BaseMod.getFrameColor(color.toString()));
+						Field frameOutlineColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("frameOutlineColor");
+						frameOutlineColor.setAccessible(true);
+						frameOutlineColor.set(card, BaseMod.getFrameOutlineColor(color.toString()));
+						Field descBoxColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("descBoxColor");
+						descBoxColor.setAccessible(true);
+						descBoxColor.set(card, BaseMod.getDescBoxColor(color.toString()));
+					}
 				} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 					logger.error("could not set card image properties on card " + card.getClass().toString() + " with color " + color.toString());
 					logger.error("with exception: " + e.getMessage());
