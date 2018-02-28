@@ -33,7 +33,8 @@ public class ConsoleInputProcessor implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         // For some reason the validation procedure thinks uppercase D is invalid
-        if (character == 'D') {
+    	// uppercase K as well
+        if (character == 'D' || character =='K') {
             DevConsole.currentText += character;
             return true;
         }

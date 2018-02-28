@@ -453,6 +453,7 @@ public class DevConsole
 
 		CardCrawlGame.sound.play("POTION_1");
 		p.moveInstantly(AbstractDungeon.player.potions[i].currentX, AbstractDungeon.player.potions[i].currentY);
+		BaseMod.publishPotionGet(p);
 		p.isObtained = true;
 		p.isDone = true;
 		p.isAnimating = false;
