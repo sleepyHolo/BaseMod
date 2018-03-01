@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.characters.Ironclad;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -45,7 +46,8 @@ import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
 import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.potions.AbstractPotion; 
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
@@ -80,6 +82,7 @@ import basemod.interfaces.PostEnergyRechargeSubscriber;
 import basemod.interfaces.PostExhaustSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.PostPotionUseSubscriber;
+import basemod.interfaces.PostPowerApplySubscriber;
 import basemod.interfaces.PostRenderSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
 import basemod.interfaces.PreMonsterTurnSubscriber;
@@ -135,7 +138,8 @@ public class BaseMod {
 	private static ArrayList<PrePotionUseSubscriber> prePotionUseSubscribers;
 	private static ArrayList<PotionGetSubscriber> potionGetSubscribers;
 	private static ArrayList<RelicGetSubscriber> relicGetSubscribers;
-
+	private static ArrayList<PostPowerApplySubscriber> postPowerApplySubscribers;
+	
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
 	private static ArrayList<AbstractCard> greenToAdd;
@@ -161,6 +165,7 @@ public class BaseMod {
 
 	public static HashMap<String, CharStat> playerStatsMap;
 	
+	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> potionClassMap; 
 	private static HashMap<String, Color> potionHybridColorMap; 
 	private static HashMap<String, Color> potionLiquidColorMap; 
@@ -315,6 +320,7 @@ public class BaseMod {
 		prePotionUseSubscribers = new ArrayList<>();
 		potionGetSubscribers = new ArrayList<>();
 		relicGetSubscribers = new ArrayList<>();
+		postPowerApplySubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -378,6 +384,7 @@ public class BaseMod {
 		unlockBundles = new HashMap<>();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private static void initializePotionMap() { 
 	      potionClassMap = new HashMap<String, Class>(); 
 	      potionHybridColorMap = new HashMap<String, Color>(); 
@@ -1141,14 +1148,16 @@ public class BaseMod {
 	}
 	
 	//add the Potion to the map (fake ENUM) 
-    public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
+    @SuppressWarnings("rawtypes")
+	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
 	    potionClassMap.put(potionID, potionClass); 
 	    potionLiquidColorMap.put(potionID, liquidColor); 
 	    potionHybridColorMap.put(potionID,hybridColor); 
 	    potionSpotsColorMap.put(potionID, spotsColor); 
 	} 
     //(fake ENUM) return Class corresponding to potionID 
-    public static Class getPotionClass(String potionID) { 
+    @SuppressWarnings("rawtypes")
+	public static Class getPotionClass(String potionID) { 
     	return potionClassMap.get(potionID); 
     } 
     //(fake ENUM) return Colors corresponding to potionID 
@@ -1544,6 +1553,15 @@ public class BaseMod {
 		}
 	}
 	
+	// publishPostPowerApply
+	public static void publishPostPowerApply(AbstractPower p, AbstractCreature target, AbstractCreature source) {
+		logger.info("publish on post power apply");
+		
+		for(PostPowerApplySubscriber sub: postPowerApplySubscribers) {
+			sub.receivePostPowerApplySubscriber(p, target, source);
+		}
+	}
+	
 	//
 	// Subscription handlers
 	//
@@ -1828,13 +1846,23 @@ public class BaseMod {
 		potionGetSubscribers.remove(sub);
 	}
 	
-	// subscribeTorelicGet
-	public static void subscribeTorelicGet(RelicGetSubscriber sub) {
+	// subscribeToRelicGet
+	public static void subscribeToRelicGet(RelicGetSubscriber sub) {
 		relicGetSubscribers.add(sub);
 	}
 
-	// unsubscribeTorelicGet
-	public static void unsubscribeFromrelicGet(RelicGetSubscriber sub) {
+	// unsubscribeToRelicGet
+	public static void unsubscribeFromRelicGet(RelicGetSubscriber sub) {
 		relicGetSubscribers.remove(sub);
+	}
+	
+	// subscribeToPostPowerApply
+	public static void subscribeToPostPowerApply(PostPowerApplySubscriber sub) {
+		postPowerApplySubscribers.add(sub);
+	}
+	
+	// unsubscribeToPostPowerApply
+	public static void unsubscribeToPostPowerApply(PostPowerApplySubscriber sub) {
+		postPowerApplySubscribers.remove(sub);
 	}
 }

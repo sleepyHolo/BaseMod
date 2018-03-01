@@ -32,7 +32,8 @@ public class PotionHelperGetPotion {
         ||potionID.equals("Swift Potion")||potionID.equals("Poison Potion")||potionID.equals("Weak Potion"))) { 
     	logger.info("Getting custom potion: "+potionID); 
     	try { 
-    		Class potionClass = BaseMod.getPotionClass(potionID); 
+    		@SuppressWarnings("rawtypes")
+			Class potionClass = BaseMod.getPotionClass(potionID); 
     		return potionClass.newInstance(); 
     	} catch (Exception e) { 
     		logger.warn(e.getMessage()); 
