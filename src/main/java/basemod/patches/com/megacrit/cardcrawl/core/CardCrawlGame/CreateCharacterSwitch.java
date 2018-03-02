@@ -25,6 +25,7 @@ public class CreateCharacterSwitch {
 				!selection.toString().equals("CROWBOT")) {
 			logger.info("creating character " + selection.toString());
 			p = BaseMod.createCharacter(selection.toString(), CardCrawlGame.playerName);
+			
 			pObj[0] = p;
 		}
 	}

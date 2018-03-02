@@ -14,12 +14,13 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import basemod.BaseMod;
+import basemod.patches.com.megacrit.cardcrawl.helpers.EnergyOrbRender.EnergyOrbRenderHelper;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.EnergyPanel", method="renderOrb")
+@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.EnergyPanel", method="render")
 public class RenderOrbSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	public static void Postfix(Object __obj_instance, SpriteBatch sb) {
+	public static void Prefix(Object __obj_instance, SpriteBatch sb) {
 		EnergyPanel energyPanel = (EnergyPanel) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = AbstractDungeon.player.chosenClass;
 		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
@@ -30,16 +31,10 @@ public class RenderOrbSwitch {
 				totalCountField = energyPanel.getClass().getDeclaredField("totalCount");
 				totalCountField.setAccessible(true);
 				int totalCount = totalCountField.getInt(energyPanel);
-				if (totalCount == 0) {
-					Method renderRedOrbDisabled = energyPanel.getClass().getDeclaredMethod("renderRedOrbDisabled", SpriteBatch.class);
-					renderRedOrbDisabled.setAccessible(true);
-					renderRedOrbDisabled.invoke(energyPanel, sb);
-				} else {
-					Method renderRedOrb = energyPanel.getClass().getDeclaredMethod("renderRedOrb", SpriteBatch.class);
-					renderRedOrb.setAccessible(true);
-					renderRedOrb.invoke(energyPanel, sb);
-				}
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+				
+				EnergyOrbRenderHelper.render(energyPanel, sb);
+				
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException /*| NoSuchMethodException | InvocationTargetException */ e) {
 				logger.error("could not render orb for " + chosenClass.toString());
 				logger.error("with exception: " + e.getMessage());
 				e.printStackTrace();
