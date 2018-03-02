@@ -19,7 +19,9 @@ import com.badlogic.gdx.Version;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -1303,14 +1306,21 @@ public class BaseMod {
 		for (RenderSubscriber sub : renderSubscribers) {
 			sub.receiveRender(sb);
 		}
-		
-		// custom animations
-		sb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sb.draw(animationTextureRegion, 0, 0);
-        sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	// publishCameraRender -
+	// publishAnimationRender -
+	public static void publishAnimationRender(SpriteBatch sb) {
+		// custom animations
+		sb.end();
+		CardCrawlGame.psb.begin();
+		CardCrawlGame.psb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		CardCrawlGame.psb.draw(animationTextureRegion, 0, 0);
+		CardCrawlGame.psb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        CardCrawlGame.psb.end();
+        sb.begin();
+	}
+	
+	// publishPreRender -
 	public static void publishPreRender(OrthographicCamera camera) {
 		for (PreRenderSubscriber sub : preRenderSubscribers) {
 			sub.receiveCameraRender(camera);

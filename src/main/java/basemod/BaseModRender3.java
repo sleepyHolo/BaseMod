@@ -12,7 +12,10 @@ import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.JsonReader;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import basemod.interfaces.ModelRenderSubscriber;
 
@@ -79,7 +82,15 @@ public class BaseModRender3 implements ModelRenderSubscriber {
 			create();
 		}
 		controller.update(Gdx.graphics.getDeltaTime());
-		batch.render(myInstance, env);
+		Vector3 loc = myInstance.transform.getTranslation(new Vector3());
+		AbstractPlayer player = AbstractDungeon.player;
+		if (player != null) {
+			loc.x = player.drawX + player.animX - Gdx.graphics.getWidth()/2;
+			loc.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY - Gdx.graphics.getHeight()/2;
+			myInstance.transform.setTranslation(loc);
+			batch.render(myInstance, env);
+		}
+
 	}
 
 }
