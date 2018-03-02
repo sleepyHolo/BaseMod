@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,7 +26,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
@@ -229,6 +229,8 @@ public class BaseMod {
 
 	// initialize -
 	public static void initialize() {
+		System.out.println("libgdx version " + Version.VERSION);
+		
 		modBadges = new ArrayList<>();
 
 		initializeGson();
@@ -243,6 +245,9 @@ public class BaseMod {
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
 
+		BaseModRender3 render3 = new BaseModRender3();
+		BaseMod.subscribeToModelRender(render3);
+		
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 		
@@ -260,9 +265,7 @@ public class BaseMod {
 		batch = new ModelBatch();
 		animationEnvironment = new Environment();
 		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight,
-				.4f, .4f, .4f, 1f));
-		animationEnvironment.add(new DirectionalLight().set(
-				0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+				1f, 1f, 1f, 1f));
 		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), false);
 	}
