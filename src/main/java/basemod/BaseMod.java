@@ -16,9 +16,17 @@ import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -198,6 +206,13 @@ public class BaseMod {
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 	
+	private static OrthographicCamera animationCamera;
+	private static ModelBatch batch;
+	private static Environment animationEnvironment;
+	private static FrameBuffer animationBuffer;
+	private static Texture animationTexture;
+	private static TextureRegion animationTextureRegion;
+	
 	/* should be final but the compiler doesn't like me */
 	public static String save_path = "saves" + File.separator;
 
@@ -229,12 +244,30 @@ public class BaseMod {
 		BaseMod.subscribeToPostInitialize(baseModInit);
 		
 		BaseModRender baseModRender = new BaseModRender();
-		BaseMod.subscribeToRender(baseModRender);
-		BaseMod.subscribeToPreRender(baseModRender);
+		BaseMod.subscribeToModelRender(baseModRender);
 
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
+		
 		console = new DevConsole();
+	}
+	
+	// setupAnimationGfx -
+	private static void setupAnimationGfx() {
+		animationCamera =  new OrthographicCamera(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+		animationCamera.near = 1.0f;
+		animationCamera.far = 300.0f;
+		animationCamera.position.z = 200.0f;
+		animationCamera.update();
+		batch = new ModelBatch();
+		animationEnvironment = new Environment();
+		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight,
+				.4f, .4f, .4f, 1f));
+		animationEnvironment.add(new DirectionalLight().set(
+				0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), false);
 	}
 
 	// initializeGson -
@@ -1241,6 +1274,9 @@ public class BaseMod {
 	public static void publishPostInitialize() {
 		logger.info("publishPostInitialize");
 
+		// setup the necessary bits for custom animations to work
+		setupAnimationGfx();
+		
 		// Publish
 		for (PostInitializeSubscriber sub : postInitializeSubscribers) {
 			sub.receivePostInitialize();
@@ -1267,6 +1303,11 @@ public class BaseMod {
 		for (RenderSubscriber sub : renderSubscribers) {
 			sub.receiveRender(sb);
 		}
+		
+		// custom animations
+		sb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        sb.draw(animationTextureRegion, 0, 0);
+        sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	// publishCameraRender -
@@ -1276,6 +1317,24 @@ public class BaseMod {
 		for (PreRenderSubscriber sub : preRenderSubscribers) {
 			sub.receiveCameraRender(camera);
 		}
+		
+		logger.info("publishModelRender");
+		
+		// custom animations
+		animationBuffer.begin();
+	    Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	    batch.begin(animationCamera);
+	    
+	    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
+	    	sub.receiveModelRender(batch, animationEnvironment);
+	    }
+	    
+	    batch.end();
+	    animationBuffer.end();
+        animationTexture = animationBuffer.getColorBufferTexture();
+        animationTextureRegion = new TextureRegion(animationTexture);
+        animationTextureRegion.flip(false, true);
 	}
 
 	// publishPostRender -
