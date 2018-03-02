@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set; 
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color; 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
@@ -45,7 +46,7 @@ import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
 import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.potions.AbstractPotion; 
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
@@ -62,7 +63,7 @@ import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.PotionGetSubscriber;
+import basemod.interfaces.ModelRenderSubscriber;
 import basemod.interfaces.OnCardUseSubscriber;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostCampfireSubscriber;
@@ -82,8 +83,10 @@ import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.PostPotionUseSubscriber;
 import basemod.interfaces.PostRenderSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
+import basemod.interfaces.PotionGetSubscriber;
 import basemod.interfaces.PreMonsterTurnSubscriber;
 import basemod.interfaces.PrePotionUseSubscriber;
+import basemod.interfaces.PreRenderSubscriber;
 import basemod.interfaces.PreStartGameSubscriber;
 import basemod.interfaces.PreUpdateSubscriber;
 import basemod.interfaces.RenderSubscriber;
@@ -115,7 +118,9 @@ public class BaseMod {
 	private static ArrayList<PostInitializeSubscriber> postInitializeSubscribers;
 	private static ArrayList<PreMonsterTurnSubscriber> preMonsterTurnSubscribers;
 	private static ArrayList<RenderSubscriber> renderSubscribers;
+	private static ArrayList<PreRenderSubscriber> preRenderSubscribers;
 	private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
+	private static ArrayList<ModelRenderSubscriber> modelRenderSubscribers;
 	private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
 	private static ArrayList<StartGameSubscriber> startGameSubscribers;
 	private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
@@ -159,6 +164,7 @@ public class BaseMod {
 
 	public static HashMap<String, CharStat> playerStatsMap;
 	
+	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> potionClassMap; 
 	private static HashMap<String, Color> potionHybridColorMap; 
 	private static HashMap<String, Color> potionLiquidColorMap; 
@@ -221,6 +227,10 @@ public class BaseMod {
 		initializePotionList();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
+		
+		BaseModRender baseModRender = new BaseModRender();
+		BaseMod.subscribeToRender(baseModRender);
+		BaseMod.subscribeToPreRender(baseModRender);
 
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
@@ -294,7 +304,9 @@ public class BaseMod {
 		postInitializeSubscribers = new ArrayList<>();
 		preMonsterTurnSubscribers = new ArrayList<>();
 		renderSubscribers = new ArrayList<>();
+		preRenderSubscribers = new ArrayList<>();
 		postRenderSubscribers = new ArrayList<>();
+		modelRenderSubscribers = new ArrayList<>();
 		preStartGameSubscribers = new ArrayList<>();
 		startGameSubscribers = new ArrayList<>();
 		preUpdateSubscribers = new ArrayList<>();
@@ -375,6 +387,7 @@ public class BaseMod {
 		unlockBundles = new HashMap<>();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private static void initializePotionMap() { 
 	      potionClassMap = new HashMap<String, Class>(); 
 	      potionHybridColorMap = new HashMap<String, Color>(); 
@@ -433,7 +446,7 @@ public class BaseMod {
 	// Localization
 	//
 
-	@SuppressWarnings({ "unchecked", "rawtypes", "ConstantConditions" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void loadJsonStrings(Type stringType, String jsonString) {
 		logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
 
@@ -581,7 +594,7 @@ public class BaseMod {
 	}
 
 	// remove relic -
-	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@SuppressWarnings("unchecked")
 	public static void removeRelic(AbstractRelic relic, RelicType type) {
 		// note that this has to use reflection hacks to change the private
 		// variables in RelicLibrary to successfully remove the relics
@@ -1138,14 +1151,15 @@ public class BaseMod {
 	}
 	
 	//add the Potion to the map (fake ENUM) 
-    public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
+    public static void addPotion(@SuppressWarnings("rawtypes") Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
 	    potionClassMap.put(potionID, potionClass); 
 	    potionLiquidColorMap.put(potionID, liquidColor); 
 	    potionHybridColorMap.put(potionID,hybridColor); 
 	    potionSpotsColorMap.put(potionID, spotsColor); 
 	} 
     //(fake ENUM) return Class corresponding to potionID 
-    public static Class getPotionClass(String potionID) { 
+	@SuppressWarnings("rawtypes")
+	public static Class getPotionClass(String potionID) { 
     	return potionClassMap.get(potionID); 
     } 
     //(fake ENUM) return Colors corresponding to potionID 
@@ -1252,6 +1266,15 @@ public class BaseMod {
 	public static void publishRender(SpriteBatch sb) {
 		for (RenderSubscriber sub : renderSubscribers) {
 			sub.receiveRender(sb);
+		}
+	}
+	
+	// publishCameraRender -
+	public static void publishPreRender(OrthographicCamera camera) {
+		logger.info("publishCameraRender");
+		
+		for (PreRenderSubscriber sub : preRenderSubscribers) {
+			sub.receiveCameraRender(camera);
 		}
 	}
 
@@ -1626,6 +1649,16 @@ public class BaseMod {
 	public static void unsubscribeFromRender(RenderSubscriber sub) {
 		renderSubscribers.remove(sub);
 	}
+	
+	// subscribeToPreRender -
+	public static void subscribeToPreRender(PreRenderSubscriber sub) {
+		preRenderSubscribers.add(sub);
+	}
+
+	// unsubscribeFromPreRender -
+	public static void unsubscribeFromPreRender(PreRenderSubscriber sub) {
+		preRenderSubscribers.remove(sub);
+	}
 
 	// subscribeToPostRender -
 	public static void subscribeToPostRender(PostRenderSubscriber sub) {
@@ -1635,6 +1668,16 @@ public class BaseMod {
 	// unsubscribeFromPostRender -
 	public static void unsubscribeFromPostRender(PostRenderSubscriber sub) {
 		postRenderSubscribers.remove(sub);
+	}
+	
+	// subscribeToModelRender -
+	public static void subscribeToModelRender(ModelRenderSubscriber sub) {
+		modelRenderSubscribers.add(sub);
+	}
+	
+	// unsubscribeFromModelRender -
+	public static void unsubscribeFromModelRender(ModelRenderSubscriber sub) {
+		modelRenderSubscribers.remove(sub);
 	}
 
 	// subscribeToStartGame -
