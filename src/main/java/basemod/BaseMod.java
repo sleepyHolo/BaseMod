@@ -1309,13 +1309,9 @@ public class BaseMod {
 	
 	// publishCameraRender -
 	public static void publishPreRender(OrthographicCamera camera) {
-		logger.info("publishCameraRender");
-		
 		for (PreRenderSubscriber sub : preRenderSubscribers) {
 			sub.receiveCameraRender(camera);
 		}
-		
-		logger.info("publishModelRender");
 		
 		// custom animations
 		animationBuffer.begin();
