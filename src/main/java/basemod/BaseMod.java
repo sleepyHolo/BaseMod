@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.red.DarkEmbrace;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.characters.Ironclad;
@@ -47,7 +48,104 @@ import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbsorbPower;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.AccuracyPower;
+import com.megacrit.cardcrawl.powers.AfterImagePower;
+import com.megacrit.cardcrawl.powers.AngerPower;
+import com.megacrit.cardcrawl.powers.AngryPower;
+import com.megacrit.cardcrawl.powers.ArtifactPower;
+import com.megacrit.cardcrawl.powers.AttackBurnPower;
+import com.megacrit.cardcrawl.powers.BarricadePower;
+import com.megacrit.cardcrawl.powers.BerserkPower;
+import com.megacrit.cardcrawl.powers.BlurPower;
+import com.megacrit.cardcrawl.powers.BrutalityPower;
+import com.megacrit.cardcrawl.powers.BurstPower;
+import com.megacrit.cardcrawl.powers.ChokePower;
+import com.megacrit.cardcrawl.powers.CombustPower;
+import com.megacrit.cardcrawl.powers.ConfusionPower;
+import com.megacrit.cardcrawl.powers.ConstrictedPower;
+import com.megacrit.cardcrawl.powers.CorruptionPower;
+import com.megacrit.cardcrawl.powers.CuriosityPower;
+import com.megacrit.cardcrawl.powers.CurlUp;
+import com.megacrit.cardcrawl.powers.DancePower;
+import com.megacrit.cardcrawl.powers.DarknessPower;
+import com.megacrit.cardcrawl.powers.DemonFormPower;
+import com.megacrit.cardcrawl.powers.DexterityPower;
+import com.megacrit.cardcrawl.powers.DoubleDamagePower;
+import com.megacrit.cardcrawl.powers.DoubleTapPower;
+import com.megacrit.cardcrawl.powers.DrawCardNextTurnPower;
+import com.megacrit.cardcrawl.powers.DrawDownPower;
+import com.megacrit.cardcrawl.powers.DrawPower;
+import com.megacrit.cardcrawl.powers.DrawReductionPower;
+import com.megacrit.cardcrawl.powers.ElectricFieldPower;
+import com.megacrit.cardcrawl.powers.EnergizedPower;
+import com.megacrit.cardcrawl.powers.EntanglePower;
+import com.megacrit.cardcrawl.powers.EnvenomPower;
+import com.megacrit.cardcrawl.powers.EvolvePower;
+import com.megacrit.cardcrawl.powers.ExplosivePower;
+import com.megacrit.cardcrawl.powers.FeelNoPainPower;
+import com.megacrit.cardcrawl.powers.FireBreathingPower;
+import com.megacrit.cardcrawl.powers.FlameBarrierPower;
+import com.megacrit.cardcrawl.powers.FlightPower;
+import com.megacrit.cardcrawl.powers.ForcefieldPower;
+import com.megacrit.cardcrawl.powers.FrailPower;
+import com.megacrit.cardcrawl.powers.GainStrengthPower;
+import com.megacrit.cardcrawl.powers.GambitPower;
+import com.megacrit.cardcrawl.powers.GeneratorPower;
+import com.megacrit.cardcrawl.powers.GenericStrengthUpPower;
+import com.megacrit.cardcrawl.powers.GrowthPower;
+import com.megacrit.cardcrawl.powers.HexPower;
+import com.megacrit.cardcrawl.powers.ImpulsePower;
+import com.megacrit.cardcrawl.powers.InfiniteBladesPower;
+import com.megacrit.cardcrawl.powers.IntangiblePower;
+import com.megacrit.cardcrawl.powers.JuggernautPower;
+import com.megacrit.cardcrawl.powers.KnowledgePower;
+import com.megacrit.cardcrawl.powers.LoseStrengthPower;
+import com.megacrit.cardcrawl.powers.MalleablePower;
+import com.megacrit.cardcrawl.powers.MetallicizePower;
+import com.megacrit.cardcrawl.powers.MinionPower;
+import com.megacrit.cardcrawl.powers.ModeShiftPower;
+import com.megacrit.cardcrawl.powers.NextTurnBlockPower;
+import com.megacrit.cardcrawl.powers.NightmarePower;
+import com.megacrit.cardcrawl.powers.NoDrawPower;
+import com.megacrit.cardcrawl.powers.NoxiousFumesPower;
+import com.megacrit.cardcrawl.powers.PainfulStabsPower;
+import com.megacrit.cardcrawl.powers.PanachePower;
+import com.megacrit.cardcrawl.powers.PenNibPower;
+import com.megacrit.cardcrawl.powers.PhantasmalPower;
+import com.megacrit.cardcrawl.powers.PlatedArmorPower;
+import com.megacrit.cardcrawl.powers.PoisonPower;
+import com.megacrit.cardcrawl.powers.RagePower;
+import com.megacrit.cardcrawl.powers.ReduceDamagePower;
+import com.megacrit.cardcrawl.powers.RegeneratePower;
+import com.megacrit.cardcrawl.powers.RegenerationPower;
+import com.megacrit.cardcrawl.powers.RegrowPower;
+import com.megacrit.cardcrawl.powers.RepulsePower;
+import com.megacrit.cardcrawl.powers.RetainCardPower;
+import com.megacrit.cardcrawl.powers.RitualPower;
+import com.megacrit.cardcrawl.powers.RupturePower;
+import com.megacrit.cardcrawl.powers.SadisticPower;
+import com.megacrit.cardcrawl.powers.SerpentinePower;
+import com.megacrit.cardcrawl.powers.SharpHidePower;
+import com.megacrit.cardcrawl.powers.ShriekPower;
+import com.megacrit.cardcrawl.powers.SkillBurnPower;
+import com.megacrit.cardcrawl.powers.SlowPower;
+import com.megacrit.cardcrawl.powers.SplitPower;
+import com.megacrit.cardcrawl.powers.SporeCloudPower;
+import com.megacrit.cardcrawl.powers.StasisPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
+import com.megacrit.cardcrawl.powers.SystemsPower;
+import com.megacrit.cardcrawl.powers.ThieveryPower;
+import com.megacrit.cardcrawl.powers.ThornsPower;
+import com.megacrit.cardcrawl.powers.ThousandCutsPower;
+import com.megacrit.cardcrawl.powers.TimeWarpPower;
+import com.megacrit.cardcrawl.powers.ToolsOfTheTradePower;
+import com.megacrit.cardcrawl.powers.UnawakenedPower;
+import com.megacrit.cardcrawl.powers.VenomologyPower;
+import com.megacrit.cardcrawl.powers.VulnerablePower;
+import com.megacrit.cardcrawl.powers.WeakPower;
+import com.megacrit.cardcrawl.powers.WraithFormPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
@@ -171,6 +269,8 @@ public class BaseMod {
 	private static HashMap<String, Color> potionLiquidColorMap; 
 	private static HashMap<String, Color> potionSpotsColorMap; 
 
+	private static HashMap<String, Class> powerMap;
+	
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameColorMap;
@@ -226,6 +326,7 @@ public class BaseMod {
 		initializeUnlocks();
 		initializePotionMap();
 		initializePotionList();
+		initializePowerMap();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
 
@@ -396,6 +497,108 @@ public class BaseMod {
 	      potionsToRemove= new ArrayList<>(); 
 	} 
 	
+	private static void initializePowerMap() {
+		powerMap=new HashMap<String,Class>();
+		powerMap.put("Absorb",AbsorbPower.class);
+		powerMap.put("Accuracy",AccuracyPower.class);
+		powerMap.put("After Image",AfterImagePower.class);
+		powerMap.put("Anger",AngerPower.class);
+		powerMap.put("Angry",AngryPower.class);
+		powerMap.put("Artifact",ArtifactPower.class);
+		powerMap.put("Attack Burn",AttackBurnPower.class);
+		powerMap.put("Barricade",BarricadePower.class);
+		powerMap.put("Berserk",BerserkPower.class);
+		powerMap.put("Blur",BlurPower.class);
+		powerMap.put("Brutality",BrutalityPower.class);
+		powerMap.put("Burst",BurstPower.class);
+		powerMap.put("Choked",ChokePower.class);
+		powerMap.put("Combust",CombustPower.class);
+		powerMap.put("Confusion",ConfusionPower.class);
+		powerMap.put("Constricted",ConstrictedPower.class);
+		powerMap.put("Corruption",CorruptionPower.class);
+		powerMap.put("Curiosity",CuriosityPower.class);
+		powerMap.put("Curl Up",CurlUp.class);
+		powerMap.put("Dance Puppet",DancePower.class);
+		powerMap.put("Dark Embrace",DarkEmbrace.class);
+		powerMap.put("Darkness",DarknessPower.class);
+		powerMap.put("Demon Form",DemonFormPower.class);
+		powerMap.put("Dexterity",DexterityPower.class);
+		powerMap.put("Double Damage",DoubleDamagePower.class);
+		powerMap.put("Double Tap",DoubleTapPower.class);
+		powerMap.put("Draw Card",DrawCardNextTurnPower.class);
+		powerMap.put("Draw Down",DrawDownPower.class);
+		powerMap.put("Draw",DrawPower.class);
+		powerMap.put("Draw Reduction",DrawReductionPower.class);
+		powerMap.put("Electric Field",ElectricFieldPower.class);
+		powerMap.put("Energized",EnergizedPower.class);
+		powerMap.put("Entangled",EntanglePower.class);
+		powerMap.put("Envenom",EnvenomPower.class);
+		powerMap.put("Evolve",EvolvePower.class);
+		powerMap.put("Explosive",ExplosivePower.class);
+		powerMap.put("Feel No Pain",FeelNoPainPower.class);
+		powerMap.put("Fire Breathing",FireBreathingPower.class);
+		powerMap.put("Flame Barrier",FlameBarrierPower.class);
+		powerMap.put("Flight",FlightPower.class);
+		powerMap.put("Nullify Attack",ForcefieldPower.class);
+		powerMap.put("Frail",FrailPower.class);
+		powerMap.put("Shackled",GainStrengthPower.class);
+		powerMap.put("Gambit",GambitPower.class);
+		powerMap.put("Generator",GeneratorPower.class);
+		powerMap.put("Generic Strength Up Power",GenericStrengthUpPower.class);
+		powerMap.put("GrowthPower",GrowthPower.class);
+		powerMap.put("Hex",HexPower.class);
+		powerMap.put("Impulse",ImpulsePower.class);
+		powerMap.put("Infinite Blades",InfiniteBladesPower.class);
+		powerMap.put("Intangible",IntangiblePower.class);
+		powerMap.put("Juggernaut",JuggernautPower.class);
+		powerMap.put("Knowledge",KnowledgePower.class);
+		powerMap.put("Flex",LoseStrengthPower.class);
+		powerMap.put("Malleable",MalleablePower.class);
+		powerMap.put("Metallicize",MetallicizePower.class);
+		powerMap.put("Minion",MinionPower.class);
+		powerMap.put("Mode Shift",ModeShiftPower.class);
+		powerMap.put("Next Turn Block",NextTurnBlockPower.class);
+		powerMap.put("Night Terror",NightmarePower.class);
+		powerMap.put("No Draw",NoDrawPower.class);
+		powerMap.put("Noxious Fumes",NoxiousFumesPower.class);
+		powerMap.put("Painful Stabs",PainfulStabsPower.class);
+		powerMap.put("Panache",PanachePower.class);
+		powerMap.put("Pen Nib",PenNibPower.class);
+		powerMap.put("Phantasmal",PhantasmalPower.class);
+		powerMap.put("Plated Armor",PlatedArmorPower.class);
+		powerMap.put("Poison",PoisonPower.class);
+		powerMap.put("Rage",RagePower.class);
+		powerMap.put("Reduce Damage",ReduceDamagePower.class);
+		powerMap.put("Regenerate",RegeneratePower.class);
+		powerMap.put("Regeneration",RegenerationPower.class);
+		powerMap.put("Life Link",RegrowPower.class);
+		powerMap.put("Repulse",RepulsePower.class);
+		powerMap.put("Retain Cards",RetainCardPower.class);
+		powerMap.put("Ritual",RitualPower.class);
+		powerMap.put("Rupture",RupturePower.class);
+		powerMap.put("Sadistic",SadisticPower.class);
+		powerMap.put("Serpentine",SerpentinePower.class);
+		powerMap.put("Sharp Hide",SharpHidePower.class);
+		powerMap.put("Shriek From Beyond",ShriekPower.class);
+		powerMap.put("Skill Burn",SkillBurnPower.class);
+		powerMap.put("Slow",SlowPower.class);
+		powerMap.put("Split",SplitPower.class);
+		powerMap.put("Spore Cloud",SporeCloudPower.class);
+		powerMap.put("Stasis",StasisPower.class);
+		powerMap.put("Strength",StrengthPower.class);
+		powerMap.put("Systems",SystemsPower.class);
+		powerMap.put("Thievery",ThieveryPower.class);
+		powerMap.put("Thorns",ThornsPower.class);
+		powerMap.put("Thousand Cuts",ThousandCutsPower.class);
+		powerMap.put("Time Warp",TimeWarpPower.class);
+		powerMap.put("Tools Of The Trade",ToolsOfTheTradePower.class);
+		powerMap.put("Unawakened",UnawakenedPower.class);
+		powerMap.put("Venomology",VenomologyPower.class);
+		powerMap.put("Vulnerable",VulnerablePower.class);
+		powerMap.put("Weakened",WeakPower.class);
+		powerMap.put("Wraith Form",WraithFormPower.class);
+	}
+	
 	//
 	// Mod badges
 	//
@@ -442,7 +645,6 @@ public class BaseMod {
 	//
 	// Localization
 	//
-
 	@SuppressWarnings({ "unchecked", "rawtypes", "ConstantConditions" })
 	private static void loadJsonStrings(Type stringType, String jsonString) {
 		logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
@@ -1170,11 +1372,23 @@ public class BaseMod {
     public static Color getPotionSpotsColor(String potionID) { 
     	return potionSpotsColorMap.get(potionID); 
     } 
-  //get all entry in fake ENUM 
+    //get all entry in fake ENUM 
     public static Set<String> getPotionIDs() { 
     	return potionClassMap.keySet(); 
     } 
-  
+    
+    //
+    // Powers
+    //
+    
+    public static void addPower(Class powerClass,String potionID) {
+    	powerMap.put(potionID, powerClass);
+    }
+    
+    public static Class getPowerClass(String powerID) {
+    	return powerMap.get(powerID);
+    }
+    
 	//
 	// Publishers
 	//
