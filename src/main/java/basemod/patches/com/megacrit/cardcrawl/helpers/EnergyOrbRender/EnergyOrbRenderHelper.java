@@ -1,18 +1,11 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.EnergyOrbRender;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
 import basemod.abstracts.CustomPlayer;
@@ -28,8 +21,25 @@ public class EnergyOrbRenderHelper {
 			}else {
 				((CustomPlayer)AbstractDungeon.player).renderDisabledOrb(panel, sb);
 			}
+		}else {
+			Field totalCountField;
+			try {
+				totalCountField = panel.getClass().getDeclaredField("totalCount");
+				totalCountField.setAccessible(true);
+				int totalCount = totalCountField.getInt(panel);
+				if (totalCount == 0) {
+					Method renderRedOrbDisabled = panel.getClass().getDeclaredMethod("renderRedOrbDisabled", SpriteBatch.class);
+					renderRedOrbDisabled.setAccessible(true);
+					renderRedOrbDisabled.invoke(panel, sb);
+				} else {
+					Method renderRedOrb = panel.getClass().getDeclaredMethod("renderRedOrb", SpriteBatch.class);
+					renderRedOrb.setAccessible(true);
+					renderRedOrb.invoke(panel, sb);			
+				}
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 		}
 	}
-	
-	
 }
