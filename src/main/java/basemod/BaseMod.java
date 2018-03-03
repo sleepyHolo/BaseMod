@@ -166,6 +166,7 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
+import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditCardsSubscriber;
@@ -807,6 +808,33 @@ public class BaseMod {
 			customToRemoveColors.add(color);
 			break;
 		}
+	}
+	
+	/**
+	 * Modifies the damage done by a card by seeing if the card is a CustomCard
+	 * and if so, going ahead and calling the damage modification method
+	 * 
+	 * default implementation leaves the damage the same
+	 * @param player the player casting this card
+	 * @param mo the monster this card is targetting (may be null for multiTarget)
+	 * @param c the card being cast
+	 * @param tmp the current damage amount
+	 * @return the modified damage amount
+	 */
+	public static float calculateCardDamage(AbstractPlayer player,
+			AbstractMonster mo, AbstractCard c, float tmp) {
+		if (c instanceof CustomCard) {
+			return ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
+		} else {
+			return tmp;
+		}
+	}
+	
+	/*
+	 * same as above but without the monster
+	 */
+	public static float calculateCardDamage(AbstractPlayer player, AbstractCard c, float tmp) {
+		return calculateCardDamage(player, null, c, tmp);
 	}
 
 	//
