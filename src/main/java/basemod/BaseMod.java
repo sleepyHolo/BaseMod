@@ -40,6 +40,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.AchievementStrings;
 import com.megacrit.cardcrawl.localization.CardStrings;
@@ -916,6 +917,19 @@ public class BaseMod {
 		removeRelic(relic, RelicType.GREEN);
 	}
 
+	//
+	//Keywords
+	//
+	
+	public static void addKeyword(String[] names, String description) {
+		String parent = names[0];
+		
+		for(String name : names) {
+			GameDictionary.keywords.put(name, description);
+			GameDictionary.parentWord.put(name, parent);
+		}
+	}
+	
 	//
 	// Unlocks
 	//
