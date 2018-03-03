@@ -178,3 +178,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Custom animations for characters (monster support to come soon!)
 * Add support for custom energy orbs (Blank The Evil)
 * Add support to the dev console for applying powers with `power [ID] [amount]`
+
+#### v1.9.1 ####
+* Custom animations no longer run after their associated model is destroyed
+* Hook for modifying base damage on cards like Perfected Strike or Heavy Blade
