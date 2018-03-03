@@ -19,9 +19,7 @@ import com.badlogic.gdx.Version;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -29,7 +27,6 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -248,9 +245,6 @@ public class BaseMod {
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
 
-		BaseModRender3 render3 = new BaseModRender3();
-		BaseMod.subscribeToModelRender(render3);
-		
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 		
