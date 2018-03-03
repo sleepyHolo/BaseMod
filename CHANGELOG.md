@@ -142,3 +142,39 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Switch `IntangiblePower` to use an instrument patch rather than overwriting base file
 * Rewrite `IntangiblePower` changes to make it not mess up intents
 * Remove diff, _diff.bat, _patch.bat since they are no longer needed
+
+#### v1.6.6 ####
+* Switch versioning system over to the one used in https://github.com/daviscook477/BaseMod/releases since he was using a different one
+* Hook for exhausting a card
+* Hook for finishing a battle
+* Add support for Card Unlocks for custom characters
+* Hook for using a card
+
+#### v1.7.0 ####
+* Add support for Saves for custom characters
+* Fix some bugs with card unlock support
+
+#### v1.7.1 ####
+* Update to support weekly patch (week 13)
+
+#### v1.7.2 ####
+* Support viewing custom cards in the card library (kioeeht)
+
+#### v1.7.3 ####
+* Fix slowdown when viewing upgrades in the card library
+
+#### v1.7.4 ####
+* Add support for inspect view or custom cards. This requires including a larger texture next to every card texture where if the original card was `my_card.png` you now need `my_card_p.png` too in order to support inspect view
+* NOTE: this introduced a breaking change to the API in `addColor` that will require you to update your mods
+
+#### v1.7.5 ####
+* Add support to the dev console for checking events with `event [ID]`
+
+#### v1.8.0 ####
+* Custom potion support (Haashii)
+* All new wiki
+
+#### v1.9.0 ####
+* Custom animations for characters (monster support to come soon!)
+* Add support for custom energy orbs (Blank The Evil)
+* Add support to the dev console for applying powers with `power [ID] [amount]`
