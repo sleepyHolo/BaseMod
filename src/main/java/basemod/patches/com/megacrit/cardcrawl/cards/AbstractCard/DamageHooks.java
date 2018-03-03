@@ -1,4 +1,4 @@
-package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
+	package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -43,9 +43,10 @@ public class DamageHooks {
 	@SpirePatch(cls="com.megacrit.cardcrawl.cards.AbstractCard", method="applyPowers")
 	public static class ApplyPowers {
 		
-		@SpireInsertPatch(rloc=8, localvars={"tmp"})
+		@SpireInsertPatch(rloc=18, localvars={"tmp"})
 		public static void Insert(Object __obj_instance, @ByRef float[] tmp) {
 			AbstractCard c = (AbstractCard) __obj_instance;
+			System.out.println("apply powers called for: " + c.cardID + " with damage " + tmp[0]);
 			AbstractPlayer player = AbstractDungeon.player;
 			tmp[0] = BaseMod.calculateCardDamage(player, c, tmp[0]);
 		}
@@ -55,15 +56,25 @@ public class DamageHooks {
 	@SpirePatch(cls="com.megacrit.cardcrawl.cards.AbstractCard", method="applyPowers")
 	public static class ApplyPowersMulti {
 		
-		@SpireInsertPatch(rloc=61, localvars={"tmp"})
+		@SpireInsertPatch(rloc=59, localvars={"tmp"})
 		public static void Insert(Object __obj_instance, float[] tmp) {
 			AbstractCard c = (AbstractCard) __obj_instance;
+			System.out.println("apply powers called for: " + c.cardID + " with damage " + tmp[0]);
 			AbstractPlayer player = AbstractDungeon.player;
 			for (int i = 0; i < tmp.length; i++) {
 				tmp[i] = BaseMod.calculateCardDamage(player, c, tmp[i]);
 			}
 		}
 		
+	}
+	
+	@SpirePatch(cls="com.megacrit.cardcrawl.cards.AbstractCard", method="applyPowers")
+	public static class ApplyPowersAlways {
+		
+		public static void Prefix(Object __obj_instance) {
+			AbstractCard c = (AbstractCard) __obj_instance;
+			System.out.println("apply powers called for: " + c.cardID);
+		}
 	}
 	
 }

@@ -823,8 +823,15 @@ public class BaseMod {
 	 */
 	public static float calculateCardDamage(AbstractPlayer player,
 			AbstractMonster mo, AbstractCard c, float tmp) {
+		System.out.println("calculating card damage for: " + c.cardID);
 		if (c instanceof CustomCard) {
-			return ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
+			float newVal = ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
+			System.out.println("new damage was: " + newVal + " old damage was: " + tmp);
+			if ((int) newVal != c.baseDamage) {
+				System.out.println("setting modified");
+				c.isDamageModified = true;
+			}
+			return newVal;
 		} else {
 			return tmp;
 		}
