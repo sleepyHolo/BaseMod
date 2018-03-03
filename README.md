@@ -72,5 +72,5 @@ The process for creating custom player characters is fairly involved but still n
 * t-larson - Original author
 * FlipskiZ - `hand` command, bug fixes
 * daviscook477 - Custom players, custom colors, custom cards, more API hooks, code cleanup, bugfixes
-* Haashi - custom potion support (w/ hooks) and better dev console potion support
-* BlankTheEvil - custom rendering for cards support
+* Haashi - custom potion support (w/ hooks for obtaining potions and relics) and dev console support for potions and powers
+* BlankTheEvil - custom rendering for cards on a card-by-card basis and custom energy orb support
