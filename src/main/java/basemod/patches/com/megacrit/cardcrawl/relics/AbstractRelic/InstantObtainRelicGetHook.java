@@ -7,10 +7,10 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.relics.AbstractRelic", method="instantObtain",paramtypes= {"com.megacrit.cardcrawl.relics.AbstractRelic","int","boolean"})
+@SpirePatch(cls="com.megacrit.cardcrawl.relics.AbstractRelic", method="instantObtain",paramtypes= {"com.megacrit.cardcrawl.characters.AbstractPlayer","int","boolean"})
 public class InstantObtainRelicGetHook {
 	@SpireInsertPatch(rloc=2)
-	public static void Insert(AbstractRelic relic, AbstractPlayer p, int slot, boolean callOnEquip) {
-		BaseMod.publishRelicGet(relic);;
+	public static void Insert(Object relic, AbstractPlayer p, int slot, boolean callOnEquip) {
+		BaseMod.publishRelicGet((AbstractRelic) relic);;
 	}
 }

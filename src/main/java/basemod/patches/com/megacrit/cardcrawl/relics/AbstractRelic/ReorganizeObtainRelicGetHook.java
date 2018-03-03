@@ -10,7 +10,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.relics.AbstractRelic", method="reorganizeObtain")
 public class ReorganizeObtainRelicGetHook {
 	@SpireInsertPatch(rloc=2)
-	public static void Insert(AbstractRelic relic, AbstractPlayer p,int slot, boolean callOnEquip, int relicAmount) {
-		BaseMod.publishRelicGet(relic);;
+	public static void Insert(Object relic, AbstractPlayer p,int slot, boolean callOnEquip, int relicAmount) {
+		BaseMod.publishRelicGet((AbstractRelic) relic);;
 	}
 }

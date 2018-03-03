@@ -9,7 +9,7 @@ import basemod.BaseMod;
 @SpirePatch(cls="com.megacrit.cardcrawl.relics.AbstractRelic", method="obtain")
 public class ObtainRelicGetHook {
 	@SpireInsertPatch(rloc=2)
-	public static void Insert(AbstractRelic relic) {
-		BaseMod.publishRelicGet(relic);
+	public static void Insert(Object relic) {
+		BaseMod.publishRelicGet((AbstractRelic) relic);
 	}
 }
