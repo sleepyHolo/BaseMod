@@ -134,13 +134,48 @@ public class DevConsole
 			cmdUnlock(tokens);
 			break;
 		}
+		case "power":{
+			cmdPower(tokens);
+			break;
+		}
 		default: {
 			// TODO: Implement command hook
 			break;
 		}
 		}
 	}
-
+	
+	private static void cmdPower(String[] tokens) {
+		String powerID="";
+		int amount=1;
+		for(int i=1;i<tokens.length-1;i++) {
+			powerID=powerID.concat(tokens[i]);
+			if(i!=tokens.length-2) { 
+	            powerID=powerID.concat(" "); 
+	          }
+		}
+		try {
+			amount = Integer.parseInt(tokens[tokens.length-1]);
+		}
+		catch(Exception e) {
+			powerID=powerID.concat(tokens[tokens.length-1]);
+		}
+		try {
+			Class power = BaseMod.getPowerClass(powerID);
+		}
+		catch(Exception e) {
+			logger.info("failed to load power "+powerID);
+			return;
+		}
+		
+		try {
+			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID),amount);
+		}
+		catch(Exception e) {
+		}
+		
+	}
+	
 	private static void cmdRelic(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 2) {
