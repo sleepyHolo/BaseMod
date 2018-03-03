@@ -31,6 +31,7 @@ public class CustomPlayerWithRender extends AbstractPlayer implements ModelRende
 
 	private String modelString;
 	private String animationString;
+	private boolean rescaled = false;
 
 	public CustomPlayerWithRender(String name, PlayerClass setClass, String model, String animation) {
 		super(name, setClass);
@@ -117,6 +118,13 @@ public class CustomPlayerWithRender extends AbstractPlayer implements ModelRende
 			loc.x = player.drawX + player.animX - Gdx.graphics.getWidth() / 2;
 			loc.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY - Gdx.graphics.getHeight() / 2;
 			myInstance.transform.setTranslation(loc);
+			// only scale *once*
+			if (!rescaled) {
+				// do the z scale instead of y scale - not entirely sure why but it probably has to do with
+				// how blender and libgdx differ in their idea of what direction is "up"
+				myInstance.transform.scale(Settings.scale, 1.0f, Settings.scale);
+				rescaled = true;
+			}
 			batch.render(myInstance, env);
 		}
 	}
