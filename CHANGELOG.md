@@ -182,3 +182,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v1.9.1 ####
 * Custom animations no longer run after their associated model is destroyed
 * Hook for modifying base damage on cards like Perfected Strike or Heavy Blade
+
+#### v1.9.2 ####
+* Fix campfire UI for weekly patch (week 14)
