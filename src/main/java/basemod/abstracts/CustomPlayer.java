@@ -193,7 +193,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	public void renderPlayerImage(SpriteBatch sb) {
 		// do not render a model if provided a null model
 		if (modelString == null) {
-			super.render(sb);
+			super.renderPlayerImage(sb);
 			return;
 		}
 		// when the game would attempt to render the player image
