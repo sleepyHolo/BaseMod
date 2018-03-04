@@ -176,6 +176,7 @@ import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.ModelRenderSubscriber;
 import basemod.interfaces.OnCardUseSubscriber;
+import basemod.interfaces.OnPowersModifiedSubscriber;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostCampfireSubscriber;
 import basemod.interfaces.PostCreateIroncladStartingDeckSubscriber;
@@ -254,6 +255,7 @@ public class BaseMod {
 	private static ArrayList<PotionGetSubscriber> potionGetSubscribers;
 	private static ArrayList<RelicGetSubscriber> relicGetSubscribers;
 	private static ArrayList<PostPowerApplySubscriber> postPowerApplySubscribers;
+	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
 	
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -468,6 +470,7 @@ public class BaseMod {
 		potionGetSubscribers = new ArrayList<>();
 		relicGetSubscribers = new ArrayList<>();
 		postPowerApplySubscribers = new ArrayList<>();
+		onPowersModifiedSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -1917,6 +1920,15 @@ public class BaseMod {
 		}
 	}
 	
+	// publishOnPowersModified
+	public static void publishOnPowersModified() {
+		logger.info("powers modified");
+		
+		for (OnPowersModifiedSubscriber sub : onPowersModifiedSubscribers) {
+			sub.receivePowersModified();
+		}
+	}
+	
 	//
 	// Subscription handlers
 	//
@@ -2249,5 +2261,15 @@ public class BaseMod {
 	// unsubscribeFromEditKeywords
 	public static void unsubscribeFromEditKeywords(EditKeywordsSubscriber sub) {
 		editKeywordsSubscribers.remove(sub);
+	}
+	
+	// subscribeToOnPowersModified
+	public static void subscribeToOnPowersModified(OnPowersModifiedSubscriber sub) {
+		onPowersModifiedSubscribers.add(sub);
+	}
+	
+	// unsubscribeFromOnPowersModified
+	public static void unsubscribeFromOnPowersModified(OnPowersModifiedSubscriber sub) {
+		onPowersModifiedSubscribers.remove(sub);
 	}
 }
