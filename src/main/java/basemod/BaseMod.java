@@ -269,6 +269,9 @@ public class BaseMod {
 	private static ArrayList<String> customToRemove;
 	private static ArrayList<String> customToRemoveColors;
 	
+	private static HashMap<String, HashMap<String, AbstractRelic>> customRelicPools;
+	private static HashMap<String, ArrayList<AbstractRelic>> customRelicLists;
+	
 	private static ArrayList<String> potionsToRemove; 
 
 	@SuppressWarnings("rawtypes")
@@ -351,6 +354,7 @@ public class BaseMod {
 		initializeCardLists();
 		initializeCharacterMap();
 		initializeColorMap();
+		initializeRelicPool();
 		initializeUnlocks();
 		initializePotionMap();
 		initializePotionList();
@@ -527,6 +531,11 @@ public class BaseMod {
 		colorSkillBgPortraitTextureMap = new HashMap<>();
 		colorPowerBgPortraitTextureMap = new HashMap<>();
 		colorEnergyOrbPortraitTextureMap = new HashMap<>();
+	}
+	
+	private static void initializeRelicPool() {
+		customRelicPools = new HashMap<>();
+		customRelicLists = new HashMap<>();
 	}
 
 	// initializeUnlocks
@@ -919,6 +928,26 @@ public class BaseMod {
 			logger.info("tried to remove relic of unsupported type: " + relic + " " + type);
 		}
 	}
+	
+	// addRelicToCustomPool -
+	public static void addRelicToCustomPool(AbstractRelic relic, String color) {
+		if (customRelicPools.containsKey(color)) {
+			if (UnlockTracker.isRelicSeen(relic.relicId)) {
+				RelicLibrary.seenRelics++;
+			}
+			relic.isSeen = UnlockTracker.isRelicSeen(relic.relicId);
+			customRelicPools.get(color).put(relic.relicId, relic);
+			RelicLibrary.addToTierList(relic);
+			customRelicLists.get(color).add(relic);
+		} else {
+			logger.error("could not add relic to non existent custom pool: " + color);
+		}
+	}
+	
+	// getRelicsInCustomPool -
+	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(String color) {
+		return customRelicPools.get(color);
+	}
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
 		switch (relic.tier) {
@@ -1210,6 +1239,8 @@ public class BaseMod {
 		colorSkillBgPortraitMap.put(color, skillBgPortrait);
 		colorPowerBgPortraitMap.put(color, powerBgPortrait);
 		colorEnergyOrbPortraitMap.put(color, energyOrbPortrait);
+		
+		customRelicPools.put(color, new HashMap<>());
 	}
 
 	// remove a custom color -
@@ -1232,6 +1263,8 @@ public class BaseMod {
 		colorSkillBgPortraitMap.remove(color);
 		colorPowerBgPortraitMap.remove(color);
 		colorEnergyOrbPortraitMap.remove(color);
+		
+		customRelicPools.remove(color);
 	}
 
 	// convert a color String (fake ENUM) into a background color
