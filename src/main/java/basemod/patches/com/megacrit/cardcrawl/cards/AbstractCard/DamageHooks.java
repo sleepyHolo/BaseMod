@@ -1,5 +1,7 @@
 	package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import java.util.ArrayList;
+
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -31,10 +33,10 @@ public class DamageHooks {
 		@SpireInsertPatch(rloc=77, localvars={"tmp"})
 		public static void Insert(Object __obj_instance, Object monster, float[] tmp) {
 			AbstractCard c = (AbstractCard) __obj_instance;
-			AbstractMonster mo = (AbstractMonster) monster;
+			ArrayList<AbstractMonster> monsters = AbstractDungeon.getMonsters().monsters;
 			AbstractPlayer player = AbstractDungeon.player;
 			for (int i = 0; i < tmp.length; i++) {
-				tmp[i] = BaseMod.calculateCardDamage(player, mo, c, tmp[i]);
+				tmp[i] = BaseMod.calculateCardDamage(player, monsters.get(i), c, tmp[i]);
 			}
 		}
 		
@@ -60,9 +62,10 @@ public class DamageHooks {
 		public static void Insert(Object __obj_instance, float[] tmp) {
 			AbstractCard c = (AbstractCard) __obj_instance;
 			System.out.println("apply powers called for: " + c.cardID + " with damage " + tmp[0]);
+			ArrayList<AbstractMonster> monsters = AbstractDungeon.getMonsters().monsters;
 			AbstractPlayer player = AbstractDungeon.player;
 			for (int i = 0; i < tmp.length; i++) {
-				tmp[i] = BaseMod.calculateCardDamage(player, c, tmp[i]);
+				tmp[i] = BaseMod.calculateCardDamage(player, monsters.get(i), c, tmp[i]);
 			}
 		}
 		
