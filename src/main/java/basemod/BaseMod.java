@@ -948,6 +948,11 @@ public class BaseMod {
 	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(String color) {
 		return customRelicPools.get(color);
 	}
+	
+	// getAllCustomRelics -
+	public static HashMap<String, HashMap<String, AbstractRelic>> getAllCustomRelics() {
+		return customRelicPools;
+	}
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
 		switch (relic.tier) {
@@ -1241,6 +1246,7 @@ public class BaseMod {
 		colorEnergyOrbPortraitMap.put(color, energyOrbPortrait);
 		
 		customRelicPools.put(color, new HashMap<>());
+		customRelicLists.put(color, new ArrayList<>());
 	}
 
 	// remove a custom color -
@@ -1265,6 +1271,7 @@ public class BaseMod {
 		colorEnergyOrbPortraitMap.remove(color);
 		
 		customRelicPools.remove(color);
+		customRelicLists.remove(color, new ArrayList<>());
 	}
 
 	// convert a color String (fake ENUM) into a background color

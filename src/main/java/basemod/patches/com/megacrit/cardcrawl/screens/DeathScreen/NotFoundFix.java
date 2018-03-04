@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.screens.DeathScreen;
 public class NotFoundFix {
 	public static void Postfix(Object __obj_instance) {
 		DeathScreen screen = (DeathScreen) __obj_instance;
-		if (screen.unlockBundle.size() <= 0) {
+		if (screen.unlockBundle != null && screen.unlockBundle.size() <= 0) {
 			// game checks for null, not for wrong size
 			screen.unlockBundle = null;
 		}
