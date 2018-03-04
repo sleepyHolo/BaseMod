@@ -171,6 +171,7 @@ import basemod.abstracts.CustomUnlockBundle;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
+import basemod.interfaces.EditKeywordsSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.ModelRenderSubscriber;
@@ -245,6 +246,7 @@ public class BaseMod {
 	private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
 	private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
 	private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
+	private static ArrayList<EditKeywordsSubscriber> editKeywordsSubscribers;
 	private static ArrayList<PostBattleSubscriber> postBattleSubscribers;
 	private static ArrayList<SetUnlocksSubscriber> setUnlocksSubscribers;
 	private static ArrayList<PostPotionUseSubscriber> postPotionUseSubscribers;
@@ -458,6 +460,7 @@ public class BaseMod {
 		editRelicsSubscribers = new ArrayList<>();
 		editCharactersSubscribers = new ArrayList<>();
 		editStringsSubscribers = new ArrayList<>();
+		editKeywordsSubscribers = new ArrayList<>();
 		postBattleSubscribers = new ArrayList<>();
 		setUnlocksSubscribers = new ArrayList<>();
 		postPotionUseSubscribers = new ArrayList<>();
@@ -1905,6 +1908,15 @@ public class BaseMod {
 		}
 	}
 	
+	// publishEditKeywords
+	public static void publishEditKeywords() {
+		logger.info("editting keywords");
+		
+		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
+			sub.receiveEditKeywords();
+		}
+	}
+	
 	//
 	// Subscription handlers
 	//
@@ -2227,5 +2239,15 @@ public class BaseMod {
 	// unsubscribeToPostPowerApply
 	public static void unsubscribeToPostPowerApply(PostPowerApplySubscriber sub) {
 		postPowerApplySubscribers.remove(sub);
+	}
+	
+	// subscribeToEditKeywords
+	public static void subscribeToEditKeywords(EditKeywordsSubscriber sub) {
+		editKeywordsSubscribers.add(sub);
+	}
+	
+	// unsubscribeFromEditKeywords
+	public static void unsubscribeFromEditKeywords(EditKeywordsSubscriber sub) {
+		editKeywordsSubscribers.remove(sub);
 	}
 }
