@@ -53,8 +53,8 @@ public class DevConsole
 	private static final float CONSOLE_W = 800.0f;
 	private static final float CONSOLE_H = 40.0f;
 	private static final float CONSOLE_PAD_X = 15.0f;
-	private static final int CONSOLE_TEXT_SIZE = 8;
-	private static final int MAX_LINES = 30;
+	private static final int CONSOLE_TEXT_SIZE = 30;
+	private static final int MAX_LINES = 8;
 	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
@@ -611,7 +611,7 @@ public class DevConsole
 						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
 					}
 					
-					log("adding " + count + " copy(ies) of " + cardName + " with " + upgradeCount + "upgrade(s)");
+					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
 
 					for (int i = 0; i < count; i++) {
 						AbstractCard copy = c.makeCopy();
