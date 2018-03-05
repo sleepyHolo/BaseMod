@@ -190,6 +190,8 @@ public class DevConsole
 			clearLog();
 		} else if (tokens[1].equals("cmd")) {
 			clearCmds();
+		} else {
+			cmdClearHelp();
 		}
 	}
 	
@@ -208,6 +210,13 @@ public class DevConsole
 		while (priorCommands.size() > 0) {
 			priorCommands.remove(0);
 		}
+	}
+	
+	private static void cmdClearHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* log");
+		log("* cmd");
 	}
 	
 	// print help info
@@ -237,6 +246,8 @@ public class DevConsole
 		}
 		catch(Exception e) {
 			logger.info("failed to load power "+powerID);
+			log("could not load power");
+			cmdPowerHelp();
 			return;
 		}
 		
@@ -245,8 +256,15 @@ public class DevConsole
 			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID),amount);
 		}
 		catch(Exception e) {
+			log("could not make power");
+			cmdPowerHelp();
 		}
-		
+	}
+	
+	private static void cmdPowerHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* [id] [amt]");
 	}
 	
 	private static void cmdRelic(String[] tokens) {

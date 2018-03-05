@@ -59,7 +59,9 @@ public class ConsoleInputProcessor implements InputProcessor {
 			}
 		}
 		case Keys.ENTER: {
-			DevConsole.execute();
+			if (DevConsole.currentText.length() > 0) {
+				DevConsole.execute();
+			}
 			return;
 		}
 		}
