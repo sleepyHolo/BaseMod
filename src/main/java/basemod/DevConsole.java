@@ -85,7 +85,7 @@ public class DevConsole
 		BaseMod.subscribeToPostUpdate(this);
 
 		priorCommands = new ArrayList<>();
-		commandPos = 0;
+		commandPos = -1;
 		log = new ArrayList<>();
 		prompted = new ArrayList<>();
 	}
@@ -97,7 +97,7 @@ public class DevConsole
 		}
 		log.add(0, currentText);
 		prompted.add(0, true);
-		commandPos = 0;
+		commandPos = -1;
 		currentText = "";
 
 		if (tokens.length < 1)
@@ -367,61 +367,87 @@ public class DevConsole
 	private static void cmdHand(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 3) {
+				cmdHandHelp();
 				return;
 			}
 
-			int upgradeIndex = 3;
-			while (upgradeIndex < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) == 0) {
-				++upgradeIndex;
+			int upgradeIndex = tokens.length - 1;
+			while (ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) != 0) {
+				upgradeIndex--;
 			}
 
+			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
+			String cardName = String.join(" ", cardNameArray);
+
 			if (tokens[1].toLowerCase().equals("add")) {
-				String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
-				String cardName = String.join(" ", cardNameArray);
 				AbstractCard c = CardLibrary.getCard(cardName);
-
 				if (c != null) {
-					c = c.makeCopy();
-
-					if (upgradeIndex != tokens.length) {
-						int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
-						for (int i = 0; i < upgradeCount; i++) {
-							c.upgrade();
-						}
+					// card count
+					int count = 1;
+					if (tokens.length > 3 && ConvertHelper.tryParseInt(tokens[3], 0) != 0) {
+						count = ConvertHelper.tryParseInt(tokens[3], 0);
 					}
 
-					AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
+					int upgradeCount = 0;
+					if (tokens.length > 4) {
+						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
+					}
+					
+					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
+
+					for (int i = 0; i < count; i++) {
+						AbstractCard copy = c.makeCopy();
+						for (int j = 0; j < upgradeCount; j++) {
+							copy.upgrade();
+						}
+
+						AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(copy, true));
+					}
+				} else {
+					log("could not find card " + cardName);
 				}
-			} else if (tokens[1].toLowerCase().equals("r")) {
-				if (tokens[2].toLowerCase().equals("all")) {
+			} else if (tokens[1].toLowerCase().equals("remove")) {
+				// remove all cards
+				if (tokens[2].equals("all")) {
 					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
 						AbstractDungeon.player.hand.moveToExhaustPile(c);
 					}
 					return;
-				}
-
-				String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String cardName = String.join(" ", cardNameArray);
-
-				boolean removed = false;
-				AbstractCard toRemove = null;
-				for (AbstractCard c : AbstractDungeon.player.hand.group) {
-					if (removed)
-						break;
-					if (c.cardID.equals(cardName)) {
-						toRemove = c;
-						removed = true;
+					// remove single card
+				} else {
+					boolean removed = false;
+					AbstractCard toRemove = null;
+					for (AbstractCard c : AbstractDungeon.player.hand.group) {
+						if (removed)
+							break;
+						if (c.cardID.equals(cardName)) {
+							toRemove = c;
+							removed = true;
+						}
 					}
+					if (removed)
+						AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
 				}
-				if (removed)
-					AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
+			} else {
+				cmdHandHelp();
 			}
+		} else {
+			log("cannot add cards when player doesn't exist");
 		}
+	}
+	
+	private static void cmdHandHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [id] {count} {upgrade amt}");
+		log("* remove [id]");
+		log("* remove all");
 	}
 
 	private static void cmdKill(String[] tokens) {
 		if (AbstractDungeon.getCurrRoom().monsters != null) {
 			if (tokens.length != 2) {
+				cmdKillHelp();
 				return;
 			}
 
@@ -437,8 +463,17 @@ public class DevConsole
 			} else if (tokens[1].toLowerCase().equals("self")) {
 				AbstractDungeon.actionManager
 						.addToTop(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, 999));
+			} else {
+				cmdKillHelp();
 			}
 		}
+	}
+	
+	private static void cmdKillHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* all");
+		log("* self");
 	}
 
 	private static void cmdHP(String[] tokens) {
@@ -586,6 +621,7 @@ public class DevConsole
 	private static void cmdDeck(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 3) {
+				cmdDeckHelp();
 				return;
 			}
 
@@ -858,7 +894,7 @@ public class DevConsole
 		if (Gdx.input.isKeyJustPressed(toggleKey)) {
 			if (visible) {
 				currentText = "";
-				commandPos = 0;
+				commandPos = -1;
 			} else {
 				otherInputProcessor = Gdx.input.getInputProcessor();
 			}
@@ -870,16 +906,17 @@ public class DevConsole
 		// get previous commands
 		if (Gdx.input.isKeyJustPressed(priorKey)) {
 			if (visible) {
-				currentText = priorCommands.get(commandPos);
 				if (commandPos + 1 < priorCommands.size()) {
 					commandPos++;
 				}
+				currentText = priorCommands.get(commandPos);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(nextKey)) {
 			if (visible) {
 				if (commandPos - 1 < 0) {
 					currentText = "";
+					commandPos = -1;
 				} else {
 					commandPos--;
 					currentText = priorCommands.get(commandPos);
