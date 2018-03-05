@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
+import com.megacrit.cardcrawl.actions.common.HealAction;
 import com.megacrit.cardcrawl.actions.common.LoseHPAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -53,6 +54,8 @@ public class DevConsole
 	private static final float CONSOLE_H = 40.0f;
 	private static final float CONSOLE_PAD_X = 15.0f;
 	private static final int CONSOLE_TEXT_SIZE = 30;
+	private static final int MAX_LINES = 30;
+	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
 	private static Color consoleColor = Color.BLACK;
@@ -68,15 +71,33 @@ public class DevConsole
 	public static int toggleKey = Keys.GRAVE;
 	public static String currentText = "";
 
+	public static int priorKey = Keys.UP;
+	public static int nextKey = Keys.DOWN;
+	public static ArrayList<String> priorCommands;
+	public static ArrayList<String> log;
+	public static ArrayList<Boolean> prompted;
+	public static int commandPos;
+	
 	public DevConsole() {
 		BaseMod.subscribeToPostEnergyRecharge(this);
 		BaseMod.subscribeToPostInitialize(this);
 		BaseMod.subscribeToPostRender(this);
 		BaseMod.subscribeToPostUpdate(this);
+		
+		priorCommands = new ArrayList<>();
+		commandPos = 0;
+		log = new ArrayList<>();
+		prompted = new ArrayList<>();
 	}
 
 	public static void execute() {
 		String[] tokens = currentText.split(" ");
+		if (priorCommands.size() == 0 || !priorCommands.get(0).equals(currentText)) {
+			priorCommands.add(0, currentText);
+		}
+		log.add(0, currentText);
+		prompted.add(0, true);
+		commandPos = 0;
 		currentText = "";
 
 		if (tokens.length < 1)
@@ -84,7 +105,7 @@ public class DevConsole
 		for (int i = 0; i < tokens.length; i++) {
 			tokens[i] = tokens[i].trim();
 		}
-
+		
 		switch (tokens[0].toLowerCase()) {
 		case "relic": {
 			cmdRelic(tokens);
@@ -134,15 +155,65 @@ public class DevConsole
 			cmdUnlock(tokens);
 			break;
 		}
-		case "power":{
+		case "power": {
 			cmdPower(tokens);
 			break;
 		}
+		case "clear": {
+			cmdClear(tokens);
+			break;
+		}
+		case "help": {
+			cmdHelp();
+			break;
+		}
+		case "hp": {
+			cmdHP(tokens);
+			break;
+		}
+		case "maxhp": {
+			cmdMaxHP(tokens);
+			break;
+		}
 		default: {
-			// TODO: Implement command hook
+			log("invalid command");
 			break;
 		}
 		}
+	}
+	
+	private static void cmdClear(String[] tokens) {
+		if (tokens.length < 2) {
+			clearLog();
+			clearCmds();
+		} else if (tokens[1].equals("log")) {
+			clearLog();
+		} else if (tokens[1].equals("cmd")) {
+			clearCmds();
+		}
+	}
+	
+	// clear log
+	private static void clearLog() {
+		while (log.size() > 0) {
+			log.remove(0);
+		}
+		while (prompted.size() > 0) {
+			prompted.remove(0);
+		}
+	}
+	
+	// clear command list
+	private static void clearCmds() {
+		while (priorCommands.size() > 0) {
+			priorCommands.remove(0);
+		}
+	}
+	
+	// print help info
+	private static void cmdHelp() {
+		log("options are: relic hand info kill gold energy deck...");
+		log("draw fight event potion unlock power clear help hp maxhp");
 	}
 	
 	private static void cmdPower(String[] tokens) {
@@ -161,6 +232,7 @@ public class DevConsole
 			powerID=powerID.concat(tokens[tokens.length-1]);
 		}
 		try {
+			@SuppressWarnings({ "rawtypes", "unused" })
 			Class power = BaseMod.getPowerClass(powerID);
 		}
 		catch(Exception e) {
@@ -169,6 +241,7 @@ public class DevConsole
 		}
 		
 		try {
+			@SuppressWarnings("unused")
 			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID),amount);
 		}
 		catch(Exception e) {
@@ -179,10 +252,11 @@ public class DevConsole
 	private static void cmdRelic(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 2) {
+				cmdRelicHelp();
 				return;
 			}
 
-			if (tokens[1].toLowerCase().equals("r") && tokens.length > 2) {
+			if (tokens[1].toLowerCase().equals("remove") && tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
 				String relicName = String.join(" ", relicNameArray);
 				AbstractDungeon.player.loseRelic(relicName);
@@ -191,21 +265,88 @@ public class DevConsole
 				String relicName = String.join(" ", relicNameArray);
 				AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2,
 						RelicLibrary.getRelic(relicName).makeCopy());
-			} else if (tokens[1].toLowerCase().equals("list")) {
-				Collections.sort(RelicLibrary.starterList);
-				Collections.sort(RelicLibrary.commonList);
-				Collections.sort(RelicLibrary.uncommonList);
-				Collections.sort(RelicLibrary.rareList);
-				Collections.sort(RelicLibrary.bossList);
-				Collections.sort(RelicLibrary.specialList);
-				Collections.sort(RelicLibrary.shopList);
-				logger.info(RelicLibrary.starterList);
-				logger.info(RelicLibrary.commonList);
-				logger.info(RelicLibrary.uncommonList);
-				logger.info(RelicLibrary.rareList);
-				logger.info(RelicLibrary.bossList);
+			} else if (tokens[1].toLowerCase().equals("desc") && tokens.length > 2) {
+				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+				String relicName = String.join(" ", relicNameArray);
+				log(RelicLibrary.getRelic(relicName).description);
+			} else if (tokens[1].toLowerCase().equals("flavor") && tokens.length > 2) {
+				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+				String relicName = String.join(" ", relicNameArray);
+				log(RelicLibrary.getRelic(relicName).flavorText);
+			} else if (tokens[1].toLowerCase().equals("pool") && tokens.length > 2) {
+				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+				String relicName = String.join(" ", relicNameArray);
+				log(RelicLibrary.getRelic(relicName).tier.toString());
+			}  else if (tokens[1].toLowerCase().equals("list")) {
+				if (tokens.length < 3) {
+					cmdRelicListHelp();
+					return;
+				}
+				switch (tokens[2]) {
+				case "starter": {
+					Collections.sort(RelicLibrary.starterList);
+					logger.info(RelicLibrary.starterList);
+					log(RelicLibrary.starterList);
+					break;
+				}
+				case "common": {
+					Collections.sort(RelicLibrary.commonList);
+					logger.info(RelicLibrary.commonList);
+					log(RelicLibrary.commonList);
+					break;
+				}
+				case "uncommon": {
+					Collections.sort(RelicLibrary.uncommonList);
+					logger.info(RelicLibrary.uncommonList);
+					log(RelicLibrary.uncommonList);
+					break;
+				}
+				case "rare": {
+					Collections.sort(RelicLibrary.rareList);
+					logger.info(RelicLibrary.rareList);
+					log(RelicLibrary.rareList);
+				}
+				case "boss": {
+					Collections.sort(RelicLibrary.bossList);
+					logger.info(RelicLibrary.bossList);					
+					log(RelicLibrary.bossList);
+					break;
+				}
+				case "special": {
+					Collections.sort(RelicLibrary.specialList);
+					logger.info(RelicLibrary.specialList);
+					log(RelicLibrary.specialList);
+					break;
+				}
+				case "shop": {
+					Collections.sort(RelicLibrary.shopList);
+					logger.info(RelicLibrary.shopList);
+					log(RelicLibrary.shopList);
+					break;
+				}
+				default: {
+					cmdRelicListHelp();
+				}
+				}
+			} else {
+				cmdRelicHelp();
 			}
 		}
+	}
+	
+	private static void cmdRelicHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* remove [id]");
+		log("* add [id]");
+		log("* desc [id]");
+		log("* flavor [id]");
+		log("* pool [id]");
+		log("* list [type]");
+	}
+	
+	private static void cmdRelicListHelp() {
+		log("options are: starter common uncommon rare boss special shop");
 	}
 
 	private static void cmdHand(String[] tokens) {
@@ -284,10 +425,80 @@ public class DevConsole
 			}
 		}
 	}
+	
+	private static void cmdHP(String[] tokens) {
+		if (tokens.length < 2) {
+			cmdHPHelp();
+			return;
+		}
+		
+		if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
+			int i;
+			try {
+				i = Integer.parseInt(tokens[2]);
+				AbstractDungeon.actionManager.addToTop(
+						new HealAction(AbstractDungeon.player, AbstractDungeon.player, i));
+			} catch (Exception e) {
+				cmdHPHelp();
+			}
+		} else if (tokens[1].toLowerCase().equals("lose") && tokens.length > 2) {
+			int i;
+			try {
+				i = Integer.parseInt(tokens[2]);
+				AbstractDungeon.actionManager.addToTop(
+						new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, i, AbstractGameAction.AttackEffect.NONE));
+			} catch (Exception e) {
+				cmdHPHelp();
+			}
+		} else {
+			cmdHPHelp();
+		}
+	}
+	
+	private static void cmdHPHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [amt]");
+		log("* lose [amt]");
+	}
+	
+	private static void cmdMaxHP(String[] tokens) {
+		if (tokens.length < 2) {
+			cmdMaxHPHelp();
+			return;
+		}
+		if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
+			int i;
+			try {
+				i = Integer.parseInt(tokens[2]);
+				AbstractDungeon.player.increaseMaxHp(i, true);
+			} catch (Exception e) {
+				cmdMaxHPHelp();
+			}
+		} else if (tokens[1].toLowerCase().equals("lose") && tokens.length > 2) {
+			int i;
+			try {
+				i = Integer.parseInt(tokens[2]);
+				AbstractDungeon.player.decreaseMaxHealth(i);
+			} catch (Exception e) {
+				cmdMaxHPHelp();
+			}
+		} else {
+			cmdMaxHPHelp();
+		}
+	}
+	
+	private static void cmdMaxHPHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [amt]");
+		log("* lose [amt]");
+	}
 
 	private static void cmdGold(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length != 3) {
+				cmdGoldHelp();
 				return;
 			}
 
@@ -295,32 +506,56 @@ public class DevConsole
 			if (tokens[1].toLowerCase().equals("add")) {
 				AbstractDungeon.player.displayGold += amount;
 				AbstractDungeon.player.gainGold(amount);
-			} else if (tokens[1].toLowerCase().equals("r")) {
+			} else if (tokens[1].toLowerCase().equals("lose")) {
 				AbstractDungeon.player.displayGold = Math.max(AbstractDungeon.player.displayGold - amount, 0);
 				AbstractDungeon.player.loseGold(amount);
+			} else {
+				cmdGoldHelp();
 			}
 		}
+	}
+	
+	private static void cmdGoldHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [amt]");
+		log("* lose [amt]");
 	}
 
 	private static void cmdEnergy(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 2) {
+				cmdEnergyHelp();
 				return;
 			}
 
 			if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
 				AbstractDungeon.player.gainEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
-			} else if (tokens[1].toLowerCase().equals("r") && tokens.length > 2) {
+			} else if (tokens[1].toLowerCase().equals("lose") && tokens.length > 2) {
 				AbstractDungeon.player.loseEnergy(ConvertHelper.tryParseInt(tokens[2], 0));
 			} else if (tokens[1].toLowerCase().equals("inf")) {
 				infiniteEnergy = !infiniteEnergy;
 				if (infiniteEnergy) {
 					AbstractDungeon.player.gainEnergy(9999);
 				}
+			} else {
+				cmdEnergyHelp();
 			}
 		}
 	}
+	
+	private static void cmdEnergyHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [amt]");
+		log("* lose [amt]");
+		log("* inf");
+	}
 
+	private static void couldNotParse() {
+		log("could not parse previous command");
+	}
+	
 	private static void cmdUnlock(String[] tokens) {
 		if (tokens.length < 2) {
 			return;
@@ -458,7 +693,8 @@ public class DevConsole
 	}
 
 	private static void cmdPotion(String[] tokens) {
-		if (tokens.length < 3) { 
+		if (tokens.length < 3) {
+			cmdPotionHelp();
 			return;
 		}
 
@@ -466,6 +702,13 @@ public class DevConsole
 		try {
 			i = Integer.parseInt(tokens[1]);
 		} catch (Exception e) {
+			// check if we want to list potions
+			if (tokens[1].equals("list")) {
+				Collections.sort(PotionHelper.potions);
+				logger.info(PotionHelper.potions);
+			} else {
+				cmdPotionHelp();
+			}
 			return;
 		}
 
@@ -481,8 +724,13 @@ public class DevConsole
         if(PotionHelper.potions.contains(potionID)) { 
             p = PotionHelper.getPotion(potionID); 
         }
+        if(PotionHelper.potions.contains(potionID+" Potion")) {
+        	p = PotionHelper.getPotion(potionID+" Potion");
+        }
 
 		if (p == null) {
+			log("invalid potion id");
+			log("use potion list to see valid ids");
 			return;
 		}
 
@@ -494,6 +742,13 @@ public class DevConsole
 		p.isAnimating = false;
 		p.flash();
 		AbstractDungeon.player.potions[i] = p;
+	}
+	
+	public static void cmdPotionHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* list");
+		log("* [slot] [id]");
 	}
 
 	public void receivePostEnergyRecharge() {
@@ -512,6 +767,17 @@ public class DevConsole
 		consoleFont = generator.generateFont(parameter);
 		generator.dispose();
 	}
+	
+	public static void log(String text) {
+		log.add(0, text);
+		prompted.add(0, false);
+	}
+	
+	public static void log(@SuppressWarnings("rawtypes") ArrayList list) {
+		for (Object o : list) {
+			log(o.toString());
+		}
+	}
 
 	public void receivePostRender(SpriteBatch sb) {
 		if (visible && consoleFont != null) {
@@ -525,16 +791,25 @@ public class DevConsole
 				consoleBackground = new ShapeRenderer();
 			}
 
+			int sizeToDraw = log.size() + 1;
+			if (sizeToDraw > MAX_LINES) {
+				sizeToDraw = MAX_LINES;
+			}
+			
 			consoleBackground.begin(ShapeType.Filled);
 			consoleBackground.setColor(consoleColor);
-			consoleBackground.rect(CONSOLE_X, CONSOLE_Y, (CONSOLE_W * Settings.scale), (CONSOLE_H * Settings.scale));
+			consoleBackground.rect(CONSOLE_X, CONSOLE_Y, (CONSOLE_W * Settings.scale), (CONSOLE_H * Settings.scale + (CONSOLE_TEXT_SIZE * Settings.scale * (sizeToDraw - 1))));
 			consoleBackground.end();
 
 			sb.begin();
 
 			float x = (CONSOLE_X + (CONSOLE_PAD_X * Settings.scale));
 			float y = (CONSOLE_Y + (float) Math.floor(CONSOLE_TEXT_SIZE * Settings.scale));
-			consoleFont.draw(sb, currentText, x, y);
+			consoleFont.draw(sb, PROMPT + currentText, x, y);
+			for (int i = 0; i < sizeToDraw - 1; i++) {
+				y += (float) Math.floor(CONSOLE_TEXT_SIZE * Settings.scale);
+				consoleFont.draw(sb, (prompted.get(i) ? PROMPT : "") + log.get(i), x, y);
+			}
 		}
 	}
 
@@ -542,12 +817,33 @@ public class DevConsole
 		if (Gdx.input.isKeyJustPressed(toggleKey)) {
 			if (visible) {
 				currentText = "";
+				commandPos = 0;
 			} else {
 				otherInputProcessor = Gdx.input.getInputProcessor();
 			}
 
 			Gdx.input.setInputProcessor(visible ? otherInputProcessor : consoleInputProcessor);
 			visible = !visible;
+		}
+		
+		// get previous commands
+		if (Gdx.input.isKeyJustPressed(priorKey)) {
+			if (visible) {
+				currentText = priorCommands.get(commandPos);
+				if (commandPos + 1 < priorCommands.size()) {
+					commandPos++;
+				}
+			}
+		}
+		if (Gdx.input.isKeyJustPressed(nextKey)) {
+			if (visible) {
+				if (commandPos - 1 < 0) {
+					currentText = "";
+				} else {
+					commandPos--;
+					currentText = priorCommands.get(commandPos);
+				}
+			}
 		}
 	}
 }
