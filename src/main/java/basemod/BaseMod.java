@@ -291,6 +291,7 @@ public class BaseMod {
 	private static HashMap<String, Color> potionLiquidColorMap; 
 	private static HashMap<String, Color> potionSpotsColorMap; 
 
+	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> powerMap;
 	
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
@@ -555,6 +556,7 @@ public class BaseMod {
 	      potionsToRemove= new ArrayList<>(); 
 	} 
 	
+	@SuppressWarnings("rawtypes")
 	private static void initializePowerMap() {
 		powerMap=new HashMap<String,Class>();
 		powerMap.put("Absorb",AbsorbPower.class);
