@@ -58,7 +58,7 @@ public class DevConsole
 	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
-	private static Color consoleColor = Color.BLACK;
+	private static Color consoleColor = new Color(0.0f, 0.0f, 0.0f, 0.4f);
 	private static InputProcessor consoleInputProcessor;
 	private static InputProcessor otherInputProcessor = null;
 	private static ShapeRenderer consoleBackground = null;
