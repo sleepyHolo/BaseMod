@@ -271,11 +271,13 @@ public class DevConsole
 				return;
 			}
 
-			if (tokens[1].toLowerCase().equals("remove") && tokens.length > 2) {
+			if ((tokens[1].toLowerCase().equals("remove") || tokens[1].toLowerCase().equals("r"))
+					&& tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
 				String relicName = String.join(" ", relicNameArray);
 				AbstractDungeon.player.loseRelic(relicName);
-			} else if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
+			} else if ((tokens[1].toLowerCase().equals("add")  || tokens[1].toLowerCase().equals("a"))
+					&& tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
 				String relicName = String.join(" ", relicNameArray);
 				AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2,
@@ -379,7 +381,7 @@ public class DevConsole
 			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
-			if (tokens[1].toLowerCase().equals("add")) {
+			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
 				AbstractCard c = CardLibrary.getCard(cardName);
 				if (c != null) {
 					// card count
@@ -406,7 +408,7 @@ public class DevConsole
 				} else {
 					log("could not find card " + cardName);
 				}
-			} else if (tokens[1].toLowerCase().equals("remove")) {
+			} else if (tokens[1].toLowerCase().equals("remove") || tokens[1].toLowerCase().equals("r")) {
 				// remove all cards
 				if (tokens[2].equals("all")) {
 					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
@@ -482,7 +484,8 @@ public class DevConsole
 			return;
 		}
 
-		if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
+		if ((tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a"))
+				&& tokens.length > 2) {
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
@@ -491,7 +494,8 @@ public class DevConsole
 			} catch (Exception e) {
 				cmdHPHelp();
 			}
-		} else if (tokens[1].toLowerCase().equals("lose") && tokens.length > 2) {
+		} else if ((tokens[1].toLowerCase().equals("lose") || tokens[1].toLowerCase().equals("l"))
+				&& tokens.length > 2) {
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
@@ -517,7 +521,8 @@ public class DevConsole
 			cmdMaxHPHelp();
 			return;
 		}
-		if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
+		if ((tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a"))
+				&& tokens.length > 2) {
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
@@ -525,7 +530,8 @@ public class DevConsole
 			} catch (Exception e) {
 				cmdMaxHPHelp();
 			}
-		} else if (tokens[1].toLowerCase().equals("lose") && tokens.length > 2) {
+		} else if ((tokens[1].toLowerCase().equals("lose") || tokens[1].toLowerCase().equals("l"))
+				&& tokens.length > 2) {
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
@@ -553,10 +559,10 @@ public class DevConsole
 			}
 
 			int amount = ConvertHelper.tryParseInt(tokens[2], 0);
-			if (tokens[1].toLowerCase().equals("add")) {
+			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
 				AbstractDungeon.player.displayGold += amount;
 				AbstractDungeon.player.gainGold(amount);
-			} else if (tokens[1].toLowerCase().equals("lose")) {
+			} else if (tokens[1].toLowerCase().equals("lose") || tokens[1].toLowerCase().equals("l")) {
 				AbstractDungeon.player.displayGold = Math.max(AbstractDungeon.player.displayGold - amount, 0);
 				AbstractDungeon.player.loseGold(amount);
 			} else {
@@ -633,7 +639,7 @@ public class DevConsole
 			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
-			if (tokens[1].toLowerCase().equals("add")) {
+			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
 				AbstractCard c = CardLibrary.getCard(cardName);
 				if (c != null) {
 					// card count
@@ -661,7 +667,7 @@ public class DevConsole
 				} else {
 					log("could not find card " + cardName);
 				}
-			} else if (tokens[1].toLowerCase().equals("remove")) {
+			} else if (tokens[1].toLowerCase().equals("remove") || tokens[1].toLowerCase().equals("r")) {
 				// remove all cards
 				if (tokens[2].equals("all")) {
 					for (String str : AbstractDungeon.player.masterDeck.getCardNames()) {
@@ -908,8 +914,8 @@ public class DevConsole
 			if (visible) {
 				if (commandPos + 1 < priorCommands.size()) {
 					commandPos++;
+					currentText = priorCommands.get(commandPos);
 				}
-				currentText = priorCommands.get(commandPos);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(nextKey)) {
