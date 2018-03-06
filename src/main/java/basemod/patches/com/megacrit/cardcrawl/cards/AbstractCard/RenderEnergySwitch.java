@@ -17,8 +17,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomCard;
-import basemod.abstracts.CustomCardWithRender;
+import basemod.helpers.SuperclassFinder;
 
 @SpirePatch(cls = "com.megacrit.cardcrawl.cards.AbstractCard", method = "renderEnergy")
 public class RenderEnergySwitch {
@@ -51,23 +50,16 @@ public class RenderEnergySwitch {
 				Method renderHelperMethod;
 				Field renderColorField; 
 				
-				if(card instanceof CustomCardWithRender) {
-					renderHelperMethod = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredMethod("renderHelper", SpriteBatch.class,
-							Color.class, Texture.class, float.class, float.class);
-					renderHelperMethod.setAccessible(true);
-					renderColorField = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("renderColor");
-					renderColorField.setAccessible(true);
-				} else {
-					renderHelperMethod = card.getClass().getSuperclass().getSuperclass().getDeclaredMethod("renderHelper", SpriteBatch.class,
-						Color.class, Texture.class, float.class, float.class);
-					renderHelperMethod.setAccessible(true);
-					renderColorField = card.getClass().getSuperclass().getSuperclass().getDeclaredField("renderColor");
-					renderColorField.setAccessible(true);
-				}
+				
+				renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class, Color.class, Texture.class, float.class, float.class);
+				renderHelperMethod.setAccessible(true);
+				renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
+				renderColorField.setAccessible(true);
+				
 					
 				Color renderColor = (Color) renderColorField.get(card);
 				renderHelperMethod.invoke(card, sb, renderColor, orbTexture, drawX, drawY);
-			} catch (NoSuchMethodException | SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 				logger.error("could not render energy for card " + card.getClass().toString() + " with color " + color.toString());
 				logger.error("exception is: " + e.getMessage());
 				e.printStackTrace();

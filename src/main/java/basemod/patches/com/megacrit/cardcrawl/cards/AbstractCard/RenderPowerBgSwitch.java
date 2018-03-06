@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import basemod.BaseMod;
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomCardWithRender;
+import basemod.helpers.SuperclassFinder;
 
 @SpirePatch(cls = "com.megacrit.cardcrawl.cards.AbstractCard", method = "renderPowerBg")
 public class RenderPowerBgSwitch {
@@ -57,15 +58,15 @@ public class RenderPowerBgSwitch {
 				}
 				try {
 					// use reflection hacks to invoke renderHelper (without float scale)
-					Method renderHelperMethod = card.getClass().getSuperclass().getSuperclass().getDeclaredMethod("renderHelper", SpriteBatch.class,
+					Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
 							Color.class, Texture.class, float.class, float.class);
 					renderHelperMethod.setAccessible(true);
-					Field renderColorField = card.getClass().getSuperclass().getSuperclass().getDeclaredField("renderColor");
+					Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
 					renderColorField.setAccessible(true);
 					Color renderColor = (Color) renderColorField.get(card);
 					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
-					logger.error("could not set card power bg on card " + card.getClass().toString() + " with color " + color.toString());
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+					logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
 				}
 			}
 		}
