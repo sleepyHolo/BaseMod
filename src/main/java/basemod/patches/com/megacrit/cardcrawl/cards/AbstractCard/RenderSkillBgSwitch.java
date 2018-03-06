@@ -16,7 +16,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomCardWithRender;
 import basemod.helpers.SuperclassFinder;
 
@@ -65,7 +64,7 @@ public class RenderSkillBgSwitch {
 					renderColorField.setAccessible(true);
 					Color renderColor = (Color) renderColorField.get(card);
 					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
 					logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
 				}
 			}

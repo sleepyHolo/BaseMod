@@ -66,7 +66,7 @@ public class RenderAttackBgSwitch {
 					renderColorField.setAccessible(true);
 					Color renderColor = (Color) renderColorField.get(card);
 					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
 					logger.error("could not set card attack bg on card " + card.getClass().toString() + " with color " + color.toString());
 					logger.error("exception is: " + e.getMessage());
 					e.printStackTrace();
