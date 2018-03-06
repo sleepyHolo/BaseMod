@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 
 import basemod.abstracts.CustomCardWithRender;
+import basemod.helpers.SuperclassFinder;
 
 public class CustomCardRenderHelper {
 	public static void renderCardBG(SpriteBatch sb, float x, float y, CustomCardWithRender card) {
@@ -17,16 +18,17 @@ public class CustomCardRenderHelper {
 		Texture bgTexture = card.bGTexture;
 		
 		try {
-			Method renderHelperMethod = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredMethod("renderHelper", SpriteBatch.class,
+			Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
 					Color.class, Texture.class, float.class, float.class);
 			
 			renderHelperMethod.setAccessible(true);
 			
-			Field renderColorField = card.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredField("renderColor");
+			Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
 			renderColorField.setAccessible(true);
 			Color renderColor = (Color) renderColorField.get(card);
 			renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-		}catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+			
+		}catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |  SecurityException e) {
 			e.printStackTrace();
 		}
 	}
