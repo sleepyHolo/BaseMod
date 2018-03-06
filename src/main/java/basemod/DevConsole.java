@@ -54,7 +54,7 @@ public class DevConsole
 	private static final float CONSOLE_H = 40.0f;
 	private static final float CONSOLE_PAD_X = 15.0f;
 	private static final int CONSOLE_TEXT_SIZE = 30;
-	private static final int MAX_LINES = 30;
+	private static final int MAX_LINES = 8;
 	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
@@ -77,15 +77,15 @@ public class DevConsole
 	public static ArrayList<String> log;
 	public static ArrayList<Boolean> prompted;
 	public static int commandPos;
-	
+
 	public DevConsole() {
 		BaseMod.subscribeToPostEnergyRecharge(this);
 		BaseMod.subscribeToPostInitialize(this);
 		BaseMod.subscribeToPostRender(this);
 		BaseMod.subscribeToPostUpdate(this);
-		
+
 		priorCommands = new ArrayList<>();
-		commandPos = 0;
+		commandPos = -1;
 		log = new ArrayList<>();
 		prompted = new ArrayList<>();
 	}
@@ -97,7 +97,7 @@ public class DevConsole
 		}
 		log.add(0, currentText);
 		prompted.add(0, true);
-		commandPos = 0;
+		commandPos = -1;
 		currentText = "";
 
 		if (tokens.length < 1)
@@ -105,7 +105,7 @@ public class DevConsole
 		for (int i = 0; i < tokens.length; i++) {
 			tokens[i] = tokens[i].trim();
 		}
-		
+
 		switch (tokens[0].toLowerCase()) {
 		case "relic": {
 			cmdRelic(tokens);
@@ -181,7 +181,7 @@ public class DevConsole
 		}
 		}
 	}
-	
+
 	private static void cmdClear(String[] tokens) {
 		if (tokens.length < 2) {
 			clearLog();
@@ -194,7 +194,7 @@ public class DevConsole
 			cmdClearHelp();
 		}
 	}
-	
+
 	// clear log
 	private static void clearLog() {
 		while (log.size() > 0) {
@@ -204,69 +204,66 @@ public class DevConsole
 			prompted.remove(0);
 		}
 	}
-	
+
 	// clear command list
 	private static void clearCmds() {
 		while (priorCommands.size() > 0) {
 			priorCommands.remove(0);
 		}
 	}
-	
+
 	private static void cmdClearHelp() {
 		couldNotParse();
 		log("options are:");
 		log("* log");
 		log("* cmd");
 	}
-	
+
 	// print help info
 	private static void cmdHelp() {
 		log("options are: relic hand info kill gold energy deck...");
 		log("draw fight event potion unlock power clear help hp maxhp");
 	}
-	
+
 	private static void cmdPower(String[] tokens) {
-		String powerID="";
-		int amount=1;
-		for(int i=1;i<tokens.length-1;i++) {
-			powerID=powerID.concat(tokens[i]);
-			if(i!=tokens.length-2) { 
-	            powerID=powerID.concat(" "); 
-	          }
+		String powerID = "";
+		int amount = 1;
+		for (int i = 1; i < tokens.length - 1; i++) {
+			powerID = powerID.concat(tokens[i]);
+			if (i != tokens.length - 2) {
+				powerID = powerID.concat(" ");
+			}
 		}
 		try {
-			amount = Integer.parseInt(tokens[tokens.length-1]);
-		}
-		catch(Exception e) {
-			powerID=powerID.concat(tokens[tokens.length-1]);
+			amount = Integer.parseInt(tokens[tokens.length - 1]);
+		} catch (Exception e) {
+			powerID = powerID.concat(tokens[tokens.length - 1]);
 		}
 		try {
 			@SuppressWarnings({ "rawtypes", "unused" })
 			Class power = BaseMod.getPowerClass(powerID);
-		}
-		catch(Exception e) {
-			logger.info("failed to load power "+powerID);
+		} catch (Exception e) {
+			logger.info("failed to load power " + powerID);
 			log("could not load power");
 			cmdPowerHelp();
 			return;
 		}
-		
+
 		try {
 			@SuppressWarnings("unused")
-			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID),amount);
-		}
-		catch(Exception e) {
+			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID), amount);
+		} catch (Exception e) {
 			log("could not make power");
 			cmdPowerHelp();
 		}
 	}
-	
+
 	private static void cmdPowerHelp() {
 		couldNotParse();
 		log("options are:");
 		log("* [id] [amt]");
 	}
-	
+
 	private static void cmdRelic(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 2) {
@@ -295,7 +292,7 @@ public class DevConsole
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
 				String relicName = String.join(" ", relicNameArray);
 				log(RelicLibrary.getRelic(relicName).tier.toString());
-			}  else if (tokens[1].toLowerCase().equals("list")) {
+			} else if (tokens[1].toLowerCase().equals("list")) {
 				if (tokens.length < 3) {
 					cmdRelicListHelp();
 					return;
@@ -326,7 +323,7 @@ public class DevConsole
 				}
 				case "boss": {
 					Collections.sort(RelicLibrary.bossList);
-					logger.info(RelicLibrary.bossList);					
+					logger.info(RelicLibrary.bossList);
 					log(RelicLibrary.bossList);
 					break;
 				}
@@ -351,7 +348,7 @@ public class DevConsole
 			}
 		}
 	}
-	
+
 	private static void cmdRelicHelp() {
 		couldNotParse();
 		log("options are:");
@@ -362,7 +359,7 @@ public class DevConsole
 		log("* pool [id]");
 		log("* list [type]");
 	}
-	
+
 	private static void cmdRelicListHelp() {
 		log("options are: starter common uncommon rare boss special shop");
 	}
@@ -370,61 +367,87 @@ public class DevConsole
 	private static void cmdHand(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 3) {
+				cmdHandHelp();
 				return;
 			}
 
-			int upgradeIndex = 3;
-			while (upgradeIndex < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) == 0) {
-				++upgradeIndex;
+			int upgradeIndex = tokens.length - 1;
+			while (ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) != 0) {
+				upgradeIndex--;
 			}
 
+			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
+			String cardName = String.join(" ", cardNameArray);
+
 			if (tokens[1].toLowerCase().equals("add")) {
-				String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
-				String cardName = String.join(" ", cardNameArray);
 				AbstractCard c = CardLibrary.getCard(cardName);
-
 				if (c != null) {
-					c = c.makeCopy();
-
-					if (upgradeIndex != tokens.length) {
-						int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
-						for (int i = 0; i < upgradeCount; i++) {
-							c.upgrade();
-						}
+					// card count
+					int count = 1;
+					if (tokens.length > 3 && ConvertHelper.tryParseInt(tokens[3], 0) != 0) {
+						count = ConvertHelper.tryParseInt(tokens[3], 0);
 					}
 
-					AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(c, true));
+					int upgradeCount = 0;
+					if (tokens.length > 4) {
+						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
+					}
+					
+					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
+
+					for (int i = 0; i < count; i++) {
+						AbstractCard copy = c.makeCopy();
+						for (int j = 0; j < upgradeCount; j++) {
+							copy.upgrade();
+						}
+
+						AbstractDungeon.actionManager.addToBottom(new MakeTempCardInHandAction(copy, true));
+					}
+				} else {
+					log("could not find card " + cardName);
 				}
-			} else if (tokens[1].toLowerCase().equals("r")) {
-				if (tokens[2].toLowerCase().equals("all")) {
+			} else if (tokens[1].toLowerCase().equals("remove")) {
+				// remove all cards
+				if (tokens[2].equals("all")) {
 					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
 						AbstractDungeon.player.hand.moveToExhaustPile(c);
 					}
 					return;
-				}
-
-				String[] cardNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String cardName = String.join(" ", cardNameArray);
-
-				boolean removed = false;
-				AbstractCard toRemove = null;
-				for (AbstractCard c : AbstractDungeon.player.hand.group) {
-					if (removed)
-						break;
-					if (c.cardID.equals(cardName)) {
-						toRemove = c;
-						removed = true;
+					// remove single card
+				} else {
+					boolean removed = false;
+					AbstractCard toRemove = null;
+					for (AbstractCard c : AbstractDungeon.player.hand.group) {
+						if (removed)
+							break;
+						if (c.cardID.equals(cardName)) {
+							toRemove = c;
+							removed = true;
+						}
 					}
+					if (removed)
+						AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
 				}
-				if (removed)
-					AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
+			} else {
+				cmdHandHelp();
 			}
+		} else {
+			log("cannot add cards when player doesn't exist");
 		}
+	}
+	
+	private static void cmdHandHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [id] {count} {upgrade amt}");
+		log("* remove [id]");
+		log("* remove all");
 	}
 
 	private static void cmdKill(String[] tokens) {
 		if (AbstractDungeon.getCurrRoom().monsters != null) {
 			if (tokens.length != 2) {
+				cmdKillHelp();
 				return;
 			}
 
@@ -440,22 +463,31 @@ public class DevConsole
 			} else if (tokens[1].toLowerCase().equals("self")) {
 				AbstractDungeon.actionManager
 						.addToTop(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, 999));
+			} else {
+				cmdKillHelp();
 			}
 		}
 	}
 	
+	private static void cmdKillHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* all");
+		log("* self");
+	}
+
 	private static void cmdHP(String[] tokens) {
 		if (tokens.length < 2) {
 			cmdHPHelp();
 			return;
 		}
-		
+
 		if (tokens[1].toLowerCase().equals("add") && tokens.length > 2) {
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
-				AbstractDungeon.actionManager.addToTop(
-						new HealAction(AbstractDungeon.player, AbstractDungeon.player, i));
+				AbstractDungeon.actionManager
+						.addToTop(new HealAction(AbstractDungeon.player, AbstractDungeon.player, i));
 			} catch (Exception e) {
 				cmdHPHelp();
 			}
@@ -463,8 +495,8 @@ public class DevConsole
 			int i;
 			try {
 				i = Integer.parseInt(tokens[2]);
-				AbstractDungeon.actionManager.addToTop(
-						new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player, i, AbstractGameAction.AttackEffect.NONE));
+				AbstractDungeon.actionManager.addToTop(new LoseHPAction(AbstractDungeon.player, AbstractDungeon.player,
+						i, AbstractGameAction.AttackEffect.NONE));
 			} catch (Exception e) {
 				cmdHPHelp();
 			}
@@ -472,14 +504,14 @@ public class DevConsole
 			cmdHPHelp();
 		}
 	}
-	
+
 	private static void cmdHPHelp() {
 		couldNotParse();
 		log("options are:");
 		log("* add [amt]");
 		log("* lose [amt]");
 	}
-	
+
 	private static void cmdMaxHP(String[] tokens) {
 		if (tokens.length < 2) {
 			cmdMaxHPHelp();
@@ -505,7 +537,7 @@ public class DevConsole
 			cmdMaxHPHelp();
 		}
 	}
-	
+
 	private static void cmdMaxHPHelp() {
 		couldNotParse();
 		log("options are:");
@@ -532,7 +564,7 @@ public class DevConsole
 			}
 		}
 	}
-	
+
 	private static void cmdGoldHelp() {
 		couldNotParse();
 		log("options are:");
@@ -561,7 +593,7 @@ public class DevConsole
 			}
 		}
 	}
-	
+
 	private static void cmdEnergyHelp() {
 		couldNotParse();
 		log("options are:");
@@ -573,7 +605,7 @@ public class DevConsole
 	private static void couldNotParse() {
 		log("could not parse previous command");
 	}
-	
+
 	private static void cmdUnlock(String[] tokens) {
 		if (tokens.length < 2) {
 			return;
@@ -589,15 +621,16 @@ public class DevConsole
 	private static void cmdDeck(String[] tokens) {
 		if (AbstractDungeon.player != null) {
 			if (tokens.length < 3) {
+				cmdDeckHelp();
 				return;
 			}
 
-			int upgradeIndex = 3;
-			while (upgradeIndex < tokens.length && ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) == 0) {
-				++upgradeIndex;
+			int upgradeIndex = tokens.length - 1;
+			while (ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) != 0) {
+				upgradeIndex--;
 			}
 
-			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex);
+			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
 			if (tokens[1].toLowerCase().equals("add")) {
@@ -605,26 +638,30 @@ public class DevConsole
 				if (c != null) {
 					// card count
 					int count = 1;
-					if (upgradeIndex + 1 < tokens.length
-							&& ConvertHelper.tryParseInt(tokens[upgradeIndex + 1], 0) != 0) {
-						count = ConvertHelper.tryParseInt(tokens[upgradeIndex + 1], 0);
+					if (tokens.length > 3 && ConvertHelper.tryParseInt(tokens[3], 0) != 0) {
+						count = ConvertHelper.tryParseInt(tokens[3], 0);
 					}
+
+					int upgradeCount = 0;
+					if (tokens.length > 4) {
+						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
+					}
+					
+					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
 
 					for (int i = 0; i < count; i++) {
-						c = c.makeCopy();
-
-						if (upgradeIndex != tokens.length) {
-							int upgradeCount = ConvertHelper.tryParseInt(tokens[upgradeIndex], 0);
-							for (int j = 0; j < upgradeCount; j++) {
-								c.upgrade();
-							}
+						AbstractCard copy = c.makeCopy();
+						for (int j = 0; j < upgradeCount; j++) {
+							copy.upgrade();
 						}
 
-						AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c, (float) Settings.WIDTH / 2.0f,
+						AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(copy, (float) Settings.WIDTH / 2.0f,
 								(float) Settings.HEIGHT / 2.0f));
 					}
+				} else {
+					log("could not find card " + cardName);
 				}
-			} else if (tokens[1].toLowerCase().equals("r")) {
+			} else if (tokens[1].toLowerCase().equals("remove")) {
 				// remove all cards
 				if (tokens[2].equals("all")) {
 					for (String str : AbstractDungeon.player.masterDeck.getCardNames()) {
@@ -634,19 +671,40 @@ public class DevConsole
 				} else {
 					AbstractDungeon.player.masterDeck.removeCard(cardName);
 				}
+			} else {
+				cmdDeckHelp();
 			}
+		} else {
+			log("cannot add cards when player doesn't exist");
 		}
+	}
+	
+	private static void cmdDeckHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [id] {count} {upgrade amt}");
+		log("* remove [id]");
+		log("* remove all");
 	}
 
 	private static void cmdDraw(String[] tokens) {
 		if (AbstractDungeon.getCurrRoom().monsters != null) {
 			if (tokens.length != 2) {
+				cmdDrawHelp();
 				return;
 			}
 
 			AbstractDungeon.actionManager
 					.addToTop(new DrawCardAction(AbstractDungeon.player, ConvertHelper.tryParseInt(tokens[1], 0)));
+		} else {
+			log("cannot draw when not in combat");
 		}
+	}
+	
+	private static void cmdDrawHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* draw [amt]");
 	}
 
 	private static void cmdFight(String[] tokens) {
@@ -730,21 +788,21 @@ public class DevConsole
 			return;
 		}
 
-		String potionID=""; 
-        for(int k=2;k<tokens.length;k++) { 
-          potionID=potionID.concat(tokens[k]); 
-          if(k!=tokens.length-1) { 
-            potionID=potionID.concat(" "); 
-          } 
-        } 
-         
-        AbstractPotion p=null; 
-        if(PotionHelper.potions.contains(potionID)) { 
-            p = PotionHelper.getPotion(potionID); 
-        }
-        if(PotionHelper.potions.contains(potionID+" Potion")) {
-        	p = PotionHelper.getPotion(potionID+" Potion");
-        }
+		String potionID = "";
+		for (int k = 2; k < tokens.length; k++) {
+			potionID = potionID.concat(tokens[k]);
+			if (k != tokens.length - 1) {
+				potionID = potionID.concat(" ");
+			}
+		}
+
+		AbstractPotion p = null;
+		if (PotionHelper.potions.contains(potionID)) {
+			p = PotionHelper.getPotion(potionID);
+		}
+		if (PotionHelper.potions.contains(potionID + " Potion")) {
+			p = PotionHelper.getPotion(potionID + " Potion");
+		}
 
 		if (p == null) {
 			log("invalid potion id");
@@ -761,7 +819,7 @@ public class DevConsole
 		p.flash();
 		AbstractDungeon.player.potions[i] = p;
 	}
-	
+
 	public static void cmdPotionHelp() {
 		couldNotParse();
 		log("options are:");
@@ -785,12 +843,12 @@ public class DevConsole
 		consoleFont = generator.generateFont(parameter);
 		generator.dispose();
 	}
-	
+
 	public static void log(String text) {
 		log.add(0, text);
 		prompted.add(0, false);
 	}
-	
+
 	public static void log(@SuppressWarnings("rawtypes") ArrayList list) {
 		for (Object o : list) {
 			log(o.toString());
@@ -813,10 +871,11 @@ public class DevConsole
 			if (sizeToDraw > MAX_LINES) {
 				sizeToDraw = MAX_LINES;
 			}
-			
+
 			consoleBackground.begin(ShapeType.Filled);
 			consoleBackground.setColor(consoleColor);
-			consoleBackground.rect(CONSOLE_X, CONSOLE_Y, (CONSOLE_W * Settings.scale), (CONSOLE_H * Settings.scale + (CONSOLE_TEXT_SIZE * Settings.scale * (sizeToDraw - 1))));
+			consoleBackground.rect(CONSOLE_X, CONSOLE_Y, (CONSOLE_W * Settings.scale),
+					(CONSOLE_H * Settings.scale + (CONSOLE_TEXT_SIZE * Settings.scale * (sizeToDraw - 1))));
 			consoleBackground.end();
 
 			sb.begin();
@@ -835,7 +894,7 @@ public class DevConsole
 		if (Gdx.input.isKeyJustPressed(toggleKey)) {
 			if (visible) {
 				currentText = "";
-				commandPos = 0;
+				commandPos = -1;
 			} else {
 				otherInputProcessor = Gdx.input.getInputProcessor();
 			}
@@ -843,20 +902,21 @@ public class DevConsole
 			Gdx.input.setInputProcessor(visible ? otherInputProcessor : consoleInputProcessor);
 			visible = !visible;
 		}
-		
+
 		// get previous commands
 		if (Gdx.input.isKeyJustPressed(priorKey)) {
 			if (visible) {
-				currentText = priorCommands.get(commandPos);
 				if (commandPos + 1 < priorCommands.size()) {
 					commandPos++;
 				}
+				currentText = priorCommands.get(commandPos);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(nextKey)) {
 			if (visible) {
 				if (commandPos - 1 < 0) {
 					currentText = "";
+					commandPos = -1;
 				} else {
 					commandPos--;
 					currentText = priorCommands.get(commandPos);
