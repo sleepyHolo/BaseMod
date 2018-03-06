@@ -30,6 +30,9 @@ Take a look at the wiki (https://github.com/daviscook477/BaseMod/wiki) to get st
 ## Console ##
 Take a look at the Console page on the wiki (https://github.com/daviscook477/BaseMod/wiki/Console) to start using the console to test things out!
 
+## Known Issues ##
+* If you use the console to `fight` an enemy or spawn an `event` in the starting room with Neow your save will be unloadable. Please refrain from using those commands until after leaving the starting room.
+
 ## For Modders ##
 
 ### Hooks ###
