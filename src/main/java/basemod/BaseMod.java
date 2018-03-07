@@ -340,6 +340,10 @@ public class BaseMod {
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
 	
+	// Text input
+	
+	private static ModTextPanel textPanel;
+	
 	//
 	// Initialization
 	//
@@ -368,6 +372,7 @@ public class BaseMod {
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 		
 		console = new DevConsole();
+		textPanel = new ModTextPanel();
 	}
 	
 	// setupAnimationGfx -
@@ -674,8 +679,6 @@ public class BaseMod {
 		ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
 		modBadges.add(badge);
 	}
-	
-	private static ModTextPanel textPanel = new ModTextPanel();
 	
 	//
 	// UI
