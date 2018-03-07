@@ -23,6 +23,8 @@ public class ModPanel {
     private ArrayList<ModColorDisplay> colorDisplays;
     private ArrayList<ModImage> images;
     
+    private Consumer<ModPanel> createFunc;
+    
     public InputProcessor oldInputProcessor = null;
     public boolean isUp = false;
     
@@ -32,6 +34,10 @@ public class ModPanel {
     public boolean waitingOnEvent = false;
      
     public ModPanel() {
+    	this((me) -> {});
+    }
+    
+    public ModPanel(Consumer<ModPanel> createFunc) {
         background = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
         buttons = new ArrayList<>();
         labels = new ArrayList<>();
@@ -40,6 +46,18 @@ public class ModPanel {
         images = new ArrayList<>();
         
         state = new HashMap<>();
+        
+        this.createFunc = createFunc;
+    }
+    
+    private boolean created = false;
+    
+    // lets mods do things the first time the panel is pulled up
+    public void onCreate() {
+    	if (!created) {
+        	this.createFunc.accept(this);
+        	created = true;
+    	}
     }
     
     // DEPRECATED
@@ -60,6 +78,14 @@ public class ModPanel {
     // DEPRECATED
     public void addColorDisplay(float x, float y, Texture texture, Texture outline, Consumer<ModColorDisplay> update) {
         colorDisplays.add(new ModColorDisplay(x, y, texture, outline, update));
+    }
+    
+    public void addButton(ModButton button) {
+    	buttons.add(button);
+    }
+    
+    public void addLabel(ModLabel label) {
+    	labels.add(label);
     }
     
     public void addSlider(ModSlider slider) {
@@ -88,36 +114,36 @@ public class ModPanel {
         renderText(sb);
     }
     
-    private void renderBg(SpriteBatch sb) {
+    public void renderBg(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
         sb.draw(background, (float)Settings.WIDTH / 2.0f - 682.0f, Settings.OPTION_Y - 376.0f, 682.0f, 376.0f, 1364.0f, 752.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 1364, 752, false, false);
     }
     
-    private void renderText(SpriteBatch sb) {
+    public void renderText(SpriteBatch sb) {
         for (ModLabel label : labels) {
             label.render(sb);
         }
     }
     
-    private void renderButtons(SpriteBatch sb) {
+    public void renderButtons(SpriteBatch sb) {
         for (ModButton button : buttons) {
             button.render(sb);
         }
     }
     
-    private void renderSliders(SpriteBatch sb) {
+    public void renderSliders(SpriteBatch sb) {
         for (ModSlider slider : sliders) {
             slider.render(sb);
         }
     }
     
-    private void renderColorDisplays(SpriteBatch sb) {
+    public void renderColorDisplays(SpriteBatch sb) {
         for (ModColorDisplay cd : colorDisplays) {
             cd.render(sb);
         }
     }
     
-    private void renderImages(SpriteBatch sb) {
+    public void renderImages(SpriteBatch sb) {
         for (ModImage img : images) {
             img.render(sb);
         }

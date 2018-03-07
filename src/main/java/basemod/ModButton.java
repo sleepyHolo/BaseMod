@@ -26,7 +26,11 @@ public class ModButton {
     public ModPanel parent;
     
     public ModButton(float xPos, float yPos, ModPanel p, Consumer<ModButton> c) {
-        texture = new Texture(Gdx.files.internal("img/BlankButton.png"));
+    	this(xPos, yPos, new Texture(Gdx.files.internal("img/BlankButton.png")), p, c);
+    }
+    
+    public ModButton(float xPos, float yPos, Texture tex, ModPanel p, Consumer<ModButton> c) {
+        texture = tex;
         x = xPos*Settings.scale;
         y = yPos*Settings.scale;
         w = texture.getWidth();
