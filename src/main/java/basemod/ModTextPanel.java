@@ -58,6 +58,8 @@ public class ModTextPanel implements RenderSubscriber, PreUpdateSubscriber {
 	}
 
 	public void receivePreUpdate() {
+		if (!this.shown) return;
+		
 		if (Gdx.input.isKeyPressed(67) && !ModTextPanel.textField.equals("") && this.waitTimer <= 0.0f) {
 			ModTextPanel.textField = ModTextPanel.textField.substring(0, ModTextPanel.textField.length() - 1);
 			this.waitTimer = 0.09f;
@@ -171,6 +173,8 @@ public class ModTextPanel implements RenderSubscriber, PreUpdateSubscriber {
 	}
 
 	public void receiveRender(final SpriteBatch sb) {
+		if (!this.shown) return;
+		
 		sb.setColor(this.screenColor);
 		sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0f, 0.0f, Settings.WIDTH, Settings.HEIGHT);
 		sb.setColor(this.uiColor);

@@ -340,6 +340,10 @@ public class BaseMod {
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
 	
+	// Text input
+	
+	private static ModTextPanel textPanel;
+	
 	//
 	// Initialization
 	//
@@ -368,6 +372,7 @@ public class BaseMod {
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 		
 		console = new DevConsole();
+		textPanel = new ModTextPanel();
 	}
 	
 	// setupAnimationGfx -
@@ -674,8 +679,6 @@ public class BaseMod {
 		ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
 		modBadges.add(badge);
 	}
-	
-	private static ModTextPanel textPanel = new ModTextPanel();
 	
 	//
 	// UI
@@ -1635,14 +1638,16 @@ public class BaseMod {
 	
 	// publishAnimationRender -
 	public static void publishAnimationRender(SpriteBatch sb) {
-		// custom animations
-		sb.end();
-		CardCrawlGame.psb.begin();
-		CardCrawlGame.psb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		CardCrawlGame.psb.draw(animationTextureRegion, 0, 0);
-		CardCrawlGame.psb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        CardCrawlGame.psb.end();
-        sb.begin();
+		if (modelRenderSubscribers.size() > 0) {
+			// custom animations
+			sb.end();
+			CardCrawlGame.psb.begin();
+			CardCrawlGame.psb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			CardCrawlGame.psb.draw(animationTextureRegion, 0, 0);
+			CardCrawlGame.psb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	        CardCrawlGame.psb.end();
+	        sb.begin();
+		}
 	}
 	
 	// publishPreRender -
@@ -1651,21 +1656,23 @@ public class BaseMod {
 			sub.receiveCameraRender(camera);
 		}
 		
-		// custom animations
-		animationBuffer.begin();
-	    Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	    batch.begin(animationCamera);
-	    
-	    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
-	    	sub.receiveModelRender(batch, animationEnvironment);
-	    }
-	    
-	    batch.end();
-	    animationBuffer.end();
-        animationTexture = animationBuffer.getColorBufferTexture();
-        animationTextureRegion = new TextureRegion(animationTexture);
-        animationTextureRegion.flip(false, true);
+		if (modelRenderSubscribers.size() > 0) {
+			// custom animations
+			animationBuffer.begin();
+		    Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+		    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		    batch.begin(animationCamera);
+		    
+		    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
+		    	sub.receiveModelRender(batch, animationEnvironment);
+		    }
+		    
+		    batch.end();
+		    animationBuffer.end();
+	        animationTexture = animationBuffer.getColorBufferTexture();
+	        animationTextureRegion = new TextureRegion(animationTexture);
+	        animationTextureRegion.flip(false, true);
+		}
 	}
 
 	// publishPostRender -
