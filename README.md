@@ -5,8 +5,8 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 
 ## Requirements ##
 #### General Use ####
-* Java 8+
-* ModTheSpire v2.2.1+ (https://github.com/kiooeht/ModTheSpire/releases)
+* **Java 8 (do not use Java 9 - there is an issue with ModTheSpire right now on Java 9)**
+* ModTheSpire v2.4.0+ (https://github.com/kiooeht/ModTheSpire/releases)
 
 #### Development ####
 * Java 8
@@ -18,7 +18,6 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 1. (If you haven't already) `mvn install` ModTheSpire Altenatively, modify pom.xml to point to a local copy of the JAR.
 2. Copy `desktop-1.0.jar` from your Slay the Spire folder into `../_lib` relative to the repo.
 3. Decompile `desktop-1.0.jar` with `java -jar "cfr_0_124.jar" --comments false --showversion false --caseinsensitivefs true --outputdir "decompiled" --jarfilter com.megacrit.cardcrawl.* "desktop-1.0.jar"`
-4. Run `_patch.bat` to automatically apply diffs
 5. Run `mvn package`
 
 ## Installation ##
@@ -29,6 +28,9 @@ Take a look at the wiki (https://github.com/daviscook477/BaseMod/wiki) to get st
 
 ## Console ##
 Take a look at the Console page on the wiki (https://github.com/daviscook477/BaseMod/wiki/Console) to start using the console to test things out!
+
+## Known Issues ##
+* If you use the console to `fight` an enemy or spawn an `event` in the starting room with Neow your save will be unloadable. Please refrain from using those commands until after leaving the starting room.
 
 ## For Modders ##
 

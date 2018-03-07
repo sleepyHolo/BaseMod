@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomCardWithRender;
 import basemod.helpers.SuperclassFinder;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
@@ -52,7 +51,7 @@ public class CreateCardImageSwitch {
 					descBoxColor.setAccessible(true);
 					descBoxColor.set(card, BaseMod.getDescBoxColor(color.toString()));
 					
-				} catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 					logger.error("could not set card image properties on card " + card.getClass().toString() + " with color " + color.toString());
 					logger.error("with exception: " + e.getMessage());
 					e.printStackTrace();

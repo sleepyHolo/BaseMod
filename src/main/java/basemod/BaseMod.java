@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -275,13 +276,13 @@ public class BaseMod {
 	private static ArrayList<String> potionsToRemove; 
 
 	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> playerClassMap;
-	private static HashMap<String, String> playerTitleStringMap;
-	private static HashMap<String, String> playerClassStringMap;
-	private static HashMap<String, String> playerColorMap;
-	private static HashMap<String, String> playerSelectTextMap;
-	private static HashMap<String, String> playerSelectButtonMap;
-	private static HashMap<String, String> playerPortraitMap;
+	public static HashMap<String, Class> playerClassMap;
+	public static HashMap<String, String> playerTitleStringMap;
+	public static HashMap<String, String> playerClassStringMap;
+	public static HashMap<String, String> playerColorMap;
+	public static HashMap<String, String> playerSelectTextMap;
+	public static HashMap<String, String> playerSelectButtonMap;
+	public static HashMap<String, String> playerPortraitMap;
 
 	public static HashMap<String, CharStat> playerStatsMap;
 	
@@ -672,6 +673,15 @@ public class BaseMod {
 
 		ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
 		modBadges.add(badge);
+	}
+	
+	private static ModTextPanel textPanel = new ModTextPanel();
+	
+	//
+	// UI
+	//
+	public static void openTextPanel(String prompt, String startingValue, String defaultValue, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
+		textPanel.show(startingValue, defaultValue, cancel, confirm);
 	}
 
 	public static boolean saveExists() {

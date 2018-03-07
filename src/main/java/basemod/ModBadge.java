@@ -99,6 +99,8 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
             BaseMod.modSettingsUp = true;
             modPanel.isUp = true;
             
+            modPanel.onCreate();
+            
             CardCrawlGame.mainMenuScreen.darken();
             CardCrawlGame.mainMenuScreen.hideMenuButtons();
             CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.SETTINGS;

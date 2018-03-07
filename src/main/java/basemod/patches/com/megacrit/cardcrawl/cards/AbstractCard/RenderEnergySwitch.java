@@ -59,7 +59,7 @@ public class RenderEnergySwitch {
 					
 				Color renderColor = (Color) renderColorField.get(card);
 				renderHelperMethod.invoke(card, sb, renderColor, orbTexture, drawX, drawY);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
 				logger.error("could not render energy for card " + card.getClass().toString() + " with color " + color.toString());
 				logger.error("exception is: " + e.getMessage());
 				e.printStackTrace();

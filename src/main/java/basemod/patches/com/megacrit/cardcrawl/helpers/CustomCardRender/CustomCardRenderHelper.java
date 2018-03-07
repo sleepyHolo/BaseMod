@@ -28,7 +28,7 @@ public class CustomCardRenderHelper {
 			Color renderColor = (Color) renderColorField.get(card);
 			renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
 			
-		}catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |  SecurityException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException |  SecurityException e) {
 			e.printStackTrace();
 		}
 	}
