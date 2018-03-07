@@ -5,8 +5,8 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 
 ## Requirements ##
 #### General Use ####
-* Java 8+
-* ModTheSpire v2.2.1+ (https://github.com/kiooeht/ModTheSpire/releases)
+* **Java 8 (do not use Java 9 - there is an issue with ModTheSpire right now on Java 9)**
+* ModTheSpire v2.4.0+ (https://github.com/kiooeht/ModTheSpire/releases)
 
 #### Development ####
 * Java 8
