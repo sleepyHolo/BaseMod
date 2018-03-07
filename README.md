@@ -18,7 +18,6 @@ Currently supported version: `[EARLY_ACCESS_015]` (non beta)
 1. (If you haven't already) `mvn install` ModTheSpire Altenatively, modify pom.xml to point to a local copy of the JAR.
 2. Copy `desktop-1.0.jar` from your Slay the Spire folder into `../_lib` relative to the repo.
 3. Decompile `desktop-1.0.jar` with `java -jar "cfr_0_124.jar" --comments false --showversion false --caseinsensitivefs true --outputdir "decompiled" --jarfilter com.megacrit.cardcrawl.* "desktop-1.0.jar"`
-4. Run `_patch.bat` to automatically apply diffs
 5. Run `mvn package`
 
 ## Installation ##
