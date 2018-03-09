@@ -32,6 +32,7 @@ Take a look at the Console page on the wiki (https://github.com/daviscook477/Bas
 ## Known Issues ##
 * If you use the console to `fight` an enemy or spawn an `event` in the starting room with Neow your save will be unloadable. Please refrain from using those commands until after leaving the starting room.
 * If you use the `event` command with an invalid ID it will crash the game.
+* BaseMod is likely to break when weekly patches hit. This means that if it's Thursday or Friday and things suddenly stop working you'll probably need to wait for an updated version of BaseMod in a day or two :)
 
 ## Contributors ##
 * t-larson - Original author
