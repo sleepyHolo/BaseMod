@@ -59,7 +59,6 @@ import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.powers.AbsorbPower;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.AccuracyPower;
 import com.megacrit.cardcrawl.powers.AfterImagePower;
@@ -89,7 +88,6 @@ import com.megacrit.cardcrawl.powers.DrawCardNextTurnPower;
 import com.megacrit.cardcrawl.powers.DrawDownPower;
 import com.megacrit.cardcrawl.powers.DrawPower;
 import com.megacrit.cardcrawl.powers.DrawReductionPower;
-import com.megacrit.cardcrawl.powers.ElectricFieldPower;
 import com.megacrit.cardcrawl.powers.EnergizedPower;
 import com.megacrit.cardcrawl.powers.EntanglePower;
 import com.megacrit.cardcrawl.powers.EnvenomPower;
@@ -103,11 +101,9 @@ import com.megacrit.cardcrawl.powers.ForcefieldPower;
 import com.megacrit.cardcrawl.powers.FrailPower;
 import com.megacrit.cardcrawl.powers.GainStrengthPower;
 import com.megacrit.cardcrawl.powers.GambitPower;
-import com.megacrit.cardcrawl.powers.GeneratorPower;
 import com.megacrit.cardcrawl.powers.GenericStrengthUpPower;
 import com.megacrit.cardcrawl.powers.GrowthPower;
 import com.megacrit.cardcrawl.powers.HexPower;
-import com.megacrit.cardcrawl.powers.ImpulsePower;
 import com.megacrit.cardcrawl.powers.InfiniteBladesPower;
 import com.megacrit.cardcrawl.powers.IntangiblePower;
 import com.megacrit.cardcrawl.powers.JuggernautPower;
@@ -146,7 +142,6 @@ import com.megacrit.cardcrawl.powers.SplitPower;
 import com.megacrit.cardcrawl.powers.SporeCloudPower;
 import com.megacrit.cardcrawl.powers.StasisPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
-import com.megacrit.cardcrawl.powers.SystemsPower;
 import com.megacrit.cardcrawl.powers.ThieveryPower;
 import com.megacrit.cardcrawl.powers.ThornsPower;
 import com.megacrit.cardcrawl.powers.ThousandCutsPower;
@@ -565,7 +560,6 @@ public class BaseMod {
 	@SuppressWarnings("rawtypes")
 	private static void initializePowerMap() {
 		powerMap=new HashMap<String,Class>();
-		powerMap.put("Absorb",AbsorbPower.class);
 		powerMap.put("Accuracy",AccuracyPower.class);
 		powerMap.put("After Image",AfterImagePower.class);
 		powerMap.put("Anger",AngerPower.class);
@@ -595,7 +589,6 @@ public class BaseMod {
 		powerMap.put("Draw Down",DrawDownPower.class);
 		powerMap.put("Draw",DrawPower.class);
 		powerMap.put("Draw Reduction",DrawReductionPower.class);
-		powerMap.put("Electric Field",ElectricFieldPower.class);
 		powerMap.put("Energized",EnergizedPower.class);
 		powerMap.put("Entangled",EntanglePower.class);
 		powerMap.put("Envenom",EnvenomPower.class);
@@ -609,11 +602,9 @@ public class BaseMod {
 		powerMap.put("Frail",FrailPower.class);
 		powerMap.put("Shackled",GainStrengthPower.class);
 		powerMap.put("Gambit",GambitPower.class);
-		powerMap.put("Generator",GeneratorPower.class);
 		powerMap.put("Generic Strength Up Power",GenericStrengthUpPower.class);
 		powerMap.put("GrowthPower",GrowthPower.class);
 		powerMap.put("Hex",HexPower.class);
-		powerMap.put("Impulse",ImpulsePower.class);
 		powerMap.put("Infinite Blades",InfiniteBladesPower.class);
 		powerMap.put("Intangible",IntangiblePower.class);
 		powerMap.put("Juggernaut",JuggernautPower.class);
@@ -652,7 +643,6 @@ public class BaseMod {
 		powerMap.put("Spore Cloud",SporeCloudPower.class);
 		powerMap.put("Stasis",StasisPower.class);
 		powerMap.put("Strength",StrengthPower.class);
-		powerMap.put("Systems",SystemsPower.class);
 		powerMap.put("Thievery",ThieveryPower.class);
 		powerMap.put("Thorns",ThornsPower.class);
 		powerMap.put("Thousand Cuts",ThousandCutsPower.class);
@@ -1533,11 +1523,12 @@ public class BaseMod {
     // Powers
     //
     
-    public static void addPower(Class powerClass,String potionID) {
+    public static void addPower(@SuppressWarnings("rawtypes") Class powerClass,String potionID) {
     	powerMap.put(potionID, powerClass);
     }
     
-    public static Class getPowerClass(String powerID) {
+    @SuppressWarnings("rawtypes")
+	public static Class getPowerClass(String powerID) {
     	return powerMap.get(powerID);
     }
     
