@@ -31,6 +31,21 @@ Take a look at the Console page on the wiki (https://github.com/daviscook477/Bas
 
 ## Known Issues ##
 * If you use the console to `fight` an enemy or spawn an `event` in the starting room with Neow your save will be unloadable. Please refrain from using those commands until after leaving the starting room.
+* If you use the `event` command with an invalid ID it will crash the game.
+* BaseMod is likely to break when weekly patches hit. This means that if it's Thursday or Friday and things suddenly stop working you'll probably need to wait for an updated version of BaseMod in a day or two :)
+
+## Contributors ##
+* t-larson - Original author
+* FlipskiZ - `hand` command, bug fixes
+* daviscook477 - Custom players, custom colors, custom cards, more API hooks, code cleanup, bugfixes
+* Haashi - custom potion support (w/ hooks for obtaining potions and relics) and dev console support for potions and powers
+* BlankTheEvil - custom rendering for cards on a card-by-card basis and custom energy orb support
+
+## Roadmap ##
+* Keep up-to-date with weekly patches to keep mods useable
+* More tools/more intuitive tools for mods to create custom UIs
+* CustomMonster class so modders can create new monsters with new animations
+* Have a feature request? Make an issue: (https://github.com/daviscook477/BaseMod/issues)
 
 ## For Modders ##
 
@@ -68,11 +83,3 @@ The process for creating custom player characters is fairly involved but still n
 3. To create a new color use `BaseMod.addColor`. This should be called in your mod's `initialize` method. It does not need a special handler to work. The parameters are as follows: `String color` (this should be `MY_NEW_COLOR.toString()`), `Color bgColor` (the background color for the card color), `Color backColor` (the back color for the card color), `Color frameColor` (the frame color for the card color), `Color frameOutineColor` (the frame outline color for the card color), `Color descBoxColor` (the description box color), `Color trailVfxColor` (the trail vfx color), `Color glowColor` (the glow color), `String attackBg` (path to your attack bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String skillBg` (path to your skill bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String powerBg` (path to your power bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String energyOrb` (path to your energy orb texture for the card color, path starts relative to your `SlayTheSpire` folder)
 4. To create a new player character make a EditCharacterSubscriber and in the `receiveEditCharacters` method go ahead and call `BaseMod.addCharacter`. The parameters are as follows: `Class characterClass` (the actual java *Class* of your character, e.g. `MyCharacterClass.class`), `String titleString` (title string for the character), `String classString` (class string for the character), `String color`, (the color for this character; should be `My_New_Color.toString()`), `String selectText` (select text for the character), `String selectButton` (path to select button texture starting relative to the `SlayTheSpire` folder), `String portrait` (path to portrait texture starting relative to the `SlayTheSpire` folder), `String characterID` (this should be `MY_NEW_PLAYER_CHARACTER.toString()`)
 5. Now just be sure to add some cards for your custom character! When defining cards for your custom character rather than using `AbstractCard.CardColor.WHATEVER` go ahead and use `MY_NEW_COLOR` instead.
-6. Note that there are likely to be bugs with this feature since it is complex and new so use at your own risk and also please submit bug reports as issues on this repository.
-
-## Contributors ##
-* t-larson - Original author
-* FlipskiZ - `hand` command, bug fixes
-* daviscook477 - Custom players, custom colors, custom cards, more API hooks, code cleanup, bugfixes
-* Haashi - custom potion support (w/ hooks for obtaining potions and relics) and dev console support for potions and powers
-* BlankTheEvil - custom rendering for cards on a card-by-card basis and custom energy orb support

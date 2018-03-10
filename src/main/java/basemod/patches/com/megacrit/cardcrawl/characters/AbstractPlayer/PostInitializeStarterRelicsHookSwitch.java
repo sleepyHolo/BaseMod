@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.characters.AbstractPlayer", method="initializeStarterRelics", paramtypes={"com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass"})
 public class PostInitializeStarterRelicsHookSwitch {
-	@SpireInsertPatch(rloc=15, localvars={"relics"})
+	@SpireInsertPatch(rloc=13, localvars={"relics"})
     public static void Insert(Object mObj, PlayerClass chosenClass, @ByRef ArrayList<String>[] relicsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
 		ArrayList<String> theRelics = relicsObj[0];
