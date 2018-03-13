@@ -155,6 +155,7 @@ import com.megacrit.cardcrawl.powers.WraithFormPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
+import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
@@ -673,8 +674,11 @@ public class BaseMod {
 	//
 	// UI
 	//
-	public static void openTextPanel(String prompt, String startingValue, String defaultValue, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
-		textPanel.show(startingValue, defaultValue, cancel, confirm);
+	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue, String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
+        CardCrawlGame.mainMenuScreen.lighten();
+        CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.RENAME;
+        CardCrawlGame.cancelButton.hideInstantly();
+		textPanel.show(panel, startingValue, defaultValue, explanationText, cancel, confirm);
 	}
 
 	public static boolean saveExists() {
