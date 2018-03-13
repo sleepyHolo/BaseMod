@@ -24,7 +24,8 @@ public CustomCardWithRender(String id, String name, String img, String bgTexture
 		if (imgMap.containsKey(textureString)) {
 			return imgMap.get(textureString);
 		}else {
-			return imgMap.put(textureString, new Texture(Gdx.files.internal(textureString)));
+			imgMap.put(textureString, new Texture(Gdx.files.internal(textureString)));
+			return imgMap.get(textureString);
 		}
 	}
 
