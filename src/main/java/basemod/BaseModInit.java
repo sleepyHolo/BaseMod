@@ -16,9 +16,9 @@ import basemod.interfaces.PostInitializeSubscriber;
  *
  */
 public class BaseModInit implements PostInitializeSubscriber {
-    private static final String MODNAME = "BaseMod";
-    private static final String AUTHOR = "t-larson, daviscook447, FlipskiZ, Hasshi";
-    private static final String DESCRIPTION = "v1.8.0 NL Provides hooks and a console.";
+    public static final String MODNAME = "BaseMod";
+    public static final String AUTHOR = "t-larson, daviscook447, FlipskiZ, Hasshi";
+    public static final String DESCRIPTION = "v1.8.0 NL Provides hooks and a console.";
 	
     private InputProcessor oldInputProcessor;
 	
@@ -41,6 +41,7 @@ public class BaseModInit implements PostInitializeSubscriber {
                 @Override
                 public boolean keyUp(int keycode) {
                     DevConsole.toggleKey = keycode;
+                    BaseMod.maybeSetString("console-key", Keys.toString(keycode));
                     me.parent.waitingOnEvent = false;
                     Gdx.input.setInputProcessor(oldInputProcessor);
                     return true;

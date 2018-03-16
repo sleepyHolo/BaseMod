@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -326,6 +328,10 @@ public class BaseMod {
 	private static Texture animationTexture;
 	private static TextureRegion animationTextureRegion;
 	
+	public static final String CONFIG_FILE = "basemod-config";
+	private static Object config;
+	private static Class<?> spireConfig;
+	
 	/* should be final but the compiler doesn't like me */
 	public static String save_path = "saves" + File.separator;
 
@@ -344,6 +350,71 @@ public class BaseMod {
 	// Initialization
 	//
 
+	private static Object maybeGetConfig() {
+		Properties defaultProperties = new Properties();
+		defaultProperties.setProperty("console-key", "`");
+		Object configObject;
+		
+		try {
+			spireConfig = Class.forName("com.evacipated.cardcrawl.modthespire.lib.SpireConfig");
+			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class).newInstance(
+					BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
+			return configObject;
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.info("could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
+			spireConfig = null;
+			return null;
+		}
+	}
+	
+	private static void maybeSaveConfig() {
+		if (spireConfig == null) return;
+		
+		try {
+			Method save = spireConfig.getDeclaredMethod("save");
+			save.invoke(config);
+		} catch (Exception e) {
+			logger.info("could not save config");
+			logger.error(e.toString());
+		}
+	}
+	
+	public static String maybeGetString(String key) {
+		if (spireConfig == null) return null;
+		
+		try {
+			Method getString = spireConfig.getDeclaredMethod("getString", String.class);
+			return (String) getString.invoke(config, key);
+		} catch (Exception e) {
+			logger.info("could not get string: " + key);
+			logger.error(e.toString());
+			return null;
+		}
+	}
+	
+	public static void maybeSetString(String key, String value) {
+		if (spireConfig == null) return;
+		
+		try {
+			Method setString = spireConfig.getDeclaredMethod("setString", String.class, String.class);
+			setString.invoke(config, key, value);
+			maybeSaveConfig();
+		} catch (Exception e) {
+			logger.info("could not set string: " + key + " to value: " + value);
+			logger.error(e.toString());
+		}
+	}
+	
+	private static void setProperties() {
+		// if config can't be loaded leave things at defaults
+		if (config == null) {
+			return;
+		}
+		
+		String consoleKey = maybeGetString("console-key");
+		if (consoleKey != null) DevConsole.toggleKey = Keys.valueOf(consoleKey);
+	}
+	
 	// initialize -
 	public static void initialize() {
 		System.out.println("libgdx version " + Version.VERSION);
@@ -367,6 +438,9 @@ public class BaseMod {
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 		
+		
+		config = maybeGetConfig();
+		setProperties();
 		console = new DevConsole();
 		textPanel = new ModTextPanel();
 	}
