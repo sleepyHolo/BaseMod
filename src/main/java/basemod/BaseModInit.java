@@ -1,12 +1,10 @@
 package basemod;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 
 import basemod.interfaces.PostInitializeSubscriber;
 
@@ -22,6 +20,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 	
     private InputProcessor oldInputProcessor;
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void receivePostInitialize() {
         // BaseMod post initialize handling
