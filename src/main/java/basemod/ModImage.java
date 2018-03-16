@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 
-public class ModImage {
+public class ModImage implements IUIElement {
 	private Texture texture;
 	private float x;
 	private float y;
@@ -32,5 +32,17 @@ public class ModImage {
 	public void render(SpriteBatch sb) {
 		sb.setColor(Color.WHITE);
 		sb.draw(texture, x, y, w, h);
+	}
+	
+	public void update() {}
+	
+	@Override
+	public int renderLayer() {
+		return ModPanel.BACKGROUND_LAYER;
+	}
+
+	@Override
+	public int updateOrder() {
+		return ModPanel.DEFAULT_UPDATE;
 	}
 }

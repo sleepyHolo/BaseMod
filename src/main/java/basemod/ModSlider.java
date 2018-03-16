@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.helpers.*;
 
 import java.util.function.Consumer;
 
-public class ModSlider {
+public class ModSlider implements IUIElement {
     private static final float BG_X = 1350.0f * Settings.scale;
     private static final float L_X = 1235.0f * Settings.scale;
     private static final float SLIDE_W = 230.0f * Settings.scale;
@@ -93,4 +93,14 @@ public class ModSlider {
     private void onChange() {
         change.accept(this);
     }
+    
+	@Override
+	public int renderLayer() {
+		return ModPanel.MIDDLE_LAYER;
+	}
+
+	@Override
+	public int updateOrder() {
+		return ModPanel.DEFAULT_UPDATE;
+	}
 }

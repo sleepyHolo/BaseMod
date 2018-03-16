@@ -1,5 +1,11 @@
 package basemod;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.function.Consumer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -10,18 +16,44 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.function.Consumer;
-
 public class ModPanel {
     
+	public static final int BACKGROUND_LAYER = 0;
+	public static final int MIDDLE_LAYER = 1;
+	public static final int TEXT_LAYER = 2;
+	
+	public static final int PRIORITY_UPDATE = 0;
+	public static final int DEFAULT_UPDATE = 1;
+	public static final int LATE_UPDATE = 2;
+	
     private static Texture background;
-    private ArrayList<ModButton> buttons;
-    private ArrayList<ModLabel> labels;
-    private ArrayList<ModSlider> sliders;
-    private ArrayList<ModColorDisplay> colorDisplays;
-    private ArrayList<ModImage> images;
+    
+    /*
+     * we use ArrayList with Collections.sort on every insert instead of a TreeSet
+     * for maintaining an ordered list because TreeSet has the unfortunate set property
+     * of ignoring duplicates which it defines by things that are equal using its comparator
+     * 
+     * we use 2 ArrayLists so we can have separate render orderings and update orderings
+     * for the IUIElement(s)
+     */
+    private static Comparator<IUIElement> renderComparator = new Comparator<IUIElement>() {
+
+		@Override
+		public int compare(IUIElement obj0, IUIElement obj1) {
+			return (obj0.renderLayer() - obj1.renderLayer());
+		}
+    	
+    };
+    private static Comparator<IUIElement> updateComparator = new Comparator<IUIElement>() {
+
+		@Override
+		public int compare(IUIElement obj0, IUIElement obj1) {
+			return (obj0.updateOrder() - obj1.updateOrder());
+		}
+    	
+    };
+    private ArrayList<IUIElement> uiElementsRender;
+    private ArrayList<IUIElement> uiElementsUpdate;
     
     private Consumer<ModPanel> createFunc;
     
@@ -39,11 +71,9 @@ public class ModPanel {
     
     public ModPanel(Consumer<ModPanel> createFunc) {
         background = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
-        buttons = new ArrayList<>();
-        labels = new ArrayList<>();
-        sliders = new ArrayList<>();
-        colorDisplays = new ArrayList<>();
-        images = new ArrayList<>();
+        
+        uiElementsRender = new ArrayList<>();
+        uiElementsUpdate = new ArrayList<>();
         
         state = new HashMap<>();
         
@@ -60,100 +90,117 @@ public class ModPanel {
     	}
     }
     
-    // DEPRECATED
+    @Deprecated
     public void addButton(float x, float y, Consumer<ModButton> click) {
-        buttons.add(new ModButton(x, y, this, click));
+        addUIElement(new ModButton(x, y, this, click));
     }
     
-    // DEPRECATED
+    @Deprecated
     public void addLabel(String text, float x, float y, Consumer<ModLabel> update) {
-        labels.add(new ModLabel(text, x, y, this, update));
+    	addUIElement(new ModLabel(text, x, y, this, update));
     }
     
-    // DEPRECATED
+    @Deprecated
     public void addSlider(String label, float x, float y, float multi, String suffix, Consumer<ModSlider> change) {
-        sliders.add(new ModSlider(label, x, y, multi, suffix, this, change));
+        addUIElement(new ModSlider(label, x, y, multi, suffix, this, change));
     }
     
-    // DEPRECATED
+    @Deprecated
     public void addColorDisplay(float x, float y, Texture texture, Texture outline, Consumer<ModColorDisplay> update) {
-        colorDisplays.add(new ModColorDisplay(x, y, texture, outline, update));
+    	addUIElement(new ModColorDisplay(x, y, texture, outline, update));
     }
     
+    @Deprecated
     public void addButton(ModButton button) {
-    	buttons.add(button);
+    	addUIElement(button);
     }
     
+    @Deprecated
     public void addLabel(ModLabel label) {
-    	labels.add(label);
+    	addUIElement(label);
     }
     
+    @Deprecated
     public void addSlider(ModSlider slider) {
-        sliders.add(slider);
+    	addUIElement(slider);
     }
     
+    @Deprecated
     public void addColorDisplay(ModColorDisplay mcd) {
-        colorDisplays.add(mcd);
+    	addUIElement(mcd);
     }
     
+    @Deprecated
     public void addImage(ModImage img) {
-        images.add(img);
+    	addUIElement(img);
+    }
+    
+    @Deprecated
+    public void addToggleButton(ModToggleButton button) {
+    	addUIElement(button);
+    }
+    
+    public void addUIElement(IUIElement element) {
+    	uiElementsRender.add(element);
+    	Collections.sort(uiElementsRender, renderComparator);
+    	uiElementsUpdate.add(element);
+    	Collections.sort(uiElementsUpdate, updateComparator);
     }
     
     public void render(SpriteBatch sb) {
-        // Bottom layer
+        // Background pane
         renderBg(sb);
-        renderImages(sb);
         
-        // Middle layer
+        // maintain backwards compatibility with mods that refined these methods in a subclass
+        renderImages(sb);
         renderButtons(sb);
         renderSliders(sb);
         renderColorDisplays(sb);
-        
-        // Top layer
         renderText(sb);
+        
+        // Render UI elements
+        // TreeSet maintains an ordering on inserted elements at insertion time
+        // and IUIElement specifies a layer so iterating through and rendering each
+        // element in turn will render the smallest layers first and then the higher layers
+        for (IUIElement elem : uiElementsRender) {
+        	elem.render(sb);
+        }
     }
+    
+    @Deprecated
+    public void renderText(SpriteBatch sb) {}
+    
+    @Deprecated
+    public void renderButtons(SpriteBatch sb) {}
+    
+    @Deprecated
+    public void renderSliders(SpriteBatch sb) {}
+    
+    @Deprecated
+    public void renderColorDisplays(SpriteBatch sb) {}
+    
+    @Deprecated
+    public void renderImages(SpriteBatch sb) {}
     
     public void renderBg(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
         sb.draw(background, (float)Settings.WIDTH / 2.0f - 682.0f, Settings.OPTION_Y - 376.0f, 682.0f, 376.0f, 1364.0f, 752.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 1364, 752, false, false);
     }
     
-    public void renderText(SpriteBatch sb) {
-        for (ModLabel label : labels) {
-            label.render(sb);
-        }
-    }
-    
-    public void renderButtons(SpriteBatch sb) {
-        for (ModButton button : buttons) {
-            button.render(sb);
-        }
-    }
-    
-    public void renderSliders(SpriteBatch sb) {
-        for (ModSlider slider : sliders) {
-            slider.render(sb);
-        }
-    }
-    
-    public void renderColorDisplays(SpriteBatch sb) {
-        for (ModColorDisplay cd : colorDisplays) {
-            cd.render(sb);
-        }
-    }
-    
-    public void renderImages(SpriteBatch sb) {
-        for (ModImage img : images) {
-            img.render(sb);
-        }
-    }
-    
     public void update() {
+    	// maintain backwards compatibility with mods that refined these methods in a subclass
         updateText();
         updateButtons();
         updateSliders();
         updateColorDisplays();
+    	
+        // Update UI elements
+        // TreeSet maintains an ordering on inserted elements at insertion time
+        // and IUIElement specifies a layer so iterating through and updating each
+        // element in turn will update the smallest layers first and then the higher layers
+        for (IUIElement elem : uiElementsUpdate) {
+        	elem.update();
+        }
         
         if (InputHelper.pressedEscape) {
             InputHelper.pressedEscape = false;
@@ -170,27 +217,15 @@ public class ModPanel {
         }
     }
     
-    private void updateText() {
-        for (ModLabel label : labels) {
-            label.update();
-        }
-    }
+    @Deprecated
+    private void updateText() {}
     
-    private void updateButtons() {
-        for (ModButton button : buttons) {
-            button.update();
-        }
-    }
+    @Deprecated
+    private void updateButtons() {}
     
-    private void updateSliders() {
-        for (ModSlider slider : sliders) {
-            slider.update();
-        }
-    }
+    @Deprecated
+    private void updateSliders() {}
     
-    private void updateColorDisplays() {
-        for (ModColorDisplay cd : colorDisplays) {
-            cd.update();
-        }
-    }
+    @Deprecated
+    private void updateColorDisplays() {}
 }

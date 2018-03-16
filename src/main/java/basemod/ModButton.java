@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.helpers.InputHelper;
 import java.util.function.Consumer;
 
 // DEPRECATED
-public class ModButton {
+public class ModButton implements IUIElement{
     private static final float HB_SHRINK = 14.0f;
     
     private Consumer<ModButton> click;
@@ -70,4 +70,14 @@ public class ModButton {
     private void onClick() {
         click.accept(this);
     }
+
+	@Override
+	public int renderLayer() {
+		return ModPanel.MIDDLE_LAYER;
+	}
+
+	@Override
+	public int updateOrder() {
+		return ModPanel.DEFAULT_UPDATE;
+	}
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 
-public class ModLabel {
+public class ModLabel implements IUIElement{
     private Consumer<ModLabel> update;
     
     public ModPanel parent;
@@ -48,4 +48,14 @@ public class ModLabel {
     public void update() {
         update.accept(this);
     }
+    
+	@Override
+	public int renderLayer() {
+		return ModPanel.TEXT_LAYER;
+	}
+
+	@Override
+	public int updateOrder() {
+		return ModPanel.PRIORITY_UPDATE;
+	}
 }
