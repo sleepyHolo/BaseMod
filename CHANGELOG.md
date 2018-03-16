@@ -185,3 +185,49 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### v1.9.2 ####
 * Fix campfire UI for weekly patch (week 14)
+
+#### v1.9.3 ####
+* Reorganize the image locations for the test mod
+
+#### v1.9.4 ####
+* Add support for Custom Keywords to BaseMod with the editKeywords callback that ensures adding keywords is timed properly
+
+#### v1.9.5 ####
+* Add a hook for when powers are modified
+
+#### v1.9.6 ####
+* Can now set up character specific relics for characters other than the ironclad and silent
+
+#### v2.0.0 ####
+* Dev console has been completely revamped
+* Holding down keys triggers multiple keypresses
+* The console remembers previous commands so use the up and down arrows to select between previously typed commands
+* The console is multiline now in order to display the last few commands and their outputs
+* Help text is displayed for commands if they are mistyped
+* More commands! `hp` and `maxhp` allow you to change your current HP and current max HP
+
+#### v2.0.1 ####
+* Hotfix reverting multiple keypresses on holding down keys because it broke a bunch of things
+
+#### v2.1.0 ####
+* New UI features for Modders
+
+#### v2.1.1 ####
+* Hotfix to prevent wasting GPU cycles when there are no custom characters to render
+
+#### v2.1.2 ####
+* Update to week 15 patch
+
+#### v2.1.3 ####
+* Hotfix to fix the console on the week 15 patch
+
+#### v2.2.0 ####
+* Add text box support for mod settings with `BaseMod.openTextPanel`
+* Merge pull request by BlankTheEvil to fix `CustomCardWithRender` appearing incorrectly in the CardLibrary screen
+
+#### v2.3.0 ####
+* Support ModTheSpire v2.5.0 and now save the console hotkey
+* Indicate that BaseMod is built specifically for the week 15 patch
+* The ModPanel UI backend has been made better and more extensible. A few methods have been deprecated but there are no breakign changes.
+* Added ToggleButton - idea and some code courtesy of twanvl (https://github.com/twanvl)
+* Added a LabeledToggleButton which is a ToggleButton with a text label

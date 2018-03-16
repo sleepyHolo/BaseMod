@@ -1,12 +1,14 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
-Currently supported version: `[EARLY_ACCESS_015]` (non beta)
+Currently supported version of Slay The Spire: `[EARLY_ACCESS_015]` (non beta)
+
+![Developer Console](github_resources/console.png)
 
 ## Requirements ##
 #### General Use ####
 * **Java 8 (do not use Java 9 - there is an issue with ModTheSpire right now on Java 9)**
-* ModTheSpire v2.4.0+ (https://github.com/kiooeht/ModTheSpire/releases)
+* ModTheSpire v2.3.0+ (https://github.com/kiooeht/ModTheSpire/releases)
 
 #### Development ####
 * Java 8
@@ -54,32 +56,3 @@ Take a look here for the hooks that are available (https://github.com/daviscook4
 
 ### Mod Badges ###
 Take alook here for how to set up a Mod Badge (https://github.com/daviscook477/BaseMod/wiki/Mod-Badges)
-
-### Custom Relics ###
-* `CustomRelic(String id, Texture texture, AbstractRelic.RelicTier tier, AbstractRelic.LandingSound sfx)`
-* `BaseMod.addRelic(AbstractRelic relic, RelicType type)` (note: `CustomRelic` extends `AbstractRelic`) and `RelicType` indicates if this relic is shared between both characters or `RED` only or `GREEN` only.
-* `BaseMod.removeRelic(AbstractRelic relic, RelicType type)` removes a relic from the game (note: removing a relic used by an event is currently untested/undefined behavior)
-* `BaseMod.removeRelic(AbstractRelic relic)` removes a relic from the game without having to know its `RelicType`
-
-### Custom Cards ###
-* `CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool)`
-* `BaseMod.addCard(AbstractCard card)` (note: `CustomCard` extends `AbstractCard`).
-* `BaseMod.removeCard(AbstractCard card)` removes a card from the game (note: removing a card used by an event is currently untested/undefined behavior)
-
-### Custom Player Characters ###
-The process for creating custom player characters is fairly involved but still not too complex. It is detailed below:
-
-1. To add a custom character there are two major steps. You need to register both a new color and a new character.  Basically the Ironclad is RED, the Silent is GREEN, the unused content Crowbot is BLUE, etc... In making a custom character you would want to make a new color like maybe YELLOW or PURPLE or ORANGE.
-2. Since the base game represents colors using an enum we need to use ModTheSpire's enum patching feature. To do this create any class and add to it the following code:
-```
-	@SpireEnum
-	public static AbstractCard.CardColor MY_NEW_COLOR;
-```
-3. The base game also reprents players using an enum so we must do the same thing for the player enum. Use this code:
-```
-	@SpireEnum
-	public static AbstractPlayer.PlayerClass MY_NEW_PLAYER_CHARACTER;
-```
-3. To create a new color use `BaseMod.addColor`. This should be called in your mod's `initialize` method. It does not need a special handler to work. The parameters are as follows: `String color` (this should be `MY_NEW_COLOR.toString()`), `Color bgColor` (the background color for the card color), `Color backColor` (the back color for the card color), `Color frameColor` (the frame color for the card color), `Color frameOutineColor` (the frame outline color for the card color), `Color descBoxColor` (the description box color), `Color trailVfxColor` (the trail vfx color), `Color glowColor` (the glow color), `String attackBg` (path to your attack bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String skillBg` (path to your skill bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String powerBg` (path to your power bg texture for the card color, path starts relative to your `SlayTheSpire` folder), `String energyOrb` (path to your energy orb texture for the card color, path starts relative to your `SlayTheSpire` folder)
-4. To create a new player character make a EditCharacterSubscriber and in the `receiveEditCharacters` method go ahead and call `BaseMod.addCharacter`. The parameters are as follows: `Class characterClass` (the actual java *Class* of your character, e.g. `MyCharacterClass.class`), `String titleString` (title string for the character), `String classString` (class string for the character), `String color`, (the color for this character; should be `My_New_Color.toString()`), `String selectText` (select text for the character), `String selectButton` (path to select button texture starting relative to the `SlayTheSpire` folder), `String portrait` (path to portrait texture starting relative to the `SlayTheSpire` folder), `String characterID` (this should be `MY_NEW_PLAYER_CHARACTER.toString()`)
-5. Now just be sure to add some cards for your custom character! When defining cards for your custom character rather than using `AbstractCard.CardColor.WHATEVER` go ahead and use `MY_NEW_COLOR` instead.
