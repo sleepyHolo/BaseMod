@@ -32,6 +32,9 @@ import basemod.interfaces.ModelRenderSubscriber;
 
 public abstract class CustomPlayer extends AbstractPlayer implements ModelRenderSubscriber {
 	
+	public static final int LAYER_COUNT = 5;
+	public static final float DEFAULT_ANGLE = 0.0f;
+	
 	public Model myModel;
 	public ModelInstance myInstance = null;
 	public AnimationController controller = null;
@@ -41,9 +44,16 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	private boolean rescaled = false;
 	
 	private ArrayList<Texture> energyLayers = new ArrayList<Texture>();
+	private float[] energyLayerSpeeds = null;
+	private float[] angles = null;
 	private Texture orbVfx;
 
 	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath,
+			String model, String animation) {
+		this(name, playerClass, orbTextures, orbVfxPath, null, model, animation);
+	}
+	
+	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds,
 			String model, String animation) {
 		super(name, playerClass);
 		
@@ -52,6 +62,9 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		} else {
 			buildCustomOrb(orbTextures, orbVfxPath);
 		}
+		
+		energyLayerSpeeds = layerSpeeds;
+		initAngles();
 		
 		this.dialogX = (this.drawX + 0.0F * Settings.scale);
 		this.dialogY = (this.drawY + 220.0F * Settings.scale);
@@ -63,6 +76,13 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 			this.atlas = new TextureAtlas();
 			
 			BaseMod.subscribeToModelRender(this);
+		}
+	}
+	
+	private void initAngles() {
+		angles = new float[LAYER_COUNT];
+		for (int i = 0; i < angles.length; i++) {
+			angles[i] = DEFAULT_ANGLE;
 		}
 	}
 	
@@ -272,6 +292,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 			
 			float angle5 = orb_angle_5.getFloat(panel);
 			
+			if (energyLayerSpeeds != null) {
+				angles[4] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[0];
+				angles[3] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[1];
+				angles[2] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[2];
+				angles[1] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[3];
+				angles[0] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[4];
+				angle5 = angles[4];
+				angle4 = angles[3];
+				angle3 = angles[2];
+				angle2 = angles[1];
+				angle1 = angles[0];
+			}
+			
 			sb.setColor(Color.WHITE);
 			
 		    sb.draw(energyLayers.get(0), panel.current_x - 64.0F, panel.current_y - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, ORB_IMG_SCALE, ORB_IMG_SCALE, angle1, 0, 0, 128, 128, false, false);
@@ -327,6 +360,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 			orb_angle_5.setAccessible(true);
 			
 			float angle5 = orb_angle_5.getFloat(panel);
+			
+			if (energyLayerSpeeds != null) {
+				angles[4] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[5];
+				angles[3] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[6];
+				angles[2] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[7];
+				angles[1] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[8];
+				angles[0] += Gdx.graphics.getDeltaTime() * energyLayerSpeeds[9];
+				angle5 = angles[4];
+				angle4 = angles[3];
+				angle3 = angles[2];
+				angle2 = angles[1];
+				angle1 = angles[0];
+			}
 			
 			// actual rendering code
 			sb.setColor(Color.WHITE);
