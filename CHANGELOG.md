@@ -158,7 +158,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Update to support weekly patch (week 13)
 
 #### v1.7.2 ####
-* Support viewing custom cards in the card library (kioeeht)
+* Support viewing custom cards in the card library (kiooeht)
 
 #### v1.7.3 ####
 * Fix slowdown when viewing upgrades in the card library
@@ -231,3 +231,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * The ModPanel UI backend has been made better and more extensible. A few methods have been deprecated but there are no breakign changes.
 * Added ToggleButton - idea and some code courtesy of twanvl (https://github.com/twanvl)
 * Added a LabeledToggleButton which is a ToggleButton with a text label
+
+#### dev ####
+* Fix character select screen memory leak (kiooeht)

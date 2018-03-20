@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -1035,6 +1036,16 @@ public class BaseMod {
 	// getAllCustomRelics -
 	public static HashMap<String, HashMap<String, AbstractRelic>> getAllCustomRelics() {
 		return customRelicPools;
+	}
+
+	// getCustomRelic -
+	public static AbstractRelic getCustomRelic(String key) {
+		for (Map.Entry<String, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
+			if (map.getValue().containsKey(key)) {
+				return map.getValue().get(key);
+			}
+		}
+		return new Circlet();
 	}
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
