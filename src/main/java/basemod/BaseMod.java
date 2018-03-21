@@ -235,6 +235,7 @@ public class BaseMod {
 	private static ArrayList<PreRenderSubscriber> preRenderSubscribers;
 	private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
 	private static ArrayList<ModelRenderSubscriber> modelRenderSubscribers;
+	private static ArrayList<ModelRenderSubscriber> modelRenderSubscribers_toRemove;
 	private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
 	private static ArrayList<StartGameSubscriber> startGameSubscribers;
 	private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
@@ -532,6 +533,7 @@ public class BaseMod {
 		preRenderSubscribers = new ArrayList<>();
 		postRenderSubscribers = new ArrayList<>();
 		modelRenderSubscribers = new ArrayList<>();
+		modelRenderSubscribers_toRemove = new ArrayList<>();
 		preStartGameSubscribers = new ArrayList<>();
 		startGameSubscribers = new ArrayList<>();
 		preUpdateSubscribers = new ArrayList<>();
@@ -1742,10 +1744,15 @@ public class BaseMod {
 		    Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 		    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		    batch.begin(animationCamera);
-		    
+
 		    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
 		    	sub.receiveModelRender(batch, animationEnvironment);
 		    }
+		    // Remove and subscribers that were added to the remove list
+			for (ModelRenderSubscriber sub : modelRenderSubscribers_toRemove) {
+				modelRenderSubscribers.remove(sub);
+			}
+			modelRenderSubscribers_toRemove.clear();
 		    
 		    batch.end();
 		    animationBuffer.end();
@@ -2190,6 +2197,11 @@ public class BaseMod {
 	// unsubscribeFromModelRender -
 	public static void unsubscribeFromModelRender(ModelRenderSubscriber sub) {
 		modelRenderSubscribers.remove(sub);
+	}
+
+	// unsubscribeFromModelRenderLater -
+	public static void unsubscribeFromModelRenderLater(ModelRenderSubscriber sub) {
+		modelRenderSubscribers_toRemove.add(sub);
 	}
 
 	// subscribeToStartGame -
