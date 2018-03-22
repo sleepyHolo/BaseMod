@@ -2371,341 +2371,409 @@ public class BaseMod {
 	}
 	
 	// subscribeToStartAct -
+	@Deprecated
 	public static void subscribeToStartAct(StartActSubscriber sub) {
 		startActSubscribers.add(sub);
 	}
 
 	// unsubscribeFromStartAct -
+	@Deprecated
 	public static void unsubscribeFromStartAct(StartActSubscriber sub) {
 		startActSubscribers.remove(sub);
 	}
 
 	// subscribeToPostCampfire -
+	@Deprecated
 	public static void subscribeToPostCampfire(PostCampfireSubscriber sub) {
 		postCampfireSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostCampfire -
+	@Deprecated
 	public static void unsubscribeFromPostCampfire(PostCampfireSubscriber sub) {
 		postCampfireSubscribers.remove(sub);
 	}
 
 	// subscribeToPostDraw -
+	@Deprecated
 	public static void subscribeToPostDraw(PostDrawSubscriber sub) {
 		postDrawSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostDraw -
+	@Deprecated
 	public static void unsubscribeFromPostDraw(PostDrawSubscriber sub) {
 		postDrawSubscribers.remove(sub);
 	}
 
 	// subscribeToPostExhaust -
+	@Deprecated
 	public static void subscribeToPostExhaust(PostExhaustSubscriber sub) {
 		postExhaustSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostExhaust -
+	@Deprecated
 	public static void unsubscribeFromPostExhaust(PostExhaustSubscriber sub) {
 		postExhaustSubscribers.remove(sub);
 	}
 
 	// subscribeToPostDungeonInitialize -
+	@Deprecated
 	public static void subscribeToPostDungeonInitialize(PostDungeonInitializeSubscriber sub) {
 		postDungeonInitializeSubscribers.add(sub);
 	}
 
 	// unsubcribeFromPostDungeonInitialize -
+	@Deprecated
 	public static void unsubscribeFromPostDungeonInitialize(PostDungeonInitializeSubscriber sub) {
 		postDungeonInitializeSubscribers.remove(sub);
 	}
 
 	// subscribeToPostEnergyRecharge -
+	@Deprecated
 	public static void subscribeToPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
 		postEnergyRechargeSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostEnergyRecharge -
+	@Deprecated
 	public static void unsubscribeFromPostEnergyRecharge(PostEnergyRechargeSubscriber sub) {
 		postEnergyRechargeSubscribers.remove(sub);
 	}
 
 	// subscribeToPreMonsterTurn -
+	@Deprecated
 	public static void subscribeToPreMonsterTurn(PreMonsterTurnSubscriber sub) {
 		preMonsterTurnSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPreMonsterTurn -
+	@Deprecated
 	public static void unsubscribeFromPreMonsterTurn(PreMonsterTurnSubscriber sub) {
 		preMonsterTurnSubscribers.remove(sub);
 	}
 
 	// subscribeToPostInitialize -
+	@Deprecated
 	public static void subscribeToPostInitialize(PostInitializeSubscriber sub) {
 		postInitializeSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostRender -
+	@Deprecated
 	public static void unsubscribeFromPostInitialize(PostInitializeSubscriber sub) {
 		postInitializeSubscribers.remove(sub);
 	}
 
 	// subscribeToRender -
+	@Deprecated
 	public static void subscribeToRender(RenderSubscriber sub) {
 		renderSubscribers.add(sub);
 	}
 
 	// unsubscribeFromRender -
+	@Deprecated
 	public static void unsubscribeFromRender(RenderSubscriber sub) {
 		renderSubscribers.remove(sub);
 	}
 	
 	// subscribeToPreRender -
+	@Deprecated
 	public static void subscribeToPreRender(PreRenderSubscriber sub) {
 		preRenderSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPreRender -
+	@Deprecated
 	public static void unsubscribeFromPreRender(PreRenderSubscriber sub) {
 		preRenderSubscribers.remove(sub);
 	}
 
 	// subscribeToPostRender -
+	@Deprecated
 	public static void subscribeToPostRender(PostRenderSubscriber sub) {
 		postRenderSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPostRender -
+	@Deprecated
 	public static void unsubscribeFromPostRender(PostRenderSubscriber sub) {
 		postRenderSubscribers.remove(sub);
 	}
 	
 	// subscribeToModelRender -
+	@Deprecated
 	public static void subscribeToModelRender(ModelRenderSubscriber sub) {
 		modelRenderSubscribers.add(sub);
 	}
 	
 	// unsubscribeFromModelRender -
+	@Deprecated
 	public static void unsubscribeFromModelRender(ModelRenderSubscriber sub) {
 		modelRenderSubscribers.remove(sub);
 	}
 
 	// subscribeToStartGame -
+	@Deprecated
 	public static void subscribeToStartGame(StartGameSubscriber sub) {
 		startGameSubscribers.add(sub);
 	}
 
 	// unsubscribeFromStartGame -
+	@Deprecated
 	public static void unsubscribeFromStartGame(StartGameSubscriber sub) {
 		startGameSubscribers.remove(sub);
 	}
 
 	// subscribeToPreStartGame -
+	@Deprecated
 	public static void subscribeToPreStartGame(PreStartGameSubscriber sub) {
 		preStartGameSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPreStartGame -
+	@Deprecated
 	public static void unsubscribeFromPreStartGame(PreStartGameSubscriber sub) {
 		preStartGameSubscribers.remove(sub);
 	}
 
 	// subscribeToPreUpdate -
+	@Deprecated
 	public static void subscribeToPreUpdate(PreUpdateSubscriber sub) {
 		preUpdateSubscribers.add(sub);
 	}
 
 	// unsubscribeFromPreUpdate -
+	@Deprecated
 	public static void unsubscribeFromPreUpdate(PreUpdateSubscriber sub) {
 		preUpdateSubscribers.remove(sub);
 	}
 
 	// subscribeToPostUpdate -
+	@Deprecated
 	public static void subscribeToPostUpdate(PostUpdateSubscriber sub) {
 		postUpdateSubscribers.add(sub);
 	}
 
 	// unsubscribeFromUpdate -
+	@Deprecated
 	public static void unsubscribeFromPostUpdate(PostUpdateSubscriber sub) {
 		postUpdateSubscribers.remove(sub);
 	}
 
 	// subscribeToPostCreateStartingDeck -
+	@Deprecated
 	public static void subscribeToPostCreateStartingDeck(PostCreateStartingDeckSubscriber sub) {
 		postCreateStartingDeckSubscribers.add(sub);
 	}
 
 	// unsubscribeToPostCreateStartingDeck -
+	@Deprecated
 	public static void unsubscribeToPostCreateStartingDeck(PostCreateStartingDeckSubscriber sub) {
 		postCreateStartingDeckSubscribers.remove(sub);
 	}
 
 	// subscribeToPostCreateStartingRelics -
+	@Deprecated
 	public static void subscribeToPostCreateStartingRelics(PostCreateStartingRelicsSubscriber sub) {
 		postCreateStartingRelicsSubscribers.add(sub);
 	}
 
 	// unsubscribeToPostCreateStartingRelics -
+	@Deprecated
 	public static void unsubscribeToPostCreateStartingRelics(PostCreateStartingRelicsSubscriber sub) {
 		postCreateStartingRelicsSubscribers.remove(sub);
 	}
 
 	// subscribeToPostCreateShopRelic -
+	@Deprecated
 	public static void subscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
 		postCreateShopRelicSubscribers.add(sub);
 	}
 
 	// unsubscribeToPostCreateShopRelic
+	@Deprecated
 	public static void unsubscribeToPostCreateShopRelic(PostCreateShopRelicSubscriber sub) {
 		postCreateShopRelicSubscribers.remove(sub);
 	}
 
 	// subscribeToPostCreateShopPotion -
+	@Deprecated
 	public static void subscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
 		postCreateShopPotionSubscribers.add(sub);
 	}
 
 	// unsubscribeToPostCreateShopRelic
+	@Deprecated
 	public static void unsubscribeToPostCreateShopPotion(PostCreateShopPotionSubscriber sub) {
 		postCreateShopPotionSubscribers.remove(sub);
 	}
 
 	// subscribeToEditCards -
+	@Deprecated
 	public static void subscribeToEditCards(EditCardsSubscriber sub) {
 		editCardsSubscribers.add(sub);
 	}
 
 	// unsubscribeToEditCards -
+	@Deprecated
 	public static void unsubscribeToEditCards(EditCardsSubscriber sub) {
 		editCardsSubscribers.remove(sub);
 	}
 
 	// subscribeToEditRelics -
+	@Deprecated
 	public static void subscribeToEditRelics(EditRelicsSubscriber sub) {
 		editRelicsSubscribers.add(sub);
 	}
 
 	// unsubscribeToEditRelics -
+	@Deprecated
 	public static void unsubscribeToEditRelics(EditRelicsSubscriber sub) {
 		editRelicsSubscribers.remove(sub);
 	}
 
 	// subscribeToEditCharacters -
+	@Deprecated
 	public static void subscribeToEditCharacters(EditCharactersSubscriber sub) {
 		editCharactersSubscribers.add(sub);
 	}
 
 	// unsubscribeToEditCharacters -
+	@Deprecated
 	public static void unsubscribeToEditCharacters(EditCharactersSubscriber sub) {
 		editCharactersSubscribers.remove(sub);
 	}
 
 	// subscribeToEditStrings
+	@Deprecated
 	public static void subscribeToEditStrings(EditStringsSubscriber sub) {
 		editStringsSubscribers.add(sub);
 	}
 
 	// unsubscribeToEditStrings
+	@Deprecated
 	public static void unsubscribeToEditStrings(EditStringsSubscriber sub) {
 		editStringsSubscribers.remove(sub);
 	}
 
 	// subscribeToPostBattle
+	@Deprecated
 	public static void subscribeToPostBattle(PostBattleSubscriber sub) {
 		postBattleSubscribers.add(sub);
 	}
 
 	// unsubscribeToPostBattle
+	@Deprecated
 	public static void unsubscribeFromPostBattle(PostBattleSubscriber sub) {
 		postBattleSubscribers.remove(sub);
 	}
 
 	// subscribeToSetUnlocks
+	@Deprecated
 	public static void subscribeToSetUnlocks(SetUnlocksSubscriber sub) {
 		setUnlocksSubscribers.add(sub);
 	}
 
 	// unsubscribeFromSetUnlocks
+	@Deprecated
 	public static void unsubscribeFromSetUnlocks(SetUnlocksSubscriber sub) {
 		setUnlocksSubscribers.remove(sub);
 	}
 
 	// subscribeToOnCardUse
+	@Deprecated
 	public static void subscribeToOnCardUse(OnCardUseSubscriber sub) {
 		onCardUseSubscribers.add(sub);
 	}
 
 	// unsubscribeFromOnCardUse
+	@Deprecated
 	public static void unsubscribeFromOnCardUse(OnCardUseSubscriber sub) {
 		onCardUseSubscribers.remove(sub);
 	}
 	
 	// subscribeToPostPotionUse
+	@Deprecated
 	public static void subscribeToPostPotionUse(PostPotionUseSubscriber sub) {
 		postPotionUseSubscribers.add(sub);
 	}
 
 	// unsubscribeFromOnPostPotionUse
+	@Deprecated
 	public static void unsubscribeFromPostPotionUse(PostPotionUseSubscriber sub) {
 		postPotionUseSubscribers.remove(sub);
 	}
 	
 	// subscribeToprePotionUse
+	@Deprecated
 	public static void subscribeToPrePotionUse(PrePotionUseSubscriber sub) {
 		prePotionUseSubscribers.add(sub);
 	}
 
 	// unsubscribeFromOnprePotionUse
+	@Deprecated
 	public static void unsubscribeFromPrePotionUse(PrePotionUseSubscriber sub) {
 		prePotionUseSubscribers.remove(sub);
 	}
 		
 	// subscribeToPotionGet
+	@Deprecated
 	public static void subscribeToPotionGet(PotionGetSubscriber sub) {
 		potionGetSubscribers.add(sub);
 	}
 
 	// unsubscribeToPotionGet
+	@Deprecated
 	public static void unsubscribeFromPotionGet(PotionGetSubscriber sub) {
 		potionGetSubscribers.remove(sub);
 	}
 	
 	// subscribeToRelicGet
+	@Deprecated
 	public static void subscribeToRelicGet(RelicGetSubscriber sub) {
 		relicGetSubscribers.add(sub);
 	}
 
 	// unsubscribeToRelicGet
+	@Deprecated
 	public static void unsubscribeFromRelicGet(RelicGetSubscriber sub) {
 		relicGetSubscribers.remove(sub);
 	}
 	
 	// subscribeToPostPowerApply
+	@Deprecated
 	public static void subscribeToPostPowerApply(PostPowerApplySubscriber sub) {
 		postPowerApplySubscribers.add(sub);
 	}
 	
 	// unsubscribeToPostPowerApply
+	@Deprecated
 	public static void unsubscribeToPostPowerApply(PostPowerApplySubscriber sub) {
 		postPowerApplySubscribers.remove(sub);
 	}
 	
 	// subscribeToEditKeywords
+	@Deprecated
 	public static void subscribeToEditKeywords(EditKeywordsSubscriber sub) {
 		editKeywordsSubscribers.add(sub);
 	}
 	
 	// unsubscribeFromEditKeywords
+	@Deprecated
 	public static void unsubscribeFromEditKeywords(EditKeywordsSubscriber sub) {
 		editKeywordsSubscribers.remove(sub);
 	}
 	
 	// subscribeToOnPowersModified
+	@Deprecated
 	public static void subscribeToOnPowersModified(OnPowersModifiedSubscriber sub) {
 		onPowersModifiedSubscribers.add(sub);
 	}
 	
 	// unsubscribeFromOnPowersModified
+	@Deprecated
 	public static void unsubscribeFromOnPowersModified(OnPowersModifiedSubscriber sub) {
 		onPowersModifiedSubscribers.remove(sub);
 	}
