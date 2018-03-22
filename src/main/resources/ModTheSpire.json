@@ -1,0 +1,9 @@
+{
+  "modid": "basemod",
+  "name": "BaseMod",
+  "author_list": ["t-larson", "test447", "Haashi", "kiooeht", "Blank The Evil", "FlipskiZ"],
+  "description": "Unofficial modding API for Slay the Spire. Also a Dev Console.",
+  "version": "2.4.0",
+  "sts_version": "03-23-2018",
+  "mts_version": "2.3.0"
+}
