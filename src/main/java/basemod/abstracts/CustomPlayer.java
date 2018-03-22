@@ -156,28 +156,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		
 		// do not render the model if it is no longer in play
 		if (this != AbstractDungeon.player) {
-			/*
-			 *  calling unsubscribeFromModelRender inside the callback
-			 *  for receiveModelRender means that when we're calling it
-			 *  there is currently an iterator going over the list
-			 *  of subscribers and calling receiveModelRender on each of
-			 *  them therefore if we immediately try to remove the this
-			 *  callback from the post battle subscriber list it will
-			 *  throw a concurrent modification exception in the iterator
-			 *  
-			 *  for now we just add a delay - yes this is an atrocious solution
-			 *  PLEASE someone with a better idea replace it
-			 */
-			Thread delayed = new Thread(() -> {
-				try {
-					Thread.sleep(200);
-				} catch (Exception e) {
-					System.out.println("could not delay unsubscribe to avoid ConcurrentModificationException");
-					e.printStackTrace();
-				}
-				BaseMod.unsubscribeFromModelRender(this);
-			});
-			delayed.start();
+			BaseMod.unsubscribeFromModelRenderLater(this);
 		}
 		
 		// ensure loading is done before rendering

@@ -42,6 +42,7 @@ Take a look at the Console page on the wiki (https://github.com/daviscook477/Bas
 * daviscook477 - Custom players, custom colors, custom cards, more API hooks, code cleanup, bugfixes
 * Haashi - custom potion support (w/ hooks for obtaining potions and relics) and dev console support for potions and powers
 * BlankTheEvil - custom rendering for cards on a card-by-card basis and custom energy orb support
+* kiooeht - Support custom cards in card library screen, fix character select memory leak
 
 ## Roadmap ##
 * Keep up-to-date with weekly patches to keep mods useable
