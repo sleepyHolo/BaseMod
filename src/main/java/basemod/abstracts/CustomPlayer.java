@@ -156,7 +156,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		
 		// do not render the model if it is no longer in play
 		if (this != AbstractDungeon.player) {
-			BaseMod.unsubscribeFromModelRenderLater(this);
+			BaseMod.unsubscribeLater(this);
 		}
 		
 		// ensure loading is done before rendering
