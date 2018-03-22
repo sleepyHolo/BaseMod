@@ -29,6 +29,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.EventHelper;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.map.MapEdge;
@@ -742,6 +743,12 @@ public class DevConsole
 
 		String[] eventArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String eventName = String.join(" ", eventArray);
+		if (EventHelper.getEvent(eventName) == null) {
+			couldNotParse();
+			log(eventName + " is not an event ID");
+			return;
+		}
+		
 		AbstractDungeon.eventList.add(0, eventName);
 
 		MapRoomNode cur = AbstractDungeon.currMapNode;
