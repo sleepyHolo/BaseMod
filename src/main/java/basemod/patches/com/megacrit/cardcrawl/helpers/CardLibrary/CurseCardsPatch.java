@@ -12,7 +12,6 @@ import basemod.ReflectionHacks;
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="addCurseCards")
 public class CurseCardsPatch {
 
-	@SuppressWarnings("ConstantConditions")
     public static void Postfix() {
 		// add new cards
 		for (AbstractCard card : BaseMod.getCurseCardsToAdd()) {

@@ -174,6 +174,7 @@ import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditKeywordsSubscriber;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
+import basemod.interfaces.ISubscriber;
 import basemod.interfaces.ModelRenderSubscriber;
 import basemod.interfaces.OnCardUseSubscriber;
 import basemod.interfaces.OnPowersModifiedSubscriber;
@@ -222,6 +223,8 @@ public class BaseMod {
 	private static HashMap<Type, Type> typeTokens;
 	
 	private static ArrayList<ModBadge> modBadges;
+	
+	private static ArrayList<ISubscriber> toRemove;
 	private static ArrayList<StartActSubscriber> startActSubscribers;
 	private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
 	private static ArrayList<PostDrawSubscriber> postDrawSubscribers;
@@ -235,7 +238,6 @@ public class BaseMod {
 	private static ArrayList<PreRenderSubscriber> preRenderSubscribers;
 	private static ArrayList<PostRenderSubscriber> postRenderSubscribers;
 	private static ArrayList<ModelRenderSubscriber> modelRenderSubscribers;
-	private static ArrayList<ModelRenderSubscriber> modelRenderSubscribers_toRemove;
 	private static ArrayList<PreStartGameSubscriber> preStartGameSubscribers;
 	private static ArrayList<StartGameSubscriber> startGameSubscribers;
 	private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
@@ -520,6 +522,7 @@ public class BaseMod {
 
 	// initializeSubscriptions -
 	private static void initializeSubscriptions() {
+		toRemove = new ArrayList<>();
 		startActSubscribers = new ArrayList<>();
 		postCampfireSubscribers = new ArrayList<>();
 		postDrawSubscribers = new ArrayList<>();
@@ -533,7 +536,6 @@ public class BaseMod {
 		preRenderSubscribers = new ArrayList<>();
 		postRenderSubscribers = new ArrayList<>();
 		modelRenderSubscribers = new ArrayList<>();
-		modelRenderSubscribers_toRemove = new ArrayList<>();
 		preStartGameSubscribers = new ArrayList<>();
 		startGameSubscribers = new ArrayList<>();
 		preUpdateSubscribers = new ArrayList<>();
@@ -1633,6 +1635,7 @@ public class BaseMod {
 		for (StartActSubscriber sub : startActSubscribers) {
 			sub.receiveStartAct();
 		}
+		unsubscribeLaterHelper(StartActSubscriber.class);
 	}
 
 	// publishPostCampfire - false allows an additional option to be selected
@@ -1646,6 +1649,7 @@ public class BaseMod {
 				campfireDone = false;
 			}
 		}
+		unsubscribeLaterHelper(PostCampfireSubscriber.class);
 
 		return campfireDone;
 	}
@@ -1656,6 +1660,7 @@ public class BaseMod {
 		for (PostDrawSubscriber sub : postDrawSubscribers) {
 			sub.receivePostDraw(c);
 		}
+		unsubscribeLaterHelper(PostDrawSubscriber.class);
 	}
 
 	// publishPostExhaust -
@@ -1664,6 +1669,7 @@ public class BaseMod {
 		for (PostExhaustSubscriber sub : postExhaustSubscribers) {
 			sub.receivePostExhaust(c);
 		}
+		unsubscribeLaterHelper(PostExhaustSubscriber.class);
 	}
 
 	// publishPostDungeonInitialize -
@@ -1673,6 +1679,7 @@ public class BaseMod {
 		for (PostDungeonInitializeSubscriber sub : postDungeonInitializeSubscribers) {
 			sub.receivePostDungeonInitialize();
 		}
+		unsubscribeLaterHelper(PostDungeonInitializeSubscriber.class);
 	}
 
 	// publishPostEnergyRecharge -
@@ -1681,6 +1688,7 @@ public class BaseMod {
 		for (PostEnergyRechargeSubscriber sub : postEnergyRechargeSubscribers) {
 			sub.receivePostEnergyRecharge();
 		}
+		unsubscribeLaterHelper(PostEnergyRechargeSubscriber.class);
 	}
 
 	// publishPostInitialize -
@@ -1694,6 +1702,7 @@ public class BaseMod {
 		for (PostInitializeSubscriber sub : postInitializeSubscribers) {
 			sub.receivePostInitialize();
 		}
+		unsubscribeLaterHelper(PostInitializeSubscriber.class);
 	}
 
 	// publishPreMonsterTurn - false skips monster turn
@@ -1707,6 +1716,7 @@ public class BaseMod {
 				takeTurn = false;
 			}
 		}
+		unsubscribeLaterHelper(PreMonsterTurnSubscriber.class);
 
 		return takeTurn;
 	}
@@ -1716,6 +1726,7 @@ public class BaseMod {
 		for (RenderSubscriber sub : renderSubscribers) {
 			sub.receiveRender(sb);
 		}
+		unsubscribeLaterHelper(RenderSubscriber.class);
 	}
 	
 	// publishAnimationRender -
@@ -1748,11 +1759,6 @@ public class BaseMod {
 		    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
 		    	sub.receiveModelRender(batch, animationEnvironment);
 		    }
-		    // Remove and subscribers that were added to the remove list
-			for (ModelRenderSubscriber sub : modelRenderSubscribers_toRemove) {
-				modelRenderSubscribers.remove(sub);
-			}
-			modelRenderSubscribers_toRemove.clear();
 		    
 		    batch.end();
 		    animationBuffer.end();
@@ -1760,6 +1766,9 @@ public class BaseMod {
 	        animationTextureRegion = new TextureRegion(animationTexture);
 	        animationTextureRegion.flip(false, true);
 		}
+		
+		unsubscribeLaterHelper(PreRenderSubscriber.class);
+		unsubscribeLaterHelper(ModelRenderSubscriber.class);
 	}
 
 	// publishPostRender -
@@ -1767,6 +1776,7 @@ public class BaseMod {
 		for (PostRenderSubscriber sub : postRenderSubscribers) {
 			sub.receivePostRender(sb);
 		}
+		unsubscribeLaterHelper(PostRenderSubscriber.class);
 	}
 
 	// publishPreStartGame -
@@ -1777,6 +1787,7 @@ public class BaseMod {
 		for (PreStartGameSubscriber sub : preStartGameSubscribers) {
 			sub.receivePreStartGame();
 		}
+		unsubscribeLaterHelper(PreStartGameSubscriber.class);
 	}
 
 	public static void publishStartGame() {
@@ -1787,6 +1798,8 @@ public class BaseMod {
 		}
 
 		logger.info("mapDensityMultiplier: " + mapPathDensityMultiplier);
+		
+		unsubscribeLaterHelper(StartGameSubscriber.class);
 	}
 
 	// publishPreUpdate -
@@ -1794,6 +1807,7 @@ public class BaseMod {
 		for (PreUpdateSubscriber sub : preUpdateSubscribers) {
 			sub.receivePreUpdate();
 		}
+		unsubscribeLaterHelper(PreUpdateSubscriber.class);
 	}
 
 	// publishPostUpdate -
@@ -1801,6 +1815,7 @@ public class BaseMod {
 		for (PostUpdateSubscriber sub : postUpdateSubscribers) {
 			sub.receivePostUpdate();
 		}
+		unsubscribeLaterHelper(PostUpdateSubscriber.class);
 	}
 
 	// publishPostCreateStartingDeck -
@@ -1844,6 +1859,7 @@ public class BaseMod {
 			cards.clear();
 		}
 		cards.addAll(cardsToAdd);
+		unsubscribeLaterHelper(PostCreateStartingDeckSubscriber.class);
 	}
 
 	public static ArrayList<String> relicsThatNeedSpecificPlayer = new ArrayList<>();
@@ -1931,6 +1947,7 @@ public class BaseMod {
 		}
 
 		AbstractDungeon.relicsToRemoveOnStart.addAll(relicsToAdd);
+		unsubscribeLaterHelper(PostCreateStartingRelicsSubscriber.class);
 	}
 
 	// publishPostCreateShopRelic -
@@ -1940,6 +1957,7 @@ public class BaseMod {
 		for (PostCreateShopRelicSubscriber sub : postCreateShopRelicSubscribers) {
 			sub.receiveCreateShopRelics(relics, screenInstance);
 		}
+		unsubscribeLaterHelper(PostCreateShopRelicSubscriber.class);
 	}
 
 	// publishPostCreateShopPotion -
@@ -1949,6 +1967,7 @@ public class BaseMod {
 		for (PostCreateShopPotionSubscriber sub : postCreateShopPotionSubscribers) {
 			sub.receiveCreateShopPotions(potions, screenInstance);
 		}
+		unsubscribeLaterHelper(PostCreateShopPotionSubscriber.class);
 	}
 
 	// publishEditCards -
@@ -1958,6 +1977,7 @@ public class BaseMod {
 		for (EditCardsSubscriber sub : editCardsSubscribers) {
 			sub.receiveEditCards();
 		}
+		unsubscribeLaterHelper(EditCardsSubscriber.class);
 	}
 
 	// publishEditRelics -
@@ -1967,6 +1987,7 @@ public class BaseMod {
 		for (EditRelicsSubscriber sub : editRelicsSubscribers) {
 			sub.receiveEditRelics();
 		}
+		unsubscribeLaterHelper(EditRelicsSubscriber.class);
 	}
 
 	// publishEditCharacters -
@@ -1976,6 +1997,7 @@ public class BaseMod {
 		for (EditCharactersSubscriber sub : editCharactersSubscribers) {
 			sub.receiveEditCharacters();
 		}
+		unsubscribeLaterHelper(EditCharactersSubscriber.class);
 	}
 
 	// publishEditStrings -
@@ -1985,6 +2007,7 @@ public class BaseMod {
 		for (EditStringsSubscriber sub : editStringsSubscribers) {
 			sub.receiveEditStrings();
 		}
+		unsubscribeLaterHelper(EditStringsSubscriber.class);
 	}
 
 	// publishPostBattle -
@@ -1994,6 +2017,7 @@ public class BaseMod {
 		for (PostBattleSubscriber sub : postBattleSubscribers) {
 			sub.receivePostBattle(battleRoom);
 		}
+		unsubscribeLaterHelper(PostBattleSubscriber.class);
 	}
 
 	// publishPostRefresh -
@@ -2003,6 +2027,7 @@ public class BaseMod {
 		for (SetUnlocksSubscriber sub : setUnlocksSubscribers) {
 			sub.receiveSetUnlocks();
 		}
+		unsubscribeLaterHelper(SetUnlocksSubscriber.class);
 	}
 
 	// publishOnCardUse -
@@ -2012,6 +2037,7 @@ public class BaseMod {
 		for (OnCardUseSubscriber sub : onCardUseSubscribers) {
 			sub.receiveCardUsed(c);
 		}
+		unsubscribeLaterHelper(OnCardUseSubscriber.class);
 	}
 	
 	// publishPostUsePotion -
@@ -2020,6 +2046,7 @@ public class BaseMod {
 		for (PostPotionUseSubscriber sub : postPotionUseSubscribers) {
 			sub.receivePostPotionUse(p);
 		}
+		unsubscribeLaterHelper(PostPotionUseSubscriber.class);
 	}
 	
 	// publishPostPotionUse -
@@ -2029,6 +2056,7 @@ public class BaseMod {
 		for (PrePotionUseSubscriber sub : prePotionUseSubscribers) {
 			sub.receivePrePotionUse(p);
 		}
+		unsubscribeLaterHelper(PrePotionUseSubscriber.class);
 	}
 	
 	// publishPotionGet -
@@ -2038,6 +2066,7 @@ public class BaseMod {
 		for (PotionGetSubscriber sub : potionGetSubscribers) {
 			sub.receivePotionGet(p);
 		}
+		unsubscribeLaterHelper(PotionGetSubscriber.class);
 	}
 	
 	// publishRelicGet -
@@ -2046,6 +2075,7 @@ public class BaseMod {
 		for (RelicGetSubscriber sub : relicGetSubscribers) {
 			sub.receiveRelicGet(r);
 		}
+		unsubscribeLaterHelper(RelicGetSubscriber.class);
 	}
 	
 	// publishPostPowerApply
@@ -2055,6 +2085,7 @@ public class BaseMod {
 		for(PostPowerApplySubscriber sub: postPowerApplySubscribers) {
 			sub.receivePostPowerApplySubscriber(p, target, source);
 		}
+		unsubscribeLaterHelper(PostPowerApplySubscriber.class);
 	}
 	
 	// publishEditKeywords
@@ -2064,6 +2095,7 @@ public class BaseMod {
 		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
 			sub.receiveEditKeywords();
 		}
+		unsubscribeLaterHelper(EditKeywordsSubscriber.class);
 	}
 	
 	// publishOnPowersModified
@@ -2073,12 +2105,271 @@ public class BaseMod {
 		for (OnPowersModifiedSubscriber sub : onPowersModifiedSubscribers) {
 			sub.receivePowersModified();
 		}
+		unsubscribeLaterHelper(OnPowersModifiedSubscriber.class);
 	}
 	
 	//
 	// Subscription handlers
 	//
 
+	// unsubscribes all elements of toRemove that are of type removalClass
+	private static void unsubscribeLaterHelper(Class<? extends ISubscriber> removalClass) {
+		for (ISubscriber sub : toRemove) {
+			if (removalClass.isInstance(sub)) {
+				unsubscribe(sub, removalClass);
+			}
+		}
+	}
+	
+	// not actually unchecked because we do an isInstance check at runtime
+	@SuppressWarnings("unchecked")
+	private static <T> void subscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
+		if (clazz.isInstance(sub)) {
+			list.add((T) sub);
+		}
+	}
+	
+	// not actually unchecked because we do an isInstance check at runtime
+	@SuppressWarnings("unchecked")
+	private static <T> void unsubscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
+		if (clazz.isInstance(sub)) {
+			list.remove((T) sub);
+		}
+	}
+	
+	
+	// subscribe -
+	// will subscribe to all lists this sub implements
+	public static void subscribe(ISubscriber sub) {
+		subscribeIfInstance(startActSubscribers, sub, StartActSubscriber.class);
+		subscribeIfInstance(postCampfireSubscribers, sub, PostCampfireSubscriber.class);
+		subscribeIfInstance(postDrawSubscribers, sub, PostDrawSubscriber.class);
+		subscribeIfInstance(postExhaustSubscribers, sub, PostExhaustSubscriber.class);
+		subscribeIfInstance(onCardUseSubscribers, sub, OnCardUseSubscriber.class);
+		subscribeIfInstance(postDungeonInitializeSubscribers, sub, PostDungeonInitializeSubscriber.class);
+		subscribeIfInstance(postEnergyRechargeSubscribers, sub, PostEnergyRechargeSubscriber.class);
+		subscribeIfInstance(postInitializeSubscribers, sub, PostInitializeSubscriber.class);
+		subscribeIfInstance(preMonsterTurnSubscribers, sub, PreMonsterTurnSubscriber.class);
+		subscribeIfInstance(renderSubscribers, sub, RenderSubscriber.class);
+		subscribeIfInstance(preRenderSubscribers, sub, PreRenderSubscriber.class);
+		subscribeIfInstance(postRenderSubscribers, sub, PostRenderSubscriber.class);
+		subscribeIfInstance(modelRenderSubscribers, sub, ModelRenderSubscriber.class);
+		subscribeIfInstance(preStartGameSubscribers, sub, PreStartGameSubscriber.class);
+		subscribeIfInstance(startGameSubscribers, sub, StartGameSubscriber.class);
+		subscribeIfInstance(preUpdateSubscribers, sub, PreUpdateSubscriber.class);
+		subscribeIfInstance(postUpdateSubscribers, sub, PostUpdateSubscriber.class);
+		subscribeIfInstance(postCreateStartingDeckSubscribers, sub, PostCreateStartingDeckSubscriber.class);
+		subscribeIfInstance(postCreateStartingRelicsSubscribers, sub, PostCreateStartingRelicsSubscriber.class);
+		subscribeIfInstance(postCreateShopRelicSubscribers, sub, PostCreateShopRelicSubscriber.class);
+		subscribeIfInstance(postCreateShopPotionSubscribers, sub, PostCreateShopPotionSubscriber.class);
+		subscribeIfInstance(editCardsSubscribers, sub, EditCardsSubscriber.class);
+		subscribeIfInstance(editRelicsSubscribers, sub, EditRelicsSubscriber.class);
+		subscribeIfInstance(editCharactersSubscribers, sub, EditCharactersSubscriber.class);
+		subscribeIfInstance(editStringsSubscribers, sub, EditStringsSubscriber.class);
+		subscribeIfInstance(editKeywordsSubscribers, sub, EditKeywordsSubscriber.class);
+		subscribeIfInstance(postBattleSubscribers, sub, PostBattleSubscriber.class);
+		subscribeIfInstance(setUnlocksSubscribers, sub, SetUnlocksSubscriber.class);
+		subscribeIfInstance(postPotionUseSubscribers, sub, PostPotionUseSubscriber.class);
+		subscribeIfInstance(prePotionUseSubscribers, sub, PrePotionUseSubscriber.class);
+		subscribeIfInstance(potionGetSubscribers, sub, PotionGetSubscriber.class);
+		subscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
+		subscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
+		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+	}
+	
+	// subscribe -
+	// only subscribers to a specific list
+	public static void subscribe(ISubscriber sub, Class<? extends ISubscriber> additionClass) {
+		if (additionClass.equals(StartActSubscriber.class)) {
+			startActSubscribers.add((StartActSubscriber) sub);
+		} else if (additionClass.equals(PostCampfireSubscriber.class)) {
+			postCampfireSubscribers.add((PostCampfireSubscriber) sub);
+		} else if (additionClass.equals(PostDrawSubscriber.class)) {
+			postDrawSubscribers.add((PostDrawSubscriber) sub);
+		} else if (additionClass.equals(PostExhaustSubscriber.class)) {
+			postExhaustSubscribers.add((PostExhaustSubscriber) sub);
+		} else if (additionClass.equals(OnCardUseSubscriber.class)) {
+			onCardUseSubscribers.add((OnCardUseSubscriber) sub);
+		} else if (additionClass.equals(PostDungeonInitializeSubscriber.class)) {
+			postDungeonInitializeSubscribers.add((PostDungeonInitializeSubscriber) sub);
+		} else if (additionClass.equals(PostEnergyRechargeSubscriber.class)) {
+			postEnergyRechargeSubscribers.add((PostEnergyRechargeSubscriber) sub);
+		} else if (additionClass.equals(PostInitializeSubscriber.class)) {
+			postInitializeSubscribers.add((PostInitializeSubscriber) sub);
+		} else if (additionClass.equals(PreMonsterTurnSubscriber.class)) {
+			preMonsterTurnSubscribers.add((PreMonsterTurnSubscriber) sub);
+		} else if (additionClass.equals(RenderSubscriber.class)) {
+			renderSubscribers.add((RenderSubscriber) sub);
+		} else if (additionClass.equals(PreRenderSubscriber.class)) {
+			preRenderSubscribers.add((PreRenderSubscriber) sub);
+		} else if (additionClass.equals(PostRenderSubscriber.class)) {
+			postRenderSubscribers.add((PostRenderSubscriber) sub);
+		} else if (additionClass.equals(ModelRenderSubscriber.class)) {
+			modelRenderSubscribers.add((ModelRenderSubscriber) sub);
+		} else if (additionClass.equals(PreStartGameSubscriber.class)) {
+			preStartGameSubscribers.add((PreStartGameSubscriber) sub);
+		} else if (additionClass.equals(StartGameSubscriber.class)) {
+			startGameSubscribers.add((StartGameSubscriber) sub);
+		} else if (additionClass.equals(PreUpdateSubscriber.class)) {
+			preUpdateSubscribers.add((PreUpdateSubscriber) sub);
+		} else if (additionClass.equals(PostUpdateSubscriber.class)) {
+			postUpdateSubscribers.add((PostUpdateSubscriber) sub);
+		} else if (additionClass.equals(PostCreateStartingDeckSubscriber.class)) {
+			postCreateStartingDeckSubscribers.add((PostCreateStartingDeckSubscriber) sub);
+		} else if (additionClass.equals(PostCreateStartingRelicsSubscriber.class)) {
+			postCreateStartingRelicsSubscribers.add((PostCreateStartingRelicsSubscriber) sub);
+		} else if (additionClass.equals(PostCreateShopRelicSubscriber.class)) {
+			postCreateShopRelicSubscribers.add((PostCreateShopRelicSubscriber) sub);
+		} else if (additionClass.equals(PostCreateShopPotionSubscriber.class)) {
+			postCreateShopPotionSubscribers.add((PostCreateShopPotionSubscriber) sub);
+		} else if (additionClass.equals(EditCardsSubscriber.class)) {
+			editCardsSubscribers.add((EditCardsSubscriber) sub);
+		} else if (additionClass.equals(EditRelicsSubscriber.class)) {
+			editRelicsSubscribers.add((EditRelicsSubscriber) sub);
+		} else if (additionClass.equals(EditCharactersSubscriber.class)) {
+			editCharactersSubscribers.add((EditCharactersSubscriber) sub);
+		} else if (additionClass.equals(EditStringsSubscriber.class)) {
+			editStringsSubscribers.add((EditStringsSubscriber) sub);
+		} else if (additionClass.equals(EditKeywordsSubscriber.class)) {
+			editKeywordsSubscribers.add((EditKeywordsSubscriber) sub);
+		} else if (additionClass.equals(PostBattleSubscriber.class)) {
+			postBattleSubscribers.add((PostBattleSubscriber) sub);
+		} else if (additionClass.equals(SetUnlocksSubscriber.class)) {
+			setUnlocksSubscribers.add((SetUnlocksSubscriber) sub);
+		} else if (additionClass.equals(PostPotionUseSubscriber.class)) {
+			postPotionUseSubscribers.add((PostPotionUseSubscriber) sub);
+		} else if (additionClass.equals(PrePotionUseSubscriber.class)) {
+			prePotionUseSubscribers.add((PrePotionUseSubscriber) sub);
+		} else if (additionClass.equals(PotionGetSubscriber.class)) {
+			potionGetSubscribers.add((PotionGetSubscriber) sub);
+		} else if (additionClass.equals(RelicGetSubscriber.class)) {
+			relicGetSubscribers.add((RelicGetSubscriber) sub);
+		} else if (additionClass.equals(PostPowerApplySubscriber.class)) {
+			postPowerApplySubscribers.add((PostPowerApplySubscriber) sub);
+		} else if (additionClass.equals(OnPowersModifiedSubscriber.class)) {
+			onPowersModifiedSubscribers.add((OnPowersModifiedSubscriber) sub);
+		}
+	}
+	
+	// unsubscribe -
+	// will unsubscribe from all lists this sub implements
+	public static void unsubscribe(ISubscriber sub) {
+		unsubscribeIfInstance(startActSubscribers, sub, StartActSubscriber.class);
+		unsubscribeIfInstance(postCampfireSubscribers, sub, PostCampfireSubscriber.class);
+		unsubscribeIfInstance(postDrawSubscribers, sub, PostDrawSubscriber.class);
+		unsubscribeIfInstance(postExhaustSubscribers, sub, PostExhaustSubscriber.class);
+		unsubscribeIfInstance(onCardUseSubscribers, sub, OnCardUseSubscriber.class);
+		unsubscribeIfInstance(postDungeonInitializeSubscribers, sub, PostDungeonInitializeSubscriber.class);
+		unsubscribeIfInstance(postEnergyRechargeSubscribers, sub, PostEnergyRechargeSubscriber.class);
+		unsubscribeIfInstance(postInitializeSubscribers, sub, PostInitializeSubscriber.class);
+		unsubscribeIfInstance(preMonsterTurnSubscribers, sub, PreMonsterTurnSubscriber.class);
+		unsubscribeIfInstance(renderSubscribers, sub, RenderSubscriber.class);
+		unsubscribeIfInstance(preRenderSubscribers, sub, PreRenderSubscriber.class);
+		unsubscribeIfInstance(postRenderSubscribers, sub, PostRenderSubscriber.class);
+		unsubscribeIfInstance(modelRenderSubscribers, sub, ModelRenderSubscriber.class);
+		unsubscribeIfInstance(preStartGameSubscribers, sub, PreStartGameSubscriber.class);
+		unsubscribeIfInstance(startGameSubscribers, sub, StartGameSubscriber.class);
+		unsubscribeIfInstance(preUpdateSubscribers, sub, PreUpdateSubscriber.class);
+		unsubscribeIfInstance(postUpdateSubscribers, sub, PostUpdateSubscriber.class);
+		unsubscribeIfInstance(postCreateStartingDeckSubscribers, sub, PostCreateStartingDeckSubscriber.class);
+		unsubscribeIfInstance(postCreateStartingRelicsSubscribers, sub, PostCreateStartingRelicsSubscriber.class);
+		unsubscribeIfInstance(postCreateShopRelicSubscribers, sub, PostCreateShopRelicSubscriber.class);
+		unsubscribeIfInstance(postCreateShopPotionSubscribers, sub, PostCreateShopPotionSubscriber.class);
+		unsubscribeIfInstance(editCardsSubscribers, sub, EditCardsSubscriber.class);
+		unsubscribeIfInstance(editRelicsSubscribers, sub, EditRelicsSubscriber.class);
+		unsubscribeIfInstance(editCharactersSubscribers, sub, EditCharactersSubscriber.class);
+		unsubscribeIfInstance(editStringsSubscribers, sub, EditStringsSubscriber.class);
+		unsubscribeIfInstance(editKeywordsSubscribers, sub, EditKeywordsSubscriber.class);
+		unsubscribeIfInstance(postBattleSubscribers, sub, PostBattleSubscriber.class);
+		unsubscribeIfInstance(setUnlocksSubscribers, sub, SetUnlocksSubscriber.class);
+		unsubscribeIfInstance(postPotionUseSubscribers, sub, PostPotionUseSubscriber.class);
+		unsubscribeIfInstance(prePotionUseSubscribers, sub, PrePotionUseSubscriber.class);
+		unsubscribeIfInstance(potionGetSubscribers, sub, PotionGetSubscriber.class);
+		unsubscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
+		unsubscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
+		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+	}
+	
+	// unsubscribe -
+	// only unsubscribe from a specific list
+	public static void unsubscribe(ISubscriber sub, Class<? extends ISubscriber> removalClass) {
+		if (removalClass.equals(StartActSubscriber.class)) {
+			startActSubscribers.remove(sub);
+		} else if (removalClass.equals(PostCampfireSubscriber.class)) {
+			postCampfireSubscribers.remove(sub);
+		} else if (removalClass.equals(PostDrawSubscriber.class)) {
+			postDrawSubscribers.remove(sub);
+		} else if (removalClass.equals(PostExhaustSubscriber.class)) {
+			postExhaustSubscribers.remove(sub);
+		} else if (removalClass.equals(OnCardUseSubscriber.class)) {
+			onCardUseSubscribers.remove(sub);
+		} else if (removalClass.equals(PostDungeonInitializeSubscriber.class)) {
+			postDungeonInitializeSubscribers.remove(sub);
+		} else if (removalClass.equals(PostEnergyRechargeSubscriber.class)) {
+			postEnergyRechargeSubscribers.remove(sub);
+		} else if (removalClass.equals(PostInitializeSubscriber.class)) {
+			postInitializeSubscribers.remove(sub);
+		} else if (removalClass.equals(PreMonsterTurnSubscriber.class)) {
+			preMonsterTurnSubscribers.remove(sub);
+		} else if (removalClass.equals(RenderSubscriber.class)) {
+			renderSubscribers.remove(sub);
+		} else if (removalClass.equals(PreRenderSubscriber.class)) {
+			preRenderSubscribers.remove(sub);
+		} else if (removalClass.equals(PostRenderSubscriber.class)) {
+			postRenderSubscribers.remove(sub);
+		} else if (removalClass.equals(ModelRenderSubscriber.class)) {
+			modelRenderSubscribers.remove(sub);
+		} else if (removalClass.equals(PreStartGameSubscriber.class)) {
+			preStartGameSubscribers.remove(sub);
+		} else if (removalClass.equals(StartGameSubscriber.class)) {
+			startGameSubscribers.remove(sub);
+		} else if (removalClass.equals(PreUpdateSubscriber.class)) {
+			preUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PostUpdateSubscriber.class)) {
+			postUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PostCreateStartingDeckSubscriber.class)) {
+			postCreateStartingDeckSubscribers.remove(sub);
+		} else if (removalClass.equals(PostCreateStartingRelicsSubscriber.class)) {
+			postCreateStartingRelicsSubscribers.remove(sub);
+		} else if (removalClass.equals(PostCreateShopRelicSubscriber.class)) {
+			postCreateShopRelicSubscribers.remove(sub);
+		} else if (removalClass.equals(PostCreateShopPotionSubscriber.class)) {
+			postCreateShopPotionSubscribers.remove(sub);
+		} else if (removalClass.equals(EditCardsSubscriber.class)) {
+			editCardsSubscribers.remove(sub);
+		} else if (removalClass.equals(EditRelicsSubscriber.class)) {
+			editRelicsSubscribers.remove(sub);
+		} else if (removalClass.equals(EditCharactersSubscriber.class)) {
+			editCharactersSubscribers.remove(sub);
+		} else if (removalClass.equals(EditStringsSubscriber.class)) {
+			editStringsSubscribers.remove(sub);
+		} else if (removalClass.equals(EditKeywordsSubscriber.class)) {
+			editKeywordsSubscribers.remove(sub);
+		} else if (removalClass.equals(PostBattleSubscriber.class)) {
+			postBattleSubscribers.remove(sub);
+		} else if (removalClass.equals(SetUnlocksSubscriber.class)) {
+			setUnlocksSubscribers.remove(sub);
+		} else if (removalClass.equals(PostPotionUseSubscriber.class)) {
+			postPotionUseSubscribers.remove(sub);
+		} else if (removalClass.equals(PrePotionUseSubscriber.class)) {
+			prePotionUseSubscribers.remove(sub);
+		} else if (removalClass.equals(PotionGetSubscriber.class)) {
+			potionGetSubscribers.remove(sub);
+		} else if (removalClass.equals(RelicGetSubscriber.class)) {
+			relicGetSubscribers.remove(sub);
+		} else if (removalClass.equals(PostPowerApplySubscriber.class)) {
+			postPowerApplySubscribers.remove(sub);
+		} else if (removalClass.equals(OnPowersModifiedSubscriber.class)) {
+			onPowersModifiedSubscribers.remove(sub);
+		}
+	}
+	
+	
+	// unsubscribeLater -
+	public static void unsubscribeLater(ISubscriber sub) {
+		toRemove.add(sub);
+	}
+	
 	// subscribeToStartAct -
 	public static void subscribeToStartAct(StartActSubscriber sub) {
 		startActSubscribers.add(sub);
@@ -2197,11 +2488,6 @@ public class BaseMod {
 	// unsubscribeFromModelRender -
 	public static void unsubscribeFromModelRender(ModelRenderSubscriber sub) {
 		modelRenderSubscribers.remove(sub);
-	}
-
-	// unsubscribeFromModelRenderLater -
-	public static void unsubscribeFromModelRenderLater(ModelRenderSubscriber sub) {
-		modelRenderSubscribers_toRemove.add(sub);
 	}
 
 	// subscribeToStartGame -
