@@ -16,7 +16,7 @@ public class EnergyOrbRenderHelper {
 	
 	public static void render(EnergyPanel panel, SpriteBatch sb) {
 		if(AbstractDungeon.player instanceof CustomPlayer) {
-			if(panel.totalCount > 0) {
+			if(EnergyPanel.totalCount > 0) {
 				((CustomPlayer)AbstractDungeon.player).renderOrb(panel, sb);
 			}else {
 				((CustomPlayer)AbstractDungeon.player).renderDisabledOrb(panel, sb);

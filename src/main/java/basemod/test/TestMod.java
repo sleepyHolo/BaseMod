@@ -388,6 +388,7 @@ public class TestMod implements
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void receivePostInitialize() {
         try {

@@ -2,7 +2,6 @@ package basemod.patches.com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
 import java.lang.reflect.Field;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;

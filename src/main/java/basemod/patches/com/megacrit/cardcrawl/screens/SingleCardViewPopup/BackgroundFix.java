@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomCardWithRender;
 
 public class BackgroundFix {

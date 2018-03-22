@@ -1,7 +1,5 @@
 package basemod;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,9 +20,9 @@ import basemod.interfaces.RenderSubscriber;
 public class ConsoleTargetedPower implements RenderSubscriber,PostUpdateSubscriber{
 	public static final Logger logger = LogManager.getLogger(DevConsole.class.getName());
 
-	private Class powerToApply;
+	private Class<?> powerToApply;
 	
-	public ConsoleTargetedPower(Class power,int amount) {
+	public ConsoleTargetedPower(Class<?> power,int amount) {
 		this.powerToApply=power;
 		this.amount=amount;
 		BaseMod.subscribeToRender(this);

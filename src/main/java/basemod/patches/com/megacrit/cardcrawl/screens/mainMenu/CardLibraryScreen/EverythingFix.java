@@ -50,7 +50,8 @@ public class EverythingFix
                     cardHeaderMap.put(colors[icolor], header);
                     Field headersField = CardLibraryScreen.class.getDeclaredField("headers");
                     headersField.setAccessible(true);
-                    ArrayList<CardLibSortHeader> headers = (ArrayList<CardLibSortHeader>)headersField.get(screen);
+                    @SuppressWarnings("unchecked")
+					ArrayList<CardLibSortHeader> headers = (ArrayList<CardLibSortHeader>)headersField.get(screen);
                     headers.add(header);
                 }
             } catch (Exception e) {
@@ -75,6 +76,7 @@ public class EverythingFix
                 	 CardGroup group = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
                      group.group = CardLibrary.getCardList(CardLibrary.LibraryType.valueOf(colors[icolor].name()));
                      
+                     @SuppressWarnings("rawtypes")
                      Class[] cArg = new Class[1];
                      cArg[0] = CardGroup.class;
                      Method lockStatusHelper = screen.getClass().getDeclaredMethod("lockStatusHelper", cArg);
@@ -115,8 +117,6 @@ public class EverythingFix
     {
     	public static void Postfix(Object __obj_instance)
     	{
-    		 CardLibraryScreen screen = (CardLibraryScreen) __obj_instance;
-
              AbstractCard.CardColor[] colors = AbstractCard.CardColor.values();
              for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {               
                  Initialize.cardHeaderMap.get(colors[icolor]).justSorted = true;
