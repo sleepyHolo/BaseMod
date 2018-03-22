@@ -373,12 +373,12 @@ public class DevConsole
 				return;
 			}
 
-			int upgradeIndex = tokens.length - 1;
-			while (ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) != 0) {
-				upgradeIndex--;
+			int countIndex = tokens.length - 1;
+			while (ConvertHelper.tryParseInt(tokens[countIndex], 0) != 0) {
+				countIndex--;
 			}
 
-			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
+			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, countIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
@@ -386,13 +386,13 @@ public class DevConsole
 				if (c != null) {
 					// card count
 					int count = 1;
-					if (tokens.length > 3 && ConvertHelper.tryParseInt(tokens[3], 0) != 0) {
-						count = ConvertHelper.tryParseInt(tokens[3], 0);
+					if (tokens.length > countIndex + 1 && ConvertHelper.tryParseInt(tokens[countIndex + 1], 0) != 0) {
+						count = ConvertHelper.tryParseInt(tokens[countIndex + 1], 0);
 					}
 
 					int upgradeCount = 0;
-					if (tokens.length > 4) {
-						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
+					if (tokens.length > countIndex + 2) {
+						upgradeCount = ConvertHelper.tryParseInt(tokens[countIndex + 2], 0);
 					}
 					
 					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
@@ -631,12 +631,12 @@ public class DevConsole
 				return;
 			}
 
-			int upgradeIndex = tokens.length - 1;
-			while (ConvertHelper.tryParseInt(tokens[upgradeIndex], 0) != 0) {
-				upgradeIndex--;
+			int countIndex = tokens.length - 1;
+			while (ConvertHelper.tryParseInt(tokens[countIndex], 0) != 0) {
+				countIndex--;
 			}
 
-			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, upgradeIndex + 1);
+			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, countIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
@@ -644,13 +644,13 @@ public class DevConsole
 				if (c != null) {
 					// card count
 					int count = 1;
-					if (tokens.length > 3 && ConvertHelper.tryParseInt(tokens[3], 0) != 0) {
-						count = ConvertHelper.tryParseInt(tokens[3], 0);
+					if (tokens.length > countIndex + 1 && ConvertHelper.tryParseInt(tokens[countIndex + 1], 0) != 0) {
+						count = ConvertHelper.tryParseInt(tokens[countIndex + 1], 0);
 					}
 
 					int upgradeCount = 0;
-					if (tokens.length > 4) {
-						upgradeCount = ConvertHelper.tryParseInt(tokens[4], 0);
+					if (tokens.length > countIndex + 2) {
+						upgradeCount = ConvertHelper.tryParseInt(tokens[countIndex + 2], 0);
 					}
 					
 					log("adding " + count + (count == 1 ? " copy of " : " copies of ") + cardName + " with " + upgradeCount + " upgrade(s)");
