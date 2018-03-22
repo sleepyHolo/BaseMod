@@ -1,47 +1,30 @@
 package basemod.abstracts;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
+import basemod.BaseMod;
+import basemod.animations.AbstractAnimation;
+import basemod.animations.G3DJAnimation;
+import basemod.interfaces.ModelRenderSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.JsonReader;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
-import basemod.BaseMod;
-import basemod.interfaces.ModelRenderSubscriber;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public abstract class CustomPlayer extends AbstractPlayer implements ModelRenderSubscriber {
 	
 	public static final int LAYER_COUNT = 5;
 	public static final float DEFAULT_ANGLE = 0.0f;
-	
-	public Model myModel;
-	public ModelInstance myInstance = null;
-	public AnimationController controller = null;
 
-	private String modelString = null;
-	private String animationString = null;
-	private boolean rescaled = false;
+	AbstractAnimation animation;
 	
 	private ArrayList<Texture> energyLayers = new ArrayList<Texture>();
 	private float[] energyLayerSpeeds = null;
@@ -55,6 +38,15 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	
 	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds,
 			String model, String animation) {
+		this(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, new G3DJAnimation(model, animation));
+	}
+
+	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, AbstractAnimation animation) {
+		this(name, playerClass, orbTextures, orbVfxPath, null, animation);
+	}
+
+	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds,
+						AbstractAnimation animation) {
 		super(name, playerClass);
 		
 		if (orbTextures == null || orbVfxPath == null) {
@@ -69,12 +61,13 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		this.dialogX = (this.drawX + 0.0F * Settings.scale);
 		this.dialogY = (this.drawY + 220.0F * Settings.scale);
 
-		this.modelString = model;
-		this.animationString = animation;
-		
-		if (modelString != null) {
+		this.animation = animation;
+
+		if (animation.type() != AbstractAnimation.Type.NONE) {
 			this.atlas = new TextureAtlas();
-			
+		}
+		
+		if (animation.type() == AbstractAnimation.Type.MODEL) {
 			BaseMod.subscribeToModelRender(this);
 		}
 	}
@@ -85,119 +78,25 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 			angles[i] = DEFAULT_ANGLE;
 		}
 	}
-	
-	public void create() {
-		if (modelString == null) {
-			return;
-		}
-		
-		try {
-			// Model loader needs a binary json reader to decode
-			JsonReader jsonReader = new JsonReader();
-
-			// Create a model loader passing in our json reader
-			G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
-
-			// Now load the model by name
-			myModel = modelLoader.loadModel(Gdx.files.internal(modelString));
-
-			// Necessary to get transparent textures working - I don't know why
-			for (Material mat : myModel.materials) {
-				mat.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-			}
-
-			// Now create an instance. Instance holds the positioning data, etc
-			// of an instance of your model
-			myInstance = new ModelInstance(myModel, 0, 0, 10.0f);
-
-			// fbx-conv is supposed to perform this rotation for you... it
-			// doesnt seem to
-			myInstance.transform.rotate(1, 0, 0, -90);
-
-			// only apply animations if provided a non-null animation to run
-			if (animationString != null) {
-				// You use an AnimationController to um, control animations. Each
-				// control is tied to the model instance
-				controller = new AnimationController(myInstance);
-				// Pick the current animation by name
-				controller.setAnimation(animationString, 1, new AnimationListener() {
-
-					@Override
-					public void onEnd(AnimationDesc animation) {
-						// this will be called when the current animation is done.
-						// Passing a negative to loop count loops forever. 1f for
-						// speed is normal speed.
-						controller.queue(animationString, -1, 1f, null, 0f);
-					}
-
-					@Override
-					public void onLoop(AnimationDesc animation) {
-						// TODO Auto-generated method stub
-
-					}
-
-				});	
-			}
-		// catch block to prevent it failing silently
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-			// not being able to load character image is a fatal error
-			Gdx.app.exit();
-		}
-	}
 
 	@Override
 	public void receiveModelRender(ModelBatch batch, Environment env) {
-		// do not render a model if provided a null model
-		if (modelString == null) {
-			return;
-		}
-		
-		// do not render the model if it is no longer in play
-		if (this != AbstractDungeon.player) {
-			BaseMod.unsubscribeFromModelRenderLater(this);
-		}
-		
-		// ensure loading is done before rendering
-		if (myInstance == null) {
-			create();
-		}
-		
-		// update animations if animation is enabled
-		if (animationString != null) {
-			controller.update(Gdx.graphics.getDeltaTime());
-		}
-		
-		// move player model to correct location on screen
-		Vector3 loc = myInstance.transform.getTranslation(new Vector3());
-		AbstractPlayer player = AbstractDungeon.player;
-		if (player != null) {
-			loc.x = player.drawX + player.animX - Gdx.graphics.getWidth() / 2;
-			loc.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY - Gdx.graphics.getHeight() / 2;
-			myInstance.transform.setTranslation(loc);
-			// only scale *once*
-			if (!rescaled) {
-				// do the z scale instead of y scale - not entirely sure why but it probably has to do with
-				// how blender and libgdx differ in their idea of what direction is "up"
-				myInstance.transform.scale(Settings.scale, 1.0f, Settings.scale);
-				rescaled = true;
-			}
-			batch.render(myInstance, env);
-		}
+		animation.renderModel(batch, env);
 	}
 
-	
 	@Override
 	public void renderPlayerImage(SpriteBatch sb) {
-		// do not render a model if provided a null model
-		if (modelString == null) {
-			super.renderPlayerImage(sb);
-			return;
+		switch (animation.type()) {
+			case NONE:
+				super.renderPlayerImage(sb);
+				break;
+			case MODEL:
+				BaseMod.publishAnimationRender(sb);
+				break;
+			case SPRITE:
+				animation.renderSprite(sb);
+				break;
 		}
-		// when the game would attempt to render the player image
-		// instead of doing that, go ahead and render the model instead
-		BaseMod.publishAnimationRender(sb);
 	}
 	
 	public Texture getOrbVfxTexture() {
