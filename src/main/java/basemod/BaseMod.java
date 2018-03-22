@@ -522,6 +522,7 @@ public class BaseMod {
 
 	// initializeSubscriptions -
 	private static void initializeSubscriptions() {
+		toRemove = new ArrayList<>();
 		startActSubscribers = new ArrayList<>();
 		postCampfireSubscribers = new ArrayList<>();
 		postDrawSubscribers = new ArrayList<>();
