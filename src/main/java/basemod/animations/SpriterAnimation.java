@@ -53,10 +53,9 @@ public class SpriterAnimation extends AbstractAnimation
         // Move to correct location on screen
         AbstractPlayer player = AbstractDungeon.player;
         if (player != null) {
-            Rectangle rect = myPlayer.getBoudingRectangle(null);
             Point pos = new Point();
             pos.x = player.drawX + player.animX;
-            pos.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY;// - (rect.bottom - myPlayer.getX());
+            pos.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY;
             myPlayer.setPosition(pos);
 
             drawer.draw(myPlayer);

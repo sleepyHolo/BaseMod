@@ -80,10 +80,7 @@ public class DevConsole
 	public static int commandPos;
 
 	public DevConsole() {
-		BaseMod.subscribeToPostEnergyRecharge(this);
-		BaseMod.subscribeToPostInitialize(this);
-		BaseMod.subscribeToPostRender(this);
-		BaseMod.subscribeToPostUpdate(this);
+		BaseMod.subscribe(this);
 
 		priorCommands = new ArrayList<>();
 		commandPos = -1;

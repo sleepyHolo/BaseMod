@@ -48,8 +48,7 @@ public class ModBadge implements RenderSubscriber, PreUpdateSubscriber {
         
         logger.info("initialized mod badge for: " + modName);
         
-        BaseMod.subscribeToRender(this);
-        BaseMod.subscribeToPreUpdate(this);
+        BaseMod.subscribe(this);
         
         logger.info("setup hooks for " + modName + " mod badge");
     }

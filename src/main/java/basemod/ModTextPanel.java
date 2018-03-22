@@ -56,8 +56,7 @@ public class ModTextPanel implements RenderSubscriber, PostUpdateSubscriber {
 		this.waitTimer = 0.0f;
 		this.shown = false;
 
-		BaseMod.subscribeToRender(this);
-		BaseMod.subscribeToPostUpdate(this);
+		BaseMod.subscribe(this);
 	}
 
 	public void receivePostUpdate() {

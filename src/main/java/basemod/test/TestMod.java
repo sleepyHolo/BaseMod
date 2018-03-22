@@ -187,6 +187,7 @@ public class TestMod implements
     	return folder + "/" + resource;
     }
 	
+	@SuppressWarnings("deprecation")
 	public TestMod() {
 		loudWrite(writer, "Begin subscribing to hooks");
 		subscribe("editCards", () -> BaseMod.subscribeToEditCards(this));

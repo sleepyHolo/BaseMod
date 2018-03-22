@@ -68,7 +68,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		}
 		
 		if (animation.type() == AbstractAnimation.Type.MODEL) {
-			BaseMod.subscribeToModelRender(this);
+			BaseMod.subscribe(this);
 		}
 	}
 	

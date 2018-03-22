@@ -25,8 +25,7 @@ public class ConsoleTargetedPower implements RenderSubscriber,PostUpdateSubscrib
 	public ConsoleTargetedPower(Class<?> power,int amount) {
 		this.powerToApply=power;
 		this.amount=amount;
-		BaseMod.subscribeToRender(this);
-		BaseMod.subscribeToPostUpdate(this);
+		BaseMod.subscribe(this);
 		this.isHidden=false;
 		com.megacrit.cardcrawl.core.GameCursor.hidden = true;
 		for (int i = 0; i < this.points.length; i++) {
