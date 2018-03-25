@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import basemod.screens.ModalChoiceScreen;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -349,6 +350,8 @@ public class BaseMod {
 	// Text input
 	
 	private static ModTextPanel textPanel;
+
+	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
 	
 	//
 	// Initialization
