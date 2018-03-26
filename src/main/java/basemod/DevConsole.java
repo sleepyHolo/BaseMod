@@ -68,6 +68,7 @@ public class DevConsole
 	public static boolean forceUnlocks = false;
 	public static int unlockLevel = -1;
 
+	public static boolean enabled = false;
 	public static boolean visible = false;
 	public static int toggleKey = Keys.GRAVE;
 	public static String currentText = "";
@@ -909,8 +910,11 @@ public class DevConsole
 				otherInputProcessor = Gdx.input.getInputProcessor();
 			}
 
-			Gdx.input.setInputProcessor(visible ? otherInputProcessor : consoleInputProcessor);
-			visible = !visible;
+			// only allow opening console when enabled but allow closing the console anytime
+			if (visible || enabled) {
+				Gdx.input.setInputProcessor(visible ? otherInputProcessor : consoleInputProcessor);
+				visible = !visible;
+			}
 		}
 
 		// get previous commands
