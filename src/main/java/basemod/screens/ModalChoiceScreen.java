@@ -1,24 +1,18 @@
 package basemod.screens;
 
 import basemod.helpers.ModalChoice;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.InputHelper;
-import com.megacrit.cardcrawl.helpers.MathHelper;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class ModalChoiceScreen
@@ -28,37 +22,19 @@ public class ModalChoiceScreen
 
     private static final Logger logger = LogManager.getLogger(ModalChoiceScreen.class.getName());
     private static float PAD_X;
-    private static Vector2[] points;
-    private static final Color ARROW_COLOR = new Color(1.0f, 0.2f, 0.3f, 1.0f);
-    private static Method updateReticle;
     public List<AbstractCard> cardGroup;
+    public boolean isOpen = false;
     private String header;
     private ModalChoice.ModalChoiceCallback callback;
     private boolean nestedOpen = false;
-    private AbstractCard draggingCard;
-    private float arrowX;
-    private float arrowY;
-    private AbstractCreature hoveredCreature;
-
-    static {
-        points = new Vector2[20];
-        for (int i=0; i<points.length; ++i) {
-            points[i] = new Vector2();
-        }
-
-        try {
-            updateReticle = AbstractCreature.class.getDeclaredMethod("updateReticle");
-            updateReticle.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
+    private float showTimer;
+    private CardGroup savedHand;
+    private boolean closing = false;
 
     public void open(List<AbstractCard> cards, String header, ModalChoice.ModalChoiceCallback callback)
     {
         PAD_X = 40.0f * Settings.scale;
         nestedOpen = true;
-        draggingCard = null;
 
         this.callback = callback;
         AbstractDungeon.topPanel.unhoverHitboxes();
@@ -68,8 +44,10 @@ public class ModalChoiceScreen
         this.header = header;
         AbstractDungeon.dynamicBanner.appear(header);
         AbstractDungeon.overlayMenu.proceedButton.hide();
-        AbstractDungeon.overlayMenu.showBlackScreen();
+        AbstractDungeon.overlayMenu.endTurnButton.disable();
         placeCards(Settings.WIDTH / 2.0f, Settings.HEIGHT * 0.45f);
+        showTimer = 0.8f;
+        isOpen = true;
     }
 
     public void reopen()
@@ -79,17 +57,47 @@ public class ModalChoiceScreen
         AbstractDungeon.isScreenUp = true;
         AbstractDungeon.dynamicBanner.appear(header);
         AbstractDungeon.overlayMenu.proceedButton.hide();
+        AbstractDungeon.overlayMenu.endTurnButton.disable();
+    }
+
+    public void close()
+    {
+        isOpen = false;
+        AbstractDungeon.player.hand = savedHand;
+        //savedHand = null;
+
+        AbstractDungeon.overlayMenu.endTurnButton.enable();
+        AbstractDungeon.dynamicBanner.hide();
+        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NONE;
+        AbstractDungeon.isScreenUp = false;
+    }
+
+    private void fakeClose()
+    {
+        AbstractDungeon.overlayMenu.endTurnButton.disable();
+        AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NONE;
+        AbstractDungeon.isScreenUp = false;
     }
 
     public void update()
     {
-        if (draggingCard == null) {
-            cardSelectUpdate();
-        } else {
-            AbstractDungeon.player.update();
-            AbstractDungeon.getCurrRoom().monsters.update();
-            updateTargetting();
+        if (showTimer > 0) {
+            showTimer -= Gdx.graphics.getDeltaTime();
+            if (Settings.FAST_MODE) {
+                showTimer -= Gdx.graphics.getDeltaTime();
+            }
+            for (AbstractCard c : cardGroup) {
+                c.update();
+            }
+            return;
         }
+
+        savedHand = AbstractDungeon.player.hand;
+        AbstractDungeon.player.hand = new CardGroup(CardGroup.CardGroupType.HAND);
+        for (AbstractCard c : cardGroup) {
+            AbstractDungeon.player.hand.addToHand(c);
+        }
+        fakeClose();
     }
 
     private void cardSelectUpdate()
@@ -108,123 +116,26 @@ public class ModalChoiceScreen
 
         if (hoveredCard != null && InputHelper.justClickedLeft) {
             hoveredCard.hb.clickStarted = true;
-        //}
-        //if (hoveredCard != null && hoveredCard.hb.clicked) {
-            //hoveredCard.hb.clicked = false;
+        }
+        if (hoveredCard != null && hoveredCard.hb.clicked) {
+            hoveredCard.hb.clicked = false;
             nestedOpen = false;
-            // TODO: Targetting logic
-            AbstractDungeon.dynamicBanner.hide();
-            AbstractDungeon.overlayMenu.hideBlackScreen();
-            draggingCard = hoveredCard;
-            GameCursor.hidden = true;
-            draggingCard.untip();
-            arrowX = InputHelper.mX;
-            arrowY = InputHelper.mY;
-            /*
-            hoveredCard.use(AbstractDungeon.player, null);
+            savedHand = AbstractDungeon.player.hand;
+            AbstractDungeon.player.hand = new CardGroup(CardGroup.CardGroupType.HAND);
+            for (AbstractCard c : cardGroup) {
+                AbstractDungeon.player.hand.addToHand(c);
+            }
+
             if (!nestedOpen) {
                 AbstractDungeon.screen = AbstractDungeon.CurrentScreen.CARD_REWARD;
                 AbstractDungeon.closeCurrentScreen();
             }
-            */
-        }
-    }
-
-    public void updateTargetting()
-    {
-        if (InputHelper.justClickedRight) {
-            CardCrawlGame.sound.play("UI_CLICK_2");
-            draggingCard = null;
-            GameCursor.hidden = false;
-            AbstractDungeon.dynamicBanner.appear(header);
-            AbstractDungeon.overlayMenu.proceedButton.hide();
-            AbstractDungeon.overlayMenu.showBlackScreen();
-            return;
-        }
-
-        hoveredCreature = null;
-        AbstractDungeon.player.hb.update();
-        if (AbstractDungeon.player.hb.hovered && !AbstractDungeon.player.isDying) {
-            hoveredCreature = AbstractDungeon.player;
-        }
-        if (hoveredCreature == null) {
-            for (AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
-                m.hb.update();
-                if (m.hb.hovered && !m.isDying && !m.isEscaping && m.currentHealth > 0) {
-                    hoveredCreature = m;
-                    break;
-                }
-            }
-        }
-
-        if (hoveredCreature != null && InputHelper.justReleasedClickLeft) {
-            InputHelper.justReleasedClickLeft = false;
         }
     }
 
     public void render(SpriteBatch sb)
     {
-        if (draggingCard == null) {
-            renderCardReward(sb);
-        } else {
-            renderHoverReticle(sb);
-            renderTargetting(sb);
-        }
-    }
-
-    private void renderTargetting(SpriteBatch sb)
-    {
-        arrowX = MathHelper.mouseLerpSnap(arrowX, InputHelper.mX);
-        arrowY = MathHelper.mouseLerpSnap(arrowY, InputHelper.mY);
-
-        AbstractCard cardInUse = AbstractDungeon.player.cardInUse;
-
-        Vector2 controlPoint = new Vector2(cardInUse.current_x - (arrowX - cardInUse.current_x) / 4.0f,
-                arrowY + (arrowY - cardInUse.current_y) / 2.0f);
-        // TODO
-        float arrowScale;
-        if (hoveredCreature == null) {
-            arrowScale = Settings.scale;
-            sb.setColor(Color.WHITE);
-        } else {
-            arrowScale = Settings.scale;
-            sb.setColor(ARROW_COLOR);
-        }
-
-        Vector2 tmp = new Vector2(controlPoint.x - arrowX, controlPoint.y - arrowY);
-        tmp.nor();
-
-        drawCurvedLine(sb, new Vector2(cardInUse.current_x, cardInUse.current_y), new Vector2(arrowX, arrowY), controlPoint);
-
-        sb.draw(ImageMaster.TARGET_UI_ARROW, arrowX - 128.0f, arrowY - 128.0f, 128.0f, 128.0f, 256.0f, 256.0f, arrowScale, arrowScale,
-                tmp.angle() + 90.0f, 0, 0, 256, 256, false, false);
-    }
-
-    private void renderHoverReticle(SpriteBatch sb)
-    {
-        switch (draggingCard.target) {
-            case ENEMY:
-                if (hoveredCreature != null) {
-                    hoveredCreature.renderReticle(sb);
-                }
-                break;
-            case ALL_ENEMY:
-                AbstractDungeon.getCurrRoom().monsters.renderReticle(sb);
-                break;
-            case SELF:
-                AbstractDungeon.player.renderReticle(sb);
-                break;
-            case SELF_AND_ENEMY:
-                AbstractDungeon.player.renderReticle(sb);
-                if (hoveredCreature != null) {
-                    hoveredCreature.renderReticle(sb);
-                }
-                break;
-            case ALL:
-                AbstractDungeon.player.renderReticle(sb);
-                AbstractDungeon.getCurrRoom().monsters.renderReticle(sb);
-                break;
-        }
+        renderCardReward(sb);
     }
 
     private void renderCardReward(SpriteBatch sb)
@@ -263,28 +174,6 @@ public class ModalChoiceScreen
             c.targetDrawScale = 0.75f;
             c.current_x = x;
             c.current_y = y;
-        }
-    }
-
-    private static void drawCurvedLine(SpriteBatch sb, Vector2 start, Vector2 end, Vector2 control)
-    {
-        float radius = 7.0F * Settings.scale;
-
-        for (int i = 0; i < points.length - 1; i++) {
-            points[i] = ((Vector2)com.badlogic.gdx.math.Bezier.quadratic(points[i], i / 20.0F, start, control, end, new Vector2()));
-            radius += 0.4F * Settings.scale;
-
-            float angle;
-
-            if (i != 0) {
-                Vector2 tmp = new Vector2(points[(i - 1)].x - points[i].x, points[(i - 1)].y - points[i].y);
-                angle = tmp.nor().angle() + 90.0F;
-            } else {
-                Vector2 tmp = new Vector2(control.x - points[i].x, control.y - points[i].y);
-                angle = tmp.nor().angle() + 270.0F;
-            }
-
-            sb.draw(ImageMaster.TARGET_UI_CIRCLE, points[i].x - 64.0F, points[i].y - 64.0F, 64.0F, 64.0F, 128.0F, 128.0F, radius / 18.0F, radius / 18.0F, angle, 0, 0, 128, 128, false, false);
         }
     }
 }

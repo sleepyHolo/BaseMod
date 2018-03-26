@@ -38,17 +38,17 @@ public class ModalChoice
             return this;
         }
 
-        public Builder addOption(String description)
+        public Builder addOption(String description, AbstractCard.CardTarget target)
         {
-            return addOption(null, description);
+            return addOption(null, description, target);
         }
 
-        public Builder addOption(String title, String description)
+        public Builder addOption(String title, String description, AbstractCard.CardTarget target)
         {
             if (title == null) {
                 title = "Option " + (options.size() + 1);
             }
-            options.add(new ModalChoiceCard(title, description, color, options.size(), callback));
+            options.add(new ModalChoiceCard(title, description, color, target, options.size(), callback));
             return this;
         }
 
@@ -76,6 +76,11 @@ public class ModalChoice
         this.title = title;
         this.cards = options;
         this.callback = callback;
+
+        for (AbstractCard c : cards) {
+            c.dontTriggerOnUseCard = true;
+            c.purgeOnUse = true;
+        }
     }
 
     public void complete(AbstractCard card)

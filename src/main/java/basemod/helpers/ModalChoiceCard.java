@@ -1,6 +1,5 @@
 package basemod.helpers;
 
-import basemod.BaseMod;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -12,9 +11,9 @@ public class ModalChoiceCard extends AbstractCard
     private int index;
     private ModalChoice.ModalChoiceCallback callback;
 
-    public ModalChoiceCard(String name, String rawDescription, CardColor color, int index, ModalChoice.ModalChoiceCallback callback)
+    public ModalChoiceCard(String name, String rawDescription, CardColor color, CardTarget target, int index, ModalChoice.ModalChoiceCallback callback)
     {
-        super(ID, name, null, "status/beta", -2, rawDescription, CardType.SKILL, color, CardRarity.BASIC, CardTarget.ENEMY, 0);
+        super(ID, name, null, "status/beta", -2, rawDescription, CardType.SKILL, color, CardRarity.BASIC, target, 0);
         portraitImg = ImageMaster.CARD_LOCKED_SKILL;
         dontTriggerOnUseCard = true;
 
@@ -37,6 +36,6 @@ public class ModalChoiceCard extends AbstractCard
     @Override
     public AbstractCard makeCopy()
     {
-        return new ModalChoiceCard(name, rawDescription, color, index, callback);
+        return new ModalChoiceCard(name, rawDescription, color, target, index, callback);
     }
 }
