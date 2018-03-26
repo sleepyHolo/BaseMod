@@ -1,15 +1,12 @@
 package basemod.screens;
 
-import basemod.helpers.ModalChoice;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.InputHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,18 +22,16 @@ public class ModalChoiceScreen
     public List<AbstractCard> cardGroup;
     public boolean isOpen = false;
     private String header;
-    private ModalChoice.ModalChoiceCallback callback;
     private boolean nestedOpen = false;
     private float showTimer;
     private CardGroup savedHand;
     private boolean closing = false;
 
-    public void open(List<AbstractCard> cards, String header, ModalChoice.ModalChoiceCallback callback)
+    public void open(List<AbstractCard> cards, String header)
     {
         PAD_X = 40.0f * Settings.scale;
         nestedOpen = true;
 
-        this.callback = callback;
         AbstractDungeon.topPanel.unhoverHitboxes();
         cardGroup = cards;
         AbstractDungeon.isScreenUp = true;
@@ -98,39 +93,6 @@ public class ModalChoiceScreen
             AbstractDungeon.player.hand.addToHand(c);
         }
         fakeClose();
-    }
-
-    private void cardSelectUpdate()
-    {
-        AbstractCard hoveredCard = null;
-        for (AbstractCard c : cardGroup) {
-            c.update();
-            c.updateHoverLogic();
-            if (c.hb.justHovered) {
-                CardCrawlGame.sound.playV("CARD_OBTAIN", 0.4f);
-            }
-            if (c.hb.hovered) {
-                hoveredCard = c;
-            }
-        }
-
-        if (hoveredCard != null && InputHelper.justClickedLeft) {
-            hoveredCard.hb.clickStarted = true;
-        }
-        if (hoveredCard != null && hoveredCard.hb.clicked) {
-            hoveredCard.hb.clicked = false;
-            nestedOpen = false;
-            savedHand = AbstractDungeon.player.hand;
-            AbstractDungeon.player.hand = new CardGroup(CardGroup.CardGroupType.HAND);
-            for (AbstractCard c : cardGroup) {
-                AbstractDungeon.player.hand.addToHand(c);
-            }
-
-            if (!nestedOpen) {
-                AbstractDungeon.screen = AbstractDungeon.CurrentScreen.CARD_REWARD;
-                AbstractDungeon.closeCurrentScreen();
-            }
-        }
     }
 
     public void render(SpriteBatch sb)
