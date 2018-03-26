@@ -9,11 +9,21 @@ public class ModalChoiceCard extends AbstractCard
 {
     public static final String ID = "ModalChoiceCard";
     private int index;
-    private ModalChoice.ModalChoiceCallback callback;
+    ModalChoice.ModalChoiceCallback callback;
 
-    public ModalChoiceCard(String name, String rawDescription, CardColor color, CardTarget target, int index, ModalChoice.ModalChoiceCallback callback)
+    public ModalChoiceCard(String name, String rawDescription, CardType type, CardColor color, CardTarget target)
     {
-        super(ID, name, null, "status/beta", -2, rawDescription, CardType.SKILL, color, CardRarity.BASIC, target, 0);
+        this(ID, name, rawDescription, type, color, target, -1, null);
+    }
+
+    ModalChoiceCard(String name, String rawDescription, CardColor color, CardTarget target, int index, ModalChoice.ModalChoiceCallback callback)
+    {
+        this(ID, name, rawDescription, CardType.SKILL, color, target, index, callback);
+    }
+
+    ModalChoiceCard(String id, String name, String rawDescription, CardType type, CardColor color, CardTarget target, int index, ModalChoice.ModalChoiceCallback callback)
+    {
+        super(id, name, null, "status/beta", -2, rawDescription, type, color, CardRarity.BASIC, target, 0);
         portraitImg = ImageMaster.CARD_LOCKED_SKILL;
         dontTriggerOnUseCard = true;
 
@@ -24,7 +34,9 @@ public class ModalChoiceCard extends AbstractCard
     @Override
     public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster)
     {
-        callback.optionSelected(index);
+        if (callback != null) {
+            callback.optionSelected(index);
+        }
     }
 
     @Override
