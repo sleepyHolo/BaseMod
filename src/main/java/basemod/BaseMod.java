@@ -157,6 +157,7 @@ import com.megacrit.cardcrawl.powers.VulnerablePower;
 import com.megacrit.cardcrawl.powers.WeakPower;
 import com.megacrit.cardcrawl.powers.WraithFormPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
@@ -412,6 +413,32 @@ public class BaseMod {
 		}
 	}
 	
+	public static Boolean maybeGetBoolean(String key) {
+		if (spireConfig == null) return null;
+		
+		try {
+			Method getBoolean = spireConfig.getDeclaredMethod("getBoolean", String.class);
+			return (Boolean) getBoolean.invoke(config, key);
+		} catch (Exception e) {
+			logger.info("could not get boolean: " + key);
+			logger.error(e.toString());
+			return null;
+		}
+	}
+	
+	public static void maybeSetBoolean(String key, Boolean value) {
+		if (spireConfig == null) return;
+		
+		try {
+			Method setBoolean = spireConfig.getDeclaredMethod("setBoolean", String.class, String.class);
+			setBoolean.invoke(config, key, value);
+			maybeSaveConfig();
+		} catch (Exception e) {
+			logger.info("could not set boolean: " + key + " to value: " + value);
+			logger.error(e.toString());
+		}
+	}
+	
 	private static void setProperties() {
 		// if config can't be loaded leave things at defaults
 		if (config == null) {
@@ -420,6 +447,8 @@ public class BaseMod {
 		
 		String consoleKey = maybeGetString("console-key");
 		if (consoleKey != null) DevConsole.toggleKey = Keys.valueOf(consoleKey);
+		Boolean consoleEnabled = maybeGetBoolean("console-enabled");
+		if (consoleEnabled != null) DevConsole.enabled = consoleEnabled;
 	}
 	
 	// initialize -

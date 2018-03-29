@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 
 import basemod.interfaces.PostInitializeSubscriber;
 
@@ -20,20 +22,28 @@ public class BaseModInit implements PostInitializeSubscriber {
 	
     private InputProcessor oldInputProcessor;
 	
-	@SuppressWarnings("deprecation")
+    public static final float BUTTON_X = 350.0f;
+    public static final float BUTTON_Y = 650.0f;
+    public static final float BUTTON_LABEL_X = 475.0f;
+    public static final float BUTTON_LABEL_Y = 700.0f;
+    public static final float BUTTON_ENABLE_X = 350.0f;
+    public static final float BUTTON_ENABLE_Y = 600.0f;
+    
 	@Override
 	public void receivePostInitialize() {
         // BaseMod post initialize handling
         ModPanel settingsPanel = new ModPanel();
-        settingsPanel.addLabel("", 475.0f, 700.0f, (me) -> {
+        
+        ModLabel buttonLabel = new ModLabel("", BUTTON_LABEL_X, BUTTON_LABEL_Y, settingsPanel, (me) -> {
             if (me.parent.waitingOnEvent) {
                 me.text = "Press key";
             } else {
                 me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
             }
         });
+        settingsPanel.addUIElement(buttonLabel);
         
-        settingsPanel.addButton(350.0f, 650.0f, (me) -> {
+        ModButton consoleKeyButton = new ModButton(BUTTON_X, BUTTON_Y, settingsPanel, (me) -> {
             me.parent.waitingOnEvent = true;
             oldInputProcessor = Gdx.input.getInputProcessor();
             Gdx.input.setInputProcessor(new InputAdapter() {
@@ -47,6 +57,15 @@ public class BaseModInit implements PostInitializeSubscriber {
                 }
             });
         });
+        settingsPanel.addUIElement(consoleKeyButton);
+        
+        ModLabeledToggleButton enableConsole = new ModLabeledToggleButton("Enable dev console",
+        		BUTTON_ENABLE_X, BUTTON_ENABLE_Y, Settings.CREAM_COLOR, FontHelper.charDescFont,
+        		DevConsole.enabled, settingsPanel, (label) -> {}, (button) -> {
+        			DevConsole.enabled = button.enabled;
+        			BaseMod.maybeSetBoolean("console-enabled", button.enabled);
+        		});
+        settingsPanel.addUIElement(enableConsole);
         
         Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
         BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
