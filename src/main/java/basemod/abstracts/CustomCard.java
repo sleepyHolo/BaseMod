@@ -1,7 +1,9 @@
 package basemod.abstracts;
 
 import java.util.HashMap;
+import java.util.List;
 
+import basemod.helpers.TooltipInfo;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -41,7 +43,9 @@ public abstract class CustomCard extends AbstractCard {
 		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
 		
 		this.textureImg = img;
-		loadCardImage(img);
+		if (img != null) {
+			loadCardImage(img);
+		}
 	}
 	
 	/**
@@ -80,5 +84,9 @@ public abstract class CustomCard extends AbstractCard {
 		TextureAtlas.AtlasRegion cardImg = new AtlasRegion(cardTexture, 0, 0, tw, th);
 		ReflectionHacks.setPrivateInherited(this, CustomCard.class, "portrait", cardImg);
 	}
-	
+
+	public List<TooltipInfo> getCustomTooltips()
+	{
+		return null;
+	}
 }

@@ -38,4 +38,15 @@ public class ModalChoice
 
         BaseMod.modalChoiceScreen.open(cards_copy, title);
     }
+
+    public List<TooltipInfo> generateTooltips()
+    {
+        List<TooltipInfo> ret = new ArrayList<>();
+
+        for (AbstractCard card : cards) {
+            ret.add(new TooltipInfo(card.name, card.rawDescription));
+        }
+
+        return ret;
+    }
 }
