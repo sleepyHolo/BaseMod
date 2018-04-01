@@ -2,10 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
 import java.util.ArrayList;
 
-import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
-import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.helpers.InputHelper;
 
@@ -27,13 +24,17 @@ public class PreUpdateHook {
     	}
     	return resultArr;
     }
-    
-	public static int[] Locator(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-		Matcher finalMatcher = new Matcher.MethodCallMatcher(InputHelper.class.getName(), "updateFirst");
-		
-		int[] beforeLines = LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
-		
-		// offset by 1 to be called **after** the found method call
-		return offset(beforeLines, 1);
+
+    public static class Locator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher finalMatcher = new Matcher.MethodCallMatcher(InputHelper.class.getName(), "updateFirst");
+
+			int[] beforeLines = LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+
+			// offset by 1 to be called **after** the found method call
+			return offset(beforeLines, 1);
+		}
 	}
 }
