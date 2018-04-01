@@ -47,6 +47,26 @@ public CustomCardWithRender(String id, String name, String img, String bgTexture
 		return portraitTexture;
 	}
 	
+	public Texture getOrbSmallTexture() {
+		return orbSmallTexture;
+	}
+	
+	public Texture getOrbPortraitTexture() {
+		return orbPortraitTexture;
+	}
+	
+	/**
+	 * @param orbSmallString
+	 * @param orbLargeString
+	 */
+	public void setOrbTexture(String orbSmallString, String orbLargeString) {
+		imgMap.put(orbSmallString, new Texture(orbSmallString));
+		imgMap.put(orbLargeString, new Texture(orbLargeString));
+		
+		orbSmallTexture = imgMap.get(orbSmallString);
+		orbPortraitTexture = imgMap.get(orbLargeString);
+	}
+	
 	static {
 		imgMap = new HashMap<>();
 	}
@@ -77,6 +97,8 @@ public CustomCardWithRender(String id, String name, String img, String bgTexture
 		CustomCardRenderHelper.renderCardBGPortrait(sb, this);
 	}
 	
+	public Texture orbSmallTexture = null;
+	public Texture orbPortraitTexture = null;
 	public Texture bGTexture = null;
 	public Texture bGTexture_p = null;
 }

@@ -103,10 +103,17 @@ public class BackgroundFix {
 				if (card.cost > -2) {
 					if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
 							&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-						Texture orbTexture = BaseMod.getEnergyOrbPortraitTexture(color.toString());
-						if (orbTexture == null) {
-							orbTexture = new Texture(BaseMod.getEnergyOrbPortrait(color.toString()));
-							BaseMod.saveEnergyOrbPortraitTexture(color.toString(), orbTexture);
+						Texture orbTexture = null;
+						if(card instanceof CustomCardWithRender) {
+							orbTexture = ((CustomCardWithRender)card).getOrbPortraitTexture();
+						}
+							
+						if(orbTexture == null) {
+							orbTexture = BaseMod.getEnergyOrbPortraitTexture(color.toString());
+							if (orbTexture == null) {
+								orbTexture = new Texture(BaseMod.getEnergyOrbPortrait(color.toString()));
+								BaseMod.saveEnergyOrbPortraitTexture(color.toString(), orbTexture);
+							}
 						}
 						
 						sb.draw(orbTexture, Settings.WIDTH / 2.0F - 82.0F - 270.0F * Settings.scale, Settings.HEIGHT / 2.0F - 82.0F + 380.0F * Settings.scale, 82.0F, 82.0F, 164.0F, 164.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 164, 164, false, false);
