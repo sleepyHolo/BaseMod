@@ -232,5 +232,21 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Added ToggleButton - idea and some code courtesy of twanvl (https://github.com/twanvl)
 * Added a LabeledToggleButton which is a ToggleButton with a text label
 
-#### dev ####
+### v2.3.1 ###
+* Cleanup README
 * Fix character select screen memory leak (kiooeht)
+* Revamp subscription system
+* Deprecate old subscription system
+* Fix issue #24
+* Fix issue #29
+* Support animations done in spriter - these have a much smaller performance impact (kiooeht)
+* Prep for MTS v2.6.0 when it releases
+* Add a new badge icon for BaseMod
+* Support week 17 patch
+
+#### dev ####
+* Convert CardCrawlGame patches to Locator patches
+* Fix issue #40
+* Fix issue #41
+* Add feature #31
+* Add feature #39
