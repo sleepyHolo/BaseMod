@@ -1,24 +1,31 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import com.megacrit.cardcrawl.core.Settings;import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import basemod.BaseMod;
 import basemod.abstracts.CustomCardWithRender;
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
 
 public class BackgroundFix {
 
 	@SpirePatch(cls="com.megacrit.cardcrawl.screens.SingleCardViewPopup",
 			method="renderCardBack")
 	public static class BackgroundTexture {
-		public static void Postfix(Object __obj_instance, Object sbObject) {
+		public static void Prefix(Object __obj_instance, Object sbObject) {
+			System.out.println("trying to render background textures but they're small");
 			try {
 				SingleCardViewPopup popup = (SingleCardViewPopup) __obj_instance;
 				SpriteBatch sb = (SpriteBatch) sbObject;
@@ -90,7 +97,8 @@ public class BackgroundFix {
 	@SpirePatch(cls="com.megacrit.cardcrawl.screens.SingleCardViewPopup",
 			method="renderCost")
 	public static class EnergyOrbTexture {
-		@SpireInsertPatch(rloc=70)
+		
+		@SpireInsertPatch
 		public static void Insert(Object __obj_instance, Object sbObject) {
 			try {
 				SingleCardViewPopup popup = (SingleCardViewPopup) __obj_instance;
@@ -115,6 +123,15 @@ public class BackgroundFix {
 			} catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		public static class Locator extends SpireInsertLocator {
+			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.cards.AbstractCard", "color");
+
+			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+		}
 		}
 	}
 	

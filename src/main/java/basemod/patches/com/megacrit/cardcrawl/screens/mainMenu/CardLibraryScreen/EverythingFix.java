@@ -9,13 +9,20 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
+import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
+import com.evacipated.cardcrawl.modthespire.lib.Matcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.screens.mainMenu.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.CardLibraryScreen;
+
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
 
 /**
  * 
@@ -34,7 +41,7 @@ public class EverythingFix
         public static Map<AbstractCard.CardColor, CardGroup> cardGroupMap = new HashMap<>();
         public static Map<AbstractCard.CardColor, CardLibSortHeader> cardHeaderMap = new HashMap<>();
 
-        @SpireInsertPatch(rloc=37)
+        @SpireInsertPatch
         public static void Insert(Object __obj_instance)
         {
             try {
@@ -58,6 +65,17 @@ public class EverythingFix
                 e.printStackTrace();
             }
         }
+        
+        public static class Locator extends SpireInsertLocator
+    	{
+    		@Override
+    		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+    		{
+    			Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.screens.mainMenu.CardLibraryScreen", "calculateScrollBounds");
+
+    			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+    		}
+    	}
     }
     
     @SpirePatch(
@@ -95,10 +113,7 @@ public class EverythingFix
     )
     public static class CalculateScrollBounds
     {
-        @SpireInsertPatch(
-            rloc=3,
-            localvars={"size"}
-        )
+        @SpireInsertPatch(localvars={"size"})
         public static void Insert(Object __obj_instance, @ByRef int[] size)
         {
             System.out.println(size[0]);
@@ -107,6 +122,27 @@ public class EverythingFix
             }
             System.out.println(size[0]);
         }
+        
+        public static class Locator extends SpireInsertLocator
+    	{
+            private static int[] offset(int[] originalArr, int offset) {
+            	int[] resultArr = new int[originalArr.length];
+            	for (int i = 0; i < originalArr.length; i++) {
+            		resultArr[i] = originalArr[i] + offset;
+            	}
+            	return resultArr;
+            }
+        	
+    		@Override
+    		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+    		{
+    			Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.screens.mainMenu.CardLibraryScreen", "curseCards");
+
+    			// offset by 1 to find line **after** the match
+    			return offset(LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher), 1);
+    		}
+    	}
+        
     }
     
     @SpirePatch(
@@ -134,17 +170,13 @@ public class EverythingFix
     )
     public static class UpdateCards
     {
-        @SpireInsertPatch(
-            rloc = 81,
-            localvars = {"lineNum", "drawStartX", "drawStartY", "padX", "padY", "currentDiffY"}
-        )
+        @SpireInsertPatch(localvars = {"lineNum", "drawStartX", "drawStartY", "padX", "padY", "currentDiffY"})
         public static void Insert(Object __obj_instance, @ByRef int[] lineNum, float drawStartX, float drawStartY, float padX, float padY, float currentDiffY)
         {
             try {
                 Field hoveredCard = CardLibraryScreen.class.getDeclaredField("hoveredCard");
                 hoveredCard.setAccessible(true);
 
-                lineNum[0] += 2;
                 ArrayList<AbstractCard> cards;
                 CardLibSortHeader header;
                 for (Map.Entry<AbstractCard.CardColor, CardGroup> entry : Initialize.cardGroupMap.entrySet()) {
@@ -172,11 +204,26 @@ public class EverythingFix
                         }
                         header.justSorted = false;
                     }
+                    
+                    lineNum[0] += 2;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        
+        public static class Locator extends SpireInsertLocator
+    	{
+        	
+    		@Override
+    		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+    		{
+    			Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.screens.mainMenu.CardLibraryScreen", "colorlessCards");
+
+    			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+    		}
+    	}
+        
     }
 
     @SpirePatch(
@@ -185,9 +232,7 @@ public class EverythingFix
     )
     public static class Render
     {
-        @SpireInsertPatch(
-            rloc=11
-        )
+        @SpireInsertPatch
         public static void Insert(Object __obj_instance, Object sbObj)
         {
             try {
@@ -201,6 +246,18 @@ public class EverythingFix
                 e.printStackTrace();
             }
         }
+        
+        public static class Locator extends SpireInsertLocator
+    	{
+        	
+    		@Override
+    		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+    		{
+    			Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.screens.mainMenu.CardLibraryScreen", "colorlessCards");
+
+    			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+    		}
+    	}
     }
     
     private static String capitalizeWord(String str)
