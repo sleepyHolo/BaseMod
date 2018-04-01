@@ -157,7 +157,6 @@ import com.megacrit.cardcrawl.powers.VulnerablePower;
 import com.megacrit.cardcrawl.powers.WeakPower;
 import com.megacrit.cardcrawl.powers.WraithFormPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
@@ -417,7 +416,7 @@ public class BaseMod {
 		if (spireConfig == null) return null;
 		
 		try {
-			Method getBoolean = spireConfig.getDeclaredMethod("getBoolean", String.class);
+			Method getBoolean = spireConfig.getDeclaredMethod("getBool", String.class);
 			return (Boolean) getBoolean.invoke(config, key);
 		} catch (Exception e) {
 			logger.info("could not get boolean: " + key);
@@ -430,7 +429,7 @@ public class BaseMod {
 		if (spireConfig == null) return;
 		
 		try {
-			Method setBoolean = spireConfig.getDeclaredMethod("setBoolean", String.class, String.class);
+			Method setBoolean = spireConfig.getDeclaredMethod("setBool", String.class, boolean.class);
 			setBoolean.invoke(config, key, value);
 			maybeSaveConfig();
 		} catch (Exception e) {

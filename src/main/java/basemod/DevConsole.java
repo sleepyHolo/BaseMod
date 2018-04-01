@@ -225,6 +225,11 @@ public class DevConsole
 	}
 
 	private static void cmdPower(String[] tokens) {
+		if (tokens.length < 2)  {
+			cmdPowerHelp();
+			return;
+		}
+		
 		String powerID = "";
 		int amount = 1;
 		for (int i = 1; i < tokens.length - 1; i++) {
@@ -780,7 +785,7 @@ public class DevConsole
 	}
 
 	private static void cmdPotion(String[] tokens) {
-		if (tokens.length < 3) {
+		if (tokens.length < 2) {
 			cmdPotionHelp();
 			return;
 		}
@@ -792,7 +797,7 @@ public class DevConsole
 			// check if we want to list potions
 			if (tokens[1].equals("list")) {
 				Collections.sort(PotionHelper.potions);
-				logger.info(PotionHelper.potions);
+				log(PotionHelper.potions);
 			} else {
 				cmdPotionHelp();
 			}
