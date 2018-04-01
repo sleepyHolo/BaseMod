@@ -2,14 +2,10 @@ package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
 import java.util.ArrayList;
 
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
-import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -36,11 +32,15 @@ public class CreateCharacterSwitch {
 			pObj[0] = p;
 		}
 	}
-	
-	public static int[] Locator(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-		Matcher finalMatcher = new Matcher.FieldAccessMatcher(
-				"com.megacrit.cardcrawl.characters.AbstractPlayer", "masterDeck");
-		
-		return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+
+	public static class Locator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher finalMatcher = new Matcher.FieldAccessMatcher(
+					"com.megacrit.cardcrawl.characters.AbstractPlayer", "masterDeck");
+
+			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+		}
 	}
 }
