@@ -232,7 +232,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Added ToggleButton - idea and some code courtesy of twanvl (https://github.com/twanvl)
 * Added a LabeledToggleButton which is a ToggleButton with a text label
 
-### v2.3.1 ###
+#### v2.3.1 ####
 * Cleanup README
 * Fix character select screen memory leak (kiooeht)
 * Revamp subscription system
