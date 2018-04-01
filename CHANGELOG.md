@@ -244,9 +244,13 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add a new badge icon for BaseMod
 * Support week 17 patch
 
-#### dev ####
+#### v2.4.0 ####
+* **Requires** ModTheSpire v2.6.0 now
+* Convert CardLibraryScreen patches to Locator patches
 * Convert CardCrawlGame patches to Locator patches
+* Modal choice cards! (kiooeht) (https://github.com/daviscook477/BaseMod/wiki/Modal-Choice-Cards)
 * Fix issue #40
 * Fix issue #41
+* Remove issue #38
 * Add feature #31
 * Add feature #39
