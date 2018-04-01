@@ -246,6 +246,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### v2.4.0 ####
 * **Requires** ModTheSpire v2.6.0 now
+* Support **week 18** patch
 * Convert CardLibraryScreen patches to Locator patches
 * Convert CardCrawlGame patches to Locator patches
 * Modal choice cards! (kiooeht) (https://github.com/daviscook477/BaseMod/wiki/Modal-Choice-Cards)
