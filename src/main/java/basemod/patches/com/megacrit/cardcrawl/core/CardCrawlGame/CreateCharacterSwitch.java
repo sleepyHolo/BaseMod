@@ -43,4 +43,8 @@ public class CreateCharacterSwitch {
 			return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
 		}
 	}
+	
+	public static void Prefix(Object selectionObj) {
+		BaseMod.publishPreStartGame();
+	}
 }
