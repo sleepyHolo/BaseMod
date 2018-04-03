@@ -11,4 +11,6 @@ public abstract class DynamicVariable
     public abstract int value(AbstractCard card);
 
     public abstract int baseValue(AbstractCard card);
+
+    public abstract boolean upgraded(AbstractCard card);
 }

@@ -28,4 +28,10 @@ public class DamageVariable extends DynamicVariable
     {
         return card.baseDamage;
     }
+
+    @Override
+    public boolean upgraded(AbstractCard card)
+    {
+        return card.upgradedDamage;
+    }
 }

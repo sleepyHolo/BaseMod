@@ -28,4 +28,10 @@ public class BlockVariable extends DynamicVariable
     {
         return card.baseBlock;
     }
+
+    @Override
+    public boolean upgraded(AbstractCard card)
+    {
+        return card.upgradedBlock;
+    }
 }

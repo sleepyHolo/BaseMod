@@ -28,4 +28,10 @@ public class MagicNumberVariable extends DynamicVariable
     {
         return card.baseMagicNumber;
     }
+
+    @Override
+    public boolean upgraded(AbstractCard card)
+    {
+        return card.upgradedMagicNumber;
+    }
 }
