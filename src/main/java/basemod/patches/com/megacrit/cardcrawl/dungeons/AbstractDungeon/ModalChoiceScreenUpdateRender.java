@@ -20,7 +20,7 @@ public class ModalChoiceScreenUpdateRender
         )
         public static void Insert(AbstractDungeon __instance)
         {
-            if (AbstractDungeon.screen == ModalChoiceScreen.MODAL_CHOICE) {
+            if (AbstractDungeon.screen == ModalChoiceScreen.Enum.MODAL_CHOICE) {
                 BaseMod.modalChoiceScreen.update();
             }
         }
@@ -37,7 +37,7 @@ public class ModalChoiceScreenUpdateRender
         )
         public static void Insert(AbstractDungeon __instance, SpriteBatch sb)
         {
-            if (AbstractDungeon.screen == ModalChoiceScreen.MODAL_CHOICE) {
+            if (AbstractDungeon.screen == ModalChoiceScreen.Enum.MODAL_CHOICE) {
                 BaseMod.modalChoiceScreen.render(sb);
             }
         }
@@ -51,7 +51,7 @@ public class ModalChoiceScreenUpdateRender
     {
         public static void Postfix(AbstractDungeon.CurrentScreen s)
         {
-            if (s == ModalChoiceScreen.MODAL_CHOICE) {
+            if (s == ModalChoiceScreen.Enum.MODAL_CHOICE) {
                 BaseMod.modalChoiceScreen.reopen();
             }
         }
