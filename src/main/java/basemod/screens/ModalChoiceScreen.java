@@ -12,8 +12,11 @@ import java.util.List;
 
 public class ModalChoiceScreen
 {
-    @SpireEnum
-    public static AbstractDungeon.CurrentScreen MODAL_CHOICE;
+    public static class Enum
+    {
+        @SpireEnum
+        public static AbstractDungeon.CurrentScreen MODAL_CHOICE;
+    }
 
     private static float PAD_X;
     public List<AbstractCard> cardGroup;
@@ -29,7 +32,7 @@ public class ModalChoiceScreen
         AbstractDungeon.topPanel.unhoverHitboxes();
         cardGroup = cards;
         AbstractDungeon.isScreenUp = true;
-        AbstractDungeon.screen = MODAL_CHOICE;
+        AbstractDungeon.screen = Enum.MODAL_CHOICE;
         this.header = header;
         AbstractDungeon.dynamicBanner.appear(header);
         AbstractDungeon.overlayMenu.proceedButton.hide();
@@ -41,7 +44,7 @@ public class ModalChoiceScreen
 
     public void reopen()
     {
-        AbstractDungeon.screen = MODAL_CHOICE;
+        AbstractDungeon.screen = Enum.MODAL_CHOICE;
         AbstractDungeon.topPanel.unhoverHitboxes();
         AbstractDungeon.isScreenUp = true;
         AbstractDungeon.dynamicBanner.appear(header);
