@@ -17,7 +17,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomCardWithRender;
+import basemod.abstracts.CustomCard;
 import basemod.helpers.SuperclassFinder;
 
 public class RenderFixSwitches {
@@ -36,9 +36,9 @@ public class RenderFixSwitches {
 					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
 				Texture orbTexture = null;
 				try {
-					if (card instanceof CustomCardWithRender) {
-						orbTexture = ((CustomCardWithRender)card).getOrbSmallTexture();
-					} 
+					if (card instanceof CustomCard) {
+						orbTexture = ((CustomCard) card).getOrbSmallTexture();
+					}
 					if (orbTexture == null){
 						Texture baseModTexture = BaseMod.getEnergyOrbTexture(color.toString());
 						if (baseModTexture == null) {
@@ -133,16 +133,14 @@ public class RenderFixSwitches {
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
 			
-			//This checks whether or not the card that is being rendered is a CustomCardWithRender and uses that cards render method to render the new background color
-			if(card instanceof CustomCardWithRender) {
-				CustomCardWithRender custCard = (CustomCardWithRender)card;
-				
-				custCard.renderCard(sb, x, y);
-			}else {
-				if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-						&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-					Texture bgTexture;
-					try {
+			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+				Texture bgTexture = null;
+				try {
+					if (card instanceof CustomCard) {
+						bgTexture = ((CustomCard) card).getBackgroundSmallTexture();
+					}
+					if (bgTexture == null) {
 						Texture baseModTexture = BaseMod.getAttackBgTexture(color.toString());
 						if (baseModTexture == null) {
 							bgTexture = new Texture(BaseMod.getAttackBg(color.toString()));
@@ -150,27 +148,26 @@ public class RenderFixSwitches {
 						} else {
 							bgTexture = baseModTexture;
 						}
-						
-					} catch (NullPointerException e) {
-						logger.error("could not load texture for attack bg on card " + card.getClass().toString() + " with color " + color.toString());
-						logger.error("exception is: " + e.getMessage());
-						e.printStackTrace();
-						bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
 					}
-					try {
-						// use reflection hacks to invoke renderHelper (without float scale)
-						Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
-								Color.class, Texture.class, float.class, float.class);
-						renderHelperMethod.setAccessible(true);
-						Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
-						renderColorField.setAccessible(true);
-						Color renderColor = (Color) renderColorField.get(card);
-						renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-					} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
-						logger.error("could not set card attack bg on card " + card.getClass().toString() + " with color " + color.toString());
-						logger.error("exception is: " + e.getMessage());
-						e.printStackTrace();
-					}
+				} catch (NullPointerException e) {
+					logger.error("could not load texture for attack bg on card " + card.getClass().toString() + " with color " + color.toString());
+					logger.error("exception is: " + e.getMessage());
+					e.printStackTrace();
+					bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
+				}
+				try {
+					// use reflection hacks to invoke renderHelper (without float scale)
+					Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
+							Color.class, Texture.class, float.class, float.class);
+					renderHelperMethod.setAccessible(true);
+					Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
+					renderColorField.setAccessible(true);
+					Color renderColor = (Color) renderColorField.get(card);
+					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
+				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+					logger.error("could not set card attack bg on card " + card.getClass().toString() + " with color " + color.toString());
+					logger.error("exception is: " + e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}
@@ -191,15 +188,14 @@ public class RenderFixSwitches {
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
 			
-			//This checks whether or not the card that is being rendered is a CustomCardWithRender and uses that cards render method to render the new background color
-			if(card instanceof CustomCardWithRender) {
-				CustomCardWithRender custCard = (CustomCardWithRender)card;
-				custCard.renderCard(sb, x, y);
-			}else {
-				if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-						&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-					Texture bgTexture;
-					try {
+			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+				Texture bgTexture = null;
+				try {
+					if (card instanceof CustomCard) {
+						bgTexture = ((CustomCard) card).getBackgroundSmallTexture();
+					}
+					if (bgTexture == null) {
 						Texture baseModTexture = BaseMod.getPowerBgTexture(color.toString());
 						if (baseModTexture == null) {
 							bgTexture = new Texture(BaseMod.getPowerBg(color.toString()));
@@ -207,24 +203,24 @@ public class RenderFixSwitches {
 						} else {
 							bgTexture = baseModTexture;
 						}
-					} catch (NullPointerException e) {
-						logger.error("could not load texture for power bg on card " + card.getClass().toString() + " with color " + color.toString());
-						logger.error("exception is: " + e.getMessage());
-						e.printStackTrace();
-						bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
 					}
-					try {
-						// use reflection hacks to invoke renderHelper (without float scale)
-						Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
-								Color.class, Texture.class, float.class, float.class);
-						renderHelperMethod.setAccessible(true);
-						Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
-						renderColorField.setAccessible(true);
-						Color renderColor = (Color) renderColorField.get(card);
-						renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-					} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
-						logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
-					}
+				} catch (NullPointerException e) {
+					logger.error("could not load texture for power bg on card " + card.getClass().toString() + " with color " + color.toString());
+					logger.error("exception is: " + e.getMessage());
+					e.printStackTrace();
+					bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
+				}
+				try {
+					// use reflection hacks to invoke renderHelper (without float scale)
+					Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
+							Color.class, Texture.class, float.class, float.class);
+					renderHelperMethod.setAccessible(true);
+					Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
+					renderColorField.setAccessible(true);
+					Color renderColor = (Color) renderColorField.get(card);
+					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
+				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+					logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
 				}
 			}
 		}
@@ -244,15 +240,14 @@ public class RenderFixSwitches {
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
 			
-			//This checks whether or not the card that is being rendered is a CustomCardWithRender and uses that cards render method to render the new background color
-			if(card instanceof CustomCardWithRender) {
-				CustomCardWithRender custCard = (CustomCardWithRender)card;
-				custCard.renderCard(sb, x, y);
-			}else {
-				if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-						&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-					Texture bgTexture;
-					try {
+			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
+					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+				Texture bgTexture = null;
+				try {
+					if (card instanceof CustomCard) {
+						bgTexture = ((CustomCard) card).getBackgroundSmallTexture();
+					}
+					if (bgTexture == null) {
 						Texture baseModTexture = BaseMod.getSkillBgTexture(color.toString());
 						if (baseModTexture == null) {
 							bgTexture = new Texture(BaseMod.getSkillBg(color.toString()));
@@ -260,24 +255,24 @@ public class RenderFixSwitches {
 						} else {
 							bgTexture = baseModTexture;
 						}
-					} catch (NullPointerException e) {
-						logger.error("could not load texture for skill bg on card " + card.getClass().toString() + " with color " + color.toString());
-						logger.error("exception is: " + e.getMessage());
-						e.printStackTrace();
-						bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
 					}
-					try {
-						// use reflection hacks to invoke renderHelper (without float scale)
-						Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
-								Color.class, Texture.class, float.class, float.class);
-						renderHelperMethod.setAccessible(true);
-						Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
-						renderColorField.setAccessible(true);
-						Color renderColor = (Color) renderColorField.get(card);
-						renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
-					} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
-						logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
-					}
+				} catch (NullPointerException e) {
+					logger.error("could not load texture for skill bg on card " + card.getClass().toString() + " with color " + color.toString());
+					logger.error("exception is: " + e.getMessage());
+					e.printStackTrace();
+					bgTexture = ImageMaster.CARD_SKILL_BG_BLACK;
+				}
+				try {
+					// use reflection hacks to invoke renderHelper (without float scale)
+					Method renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class,
+							Color.class, Texture.class, float.class, float.class);
+					renderHelperMethod.setAccessible(true);
+					Field renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
+					renderColorField.setAccessible(true);
+					Color renderColor = (Color) renderColorField.get(card);
+					renderHelperMethod.invoke(card, sb, renderColor, bgTexture, x, y);
+				} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+					logger.error("could not set card skill bg on card " + card.getClass().toString() + " with color " + color.toString());
 				}
 			}
 		}

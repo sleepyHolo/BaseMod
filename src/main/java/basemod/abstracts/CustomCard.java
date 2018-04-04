@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import basemod.helpers.TooltipInfo;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -11,6 +13,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
+import basemod.BaseMod;
 import basemod.ReflectionHacks;
 
 public abstract class CustomCard extends AbstractCard {
@@ -33,11 +36,27 @@ public abstract class CustomCard extends AbstractCard {
 		return portraitTexture;
 	}
 	
+	private static void loadTextureFromString(String textureString) {
+		if (!imgMap.containsKey(textureString)) {
+			imgMap.put(textureString, new Texture(Gdx.files.internal(textureString)));
+		}
+	}
+	
+	private static Texture getTextureFromString(String textureString) {
+		loadTextureFromString(textureString);
+		return imgMap.get(textureString);
+	}
+	
 	static {
 		imgMap = new HashMap<>();
 	}
+
 	
 	public String textureImg;
+	public String textureOrbSmallImg = null;
+	public String textureOrbLargeImg = null;
+	public String textureBackgroundSmallImg = null;
+	public String textureBackgroundLargeImg = null;
 	
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
 		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
@@ -46,6 +65,76 @@ public abstract class CustomCard extends AbstractCard {
 		if (img != null) {
 			loadCardImage(img);
 		}
+	}
+	
+	// 
+	// per card energy orb functionality
+	//
+	
+	public Texture getOrbSmallTexture() {
+		if (textureOrbSmallImg == null) {
+			return BaseMod.getEnergyOrbTexture(this.color.toString());
+		}
+		
+		return getTextureFromString(textureOrbSmallImg);
+	}
+	
+	public Texture getOrbLargeTexture() {
+		if (textureOrbLargeImg == null) {
+			return BaseMod.getEnergyOrbPortraitTexture(this.color.toString());
+		}
+		
+		return getTextureFromString(textureOrbLargeImg);
+	}
+	
+	public void setOrbTexture(String orbSmallImg, String orbLargeImg) {
+		this.textureOrbSmallImg = orbSmallImg;
+		this.textureOrbLargeImg = orbLargeImg;
+		
+		loadTextureFromString(orbSmallImg);
+		loadTextureFromString(orbLargeImg);
+	}
+	
+	//
+	// per card background functionality
+	//
+	
+	public Texture getBackgroundSmallTexture() {
+		if (textureBackgroundSmallImg == null) {
+			switch (this.type) {
+			case ATTACK:
+				return BaseMod.getAttackBgTexture(this.color.toString());
+			case POWER:
+				return BaseMod.getPowerBgTexture(this.color.toString());
+			default:
+				return BaseMod.getSkillBgTexture(this.color.toString());
+			}
+		}
+		
+		return getTextureFromString(textureBackgroundSmallImg);
+	}
+	
+	public Texture getBackgroundLargeTexture() {
+		if (textureBackgroundLargeImg == null) {
+			switch (this.type) {
+			case ATTACK:
+				return BaseMod.getAttackBgPortraitTexture(this.color.toString());
+			case POWER:
+				return BaseMod.getPowerBgPortraitTexture(this.color.toString());
+			default:
+				return BaseMod.getSkillBgPortraitTexture(this.color.toString());
+			}
+		}
+		
+		return getTextureFromString(textureBackgroundLargeImg);
+	}
+	
+	public void setBackgroundTexture(String backgroundSmallImg, String backgroundLargeImg) {
+		this.textureBackgroundSmallImg = backgroundSmallImg;
+		this.textureBackgroundLargeImg = backgroundLargeImg;
+		
+		loadTextureFromString(backgroundSmallImg);
+		loadTextureFromString(backgroundLargeImg);
 	}
 	
 	/**
@@ -63,7 +152,8 @@ public abstract class CustomCard extends AbstractCard {
 	}
 	
 	/*
-	 * Same as above but without the monster
+	 * Same as above but without the monster - this would be used when the card needs
+	 * to calculate damage to display while it's in the player's hand but not targetting anything
 	 */
 	public float calculateModifiedCardDamage(AbstractPlayer player, float tmp) {
 		return calculateModifiedCardDamage(player, null, tmp);

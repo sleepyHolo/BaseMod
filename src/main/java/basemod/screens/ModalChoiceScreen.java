@@ -7,8 +7,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -20,20 +18,16 @@ public class ModalChoiceScreen
         public static AbstractDungeon.CurrentScreen MODAL_CHOICE;
     }
 
-    private static final Logger logger = LogManager.getLogger(ModalChoiceScreen.class.getName());
     private static float PAD_X;
     public List<AbstractCard> cardGroup;
     public boolean isOpen = false;
     private String header;
-    private boolean nestedOpen = false;
     private float showTimer;
     private CardGroup savedHand;
-    private boolean closing = false;
 
     public void open(List<AbstractCard> cards, String header)
     {
         PAD_X = 40.0f * Settings.scale;
-        nestedOpen = true;
 
         AbstractDungeon.topPanel.unhoverHitboxes();
         cardGroup = cards;
