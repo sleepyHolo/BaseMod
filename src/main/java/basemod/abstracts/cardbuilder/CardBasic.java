@@ -31,6 +31,8 @@ public class CardBasic extends CustomCard {
 	public static abstract class ActionBuilder {
 		public boolean toTop() { return false; }
 		
+		public String description() { return ""; }
+		
 		public abstract AbstractGameAction buildAction(CardBasic card, AbstractPlayer player, AbstractMonster monster);
 	}
 	
@@ -56,6 +58,22 @@ public class CardBasic extends CustomCard {
 			return null;
 		}
 		
+		private static String effectName(Effect buff) {
+			switch (buff) {
+			case STRENGTH:
+				return "Strength";
+			case DEXTERITY:
+				return "Dexterity";
+			case FRAIL:
+				return "Frail";
+			case VULNERABLE:
+				return "Vulnerable";
+			case WEAK:
+				return "Weak";
+			}
+			return null;
+		}
+		
 		private Effect type;
 		private boolean useMagicNumber;
 		private int amount;
@@ -69,6 +87,21 @@ public class CardBasic extends CustomCard {
 			this.type = type;
 			this.useMagicNumber = false;
 			this.amount = amount;
+		}
+		
+		@Override
+		public String description() {
+			StringBuilder description = new StringBuilder();
+			description.append("Apply ");
+			if (useMagicNumber) {
+				description.append("!M! ");
+			} else {
+				description.append(Integer.toString(amount));
+				description.append(" ");
+			}
+			description.append(EffectActionBuilder.effectName(type));
+			description.append(". ");
+			return description.toString();
 		}
 		
 		@Override
@@ -227,7 +260,9 @@ public class CardBasic extends CustomCard {
 				.append(doDamage ? "Deal !D! damage. ": "")
 				.append(doBlock ? "Gain !B! block. " : "");
 		
-		
+		for (ActionBuilder builder : actions) {
+			description.append(builder.description());
+		}
 		
 		description.append(exhaust ? " NL Exhaust." : "");
 		
