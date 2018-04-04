@@ -2,15 +2,12 @@ package basemod.helpers;
 
 import basemod.BaseMod;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModalChoice
 {
-    private static final Logger logger = LogManager.getLogger(ModalChoice.class.getName());
 
     public interface Callback
     {

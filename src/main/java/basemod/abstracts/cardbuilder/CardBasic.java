@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.AbstractGameAction.AttackEffect;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.actions.common.GainBlockAction;
@@ -14,106 +12,14 @@ import com.megacrit.cardcrawl.actions.utility.ExhaustAllEtherealAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.powers.AbstractPower;
-import com.megacrit.cardcrawl.powers.DexterityPower;
-import com.megacrit.cardcrawl.powers.FrailPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
-import com.megacrit.cardcrawl.powers.VulnerablePower;
-import com.megacrit.cardcrawl.powers.WeakPower;
 
 import basemod.abstracts.CustomCard;
+import basemod.abstracts.cardbuilder.actionbuilder.ActionBuilder;
 
 public class CardBasic extends CustomCard {
-	
-	public static abstract class ActionBuilder {
-		public boolean toTop() { return false; }
-		
-		public String description() { return ""; }
-		
-		public abstract AbstractGameAction buildAction(CardBasic card, AbstractPlayer player, AbstractMonster monster);
-	}
-	
-	public static class EffectActionBuilder extends ActionBuilder {
-		
-		public static enum Effect {
-			STRENGTH, DEXTERITY, VULNERABLE, WEAK, FRAIL
-		}
 
-		private static AbstractPower buildEffect(Effect buff, AbstractCreature target, AbstractCreature source, int amount) {
-			switch (buff) {
-			case STRENGTH:
-				return new StrengthPower(target, amount);
-			case DEXTERITY:
-				return new DexterityPower(target, amount);
-			case FRAIL:
-				return new FrailPower(target, amount, (target == source));
-			case VULNERABLE:
-				return new VulnerablePower(target, amount, (target == source));
-			case WEAK:
-				return new WeakPower(target, amount, (target == source));
-			}
-			return null;
-		}
-		
-		private static String effectName(Effect buff) {
-			switch (buff) {
-			case STRENGTH:
-				return "Strength";
-			case DEXTERITY:
-				return "Dexterity";
-			case FRAIL:
-				return "Frail";
-			case VULNERABLE:
-				return "Vulnerable";
-			case WEAK:
-				return "Weak";
-			}
-			return null;
-		}
-		
-		private Effect type;
-		private boolean useMagicNumber;
-		private int amount;
-		
-		public EffectActionBuilder(Effect type) {
-			this.type = type;
-			this.useMagicNumber = true;
-		}
-		
-		public EffectActionBuilder(Effect type, int amount) {
-			this.type = type;
-			this.useMagicNumber = false;
-			this.amount = amount;
-		}
-		
-		@Override
-		public String description() {
-			StringBuilder description = new StringBuilder();
-			description.append("Apply ");
-			if (useMagicNumber) {
-				description.append("!M! ");
-			} else {
-				description.append(Integer.toString(amount));
-				description.append(" ");
-			}
-			description.append(EffectActionBuilder.effectName(type));
-			description.append(". ");
-			return description.toString();
-		}
-		
-		@Override
-		public AbstractGameAction buildAction(CardBasic card, AbstractPlayer player, AbstractMonster monster) {
-			AbstractPower powerToApply = EffectActionBuilder.buildEffect(type, monster, player,
-					useMagicNumber ? card.magicNumber : amount);
-			return new ApplyPowerAction(player, player, powerToApply,
-					useMagicNumber ? card.magicNumber : amount);
-		}
-		
-	}
-		
 	public static final int BASE_MAX_UPGRADES = 1;
 	public static final int BASE_COST = -1;
 	public static final String BASE_DESCRIPTION = "";
@@ -125,6 +31,9 @@ public class CardBasic extends CustomCard {
 	protected boolean doCost = false;
 	protected boolean doEthereal = false;
 	protected boolean doExhaust = false;
+	
+	protected boolean hasDescription = false;
+	protected String description;
 
 	protected int upgradeDamageAmt;
 	protected int upgradeBlockAmt;
@@ -148,7 +57,7 @@ public class CardBasic extends CustomCard {
 	protected AttackEffect attackEffect;
 
 	public CardBasic(String cardId, String name, String img,
-			CardColor cardColor, CardType cardType,
+			CardType cardType, CardColor cardColor,
 			CardRarity rarity, CardTarget target) {
 		super(cardId, name, img, BASE_COST, BASE_DESCRIPTION,
 				cardType, cardColor, rarity, target, BASE_POOL);
@@ -166,6 +75,12 @@ public class CardBasic extends CustomCard {
 		this.rawDescription = buildDescription();
 		initializeDescription();
 		
+		return this;
+	}
+	
+	public CardBasic setDescription(String description) {
+		this.description = description;
+		this.hasDescription = true;
 		return this;
 	}
 
@@ -194,7 +109,7 @@ public class CardBasic extends CustomCard {
 	}
 
 	public CardBasic setMagicNumber(int number) {
-		this.magicNumber = number;
+		this.magicNumber = this.baseMagicNumber = number;
 		this.doMagicNumber = true;
 		return this;
 	}
@@ -206,7 +121,7 @@ public class CardBasic extends CustomCard {
 	}
 
 	public CardBasic setCost(int cost) {
-		this.cost = cost;
+		this.costForTurn = this.cost = cost;
 		this.doCost = true;
 		return this;
 	}
@@ -252,6 +167,10 @@ public class CardBasic extends CustomCard {
 	}
 	
 	private String buildDescription() {
+		if (hasDescription) {
+			return description;
+		}
+		
 		StringBuilder description = new StringBuilder();
 		
 		description
@@ -261,7 +180,7 @@ public class CardBasic extends CustomCard {
 				.append(doBlock ? "Gain !B! block. " : "");
 		
 		for (ActionBuilder builder : actions) {
-			description.append(builder.description());
+			description.append(builder.description(this));
 		}
 		
 		description.append(exhaust ? " NL Exhaust." : "");
@@ -295,6 +214,10 @@ public class CardBasic extends CustomCard {
 			this.isEthereal = upgradedEthereal;
 		if (doUpgradeExhaust)
 			this.exhaust = upgradedExhaust;
+		
+		this.rawDescription = buildDescription();
+		initializeDescription();
+		this.upgradeCount++;
 	}
 
 	// helper function that checks doApply and if true takes the result of the
@@ -308,10 +231,11 @@ public class CardBasic extends CustomCard {
 
 	@Override
 	public AbstractCard makeCopy() {
-		CardBasic card = new CardBasic(this.cardID, this.name, this.assetURL,
-				this.color, this.type, this.rarity, this.target);
+		CardBasic card = new CardBasic(this.cardID, this.name, this.textureImg,
+				this.type, this.color, this.rarity, this.target);
 
-		return card
+		card
+				.apply(hasDescription, () -> card.setDescription(this.description))
 				.apply(this.doDamage, () -> card.setDamage(this.baseDamage))
 				.apply(this.doBlock, () -> card.setBlock(this.baseBlock))
 				.apply(this.doMagicNumber, () -> card.setMagicNumber(this.magicNumber))
@@ -325,6 +249,12 @@ public class CardBasic extends CustomCard {
 				.apply(this.doUpgradeCost, () -> card.setUpgradedCost(this.upgradedCost))
 				.apply(this.doUpgradeEthereal, () -> card.setUpgradedEthereal(this.upgradedEthereal))
 				.apply(this.doUpgradeExhaust, () -> card.setUpgradedExhaust(this.upgradedExhaust));
+		
+		for (ActionBuilder builder : actions) {
+			card.addAction(builder);
+		}
+		
+		return card.end();
 	}
 
 	@Override
