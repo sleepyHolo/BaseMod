@@ -57,6 +57,9 @@ public abstract class CustomCard extends AbstractCard {
 	public String textureOrbLargeImg = null;
 	public String textureBackgroundSmallImg = null;
 	public String textureBackgroundLargeImg = null;
+	public String textureBannerSmallImg = null;
+	public String textureBannerLargeImg = null;
+	
 	
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
 		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
@@ -135,6 +138,34 @@ public abstract class CustomCard extends AbstractCard {
 		
 		loadTextureFromString(backgroundSmallImg);
 		loadTextureFromString(backgroundLargeImg);
+	}
+	
+	//
+	// per card banner functionality
+	//
+	
+	public Texture getBannerSmallTexture() {
+		if(textureBannerSmallImg == null) {
+			return null;
+		}
+		
+		return getTextureFromString(textureBannerSmallImg);
+	}
+	
+	public Texture getBannerLargeTexture() {
+		if(textureBannerLargeImg == null) {
+			return null;
+		}
+		
+		return getTextureFromString(textureBannerLargeImg);
+	}
+	
+	public void setBannerTexture(String bannerSmallImg, String bannerLargeImg) {
+		this.textureBannerSmallImg = bannerSmallImg;
+		this.textureBannerLargeImg = bannerLargeImg;
+		
+		loadTextureFromString(bannerSmallImg);
+		loadTextureFromString(bannerLargeImg);
 	}
 	
 	/**

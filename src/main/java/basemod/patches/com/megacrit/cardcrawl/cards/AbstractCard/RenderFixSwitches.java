@@ -22,6 +22,55 @@ import basemod.helpers.SuperclassFinder;
 
 public class RenderFixSwitches {
 
+	@SpirePatch(cls = "com.megacrit.cardcrawl.cards.AbstractCard", method = "renderBannerImage")
+	public static class RenderBannerSwitch {
+		public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
+		
+		public static void Replace(Object __obj_instance, SpriteBatch sb, float drawX, float drawY) {
+			AbstractCard card = (AbstractCard)__obj_instance;
+			AbstractCard.CardRarity rarity = card.rarity;
+			
+			Texture bannerTexture = null;
+			if (card instanceof CustomCard) {
+				bannerTexture = ((CustomCard)card).getBannerSmallTexture();
+			}
+			if(bannerTexture == null) {
+				switch(rarity.toString()) {
+				case "BASIC":
+				case "COMMON":
+				case "CURSE":
+					bannerTexture = ImageMaster.CARD_BANNER_COMMON;
+					break;
+				case "UNCOMMON":
+					bannerTexture = ImageMaster.CARD_BANNER_UNCOMMON;
+					break;
+				case "RARE":
+					bannerTexture = ImageMaster.CARD_BANNER_RARE;
+					break;
+					default:
+						bannerTexture = ImageMaster.CARD_BANNER_COMMON;
+				}
+			}
+			try {
+				Method renderHelperMethod;
+				Field renderColorField; 
+				
+				renderHelperMethod = SuperclassFinder.getSuperClassMethod(card.getClass(), "renderHelper", SpriteBatch.class, Color.class, Texture.class, float.class, float.class);
+				renderHelperMethod.setAccessible(true);
+				renderColorField = SuperclassFinder.getSuperclassField(card.getClass(), "renderColor");
+				renderColorField.setAccessible(true);
+				
+				Color renderColor = (Color) renderColorField.get(card);
+				renderHelperMethod.invoke(card, sb, renderColor, bannerTexture, drawX, drawY);
+			}
+			catch(IllegalAccessException | IllegalArgumentException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+				logger.error("could not render banner for card " + card.getClass().toString() + " with color " + card.color.toString());
+				logger.error("exception is: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@SpirePatch(cls = "com.megacrit.cardcrawl.cards.AbstractCard", method = "renderEnergy")
 	public static class RenderEnergySwitch {
 		public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
