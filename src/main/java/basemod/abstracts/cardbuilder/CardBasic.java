@@ -31,6 +31,9 @@ public class CardBasic extends CustomCard {
 	protected boolean doCost = false;
 	protected boolean doEthereal = false;
 	protected boolean doExhaust = false;
+	
+	protected boolean hasDescription = false;
+	protected String description;
 
 	protected int upgradeDamageAmt;
 	protected int upgradeBlockAmt;
@@ -54,7 +57,7 @@ public class CardBasic extends CustomCard {
 	protected AttackEffect attackEffect;
 
 	public CardBasic(String cardId, String name, String img,
-			CardColor cardColor, CardType cardType,
+			CardType cardType, CardColor cardColor,
 			CardRarity rarity, CardTarget target) {
 		super(cardId, name, img, BASE_COST, BASE_DESCRIPTION,
 				cardType, cardColor, rarity, target, BASE_POOL);
@@ -72,6 +75,12 @@ public class CardBasic extends CustomCard {
 		this.rawDescription = buildDescription();
 		initializeDescription();
 		
+		return this;
+	}
+	
+	public CardBasic setDescription(String description) {
+		this.description = description;
+		this.hasDescription = true;
 		return this;
 	}
 
@@ -100,7 +109,7 @@ public class CardBasic extends CustomCard {
 	}
 
 	public CardBasic setMagicNumber(int number) {
-		this.magicNumber = number;
+		this.magicNumber = this.baseMagicNumber = number;
 		this.doMagicNumber = true;
 		return this;
 	}
@@ -112,7 +121,7 @@ public class CardBasic extends CustomCard {
 	}
 
 	public CardBasic setCost(int cost) {
-		this.cost = cost;
+		this.costForTurn = this.cost = cost;
 		this.doCost = true;
 		return this;
 	}
@@ -158,6 +167,10 @@ public class CardBasic extends CustomCard {
 	}
 	
 	private String buildDescription() {
+		if (hasDescription) {
+			return description;
+		}
+		
 		StringBuilder description = new StringBuilder();
 		
 		description
@@ -201,6 +214,10 @@ public class CardBasic extends CustomCard {
 			this.isEthereal = upgradedEthereal;
 		if (doUpgradeExhaust)
 			this.exhaust = upgradedExhaust;
+		
+		this.rawDescription = buildDescription();
+		initializeDescription();
+		this.upgradeCount++;
 	}
 
 	// helper function that checks doApply and if true takes the result of the
@@ -214,10 +231,11 @@ public class CardBasic extends CustomCard {
 
 	@Override
 	public AbstractCard makeCopy() {
-		CardBasic card = new CardBasic(this.cardID, this.name, this.assetURL,
-				this.color, this.type, this.rarity, this.target);
+		CardBasic card = new CardBasic(this.cardID, this.name, this.textureImg,
+				this.type, this.color, this.rarity, this.target);
 
-		return card
+		card
+				.apply(hasDescription, () -> card.setDescription(this.description))
 				.apply(this.doDamage, () -> card.setDamage(this.baseDamage))
 				.apply(this.doBlock, () -> card.setBlock(this.baseBlock))
 				.apply(this.doMagicNumber, () -> card.setMagicNumber(this.magicNumber))
@@ -231,6 +249,12 @@ public class CardBasic extends CustomCard {
 				.apply(this.doUpgradeCost, () -> card.setUpgradedCost(this.upgradedCost))
 				.apply(this.doUpgradeEthereal, () -> card.setUpgradedEthereal(this.upgradedEthereal))
 				.apply(this.doUpgradeExhaust, () -> card.setUpgradedExhaust(this.upgradedExhaust));
+		
+		for (ActionBuilder builder : actions) {
+			card.addAction(builder);
+		}
+		
+		return card.end();
 	}
 
 	@Override
