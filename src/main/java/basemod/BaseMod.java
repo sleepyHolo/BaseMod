@@ -13,6 +13,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import basemod.abstracts.DynamicVariable;
+import basemod.helpers.dynamicvariables.BlockVariable;
+import basemod.helpers.dynamicvariables.DamageVariable;
+import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
@@ -288,6 +292,8 @@ public class BaseMod {
 	public static HashMap<String, String> playerPortraitMap;
 
 	public static HashMap<String, CharStat> playerStatsMap;
+
+	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
 	
 	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> potionClassMap; 
@@ -942,6 +948,10 @@ public class BaseMod {
 			customToRemoveColors.add(color);
 			break;
 		}
+	}
+
+	public static void addDynamicVariable(DynamicVariable dv) {
+		cardDynamicVariableMap.put(dv.key(), dv);
 	}
 	
 	/**
@@ -2001,6 +2011,10 @@ public class BaseMod {
 	// publishEditCards -
 	public static void publishEditCards() {
 		logger.info("begin editing cards");
+
+		BaseMod.addDynamicVariable(new DamageVariable());
+		BaseMod.addDynamicVariable(new BlockVariable());
+		BaseMod.addDynamicVariable(new MagicNumberVariable());
 
 		for (EditCardsSubscriber sub : editCardsSubscribers) {
 			sub.receiveEditCards();
