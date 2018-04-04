@@ -14,7 +14,7 @@ public class EffectActionBuilder extends ApplyPowerActionBuilder {
 		STRENGTH, DEXTERITY, VULNERABLE, WEAK, FRAIL
 	}
 	
-	private static ApplyPowerActionBuilder.Function buildPower(Effect type) {
+	private static ApplyPowerActionBuilder.PowerFunction buildPower(Effect type) {
 		return (card, player, monster, amount) -> {
 			switch (type) {
 			case STRENGTH:
