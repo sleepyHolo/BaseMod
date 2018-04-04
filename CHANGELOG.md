@@ -255,3 +255,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Remove issue #38
 * Add feature #31
 * Add feature #39
+
+#### dev ####
+* Add support for custom dynamic variables (kiooeht)
