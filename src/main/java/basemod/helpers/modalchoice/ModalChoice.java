@@ -1,6 +1,8 @@
-package basemod.helpers;
+package basemod.helpers.modalchoice;
 
 import basemod.BaseMod;
+import basemod.helpers.TooltipInfo;
+
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 import java.util.ArrayList;

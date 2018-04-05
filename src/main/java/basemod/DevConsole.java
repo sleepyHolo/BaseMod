@@ -39,6 +39,9 @@ import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 
+import basemod.console.ConsoleInputProcessor;
+import basemod.console.ConsoleTargetedPower;
+import basemod.console.CustomEventRoom;
 import basemod.helpers.ConvertHelper;
 import basemod.interfaces.PostEnergyRechargeSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;

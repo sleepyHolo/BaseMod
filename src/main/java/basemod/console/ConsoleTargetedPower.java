@@ -1,4 +1,4 @@
-package basemod;
+package basemod.console;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +14,8 @@ import com.megacrit.cardcrawl.helpers.InputHelper;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.DarknessPower;
 
+import basemod.BaseMod;
+import basemod.DevConsole;
 import basemod.interfaces.PostUpdateSubscriber;
 import basemod.interfaces.RenderSubscriber;
 

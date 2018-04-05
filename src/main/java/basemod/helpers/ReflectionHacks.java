@@ -1,10 +1,12 @@
-package basemod;
+package basemod.helpers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import basemod.BaseMod;
 
 public class ReflectionHacks {
 	// use same logger as BaseMod
