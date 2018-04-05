@@ -1,13 +1,13 @@
 package basemod.patches.com.megacrit.cardcrawl.rooms.CampfireUI;
 
-import basemod.ReflectionHacks;
-
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.CampfireUI;
 import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
 import com.megacrit.cardcrawl.vfx.campfire.CampfireLiftEffect;
+
+import basemod.helpers.ReflectionHacks;
 
 import java.util.ArrayList;
 

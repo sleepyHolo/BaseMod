@@ -1,4 +1,4 @@
-package basemod;
+package basemod.init;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -8,6 +8,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 
+import basemod.BaseMod;
+import basemod.DevConsole;
+import basemod.ModButton;
+import basemod.ModLabel;
+import basemod.ModLabeledToggleButton;
+import basemod.ModPanel;
 import basemod.interfaces.PostInitializeSubscriber;
 
 /**

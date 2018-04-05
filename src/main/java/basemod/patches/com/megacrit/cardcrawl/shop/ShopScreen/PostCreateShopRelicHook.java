@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 
 import basemod.BaseMod;
-import basemod.ReflectionHacks;
+import basemod.helpers.ReflectionHacks;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.shop.ShopScreen", method="initRelics")
 public class PostCreateShopRelicHook {
