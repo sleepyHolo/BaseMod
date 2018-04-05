@@ -1,6 +1,5 @@
-package basemod.init;
+package basemod;
 
-import basemod.BaseMod;
 import basemod.interfaces.PostInitializeSubscriber;
 
 public class EditCharactersInit implements PostInitializeSubscriber {

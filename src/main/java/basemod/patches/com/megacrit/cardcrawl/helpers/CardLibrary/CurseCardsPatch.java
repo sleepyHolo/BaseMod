@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 
 import basemod.BaseMod;
-import basemod.helpers.ReflectionHacks;
+import basemod.ReflectionHacks;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="addCurseCards")
 public class CurseCardsPatch {

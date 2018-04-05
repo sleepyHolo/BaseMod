@@ -1,9 +1,6 @@
-package basemod.console;
+package basemod;
 
 import com.badlogic.gdx.Input.Keys;
-
-import basemod.DevConsole;
-
 import com.badlogic.gdx.InputProcessor;
 
 import java.awt.event.KeyEvent;

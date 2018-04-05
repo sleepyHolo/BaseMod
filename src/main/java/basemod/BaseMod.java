@@ -17,8 +17,6 @@ import basemod.abstracts.DynamicVariable;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
-import basemod.init.BaseModInit;
-import basemod.init.EditCharactersInit;
 import basemod.screens.ModalChoiceScreen;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
@@ -175,7 +173,6 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
-import basemod.helpers.ReflectionHacks;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;

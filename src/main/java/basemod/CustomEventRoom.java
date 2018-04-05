@@ -1,4 +1,4 @@
-package basemod.console;
+package basemod;
 
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.EventHelper;
