@@ -1,8 +1,11 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
@@ -12,10 +15,13 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import basemod.BaseMod;
 import basemod.abstracts.CustomCard;
+import basemod.helpers.SuperclassFinder;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
@@ -156,4 +162,51 @@ public class BackgroundFix {
 		}
 	}
 	
+	@SpirePatch(cls="com.megacrit.cardcrawl.screens.SingleCardViewPopup", method="renderCardBanner")
+	public static class BannerTexture {
+		public static void Replace(Object __obj_instance, SpriteBatch sb) {
+			try {
+				SingleCardViewPopup view = (SingleCardViewPopup)__obj_instance;
+				AbstractCard card;
+				
+				Field cardField;
+				cardField = view.getClass().getDeclaredField("card");
+				cardField.setAccessible(true);
+				
+				card = (AbstractCard)cardField.get(view);
+				
+				AbstractCard.CardRarity rarity = card.rarity;
+				
+				Texture bannerTexture = null;
+				if (card instanceof CustomCard) {
+					bannerTexture = ((CustomCard)card).getBannerLargeTexture();
+				}
+				if(bannerTexture == null) {
+					switch(rarity.toString()) {
+					case "BASIC":
+					case "COMMON":
+					case "CURSE":
+						bannerTexture = ImageMaster.CARD_BANNER_COMMON_L;
+						break;
+					case "UNCOMMON":
+						bannerTexture = ImageMaster.CARD_BANNER_UNCOMMON_L;
+						break;
+					case "RARE":
+						bannerTexture = ImageMaster.CARD_BANNER_RARE_L;
+						break;
+						default:
+							bannerTexture = ImageMaster.CARD_BANNER_COMMON_L;
+					}
+				}
+				sb.draw(bannerTexture, Settings.WIDTH / 2.0f - 512.0f, Settings.HEIGHT / 2.0f - 512.0f, 512.0f, 512.0f, 1024.0f, 1024.0f, 
+						Settings.scale, Settings.scale, 0.0f, 0,0,1024,1024, false, false);
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+		}
+	}
 }
