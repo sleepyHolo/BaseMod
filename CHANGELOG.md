@@ -256,7 +256,12 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add feature #31
 * Add feature #39
 
+#### v2.4.1 ####
+* Fix multiple bugs with start act, pre start game, and start game subscribers
+* Add support for per-card energy orb graphics (BlankTheEvil)
+
 #### dev ####
 * Add support for custom dynamic variables (kiooeht)
 * Merge CustomCardWithRender features into CustomCard - **breaking change** - should only affect BlackMageMod
 * Add feature CardBasic (1st functional version) (DemoXinMC)
+* Add support for per-card banners (BlankTheEvil)
