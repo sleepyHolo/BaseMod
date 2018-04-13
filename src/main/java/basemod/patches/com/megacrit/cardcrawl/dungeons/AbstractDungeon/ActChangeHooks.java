@@ -24,7 +24,7 @@ public class ActChangeHooks {
 	}
 	
 	@SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="ctor",
-			paramtypes={"java.lang.String", "com.megacrit.cardcrawl.characters.AbstractPlayer", "com.megacrit.cardcrawl.screens.saveAndContinue.SaveFile"})
+			paramtypes={"java.lang.String", "com.megacrit.cardcrawl.characters.AbstractPlayer", "com.megacrit.cardcrawl.saveAndContinue.SaveFile"})
 	public static class SavedGameConstructor {
 
 		public static void Postfix(Object __obj_instance,
