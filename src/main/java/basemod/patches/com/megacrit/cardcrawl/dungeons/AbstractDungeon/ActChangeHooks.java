@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.screens.saveAndContinue.SaveFile;
+import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
 import basemod.BaseMod;
 
