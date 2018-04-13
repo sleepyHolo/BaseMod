@@ -40,8 +40,6 @@ public class EverythingFix
         public static void Insert(Object __obj_instance)
         {
             try {
-                CardLibraryScreen screen = (CardLibraryScreen) __obj_instance;
-
                 AbstractCard.CardColor[] colors = AbstractCard.CardColor.values();
                 for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {
                     CardGroup group = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);

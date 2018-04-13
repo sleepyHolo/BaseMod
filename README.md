@@ -1,7 +1,7 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
-Currently supported version of Slay The Spire: `[EARLY_ACCESS_015]` (non beta)
+Currently supported version of Slay The Spire: `[EARLY_ACCESS_020]` (non beta)
 
 ![Developer Console](github_resources/console.png)
 
