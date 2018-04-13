@@ -28,7 +28,7 @@ public class OpenFix
         {
             if (groupObj[0] == null) {
                 AbstractCard card = (AbstractCard)cardObj;
-                groupObj[0] = EverythingFix.Initialize.cardGroupMap.get(card.color);
+                groupObj[0] = EverythingFix.Fields.cardGroupMap.get(card.color);
             }
         }
     }
