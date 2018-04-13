@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ModalChoice
 {
-
     public interface Callback
     {
         void optionSelected(int index);
@@ -29,7 +28,11 @@ public class ModalChoice
         for (AbstractCard c : cards) {
             AbstractCard copy = c.makeCopy();
             copy.dontTriggerOnUseCard = true;
-            copy.purgeOnUse = true;
+            if (copy.type != AbstractCard.CardType.POWER) {
+                copy.purgeOnUse = true;
+            } else {
+                copy.purgeOnUse = false;
+            }
             cards_copy.add(copy);
         }
 
