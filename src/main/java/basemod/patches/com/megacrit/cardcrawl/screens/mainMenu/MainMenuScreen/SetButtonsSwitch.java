@@ -3,7 +3,7 @@ package basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuButton;
-import com.megacrit.cardcrawl.screens.saveAndContinue.SaveAndContinue;
+import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 
 import basemod.BaseMod;
 
