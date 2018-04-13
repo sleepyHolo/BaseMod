@@ -59,7 +59,7 @@ public class ColorTabBarFix
         {
             boolean anyHovered = false;
             for (int i=0; i<Fields.hitboxes.size(); ++i) {
-                Fields.hitboxes.get(i).move(157.0f * Settings.scale, y - 45.0F * i);
+                Fields.hitboxes.get(i).move(157.0f * Settings.scale, y - 51.0F * i * Settings.scale);
                 Fields.hitboxes.get(i).update();
                 if (!anyHovered && Fields.hitboxes.get(i).justHovered) {
                     anyHovered = true;
@@ -104,8 +104,6 @@ public class ColorTabBarFix
         )
         public static void Insert(ColorTabBar __instance, SpriteBatch sb, float y, ColorTabBar.CurrentTab curTab)
         {
-            y += 12.0f;
-
             AbstractCard.CardColor[] colors = AbstractCard.CardColor.values();
             for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {
                 int i = icolor - AbstractCard.CardColor.CURSE.ordinal();
@@ -115,7 +113,7 @@ public class ColorTabBarFix
                     color = color.lerp(Color.GRAY, 0.5f);
                 }
                 sb.setColor(color);
-                sb.draw(ImageMaster.COLOR_TAB_BAR, 40.0f * Settings.scale, y - 45.0F * i, 0, 0, 235.0F, 102.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+                sb.draw(ImageMaster.COLOR_TAB_BAR, 40.0f * Settings.scale, y - 51.0F * i * Settings.scale, 0, 0, 235.0F, 102.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
 
                 Color textcolor = Settings.GOLD_COLOR;
                 if (curTab != Enums.MOD || Fields.modTabIndex != i-1) {
@@ -124,7 +122,7 @@ public class ColorTabBarFix
                 } else {
                     sb.setColor(Color.WHITE);
                 }
-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, capitalizeWord(AbstractCard.CardColor.values()[icolor].name()), 157.0f * Settings.scale, y - 45.0F * i + 50.0f * Settings.scale, textcolor, 0.6f);
+                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, capitalizeWord(AbstractCard.CardColor.values()[icolor].name()), 157.0f * Settings.scale, y - (51.0F * i * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
             }
 
             for (int i=0; i<Fields.hitboxes.size(); ++i) {
