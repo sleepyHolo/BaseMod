@@ -1,10 +1,14 @@
 package basemod.helpers;
 
 import basemod.BaseMod;
+import basemod.abstracts.DynamicVariable;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ModalChoice
 {
@@ -20,6 +24,11 @@ public class ModalChoice
     {
         this.title = title;
         this.cards = options;
+    }
+
+    public AbstractCard getCard(int index)
+    {
+        return cards.get(index);
     }
 
     public void open()
@@ -44,9 +53,41 @@ public class ModalChoice
         List<TooltipInfo> ret = new ArrayList<>();
 
         for (AbstractCard card : cards) {
-            ret.add(new TooltipInfo(card.name, card.rawDescription));
+            TooltipInfo tooltipInfo = new TooltipInfo(card.name, card.rawDescription);
+            doDynamicVariables(card, tooltipInfo);
+            ret.add(tooltipInfo);
         }
 
         return ret;
+    }
+
+    private static void doDynamicVariables(AbstractCard card, TooltipInfo tooltipInfo)
+    {
+        Pattern pattern = Pattern.compile("!(.+)!(.*)");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        Scanner scanner = new Scanner(tooltipInfo.description);
+        while (scanner.hasNext()) {
+            String tmp = scanner.next();
+            Matcher matcher = pattern.matcher(tmp);
+            if (matcher.find()) {
+                String key = matcher.group(1);
+                int num = 0;
+                DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
+                if (dv != null) {
+                    if (dv.isModified(card)) {
+                        num = dv.value(card);
+                    } else {
+                        num = dv.baseValue(card);
+                    }
+                }
+                stringBuilder.append(num);
+                stringBuilder.append(matcher.group(2));
+            } else {
+                stringBuilder.append(tmp);
+            }
+            stringBuilder.append(' ');
+        }
+        tooltipInfo.description = stringBuilder.toString();
     }
 }
