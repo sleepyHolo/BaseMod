@@ -34,6 +34,5 @@ public class CardIDModID
         if (modName != null && !id[0].startsWith(modName + ":")) {
             id[0] = modName + ":" + id[0];
         }
-        System.out.println("AbstractCard(): " + id[0]);
     }
 }

@@ -17,6 +17,5 @@ public class GetCardStringsModID
         if (modName != null && !cardName[0].startsWith(modName + ":")) {
             cardName[0] = modName + ":" + cardName[0];
         }
-        System.out.println("getCardStrings: " + cardName[0]);
     }
 }

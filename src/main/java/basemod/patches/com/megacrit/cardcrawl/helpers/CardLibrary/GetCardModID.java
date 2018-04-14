@@ -20,7 +20,6 @@ public class GetCardModID
             if (modName != null && !key[0].startsWith(modName + ":")) {
                 key[0] = modName + ":" + key[0];
             }
-            System.out.println("getCard: " + key[0]);
         }
     }
 
@@ -37,7 +36,6 @@ public class GetCardModID
             if (modName != null && !key[0].startsWith(modName + ":")) {
                 key[0] = modName + ":" + key[0];
             }
-            System.out.println("getCard: " + key[0]);
         }
     }
 }

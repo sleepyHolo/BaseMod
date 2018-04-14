@@ -845,7 +845,6 @@ public class BaseMod {
 		if (stringType.equals(CardStrings.class)) {
 			Map map2 = new HashMap();
 			for (Object k : map.keySet()) {
-				System.out.println(modName == null ? k : modName + ":" + k);
 				map2.put(modName == null ? k : modName + ":" + k, map.get(k));
 			}
 			localizationStrings.putAll(map2);

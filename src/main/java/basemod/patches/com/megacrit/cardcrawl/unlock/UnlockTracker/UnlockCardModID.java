@@ -16,6 +16,5 @@ public class UnlockCardModID
         if (modName != null && !key[0].startsWith(modName + ":")) {
             key[0] = modName + ":" + key[0];
         }
-        System.out.println("unlockCard: " + key[0]);
     }
 }
