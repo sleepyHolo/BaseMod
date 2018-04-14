@@ -842,7 +842,7 @@ public class BaseMod {
 
 		Map localizationStrings = (Map) ReflectionHacks.getPrivateStatic(LocalizedStrings.class, typeMap);
 		Map map = new HashMap(gson.fromJson(jsonString, typeToken));
-		if (stringType.equals(CardStrings.class)) {
+		if (stringType.equals(CardStrings.class) || stringType.equals(RelicStrings.class)) {
 			Map map2 = new HashMap();
 			for (Object k : map.keySet()) {
 				map2.put(modName == null ? k : modName + ":" + k, map.get(k));
