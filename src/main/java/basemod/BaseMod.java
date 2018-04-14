@@ -1,10 +1,10 @@
 package basemod;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +18,8 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
+import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -831,13 +833,25 @@ public class BaseMod {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void loadJsonStrings(Type stringType, String jsonString) {
-		logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
+		logger.info("loadJsonStrings: " + stringType.getTypeName());
 
 		String typeMap = typeMaps.get(stringType);
 		Type typeToken = typeTokens.get(stringType);
 
+		String modName = BaseMod.findCallingModName();
+
 		Map localizationStrings = (Map) ReflectionHacks.getPrivateStatic(LocalizedStrings.class, typeMap);
-		localizationStrings.putAll(new HashMap(gson.fromJson(jsonString, typeToken)));
+		Map map = new HashMap(gson.fromJson(jsonString, typeToken));
+		if (stringType.equals(CardStrings.class)) {
+			Map map2 = new HashMap();
+			for (Object k : map.keySet()) {
+				System.out.println(modName == null ? k : modName + ":" + k);
+				map2.put(modName == null ? k : modName + ":" + k, map.get(k));
+			}
+			localizationStrings.putAll(map2);
+		} else {
+			localizationStrings.putAll(map);
+		}
 		ReflectionHacks.setPrivateStaticFinal(LocalizedStrings.class, typeMap, localizationStrings);
 	}
 
@@ -2411,6 +2425,36 @@ public class BaseMod {
 	public static void unsubscribeLater(ISubscriber sub) {
 		toRemove.add(sub);
 	}
+
+	public static String findCallingModName() {
+        String finalModName = null;
+
+        try {
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            for (int i=2; i<stacktrace.length; ++i) {
+                Class<?> callingClass = BaseMod.class.getClassLoader().loadClass(stacktrace[i].getClassName());
+                if (callingClass == null
+                        || callingClass.getProtectionDomain() == null
+                        || callingClass.getProtectionDomain().getCodeSource() == null
+                        || callingClass.getProtectionDomain().getCodeSource().getLocation() == null) {
+                    continue;
+                }
+                if (callingClass.getName().startsWith("basemod.")) {
+                    continue;
+                }
+                URL callingURL = callingClass.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
+                for (ModInfo info : Loader.MODINFOS) {
+                    if (info.jarURL.equals(callingURL)) {
+                        finalModName = info.Name;
+                        break;
+                    }
+                }
+            }
+        } catch (ClassNotFoundException | URISyntaxException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return finalModName;
+    }
 	
 	// subscribeToStartAct -
 	@Deprecated
