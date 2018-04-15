@@ -2444,7 +2444,11 @@ public class BaseMod {
                 URL callingURL = callingClass.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
                 for (ModInfo info : Loader.MODINFOS) {
                     if (info.jarURL.equals(callingURL)) {
-                        finalModName = info.Name;
+                    	if (info.ID != null && !info.ID.isEmpty()) {
+                    		finalModName = info.ID;
+						} else {
+							finalModName = info.Name;
+						}
                         break;
                     }
                 }
