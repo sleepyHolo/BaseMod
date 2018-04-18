@@ -23,6 +23,9 @@ public abstract class CustomCard extends AbstractCard {
 	public static final String PORTRAIT_ENDING = "_p";
 	
 	public static Texture getPortraitImage(CustomCard card) {
+		if (card.textureImg == null) {
+			return null;
+		}
 		int endingIndex = card.textureImg.lastIndexOf(".");
 		String newPath = card.textureImg.substring(0, endingIndex) + 
 				PORTRAIT_ENDING + card.textureImg.substring(endingIndex); 
