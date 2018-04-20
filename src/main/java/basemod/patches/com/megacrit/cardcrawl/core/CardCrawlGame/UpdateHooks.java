@@ -35,7 +35,7 @@ public class UpdateHooks {
 		{
 			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 			{
-				Matcher finalMatcher = new Matcher.MethodCallMatcher(InputHelper.class.getName(), "updateFirst");
+				Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.InputHelper", "updateFirst");
 
 				int[] beforeLines = LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
 
@@ -58,7 +58,7 @@ public class UpdateHooks {
 	    {
 	        public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 	        {
-	            Matcher finalMatcher = new Matcher.MethodCallMatcher(InputHelper.class.getName(), "updateLast");
+	            Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.InputHelper", "updateLast");
 
 	            return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
 	        }
