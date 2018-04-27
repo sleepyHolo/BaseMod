@@ -24,7 +24,7 @@ public class GetRelicFix {
 	}
 
 	public static void Prefix(@ByRef String[] key) {
-		if (!key[0].equals(Circlet.ID)) {
+		if (!key[0].equals(Circlet.ID) && !BaseMod.hasModID(key[0])) {
 			String modName = BaseMod.findCallingModName();
 			if (modName != null && !key[0].startsWith(modName + ":")) {
 				key[0] = modName + ":" + key[0];

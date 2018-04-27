@@ -2425,6 +2425,21 @@ public class BaseMod {
 		toRemove.add(sub);
 	}
 
+	public static boolean hasModID(String id) {
+		for (ModInfo info : Loader.MODINFOS) {
+			String modID = null;
+			if (info.ID != null && !info.ID.isEmpty()) {
+				modID = info.ID;
+			} else {
+				modID = info.Name;
+			}
+			if (id.startsWith(modID + ":")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static String findCallingModName() {
         String finalModName = null;
 

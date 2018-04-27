@@ -30,7 +30,7 @@ public class RelicIDModID
     {
         String modName = null;
         for (int i=0; i<relics.size(); ++i) {
-            if (!relics.get(i).equals(Circlet.ID)) {
+            if (!relics.get(i).equals(Circlet.ID) && !BaseMod.hasModID(relics.get(i))) {
                 if (modName == null) {
                     modName = BaseMod.findCallingModName();
                 }

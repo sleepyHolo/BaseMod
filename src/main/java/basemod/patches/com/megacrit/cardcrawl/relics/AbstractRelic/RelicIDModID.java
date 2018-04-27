@@ -20,7 +20,7 @@ public class RelicIDModID
 {
     public static void Prefix(AbstractRelic __instance, @ByRef String[] setId, String imgName, AbstractRelic.RelicTier tier, AbstractRelic.LandingSound sfx)
     {
-        if (!setId[0].equals(Circlet.ID)) {
+        if (!setId[0].equals(Circlet.ID) && !BaseMod.hasModID(setId[0])) {
             String modName = BaseMod.findCallingModName();
             if (modName != null && !setId[0].startsWith(modName + ":")) {
                 setId[0] = modName + ":" + setId[0];
