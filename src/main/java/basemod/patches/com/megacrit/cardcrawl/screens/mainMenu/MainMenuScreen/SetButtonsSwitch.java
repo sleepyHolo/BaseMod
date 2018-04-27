@@ -14,7 +14,8 @@ public class SetButtonsSwitch {
 		if (BaseMod.saveExists() &&
 				!((SaveAndContinue.ironcladSaveExists) ||
 						(SaveAndContinue.silentSaveExists) ||
-						(SaveAndContinue.crowbotSaveExists))) {
+						(SaveAndContinue.crowbotSaveExists) ||
+						(SaveAndContinue.defectSaveExists))) {
 			screen.buttons.remove(screen.buttons.size() - 1);
 			screen.buttons.add(new MenuButton(MenuButton.ClickResult.ABANDON_RUN, screen.buttons.size()));
 			screen.buttons.add(new MenuButton(MenuButton.ClickResult.RESUME_GAME, screen.buttons.size()));

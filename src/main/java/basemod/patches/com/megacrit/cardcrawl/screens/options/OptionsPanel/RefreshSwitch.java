@@ -23,8 +23,8 @@ public class RefreshSwitch {
 		OptionsPanel panel = (OptionsPanel) __obj_instance;
 		if (!Settings.isDailyRun) {
 			AbstractPlayer.PlayerClass selection = AbstractDungeon.player.chosenClass;
-			if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
-					!selection.toString().equals("CROWBOT")) {
+			if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
+					selection != AbstractPlayer.PlayerClass.DEFECT) {
 				System.out.println("looking for file: " + (BaseMod.save_path + selection.name() + ".autosave"));
 				if (!Gdx.files.local(BaseMod.save_path + selection.name() + ".autosave").exists()) {
 					try {

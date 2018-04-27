@@ -15,8 +15,8 @@ public class PopupSwitch {
 	public static void Insert(Object __obj_instance, Object typeObj) {
 		SettingsScreen screen = (SettingsScreen) __obj_instance;
 		AbstractPlayer.PlayerClass selection = AbstractDungeon.player.chosenClass;
-		if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
-				!selection.toString().equals("CROWBOT")) {
+		if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
+				selection != AbstractPlayer.PlayerClass.DEFECT) {
 			System.out.println("looking for file: " + (BaseMod.save_path + selection.name() + ".autosave"));
 			if (!Gdx.files.local(BaseMod.save_path + selection.name() + ".autosave").exists()) {
 				screen.exitPopup.desc = SettingsScreen.TEXT[3];

@@ -89,7 +89,6 @@ import com.megacrit.cardcrawl.powers.CorruptionPower;
 import com.megacrit.cardcrawl.powers.CuriosityPower;
 import com.megacrit.cardcrawl.powers.CurlUp;
 import com.megacrit.cardcrawl.powers.DancePower;
-import com.megacrit.cardcrawl.powers.DarknessPower;
 import com.megacrit.cardcrawl.powers.DemonFormPower;
 import com.megacrit.cardcrawl.powers.DexterityPower;
 import com.megacrit.cardcrawl.powers.DoubleDamagePower;
@@ -699,7 +698,6 @@ public class BaseMod {
 		powerMap.put("Curl Up",CurlUp.class);
 		powerMap.put("Dance Puppet",DancePower.class);
 		powerMap.put("Dark Embrace",DarkEmbrace.class);
-		powerMap.put("Darkness",DarknessPower.class);
 		powerMap.put("Demon Form",DemonFormPower.class);
 		powerMap.put("Dexterity",DexterityPower.class);
 		powerMap.put("Double Damage",DoubleDamagePower.class);

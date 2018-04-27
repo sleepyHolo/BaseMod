@@ -10,8 +10,8 @@ public class GetTitleSwitch {
 
 	public static Object Postfix(Object __original_ret, Object plyrClassObj) {
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) plyrClassObj;
-		if (!selection.toString().equals("IRONCLAD") && !selection.toString().equals("THE_SILENT") &&
-				!selection.toString().equals("CROWBOT")) {
+		if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
+				selection != AbstractPlayer.PlayerClass.DEFECT) {
 			return BaseMod.getTitle(selection.toString());
 		} else {
 			return __original_ret;

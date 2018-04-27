@@ -49,7 +49,7 @@ public class Purpleclad extends AbstractPlayer {
 	
 	public static CharSelectInfo getLoadout() {
 		return new CharSelectInfo("The Purpleclad", "A long-lost survivor of the Ironclads. Decided to dye himself purple.",
-				75, 75, 99, 5,
+				75, 75, 0, 99, 5,
 			CharacterEnumPatch.THE_PURPLECLAD, getStartingRelics(), getStartingDeck(), false);
 	}
 	

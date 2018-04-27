@@ -19,8 +19,8 @@ public class CtorSwitch {
 	public static void Postfix(Object __obj_instance, float x, float y) {
 		CardTrailEffect trailEffect = (CardTrailEffect) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = AbstractDungeon.player.chosenClass;
-		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
-				!chosenClass.toString().equals("CROWBOT")) {
+		if (chosenClass != AbstractPlayer.PlayerClass.IRONCLAD && chosenClass != AbstractPlayer.PlayerClass.THE_SILENT &&
+				chosenClass != AbstractPlayer.PlayerClass.DEFECT) {
 			try {
 				Field colorField;
 				colorField = trailEffect.getClass().getSuperclass().getDeclaredField("color");
