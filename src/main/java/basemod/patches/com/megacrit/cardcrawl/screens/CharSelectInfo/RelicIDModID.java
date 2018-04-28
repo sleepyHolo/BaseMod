@@ -17,6 +17,7 @@ import java.util.ArrayList;
                 "int",
                 "int",
                 "int",
+                "int",
                 "com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass",
                 "java.util.ArrayList",
                 "java.util.ArrayList",
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 )
 public class RelicIDModID
 {
-    public static void Prefix(CharSelectInfo __instance, String name, String flavorText, int currentHp, int maxHp, int gold, int cardDraw,
+    public static void Prefix(CharSelectInfo __instance, String name, String flavorText, int currentHp, int maxHp, int maxOrbs, int gold, int cardDraw,
                               AbstractPlayer.PlayerClass color, ArrayList<String> relics, ArrayList<String> deck, boolean resumeGame)
     {
         String modName = null;
@@ -36,6 +37,17 @@ public class RelicIDModID
                 }
                 if (modName != null && !relics.get(i).startsWith(modName + ":")) {
                     relics.set(i, modName + ":" + relics.get(i));
+                }
+            }
+        }
+
+        for (int i=0; i<deck.size(); ++i) {
+            if (!BaseMod.hasModID(deck.get(i))) {
+                if (modName == null) {
+                    modName = BaseMod.findCallingModName();
+                }
+                if (modName != null && !deck.get(i).startsWith(modName + ":")) {
+                    deck.set(i, modName + ":" + deck.get(i));
                 }
             }
         }
