@@ -266,3 +266,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Merge CustomCardWithRender features into CustomCard - **breaking change** - should only affect BlackMageMod
 * Add feature CardBasic (1st functional version) (DemoXinMC)
 * Add support for per-card banners (BlankTheEvil)
+
+#### v2.6.0 ####
+* Support **week 22** patch (kiooeht)
+* Allow mods to use the same card and relic IDs without conflict (kiooeht)
+* Modal option improvements (kiooeht)
