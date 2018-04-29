@@ -19,8 +19,7 @@ public class CtorSwitch {
 	public static void Postfix(Object __obj_instance, float x, float y) {
 		CardTrailEffect trailEffect = (CardTrailEffect) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = AbstractDungeon.player.chosenClass;
-		if (chosenClass != AbstractPlayer.PlayerClass.IRONCLAD && chosenClass != AbstractPlayer.PlayerClass.THE_SILENT &&
-				chosenClass != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			try {
 				Field colorField;
 				colorField = trailEffect.getClass().getSuperclass().getDeclaredField("color");

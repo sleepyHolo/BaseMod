@@ -14,8 +14,7 @@ public class UpdateHitboxBgImg {
 	@SpireInsertPatch(rloc=49)
 	public static void Insert(Object __obj_instance) {
 		AbstractPlayer.PlayerClass chosenClass = CardCrawlGame.chosenCharacter;
-		if (chosenClass != AbstractPlayer.PlayerClass.IRONCLAD && chosenClass != AbstractPlayer.PlayerClass.THE_SILENT &&
-				chosenClass != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			CardCrawlGame.mainMenuScreen.charSelectScreen.bgCharImg =
 					new Texture(BaseMod.getPlayerPortrait(chosenClass.toString()));
 		}

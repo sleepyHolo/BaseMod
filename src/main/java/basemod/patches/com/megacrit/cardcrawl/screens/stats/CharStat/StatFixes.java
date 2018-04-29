@@ -25,8 +25,7 @@ public class StatFixes {
 			CharStat stats = (CharStat) __obj_instance;
 			AbstractPlayer.PlayerClass c = (AbstractPlayer.PlayerClass) cObj;
 			System.out.println("looking at prefs for " + c.toString());
-			if (c != AbstractPlayer.PlayerClass.IRONCLAD && c != AbstractPlayer.PlayerClass.THE_SILENT &&
-					c != AbstractPlayer.PlayerClass.DEFECT) {
+			if (!BaseMod.isBaseGameCharacter(c)) {
 				System.out.println("loading save for " + c.toString());
 				stats.pref = SaveHelper.getPrefs(c.toString());
 			}
@@ -43,8 +42,7 @@ public class StatFixes {
 			CharStat stats = (CharStat) __obj_instance;
 			AbstractPlayer.PlayerClass c = (AbstractPlayer.PlayerClass) cObj;
 			try {
-				if (c != AbstractPlayer.PlayerClass.IRONCLAD && c != AbstractPlayer.PlayerClass.THE_SILENT &&
-						c != AbstractPlayer.PlayerClass.DEFECT) {
+				if (!BaseMod.isBaseGameCharacter(c)) {
 					Field cardsUnlockedField = stats.getClass().getDeclaredField("cardsUnlocked");
 					cardsUnlockedField.setAccessible(true);
 					

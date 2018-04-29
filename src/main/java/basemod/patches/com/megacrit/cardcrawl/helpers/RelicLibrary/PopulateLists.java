@@ -15,8 +15,7 @@ public class PopulateLists {
 
 	public static void Postfix(ArrayList<AbstractRelic> relicPool) {
 		AbstractPlayer.PlayerClass selection = AbstractDungeon.player.chosenClass;
-		if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
-				selection != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(selection)) {
 			for (Map.Entry<String, AbstractRelic> r : BaseMod.getRelicsInCustomPool(
 					BaseMod.getColor(selection.toString())).entrySet()) {
 				relicPool.add(r.getValue());

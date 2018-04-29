@@ -16,8 +16,7 @@ public class PostInitializeStarterDeckHookSwitch {
     	AbstractPlayer me = (AbstractPlayer) mObj;
 		ArrayList<String> theCards = cardsObj[0];
         AbstractPlayer.PlayerClass selection = me.chosenClass;
-        if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
-                selection != AbstractPlayer.PlayerClass.DEFECT) {
+        if (!BaseMod.isBaseGameCharacter(selection)) {
         	theCards = BaseMod.getStartingDeck(me.chosenClass.toString());
         	cardsObj[0] = theCards;
         } else {

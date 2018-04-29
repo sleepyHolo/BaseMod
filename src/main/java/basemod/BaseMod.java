@@ -457,6 +457,11 @@ public class BaseMod {
 		if (consoleEnabled != null) DevConsole.enabled = consoleEnabled;
 	}
 	
+	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
+		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD || chosenClass == AbstractPlayer.PlayerClass.THE_SILENT ||
+				chosenClass == AbstractPlayer.PlayerClass.DEFECT);
+	}
+	
 	// initialize -
 	public static void initialize() {
 		System.out.println("libgdx version " + Version.VERSION);
@@ -797,7 +802,14 @@ public class BaseMod {
 		textPanel.show(panel, startingValue, defaultValue, explanationText, cancel, confirm);
 	}
 
-	public static boolean saveExists() {
+	public static boolean baseGameSaveExists() {
+		return (SaveAndContinue.ironcladSaveExists) ||
+				(SaveAndContinue.silentSaveExists) ||
+				(SaveAndContinue.crowbotSaveExists) ||
+				(SaveAndContinue.defectSaveExists);
+	}
+	
+	public static boolean moddedSaveExists() {
 		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
 			String filepath = save_path + playerClass + ".autosave";

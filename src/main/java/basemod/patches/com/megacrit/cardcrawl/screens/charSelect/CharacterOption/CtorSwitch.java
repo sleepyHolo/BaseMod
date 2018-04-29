@@ -25,8 +25,7 @@ public class CtorSwitch {
 	public static void Insert(Object __obj_instance, String optionName, Object cObj, String buttonUrl, String portraiImg) {
 		CharacterOption option = (CharacterOption) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = (AbstractPlayer.PlayerClass) cObj;
-		if (chosenClass != AbstractPlayer.PlayerClass.IRONCLAD && chosenClass != AbstractPlayer.PlayerClass.THE_SILENT &&
-				chosenClass != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			try {
 				Field charInfoField;
 				charInfoField = option.getClass().getDeclaredField("charInfo");

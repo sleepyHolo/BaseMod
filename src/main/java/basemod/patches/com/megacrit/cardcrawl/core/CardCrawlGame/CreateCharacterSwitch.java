@@ -24,8 +24,7 @@ public class CreateCharacterSwitch {
 		
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) selectionObj;
 		AbstractPlayer p;
-		if (selection != AbstractPlayer.PlayerClass.IRONCLAD && selection != AbstractPlayer.PlayerClass.THE_SILENT &&
-				selection != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(selection)) {
 			logger.info("creating character " + selection.toString());
 			p = BaseMod.createCharacter(selection.toString(), CardCrawlGame.playerName);
 			

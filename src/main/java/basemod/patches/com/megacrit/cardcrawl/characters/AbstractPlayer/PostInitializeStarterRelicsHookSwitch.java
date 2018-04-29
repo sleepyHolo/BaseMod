@@ -16,8 +16,7 @@ public class PostInitializeStarterRelicsHookSwitch {
     public static void Insert(Object mObj, PlayerClass chosenClass, @ByRef ArrayList<String>[] relicsObj) {
     	AbstractPlayer me = (AbstractPlayer) mObj;
 		ArrayList<String> theRelics = relicsObj[0];
-    	if (chosenClass != PlayerClass.IRONCLAD && chosenClass != PlayerClass.THE_SILENT &&
-				chosenClass != PlayerClass.DEFECT) {
+    	if (!BaseMod.isBaseGameCharacter(chosenClass)) {
         	theRelics = BaseMod.getStartingRelics(me.chosenClass.toString());
         	relicsObj[0] = theRelics;
         } else {

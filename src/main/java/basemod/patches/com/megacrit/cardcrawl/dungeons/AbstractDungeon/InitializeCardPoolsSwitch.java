@@ -23,8 +23,7 @@ public class InitializeCardPoolsSwitch {
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;
 		@SuppressWarnings("unchecked")
 		ArrayList<AbstractCard> tmpPool = (ArrayList<AbstractCard>) tmpPoolObj;
-		if (chosenClass != AbstractPlayer.PlayerClass.IRONCLAD && chosenClass != AbstractPlayer.PlayerClass.THE_SILENT &&
-				chosenClass != AbstractPlayer.PlayerClass.DEFECT) {
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			String color = BaseMod.getColor(chosenClass.toString());
 			AbstractCard card;
 			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
