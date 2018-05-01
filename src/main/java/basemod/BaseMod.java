@@ -1316,7 +1316,7 @@ public class BaseMod {
 		return (ArrayList<String>) startingRelicsObj;
 	}
 
-	private static TextureAtlas.AtlasRegion getCardSmallEnergy() {
+	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
 		if (AbstractDungeon.player == null) {
 			return AbstractCard.orb_red;
 		}
