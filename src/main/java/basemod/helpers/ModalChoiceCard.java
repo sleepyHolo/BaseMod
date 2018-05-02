@@ -38,7 +38,7 @@ public class ModalChoiceCard extends AbstractCard
     public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster)
     {
         if (callback != null) {
-            callback.optionSelected(index);
+            callback.optionSelected(abstractPlayer, abstractMonster, index);
         }
     }
 
