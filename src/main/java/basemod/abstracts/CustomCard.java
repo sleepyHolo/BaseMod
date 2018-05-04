@@ -63,9 +63,13 @@ public abstract class CustomCard extends AbstractCard {
 	public String textureBannerSmallImg = null;
 	public String textureBannerLargeImg = null;
 	
-	
+	@Deprecated
 	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, int cardPool) {
-		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target, cardPool);
+		this(id, name, img, cost, rawDescription, type, color, rarity, target);
+	}
+	
+	public CustomCard(String id, String name, String img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target) {
+		super(id, name, "status/beta", "status/beta", cost, rawDescription, type, color, rarity, target);
 		
 		this.textureImg = img;
 		if (img != null) {
