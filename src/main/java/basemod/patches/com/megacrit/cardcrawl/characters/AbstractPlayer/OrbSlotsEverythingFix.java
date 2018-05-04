@@ -24,7 +24,7 @@ public class OrbSlotsEverythingFix {
 			if(player.masterMaxOrbs > 0 && player.chosenClass != PlayerClass.DEFECT) {
 				player.maxOrbs = 0;
 				player.orbs.clear();
-				player.increaseMaxOrbSlots(player.masterMaxOrbs);
+				player.increaseMaxOrbSlots(player.masterMaxOrbs, false);
 			}
 		}
 	}
