@@ -22,7 +22,7 @@ public class ModalChoiceCard extends AbstractCard
 
     ModalChoiceCard(String id, String name, String rawDescription, CardType type, CardColor color, CardTarget target, int index, ModalChoice.Callback callback)
     {
-        super(id, name, null, null, -2, rawDescription, type, color, CardRarity.BASIC, target, 0);
+        super(id, name, null, null, -2, rawDescription, type, color, CardRarity.SPECIAL, target);
         dontTriggerOnUseCard = true;
         if (type != CardType.POWER) {
             purgeOnUse = true;
