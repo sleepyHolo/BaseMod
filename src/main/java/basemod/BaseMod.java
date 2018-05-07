@@ -2468,10 +2468,10 @@ public class BaseMod {
                     // Don't consider BaseMod when looking for mods, otherwise, we might end up with
                     // accidentally replacing calls to vanilla
                     if (info.jarURL.equals(callingURL)) {
-						if (info.ID != null && info.ID.equals("basemod")) {
-							continue;
-						}
-						if (info.ID != null && !info.ID.isEmpty()) {
+                        if (info.ID != null && info.ID.equals("basemod")) {
+                            continue;
+                        }
+                        if (info.ID != null && !info.ID.isEmpty()) {
                             finalModName = info.ID;
                         } else {
                             finalModName = info.Name;
