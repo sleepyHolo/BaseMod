@@ -2475,7 +2475,9 @@ public class BaseMod {
 	}
 
 	public static String convertToModID(String modID, String id) {
-		if (modID != null && !id.startsWith(modID + ":")) {
+		if (modID == null && (id.startsWith("slaythespire:") || id.startsWith("sts:") || id.startsWith(":"))) {
+			return id.substring(id.indexOf(':') + 1);
+		} else if (modID != null && !id.startsWith(modID + ":")) {
 			id = modID + ":" + id;
 		}
 		return id;
