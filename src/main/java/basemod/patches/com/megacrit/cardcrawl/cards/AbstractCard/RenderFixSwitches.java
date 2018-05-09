@@ -80,9 +80,9 @@ public class RenderFixSwitches {
 			AbstractCard card = (AbstractCard) __obj_instance;
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
-			
-			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+
+			if (color != CardColor.RED && color != CardColor.GREEN && color != CardColor.BLUE
+					&& color != CardColor.COLORLESS && color != CardColor.CURSE) {
 				Texture orbTexture = null;
 				try {
 					if (card instanceof CustomCard) {
@@ -137,8 +137,8 @@ public class RenderFixSwitches {
 			AbstractCard card = (AbstractCard) __obj_instance;
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
-			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+			if (color != CardColor.RED && color != CardColor.GREEN && color != CardColor.BLUE
+					&& color != CardColor.COLORLESS && color != CardColor.CURSE) {
 				Color glowColor = BaseMod.getGlowColor(color.toString());
 				if (glowColor == null) {
 					glowColor = Color.WHITE;
@@ -146,15 +146,15 @@ public class RenderFixSwitches {
 				try {
 					// use reflection hacks to invoke renderHelper (with float scale)
 					Field current_x;
-					current_x = card.getClass().getSuperclass().getSuperclass().getDeclaredField("current_x");
+					current_x = AbstractCard.class.getDeclaredField("current_x");
 					current_x.setAccessible(true);
 					Field current_y;
-					current_y = card.getClass().getSuperclass().getSuperclass().getDeclaredField("current_y");
+					current_y = AbstractCard.class.getDeclaredField("current_y");
 					current_y.setAccessible(true);
 					Field tintColor;
-					tintColor = card.getClass().getSuperclass().getSuperclass().getDeclaredField("tintColor");
+					tintColor = AbstractCard.class.getDeclaredField("tintColor");
 					tintColor.setAccessible(true);
-					Method renderHelperMethod = card.getClass().getSuperclass().getSuperclass().getDeclaredMethod("renderHelper", SpriteBatch.class,
+					Method renderHelperMethod = AbstractCard.class.getDeclaredMethod("renderHelper", SpriteBatch.class,
 							Color.class, Texture.class, float.class, float.class, float.class);
 					renderHelperMethod.setAccessible(true);
 					renderHelperMethod.invoke(card, sb, glowColor, card.getCardBg(),
@@ -181,9 +181,9 @@ public class RenderFixSwitches {
 			AbstractCard card = (AbstractCard) __obj_instance;
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
-			
-			if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-					&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+
+			if (color != CardColor.RED && color != CardColor.GREEN && color != CardColor.BLUE
+					&& color != CardColor.COLORLESS && color != CardColor.CURSE) {
 				Texture bgTexture = null;
 				try {
 					if (card instanceof CustomCard) {
