@@ -15,10 +15,7 @@ public class HasRelicModID
     public static void Prefix(AbstractPlayer __instance, @ByRef String[] targetID)
     {
         if (!targetID[0].equals(Circlet.ID) && !BaseMod.hasModID(targetID[0])) {
-            String modName = BaseMod.findCallingModName();
-            if (modName != null && !targetID[0].startsWith(modName + ":")) {
-                targetID[0] = modName + ":" + targetID[0];
-            }
+            targetID[0] = BaseMod.convertToModID(targetID[0]);
         }
     }
 }

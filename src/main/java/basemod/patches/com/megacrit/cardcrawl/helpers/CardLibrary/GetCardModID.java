@@ -16,10 +16,7 @@ public class GetCardModID
     {
         public static void Prefix(@ByRef String[] key)
         {
-            String modName = BaseMod.findCallingModName();
-            if (modName != null && !key[0].startsWith(modName + ":")) {
-                key[0] = modName + ":" + key[0];
-            }
+            key[0] = BaseMod.convertToModID(key[0]);
         }
     }
 
@@ -32,10 +29,7 @@ public class GetCardModID
     {
         public static void Prefix(AbstractPlayer.PlayerClass plyrClass, @ByRef String[] key)
         {
-            String modName = BaseMod.findCallingModName();
-            if (modName != null && !key[0].startsWith(modName + ":")) {
-                key[0] = modName + ":" + key[0];
-            }
+            key[0] = BaseMod.convertToModID(key[0]);
         }
     }
 }
