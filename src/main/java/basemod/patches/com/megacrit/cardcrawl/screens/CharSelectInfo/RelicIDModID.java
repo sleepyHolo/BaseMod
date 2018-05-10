@@ -36,7 +36,7 @@ public class RelicIDModID
                     modName = BaseMod.findCallingModName();
                 }
                 if (modName != null && !relics.get(i).startsWith(modName + ":")) {
-                    relics.set(i, modName + ":" + relics.get(i));
+                    relics.set(i, BaseMod.convertToModID(modName, relics.get(i)));
                 }
             }
         }
@@ -47,7 +47,7 @@ public class RelicIDModID
                     modName = BaseMod.findCallingModName();
                 }
                 if (modName != null && !deck.get(i).startsWith(modName + ":")) {
-                    deck.set(i, modName + ":" + deck.get(i));
+                    deck.set(i, BaseMod.convertToModID(modName, deck.get(i)));
                 }
             }
         }

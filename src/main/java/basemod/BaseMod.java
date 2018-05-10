@@ -18,6 +18,7 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.relics.Circlet;
@@ -1315,6 +1316,37 @@ public class BaseMod {
 		return (ArrayList<String>) startingRelicsObj;
 	}
 
+	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
+		if (AbstractDungeon.player == null) {
+			return AbstractCard.orb_red;
+		}
+		switch (AbstractDungeon.player.chosenClass) {
+			case IRONCLAD:
+				return AbstractCard.orb_red;
+			case THE_SILENT:
+				return AbstractCard.orb_green;
+			case DEFECT:
+				return AbstractCard.orb_blue;
+			default:
+				// TODO: mod orbs
+				// TODO: Not requiring TextureAtlas.AtlasRegion
+				return AbstractCard.orb_red;
+		}
+	}
+
+	public static TextureAtlas.AtlasRegion getCardSmallEnergy(AbstractCard card) {
+		switch (card.color) {
+			case RED:
+				return AbstractCard.orb_red;
+			case GREEN:
+				return AbstractCard.orb_green;
+			case BLUE:
+				return AbstractCard.orb_blue;
+			default:
+				return getCardSmallEnergy();
+		}
+	}
+
 	// convert a playerClass String (fake ENUM) into the actual class ID for
 	// that class
 	public static String getClass(String playerClass) {
@@ -2156,6 +2188,8 @@ public class BaseMod {
 	// publishEditKeywords
 	public static void publishEditKeywords() {
 		logger.info("editting keywords");
+
+		addKeyword(new String[]{"[E]"}, GameDictionary.TEXT[0]);
 		
 		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
 			sub.receiveEditKeywords();
@@ -2433,6 +2467,20 @@ public class BaseMod {
 	// unsubscribeLater -
 	public static void unsubscribeLater(ISubscriber sub) {
 		toRemove.add(sub);
+	}
+
+	public static String convertToModID(String id) {
+		String modName = BaseMod.findCallingModName();
+		return convertToModID(modName, id);
+	}
+
+	public static String convertToModID(String modID, String id) {
+		if (modID == null && (id.startsWith("slaythespire:") || id.startsWith("sts:") || id.startsWith(":"))) {
+			return id.substring(id.indexOf(':') + 1);
+		} else if (modID != null && !id.startsWith(modID + ":")) {
+			id = modID + ":" + id;
+		}
+		return id;
 	}
 
 	public static boolean hasModID(String id) {

@@ -29,9 +29,6 @@ public class CardIDModID
                               AbstractCard.CardType type, AbstractCard.CardColor color, AbstractCard.CardRarity rarity, AbstractCard.CardTarget target,
                               DamageInfo.DamageType dType)
     {
-        String modName = BaseMod.findCallingModName();
-        if (modName != null && !id[0].startsWith(modName + ":")) {
-            id[0] = modName + ":" + id[0];
-        }
+        id[0] = BaseMod.convertToModID(id[0]);
     }
 }

@@ -3,6 +3,8 @@ package basemod.helpers;
 import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class ModalChoice
 {
     public interface Callback
     {
-        void optionSelected(int index);
+        void optionSelected(AbstractPlayer p, AbstractMonster m, int index);
     }
 
     private String title;

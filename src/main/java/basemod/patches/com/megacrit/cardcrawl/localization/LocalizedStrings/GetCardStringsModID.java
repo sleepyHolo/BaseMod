@@ -13,9 +13,6 @@ public class GetCardStringsModID
 {
     public static void Prefix(LocalizedStrings __instance, @ByRef String[] cardName)
     {
-        String modName = BaseMod.findCallingModName();
-        if (modName != null && !cardName[0].startsWith(modName + ":")) {
-            cardName[0] = modName + ":" + cardName[0];
-        }
+        cardName[0] = BaseMod.convertToModID(cardName[0]);
     }
 }
