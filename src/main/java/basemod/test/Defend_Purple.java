@@ -18,11 +18,10 @@ public class Defend_Purple extends CustomCard {
 	private static final int COST = 1;
 	private static final int BLOCK_AMT = 5;
 	private static final int UPGRADE_PLUS_BLOCK = 3;
-	private static final int POOL = 0;
 
 	public Defend_Purple() {
 		super(ID, NAME, TestMod.makePath(TestMod.ASSET_FOLDER, TestMod.DEFEND_PURPLE), COST, DESCRIPTION, AbstractCard.CardType.SKILL,
-				ColorEnumPatch.PURPLE, AbstractCard.CardRarity.BASIC, AbstractCard.CardTarget.SELF, POOL);
+				ColorEnumPatch.PURPLE, AbstractCard.CardRarity.BASIC, AbstractCard.CardTarget.SELF);
 
 		this.baseBlock = BLOCK_AMT;
 	}

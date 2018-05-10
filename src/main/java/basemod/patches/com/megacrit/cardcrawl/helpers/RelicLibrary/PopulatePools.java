@@ -15,8 +15,7 @@ import basemod.BaseMod;
 public class PopulatePools {
 
 	public static void Postfix(ArrayList<String> pool, AbstractRelic.RelicTier tier, AbstractPlayer.PlayerClass chosenClass) {
-		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
-				!chosenClass.toString().equals("CROWBOT")) {
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			for (Map.Entry<String, AbstractRelic> r : BaseMod.getRelicsInCustomPool(
 					BaseMod.getColor(chosenClass.toString())).entrySet()) {
 				if (((AbstractRelic) r.getValue()).tier  == tier && (

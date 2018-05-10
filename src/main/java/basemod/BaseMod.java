@@ -1,10 +1,10 @@
 package basemod;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +18,9 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -87,7 +90,6 @@ import com.megacrit.cardcrawl.powers.CorruptionPower;
 import com.megacrit.cardcrawl.powers.CuriosityPower;
 import com.megacrit.cardcrawl.powers.CurlUp;
 import com.megacrit.cardcrawl.powers.DancePower;
-import com.megacrit.cardcrawl.powers.DarknessPower;
 import com.megacrit.cardcrawl.powers.DemonFormPower;
 import com.megacrit.cardcrawl.powers.DexterityPower;
 import com.megacrit.cardcrawl.powers.DoubleDamagePower;
@@ -456,6 +458,11 @@ public class BaseMod {
 		if (consoleEnabled != null) DevConsole.enabled = consoleEnabled;
 	}
 	
+	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
+		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD || chosenClass == AbstractPlayer.PlayerClass.THE_SILENT ||
+				chosenClass == AbstractPlayer.PlayerClass.DEFECT);
+	}
+	
 	// initialize -
 	public static void initialize() {
 		System.out.println("libgdx version " + Version.VERSION);
@@ -697,7 +704,6 @@ public class BaseMod {
 		powerMap.put("Curl Up",CurlUp.class);
 		powerMap.put("Dance Puppet",DancePower.class);
 		powerMap.put("Dark Embrace",DarkEmbrace.class);
-		powerMap.put("Darkness",DarknessPower.class);
 		powerMap.put("Demon Form",DemonFormPower.class);
 		powerMap.put("Dexterity",DexterityPower.class);
 		powerMap.put("Double Damage",DoubleDamagePower.class);
@@ -797,7 +803,14 @@ public class BaseMod {
 		textPanel.show(panel, startingValue, defaultValue, explanationText, cancel, confirm);
 	}
 
-	public static boolean saveExists() {
+	public static boolean baseGameSaveExists() {
+		return (SaveAndContinue.ironcladSaveExists) ||
+				(SaveAndContinue.silentSaveExists) ||
+				(SaveAndContinue.crowbotSaveExists) ||
+				(SaveAndContinue.defectSaveExists);
+	}
+	
+	public static boolean moddedSaveExists() {
 		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
 			String filepath = save_path + playerClass + ".autosave";
@@ -831,13 +844,24 @@ public class BaseMod {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void loadJsonStrings(Type stringType, String jsonString) {
-		logger.info("loadJsonStrings: " + stringType.getClass().getCanonicalName());
+		logger.info("loadJsonStrings: " + stringType.getTypeName());
 
 		String typeMap = typeMaps.get(stringType);
 		Type typeToken = typeTokens.get(stringType);
 
+		String modName = BaseMod.findCallingModName();
+
 		Map localizationStrings = (Map) ReflectionHacks.getPrivateStatic(LocalizedStrings.class, typeMap);
-		localizationStrings.putAll(new HashMap(gson.fromJson(jsonString, typeToken)));
+		Map map = new HashMap(gson.fromJson(jsonString, typeToken));
+		if (stringType.equals(CardStrings.class) || stringType.equals(RelicStrings.class)) {
+			Map map2 = new HashMap();
+			for (Object k : map.keySet()) {
+				map2.put(modName == null ? k : modName + ":" + k, map.get(k));
+			}
+			localizationStrings.putAll(map2);
+		} else {
+			localizationStrings.putAll(map);
+		}
 		ReflectionHacks.setPrivateStaticFinal(LocalizedStrings.class, typeMap, localizationStrings);
 	}
 
@@ -1290,6 +1314,37 @@ public class BaseMod {
 			return Ironclad.getStartingRelics();
 		}
 		return (ArrayList<String>) startingRelicsObj;
+	}
+
+	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
+		if (AbstractDungeon.player == null) {
+			return AbstractCard.orb_red;
+		}
+		switch (AbstractDungeon.player.chosenClass) {
+			case IRONCLAD:
+				return AbstractCard.orb_red;
+			case THE_SILENT:
+				return AbstractCard.orb_green;
+			case DEFECT:
+				return AbstractCard.orb_blue;
+			default:
+				// TODO: mod orbs
+				// TODO: Not requiring TextureAtlas.AtlasRegion
+				return AbstractCard.orb_red;
+		}
+	}
+
+	public static TextureAtlas.AtlasRegion getCardSmallEnergy(AbstractCard card) {
+		switch (card.color) {
+			case RED:
+				return AbstractCard.orb_red;
+			case GREEN:
+				return AbstractCard.orb_green;
+			case BLUE:
+				return AbstractCard.orb_blue;
+			default:
+				return getCardSmallEnergy();
+		}
 	}
 
 	// convert a playerClass String (fake ENUM) into the actual class ID for
@@ -2133,6 +2188,8 @@ public class BaseMod {
 	// publishEditKeywords
 	public static void publishEditKeywords() {
 		logger.info("editting keywords");
+
+		addKeyword(new String[]{"[E]"}, GameDictionary.TEXT[0]);
 		
 		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
 			sub.receiveEditKeywords();
@@ -2411,6 +2468,71 @@ public class BaseMod {
 	public static void unsubscribeLater(ISubscriber sub) {
 		toRemove.add(sub);
 	}
+
+	public static String convertToModID(String id) {
+		String modName = BaseMod.findCallingModName();
+		return convertToModID(modName, id);
+	}
+
+	public static String convertToModID(String modID, String id) {
+		if (modID == null && (id.startsWith("slaythespire:") || id.startsWith("sts:") || id.startsWith(":"))) {
+			return id.substring(id.indexOf(':') + 1);
+		} else if (modID != null && !id.startsWith(modID + ":")) {
+			id = modID + ":" + id;
+		}
+		return id;
+	}
+
+	public static boolean hasModID(String id) {
+		for (ModInfo info : Loader.MODINFOS) {
+			String modID = null;
+			if (info.ID != null && !info.ID.isEmpty()) {
+				modID = info.ID;
+			} else {
+				modID = info.Name;
+			}
+			if (id.startsWith(modID + ":")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static String findCallingModName() {
+        String finalModName = null;
+
+        try {
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            for (int i=2; i<stacktrace.length; ++i) {
+                Class<?> callingClass = BaseMod.class.getClassLoader().loadClass(stacktrace[i].getClassName());
+                if (callingClass == null
+                        || callingClass.getProtectionDomain() == null
+                        || callingClass.getProtectionDomain().getCodeSource() == null
+                        || callingClass.getProtectionDomain().getCodeSource().getLocation() == null) {
+                    continue;
+                }
+                URL callingURL = callingClass.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
+                for (ModInfo info : Loader.MODINFOS) {
+                    // Don't consider BaseMod when looking for mods, otherwise, we might end up with
+                    // accidentally replacing calls to vanilla
+                    if (info.jarURL.equals(callingURL)) {
+                        if (info.ID != null && info.ID.equals("basemod")) {
+                            continue;
+                        }
+                        if (info.ID != null && !info.ID.isEmpty()) {
+                            finalModName = info.ID;
+                        } else {
+                            finalModName = info.Name;
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (ClassNotFoundException | URISyntaxException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return finalModName;
+    }
 	
 	// subscribeToStartAct -
 	@Deprecated

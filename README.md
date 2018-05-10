@@ -1,7 +1,7 @@
 # BaseMod #
 BaseMod provides a number of hooks and a console.
 
-Currently supported version of Slay The Spire: `[EARLY_ACCESS_021]` (non beta)
+Currently supported version of Slay The Spire: `[EARLY_ACCESS_023]` (non beta)
 
 ![Developer Console](github_resources/console.png)
 
@@ -44,6 +44,7 @@ Take a look at the Console page on the wiki (https://github.com/daviscook477/Bas
 * BlankTheEvil - custom rendering for cards on a card-by-card basis and custom energy orb support
 * kiooeht - Support custom cards in card library screen, fix character select memory leak, modal card choices, custom dynamic variables
 * DemoXinMC - CardBasic
+* robojumper - Bug fixes
 
 ## Roadmap ##
 * Keep up-to-date with weekly patches to keep mods useable

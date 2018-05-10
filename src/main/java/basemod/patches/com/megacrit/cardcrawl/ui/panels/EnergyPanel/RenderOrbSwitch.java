@@ -19,9 +19,7 @@ public class RenderOrbSwitch {
 	public static void Prefix(Object __obj_instance, SpriteBatch sb) {
 		EnergyPanel energyPanel = (EnergyPanel) __obj_instance;
 		AbstractPlayer.PlayerClass chosenClass = AbstractDungeon.player.chosenClass;
-		if (!chosenClass.toString().equals("IRONCLAD") && !chosenClass.toString().equals("THE_SILENT") &&
-				!chosenClass.toString().equals("CROWBOT")) {
-			
+		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			try {				
 				EnergyOrbRenderHelper.render(energyPanel, sb);
 				

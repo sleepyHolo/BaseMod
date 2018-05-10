@@ -23,7 +23,6 @@ public class CardBasic extends CustomCard {
 	public static final int BASE_MAX_UPGRADES = 1;
 	public static final int BASE_COST = -1;
 	public static final String BASE_DESCRIPTION = "";
-	public static final int BASE_POOL = 1;
 
 	protected boolean doDamage = false;
 	protected boolean doBlock = false;
@@ -60,7 +59,7 @@ public class CardBasic extends CustomCard {
 			CardType cardType, CardColor cardColor,
 			CardRarity rarity, CardTarget target) {
 		super(cardId, name, img, BASE_COST, BASE_DESCRIPTION,
-				cardType, cardColor, rarity, target, BASE_POOL);
+				cardType, cardColor, rarity, target);
 		
 		if (target == CardTarget.ALL_ENEMY) {
 			this.isMultiDamage = true;

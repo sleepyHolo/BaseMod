@@ -1,6 +1,9 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.RelicLibrary;
 
+import basemod.BaseMod;
+import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.relics.Circlet;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.NewExpr;
@@ -18,6 +21,12 @@ public class GetRelicFix {
 				}
 			}
 		};
+	}
+
+	public static void Prefix(@ByRef String[] key) {
+		if (!key[0].equals(Circlet.ID) && !BaseMod.hasModID(key[0])) {
+			key[0] = BaseMod.convertToModID(key[0]);
+		}
 	}
 	
 }

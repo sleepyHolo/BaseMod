@@ -10,6 +10,7 @@ public class ModalChoiceBuilder
     private ArrayList<AbstractCard> options = new ArrayList<>();
     private ModalChoice.Callback callback = null;
     private AbstractCard.CardColor color = AbstractCard.CardColor.COLORLESS;
+    private AbstractCard.CardType type = AbstractCard.CardType.SKILL;
 
     public ModalChoiceBuilder()
     {
@@ -36,8 +37,7 @@ public class ModalChoiceBuilder
         if (title == null) {
             title = "Option " + (options.size() + 1);
         }
-        options.add(new ModalChoiceCard(title, description, color, target, options.size(), callback));
-        return this;
+        return addOption(new ModalChoiceCard(title, description, type, color, target, options.size(), callback));
     }
 
     public ModalChoiceBuilder addOption(AbstractCard card)
@@ -51,6 +51,14 @@ public class ModalChoiceBuilder
     public ModalChoiceBuilder setColor(AbstractCard.CardColor color)
     {
         this.color = color;
+        return this;
+    }
+
+    // setType - Sets the card type for all following automatically created ModalChoiceCards.
+    //           Does not affect previously added cards
+    public ModalChoiceBuilder setType(AbstractCard.CardType type)
+    {
+        this.type = type;
         return this;
     }
 

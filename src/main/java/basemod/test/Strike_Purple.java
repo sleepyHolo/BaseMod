@@ -18,12 +18,11 @@ public class Strike_Purple extends CustomCard {
 	private static final int COST = 1;
 	private static final int ATTACK_DMG = 6;
 	private static final int UPGRADE_PLUS_DMG = 3;
-	private static final int POOL = 0;
 
 	public Strike_Purple() {
 		super(ID, NAME, TestMod.makePath(TestMod.ASSET_FOLDER, TestMod.STRIKE_PURPLE), COST, DESCRIPTION, AbstractCard.CardType.ATTACK,
 				ColorEnumPatch.PURPLE, AbstractCard.CardRarity.BASIC,
-				AbstractCard.CardTarget.ENEMY, POOL);
+				AbstractCard.CardTarget.ENEMY);
 
 		this.baseDamage = ATTACK_DMG;
 	}

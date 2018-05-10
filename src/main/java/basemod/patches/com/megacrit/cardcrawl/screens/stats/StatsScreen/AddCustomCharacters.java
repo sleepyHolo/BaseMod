@@ -24,17 +24,17 @@ public class AddCustomCharacters {
 		try {
 			Field ironcladField = screen.getClass().getDeclaredField("ironclad");
 			Field silentField = screen.getClass().getDeclaredField("silent");
-			Field crowbotField = screen.getClass().getDeclaredField("crowbot");
+			Field defectField = screen.getClass().getDeclaredField("defect");
 			Field allField = screen.getClass().getDeclaredField("all");
 			Field achievementsField = screen.getClass().getDeclaredField("achievements");
 			ironcladField.setAccessible(true);
 			silentField.setAccessible(true);
-			crowbotField.setAccessible(true);
+			defectField.setAccessible(true);
 			allField.setAccessible(true);
 			achievementsField.setAccessible(true);
 			ironcladField.set(screen, new CharStat(AbstractPlayer.PlayerClass.IRONCLAD));
 			silentField.set(screen, new CharStat(AbstractPlayer.PlayerClass.THE_SILENT));
-			crowbotField.set(screen, new CharStat(AbstractPlayer.PlayerClass.CROWBOT));
+			defectField.set(screen, new CharStat(AbstractPlayer.PlayerClass.DEFECT));
 			ArrayList<CharStat> allChars = new ArrayList<>();
 			allChars.add((CharStat) ironcladField.get(screen));
 			allChars.add((CharStat) silentField.get(screen));

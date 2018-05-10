@@ -15,16 +15,20 @@ public class ModalChoiceCard extends AbstractCard
         this(ID, name, rawDescription, type, color, target, -1, null);
     }
 
-    ModalChoiceCard(String name, String rawDescription, CardColor color, CardTarget target, int index, ModalChoice.Callback callback)
+    ModalChoiceCard(String name, String rawDescription, CardType type, CardColor color, CardTarget target, int index, ModalChoice.Callback callback)
     {
-        this(ID, name, rawDescription, CardType.SKILL, color, target, index, callback);
+        this(ID, name, rawDescription, type, color, target, index, callback);
     }
 
     ModalChoiceCard(String id, String name, String rawDescription, CardType type, CardColor color, CardTarget target, int index, ModalChoice.Callback callback)
     {
-        super(id, name, null, null, -2, rawDescription, type, color, CardRarity.BASIC, target, 0);
+        super(id, name, null, null, -2, rawDescription, type, color, CardRarity.SPECIAL, target);
         dontTriggerOnUseCard = true;
-        purgeOnUse = true;
+        if (type != CardType.POWER) {
+            purgeOnUse = true;
+        } else {
+            purgeOnUse = false;
+        }
 
         this.index = index;
         this.callback = callback;
@@ -34,7 +38,7 @@ public class ModalChoiceCard extends AbstractCard
     public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster)
     {
         if (callback != null) {
-            callback.optionSelected(index);
+            callback.optionSelected(abstractPlayer, abstractMonster, index);
         }
     }
 
@@ -47,6 +51,6 @@ public class ModalChoiceCard extends AbstractCard
     @Override
     public AbstractCard makeCopy()
     {
-        return new ModalChoiceCard(name, rawDescription, color, target, index, callback);
+        return new ModalChoiceCard(name, rawDescription, type, color, target, index, callback);
     }
 }
