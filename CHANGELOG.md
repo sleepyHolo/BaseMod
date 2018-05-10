@@ -270,7 +270,13 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v2.6.0 ####
 * Support week 21 patch
 
-#### dev ####
+#### v2.7.0 ####
 * Support **week 22** patch (kiooeht)
 * Allow mods to use the same card and relic IDs without conflict (kiooeht)
 * Modal option improvements (kiooeht)
+
+#### v2.8.0 ####
+* Support **week 23** patch (kiooeht)
+* Fix bugs in last week's ID conflict resolver (robojumper)
+* Support energy symbols using [E] instead of color specific symbols (kiooeht)
+
