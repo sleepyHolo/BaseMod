@@ -826,14 +826,7 @@ public class DevConsole
 			return;
 		}
 
-		CardCrawlGame.sound.play("POTION_1");
-		p.moveInstantly(AbstractDungeon.player.potions[i].currentX, AbstractDungeon.player.potions[i].currentY);
-		BaseMod.publishPotionGet(p);
-		p.isObtained = true;
-		p.isDone = true;
-		p.isAnimating = false;
-		p.flash();
-		AbstractDungeon.player.potions[i] = p;
+		AbstractDungeon.player.obtainPotion(i, p);
 	}
 
 	public static void cmdPotionHelp() {
