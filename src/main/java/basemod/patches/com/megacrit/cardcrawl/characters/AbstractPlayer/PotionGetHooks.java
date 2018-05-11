@@ -27,9 +27,12 @@ public class PotionGetHooks
     )
     public static class Two
     {
-        public static void Postfix(AbstractPlayer __instance, AbstractPotion potion)
+        public static boolean Postfix(boolean __result, AbstractPlayer __instance, AbstractPotion potion)
         {
-            BaseMod.publishPotionGet(potion);
+            if (__result) {
+                BaseMod.publishPotionGet(potion);
+            }
+            return __result;
         }
     }
 }
