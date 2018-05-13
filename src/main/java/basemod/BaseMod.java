@@ -2499,39 +2499,7 @@ public class BaseMod {
 	}
 
 	public static String findCallingModName() {
-        String finalModName = null;
-
-        try {
-            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
-            for (int i=2; i<stacktrace.length; ++i) {
-                Class<?> callingClass = BaseMod.class.getClassLoader().loadClass(stacktrace[i].getClassName());
-                if (callingClass == null
-                        || callingClass.getProtectionDomain() == null
-                        || callingClass.getProtectionDomain().getCodeSource() == null
-                        || callingClass.getProtectionDomain().getCodeSource().getLocation() == null) {
-                    continue;
-                }
-                URL callingURL = callingClass.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
-                for (ModInfo info : Loader.MODINFOS) {
-                    // Don't consider BaseMod when looking for mods, otherwise, we might end up with
-                    // accidentally replacing calls to vanilla
-                    if (info.jarURL.equals(callingURL)) {
-                        if (info.ID != null && info.ID.equals("basemod")) {
-                            continue;
-                        }
-                        if (info.ID != null && !info.ID.isEmpty()) {
-                            finalModName = info.ID;
-                        } else {
-                            finalModName = info.Name;
-                        }
-                        break;
-                    }
-                }
-            }
-        } catch (ClassNotFoundException | URISyntaxException | MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return finalModName;
+		return null;
     }
 	
 	// subscribeToStartAct -

@@ -279,3 +279,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support **week 23** patch (kiooeht)
 * Fix bugs in last week's ID conflict resolver (robojumper)
 * Support energy symbols using [E] instead of color specific symbols (kiooeht)
+
+#### v2.9.0 ####
+* Support week 24 patch (kiooeht)
+* Disable mod ID on cards and relics as it has problems
+
+#### dev ####
