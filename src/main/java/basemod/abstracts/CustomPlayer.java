@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
@@ -81,7 +82,11 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 
 	@Override
 	public void receiveModelRender(ModelBatch batch, Environment env) {
-		animation.renderModel(batch, env);
+		if (this != AbstractDungeon.player) {
+			BaseMod.unsubscribeLater(this);
+		} else {
+			animation.renderModel(batch, env);
+		}
 	}
 
 	@Override

@@ -284,4 +284,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support week 24 patch (kiooeht)
 * Disable mod ID on cards and relics as it has problems
 
+#### v2.9.1 ####
+* Fix duplicate rendering of custom characters (again)
+
 #### dev ####
