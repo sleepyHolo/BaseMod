@@ -261,14 +261,14 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add support for per-card energy orb graphics (BlankTheEvil)
 
 #### v2.5.0 ####
-* Support week 20 patch (kiooeht)
+* Support **week 20** patch (kiooeht)
 * Add support for custom dynamic variables (kiooeht)
 * Merge CustomCardWithRender features into CustomCard - breaking change - should only affect BlackMageMod
 * Add feature CardBasic (1st functional version) (DemoXinMC)
 * Add support for per-card banners (BlankTheEvil)
 
 #### v2.6.0 ####
-* Support week 21 patch
+* Support **week 21** patch
 
 #### v2.7.0 ####
 * Support **week 22** patch (kiooeht)
@@ -288,4 +288,3 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix duplicate rendering of custom characters (again)
 
 #### dev ####
-

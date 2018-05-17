@@ -15,8 +15,8 @@ public class AbstractPotionInitializeColor {
     AbstractPotion potion = (AbstractPotion) __object__instance; 
     if(BaseMod.getPotionLiquidColor(potion.ID)!=null) { 
       potion.liquidColor=BaseMod.getPotionLiquidColor(potion.ID); 
-      potion.liquidColor=BaseMod.getPotionLiquidColor(potion.ID); 
-      potion.liquidColor=BaseMod.getPotionLiquidColor(potion.ID); 
+      potion.hybridColor=BaseMod.getPotionHybridColor(potion.ID); 
+      potion.spotsColor=BaseMod.getPotionSpotsColor(potion.ID); 
     } 
   } 
 } 
