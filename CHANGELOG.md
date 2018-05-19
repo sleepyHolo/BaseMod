@@ -292,3 +292,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Actually set hybridColor and spotsColor for custom potions (twanvl)
 
 #### dev ####
+* Fix power command (kiooeht)
