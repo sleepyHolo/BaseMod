@@ -11,6 +11,6 @@ import basemod.BaseMod;
 public class InstantObtainRelicGetHook {
 	@SpireInsertPatch(rloc=2)
 	public static void Insert(Object relic, AbstractPlayer p, int slot, boolean callOnEquip) {
-		BaseMod.publishRelicGet((AbstractRelic) relic);;
+		BaseMod.publishRelicGet((AbstractRelic) relic);
 	}
 }

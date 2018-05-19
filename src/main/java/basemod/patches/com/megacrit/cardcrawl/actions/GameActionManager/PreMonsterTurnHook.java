@@ -1,11 +1,11 @@
-package basemod.patches.com.megacrit.cardcrawl.monsters.MonsterGroup;
+package basemod.patches.com.megacrit.cardcrawl.actions.GameActionManager;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.monsters.MonsterGroup", method="takeTurn")
+@SpirePatch(cls="com.megacrit.cardcrawl.actions.GameActionManager", method="getNextAction")
 public class PreMonsterTurnHook {
     public static ExprEditor Instrument() {
         return new ExprEditor() {
