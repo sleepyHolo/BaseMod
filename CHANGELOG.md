@@ -287,4 +287,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v2.9.1 ####
 * Fix duplicate rendering of custom characters (again)
 
+#### v2.10.0 ####
+* Support week 25 patch (kiooeht)
+* Actually set hybridColor and spotsColor for custom potions (twanvl)
+
 #### dev ####
