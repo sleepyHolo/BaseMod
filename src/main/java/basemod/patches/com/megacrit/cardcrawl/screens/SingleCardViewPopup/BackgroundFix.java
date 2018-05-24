@@ -96,7 +96,7 @@ public class BackgroundFix {
 						if (bgTexture == null) {
 							bgTexture = BaseMod.getSkillBgPortraitTexture(color.toString());
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getPowerBgPortrait(color.toString()));
+								bgTexture = new Texture(BaseMod.getSkillBgPortrait(color.toString()));
 								BaseMod.saveSkillBgPortraitTexture(color.toString(), bgTexture);
 							}
 						}
