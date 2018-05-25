@@ -233,19 +233,18 @@ public class DevConsole
 		String powerID = "";
 		int amount = 1;
 		for (int i = 1; i < tokens.length - 1; i++) {
-			powerID = powerID.concat(tokens[i]);
-			if (i != tokens.length - 2) {
-				powerID = powerID.concat(" ");
-			}
+			powerID = powerID.concat(tokens[i]).concat(" ");
 		}
 		try {
 			amount = Integer.parseInt(tokens[tokens.length - 1]);
 		} catch (Exception e) {
 			powerID = powerID.concat(tokens[tokens.length - 1]);
 		}
+		powerID = powerID.trim();
+
+		Class power;
 		try {
-			@SuppressWarnings({ "rawtypes", "unused" })
-			Class power = BaseMod.getPowerClass(powerID);
+			power = BaseMod.getPowerClass(powerID);
 		} catch (Exception e) {
 			logger.info("failed to load power " + powerID);
 			log("could not load power");
@@ -254,8 +253,7 @@ public class DevConsole
 		}
 
 		try {
-			@SuppressWarnings("unused")
-			ConsoleTargetedPower ctp = new ConsoleTargetedPower(BaseMod.getPowerClass(powerID), amount);
+			new ConsoleTargetedPower(power, amount);
 		} catch (Exception e) {
 			log("could not make power");
 			cmdPowerHelp();
