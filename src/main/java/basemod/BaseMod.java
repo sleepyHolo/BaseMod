@@ -663,7 +663,7 @@ public class BaseMod {
 		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
 			String filepath = save_path + playerClass + ".autosave";
-			System.out.println("looing for " + filepath);
+			System.out.println("looking for " + filepath);
 			boolean fileExists = Gdx.files.local(filepath).exists();
 			// delete corrupted saves
 			if ((fileExists)
