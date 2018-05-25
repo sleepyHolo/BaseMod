@@ -124,6 +124,7 @@ import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
 import basemod.interfaces.StartGameSubscriber;
+import basemod.interfaces.PostDeathSubscriber;
 
 @SpireInitializer
 public class BaseMod {
@@ -175,6 +176,7 @@ public class BaseMod {
 	private static ArrayList<RelicGetSubscriber> relicGetSubscribers;
 	private static ArrayList<PostPowerApplySubscriber> postPowerApplySubscribers;
 	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
+	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
 	
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -510,6 +512,7 @@ public class BaseMod {
 		relicGetSubscribers = new ArrayList<>();
 		postPowerApplySubscribers = new ArrayList<>();
 		onPowersModifiedSubscribers = new ArrayList<>();
+		postDeathSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -2115,6 +2118,16 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(OnPowersModifiedSubscriber.class);
 	}
+
+	// publishPostDeath - Is triggered on death and victory
+	public static void publishPostDeath() {
+		logger.info("publishPostDeath");
+
+		for (PostDeathSubscriber sub : postDeathSubscribers) {
+			sub.receivePostDeath();
+		}
+		unsubscribeLaterHelper(PostDeathSubscriber.class);
+	}
 	
 	//
 	// Subscription handlers
@@ -2183,6 +2196,7 @@ public class BaseMod {
 		subscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
 		subscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
 		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
 	
 	// subscribe -
@@ -2256,6 +2270,8 @@ public class BaseMod {
 			postPowerApplySubscribers.add((PostPowerApplySubscriber) sub);
 		} else if (additionClass.equals(OnPowersModifiedSubscriber.class)) {
 			onPowersModifiedSubscribers.add((OnPowersModifiedSubscriber) sub);
+		} else if (additionClass.equals(PostDeathSubscriber.class)) {
+			postDeathSubscribers.add((PostDeathSubscriber) sub);
 		}
 	}
 	
@@ -2296,6 +2312,7 @@ public class BaseMod {
 		unsubscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
 		unsubscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
 		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
 	
 	// unsubscribe -
@@ -2369,6 +2386,8 @@ public class BaseMod {
 			postPowerApplySubscribers.remove(sub);
 		} else if (removalClass.equals(OnPowersModifiedSubscriber.class)) {
 			onPowersModifiedSubscribers.remove(sub);
+		} else if (removalClass.equals(PostDeathSubscriber.class)) {
+			postDeathSubscribers.remove(sub);
 		}
 	}
 	
