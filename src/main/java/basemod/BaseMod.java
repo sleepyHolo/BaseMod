@@ -1828,7 +1828,7 @@ public class BaseMod {
 				if (chosenClass.equals(PlayerClass.THE_SILENT)) {
 					sub.receivePostCreateStartingRelics(chosenClass, relics);
 				}
-			} else if (sub instanceof PostCreateStartingRelicsSubscriber) {
+			} else {
 				sub.receivePostCreateStartingRelics(chosenClass, relics);
 			}
 		}
