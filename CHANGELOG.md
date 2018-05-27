@@ -295,4 +295,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix power command (kiooeht)
 * Fix abandon run to abandon modded character runs (kiooeht)
 * Bug fix: Use skill background for skill cards in portrait view (twanvl)
+* Fix modal choice cards to not counts towards cards played count (kiooeht)
 * Death hook (alexdriedger)
