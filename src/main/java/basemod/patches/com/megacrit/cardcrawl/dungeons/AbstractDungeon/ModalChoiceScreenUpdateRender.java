@@ -3,9 +3,11 @@ package basemod.patches.com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import basemod.BaseMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 public class ModalChoiceScreenUpdateRender
 {
@@ -15,13 +17,23 @@ public class ModalChoiceScreenUpdateRender
     )
     public static class Update
     {
-        @SpireInsertPatch(
-                rloc=18
-        )
+        @SpireInsertPatch
         public static void Insert(AbstractDungeon __instance)
         {
             if (AbstractDungeon.screen == ModalChoiceScreen.Enum.MODAL_CHOICE) {
                 BaseMod.modalChoiceScreen.update();
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(
+                        "com.megacrit.cardcrawl.dungeons.AbstractDungeon", "screen");
+
+                return LineFinder.findInOrder(ctBehavior, new ArrayList<>(), finalMatcher);
             }
         }
     }
@@ -32,13 +44,23 @@ public class ModalChoiceScreenUpdateRender
     )
     public static class Render
     {
-        @SpireInsertPatch(
-                rloc=51
-        )
+        @SpireInsertPatch
         public static void Insert(AbstractDungeon __instance, SpriteBatch sb)
         {
             if (AbstractDungeon.screen == ModalChoiceScreen.Enum.MODAL_CHOICE) {
                 BaseMod.modalChoiceScreen.render(sb);
+            }
+        }
+
+        public static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(
+                        "com.megacrit.cardcrawl.dungeons.AbstractDungeon", "screen");
+
+                return LineFinder.findInOrder(ctBehavior, new ArrayList<>(), finalMatcher);
             }
         }
     }
