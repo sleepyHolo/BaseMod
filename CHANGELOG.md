@@ -291,9 +291,12 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support week 25 patch (kiooeht)
 * Actually set hybridColor and spotsColor for custom potions (twanvl)
 
-#### dev ####
+#### v2.11.0 ####
+* Support week 27 (kiooeht)
 * Fix power command (kiooeht)
 * Fix abandon run to abandon modded character runs (kiooeht)
 * Bug fix: Use skill background for skill cards in portrait view (twanvl)
 * Fix modal choice cards to not counts towards cards played count (kiooeht)
 * Death hook (alexdriedger)
+
+#### dev ####
