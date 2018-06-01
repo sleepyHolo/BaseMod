@@ -5,12 +5,7 @@ import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import basemod.abstracts.DynamicVariable;
@@ -124,6 +119,8 @@ import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
 import basemod.interfaces.StartGameSubscriber;
+import basemod.interfaces.PostDeathSubscriber;
+import org.clapper.util.classutil.*;
 
 @SpireInitializer
 public class BaseMod {
@@ -175,6 +172,7 @@ public class BaseMod {
 	private static ArrayList<RelicGetSubscriber> relicGetSubscribers;
 	private static ArrayList<PostPowerApplySubscriber> postPowerApplySubscribers;
 	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
+	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
 	
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -510,6 +508,7 @@ public class BaseMod {
 		relicGetSubscribers = new ArrayList<>();
 		postPowerApplySubscribers = new ArrayList<>();
 		onPowersModifiedSubscribers = new ArrayList<>();
+		postDeathSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -588,103 +587,44 @@ public class BaseMod {
 	
 	private static void initializePotionList() { 
 	      potionsToRemove= new ArrayList<>(); 
-	} 
-	
-	@SuppressWarnings("rawtypes")
+	}
+
 	private static void initializePowerMap() {
-		powerMap=new HashMap<String,Class>();
-		powerMap.put("Accuracy",AccuracyPower.class);
-		powerMap.put("After Image",AfterImagePower.class);
-		powerMap.put("Anger",AngerPower.class);
-		powerMap.put("Angry",AngryPower.class);
-		powerMap.put("Artifact",ArtifactPower.class);
-		powerMap.put("Attack Burn",AttackBurnPower.class);
-		powerMap.put("Barricade",BarricadePower.class);
-		powerMap.put("Berserk",BerserkPower.class);
-		powerMap.put("Blur",BlurPower.class);
-		powerMap.put("Brutality",BrutalityPower.class);
-		powerMap.put("Burst",BurstPower.class);
-		powerMap.put("Choked",ChokePower.class);
-		powerMap.put("Combust",CombustPower.class);
-		powerMap.put("Confusion",ConfusionPower.class);
-		powerMap.put("Constricted",ConstrictedPower.class);
-		powerMap.put("Corruption",CorruptionPower.class);
-		powerMap.put("Curiosity",CuriosityPower.class);
-		powerMap.put("Curl Up",CurlUp.class);
-		powerMap.put("Dance Puppet",DancePower.class);
-		powerMap.put("Dark Embrace",DarkEmbrace.class);
-		powerMap.put("Demon Form",DemonFormPower.class);
-		powerMap.put("Dexterity",DexterityPower.class);
-		powerMap.put("Double Damage",DoubleDamagePower.class);
-		powerMap.put("Double Tap",DoubleTapPower.class);
-		powerMap.put("Draw Card",DrawCardNextTurnPower.class);
-		powerMap.put("Draw Down",DrawDownPower.class);
-		powerMap.put("Draw",DrawPower.class);
-		powerMap.put("Draw Reduction",DrawReductionPower.class);
-		powerMap.put("Energized",EnergizedPower.class);
-		powerMap.put("Entangled",EntanglePower.class);
-		powerMap.put("Envenom",EnvenomPower.class);
-		powerMap.put("Evolve",EvolvePower.class);
-		powerMap.put("Explosive",ExplosivePower.class);
-		powerMap.put("Feel No Pain",FeelNoPainPower.class);
-		powerMap.put("Fire Breathing",FireBreathingPower.class);
-		powerMap.put("Flame Barrier",FlameBarrierPower.class);
-		powerMap.put("Flight",FlightPower.class);
-		powerMap.put("Nullify Attack",ForcefieldPower.class);
-		powerMap.put("Frail",FrailPower.class);
-		powerMap.put("Shackled",GainStrengthPower.class);
-		powerMap.put("Gambit",GambitPower.class);
-		powerMap.put("Generic Strength Up Power",GenericStrengthUpPower.class);
-		powerMap.put("GrowthPower",GrowthPower.class);
-		powerMap.put("Hex",HexPower.class);
-		powerMap.put("Infinite Blades",InfiniteBladesPower.class);
-		powerMap.put("Intangible",IntangiblePower.class);
-		powerMap.put("Juggernaut",JuggernautPower.class);
-		powerMap.put("Knowledge",KnowledgePower.class);
-		powerMap.put("Flex",LoseStrengthPower.class);
-		powerMap.put("Malleable",MalleablePower.class);
-		powerMap.put("Metallicize",MetallicizePower.class);
-		powerMap.put("Minion",MinionPower.class);
-		powerMap.put("Mode Shift",ModeShiftPower.class);
-		powerMap.put("Next Turn Block",NextTurnBlockPower.class);
-		powerMap.put("Night Terror",NightmarePower.class);
-		powerMap.put("No Draw",NoDrawPower.class);
-		powerMap.put("Noxious Fumes",NoxiousFumesPower.class);
-		powerMap.put("Painful Stabs",PainfulStabsPower.class);
-		powerMap.put("Panache",PanachePower.class);
-		powerMap.put("Pen Nib",PenNibPower.class);
-		powerMap.put("Phantasmal",PhantasmalPower.class);
-		powerMap.put("Plated Armor",PlatedArmorPower.class);
-		powerMap.put("Poison",PoisonPower.class);
-		powerMap.put("Rage",RagePower.class);
-		powerMap.put("Reduce Damage",ReduceDamagePower.class);
-		powerMap.put("RegenerateMonster",RegenerateMonsterPower.class);
-		powerMap.put("Regen",RegenPower.class);
-		powerMap.put("Life Link",RegrowPower.class);
-		powerMap.put("Repulse",RepulsePower.class);
-		powerMap.put("Retain Cards",RetainCardPower.class);
-		powerMap.put("Ritual",RitualPower.class);
-		powerMap.put("Rupture",RupturePower.class);
-		powerMap.put("Sadistic",SadisticPower.class);
-		powerMap.put("Serpentine",SerpentinePower.class);
-		powerMap.put("Sharp Hide",SharpHidePower.class);
-		powerMap.put("Shriek From Beyond",ShriekPower.class);
-		powerMap.put("Skill Burn",SkillBurnPower.class);
-		powerMap.put("Slow",SlowPower.class);
-		powerMap.put("Split",SplitPower.class);
-		powerMap.put("Spore Cloud",SporeCloudPower.class);
-		powerMap.put("Stasis",StasisPower.class);
-		powerMap.put("Strength",StrengthPower.class);
-		powerMap.put("Thievery",ThieveryPower.class);
-		powerMap.put("Thorns",ThornsPower.class);
-		powerMap.put("Thousand Cuts",ThousandCutsPower.class);
-		powerMap.put("Time Warp",TimeWarpPower.class);
-		powerMap.put("Tools Of The Trade",ToolsOfTheTradePower.class);
-		powerMap.put("Unawakened",UnawakenedPower.class);
-		powerMap.put("Venomology",VenomologyPower.class);
-		powerMap.put("Vulnerable",VulnerablePower.class);
-		powerMap.put("Weakened",WeakPower.class);
-		powerMap.put("Wraith Form",WraithFormPower.class);
+		logger.info("initializePowerMap");
+		powerMap = new HashMap<>();
+
+		ClassFinder finder = new ClassFinder();
+		URL url = AbstractPower.class.getProtectionDomain().getCodeSource().getLocation();
+		try {
+			finder.add(new File(url.toURI()));
+
+			ClassFilter filter =
+					new AndClassFilter(
+							new NotClassFilter(new InterfaceOnlyClassFilter()),
+							new NotClassFilter(new AbstractClassFilter()),
+							new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+")
+					);
+			Collection<ClassInfo> foundClasses = new ArrayList<>();
+			finder.findClasses(foundClasses, filter);
+
+			for (ClassInfo classInfo : foundClasses) {
+				if (classInfo.getClassName().contains("$")) {
+					continue;
+				}
+				try {
+					for (FieldInfo fieldInfo : classInfo.getFields()) {
+						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
+							powerMap.put((String) fieldInfo.getValue(), BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
+							break;
+						}
+					}
+				} catch (ClassNotFoundException e) {
+					System.out.println("ERROR: Failed to load power class: " + classInfo.getClassName());
+				}
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//
@@ -723,7 +663,7 @@ public class BaseMod {
 		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
 			String filepath = save_path + playerClass + ".autosave";
-			System.out.println("looing for " + filepath);
+			System.out.println("looking for " + filepath);
 			boolean fileExists = Gdx.files.local(filepath).exists();
 			// delete corrupted saves
 			if ((fileExists)
@@ -2115,6 +2055,16 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(OnPowersModifiedSubscriber.class);
 	}
+
+	// publishPostDeath - Is triggered on death and victory
+	public static void publishPostDeath() {
+		logger.info("publishPostDeath");
+
+		for (PostDeathSubscriber sub : postDeathSubscribers) {
+			sub.receivePostDeath();
+		}
+		unsubscribeLaterHelper(PostDeathSubscriber.class);
+	}
 	
 	//
 	// Subscription handlers
@@ -2183,6 +2133,7 @@ public class BaseMod {
 		subscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
 		subscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
 		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
 	
 	// subscribe -
@@ -2256,6 +2207,8 @@ public class BaseMod {
 			postPowerApplySubscribers.add((PostPowerApplySubscriber) sub);
 		} else if (additionClass.equals(OnPowersModifiedSubscriber.class)) {
 			onPowersModifiedSubscribers.add((OnPowersModifiedSubscriber) sub);
+		} else if (additionClass.equals(PostDeathSubscriber.class)) {
+			postDeathSubscribers.add((PostDeathSubscriber) sub);
 		}
 	}
 	
@@ -2296,6 +2249,7 @@ public class BaseMod {
 		unsubscribeIfInstance(relicGetSubscribers, sub, RelicGetSubscriber.class);
 		unsubscribeIfInstance(postPowerApplySubscribers, sub, PostPowerApplySubscriber.class);
 		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
+		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
 	
 	// unsubscribe -
@@ -2369,6 +2323,8 @@ public class BaseMod {
 			postPowerApplySubscribers.remove(sub);
 		} else if (removalClass.equals(OnPowersModifiedSubscriber.class)) {
 			onPowersModifiedSubscribers.remove(sub);
+		} else if (removalClass.equals(PostDeathSubscriber.class)) {
+			postDeathSubscribers.remove(sub);
 		}
 	}
 	

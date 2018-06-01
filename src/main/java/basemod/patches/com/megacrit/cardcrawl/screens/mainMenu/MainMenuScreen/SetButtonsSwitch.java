@@ -10,7 +10,7 @@ import basemod.BaseMod;
 public class SetButtonsSwitch {
 	public static void Postfix(Object __obj_instance) {
 		MainMenuScreen screen = (MainMenuScreen) __obj_instance;
-		if (BaseMod.moddedSaveExists() && !BaseMod.baseGameSaveExists()) {
+		if (!BaseMod.baseGameSaveExists() && BaseMod.moddedSaveExists()) {
 			screen.buttons.remove(screen.buttons.size() - 1);
 			screen.buttons.add(new MenuButton(MenuButton.ClickResult.ABANDON_RUN, screen.buttons.size()));
 			screen.buttons.add(new MenuButton(MenuButton.ClickResult.RESUME_GAME, screen.buttons.size()));
