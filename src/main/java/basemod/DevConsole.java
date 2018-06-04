@@ -56,6 +56,8 @@ public class DevConsole
 	private static final float CONSOLE_PAD_X = 15.0f;
 	private static final int CONSOLE_TEXT_SIZE = 30;
 	private static final int MAX_LINES = 8;
+    // This regular expression matches any number of consecutive whitespaces (but at least 1)
+	private static final String PATTERN = "[\\s]+";
 	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
@@ -90,7 +92,10 @@ public class DevConsole
 	}
 
 	public static void execute() {
-		String[] tokens = currentText.split(" ");
+        // To get the tokens, we first trim the current Text (removing whitespaces from the start)
+		// then we split it using a pattern that matches one or more consecutive whitespaces
+		// The resulting array tokens only has Strings with no whitespaces
+		String[] tokens = currentText.trim().split(PATTERN);
 		if (priorCommands.size() == 0 || !priorCommands.get(0).equals(currentText)) {
 			priorCommands.add(0, currentText);
 		}
@@ -913,25 +918,43 @@ public class DevConsole
 			}
 		}
 
-		// get previous commands
-		if (Gdx.input.isKeyJustPressed(priorKey)) {
-			if (visible) {
-				if (commandPos + 1 < priorCommands.size()) {
-					commandPos++;
-					currentText = priorCommands.get(commandPos);
+        //	If AutoComplete is enabled and the key to select a suggestion is pressed
+        //	select the next or previous suggestion	
+		if (AutoComplete.enabled && Gdx.input.isKeyPressed(AutoComplete.selectKey)) {
+			
+			if (Gdx.input.isKeyJustPressed(priorKey) ) {
+				if (visible) {
+					// TODO Enable pressing up and down to navigate AutoCompleteResults
 				}
 			}
-		}
-		if (Gdx.input.isKeyJustPressed(nextKey)) {
-			if (visible) {
-				if (commandPos - 1 < 0) {
-					currentText = "";
-					commandPos = -1;
-				} else {
-					commandPos--;
-					currentText = priorCommands.get(commandPos);
+			if (Gdx.input.isKeyJustPressed(nextKey)) {
+				if (visible) {
+					
+				}
+			}
+			
+		} else {
+			// get previous commands
+			if (Gdx.input.isKeyJustPressed(priorKey)) {
+				if (visible) {
+					if (commandPos + 1 < priorCommands.size()) {
+						commandPos++;
+						currentText = priorCommands.get(commandPos);
+					}
+				}
+			}
+			if (Gdx.input.isKeyJustPressed(nextKey)) {
+				if (visible) {
+					if (commandPos - 1 < 0) {
+						currentText = "";
+						commandPos = -1;
+					} else {
+						commandPos--;
+						currentText = priorCommands.get(commandPos);
+					}
 				}
 			}
 		}
 	}
+	
 }
