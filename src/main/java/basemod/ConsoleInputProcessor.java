@@ -18,6 +18,9 @@ public class ConsoleInputProcessor implements InputProcessor {
                 if (DevConsole.currentText.length() > 0)
                 {
                     DevConsole.currentText = DevConsole.currentText.substring(0, DevConsole.currentText.length()-1);
+                    if (AutoComplete.enabled) {
+                    	AutoComplete.complete(true);
+                    }
                     return true;
                 }
                 return false;
@@ -25,6 +28,9 @@ public class ConsoleInputProcessor implements InputProcessor {
             case Keys.ENTER: {
             	if (DevConsole.currentText.length() > 0) {
                     DevConsole.execute();
+                    if (AutoComplete.enabled) {
+                    	AutoComplete.reset();
+                    }
             	}
                 return true;
             }
@@ -51,6 +57,10 @@ public class ConsoleInputProcessor implements InputProcessor {
         }
         
         DevConsole.currentText += character;
+        
+        if (AutoComplete.enabled) {
+        	AutoComplete.complete(false);
+        }
         return true;
     }
 

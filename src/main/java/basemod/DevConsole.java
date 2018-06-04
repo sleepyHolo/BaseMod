@@ -57,7 +57,7 @@ public class DevConsole
 	private static final int CONSOLE_TEXT_SIZE = 30;
 	private static final int MAX_LINES = 8;
     // This regular expression matches any number of consecutive whitespaces (but at least 1)
-	private static final String PATTERN = "[\\s]+";
+	public static final String PATTERN = "[\\s]+";
 	private static final String PROMPT = "$> ";
 
 	private static BitmapFont consoleFont = null;
@@ -91,8 +91,9 @@ public class DevConsole
 		prompted = new ArrayList<>();
 	}
 
+	// If you add, remove or change a command make sure to also do the same in the AutoComplete class
 	public static void execute() {
-        // To get the tokens, we first trim the current Text (removing whitespaces from the start)
+        // To get the tokens, we first trim the current Text (removing whitespaces from the start and end)
 		// then we split it using a pattern that matches one or more consecutive whitespaces
 		// The resulting array tokens only has Strings with no whitespaces
 		String[] tokens = currentText.trim().split(PATTERN);
@@ -956,5 +957,4 @@ public class DevConsole
 			}
 		}
 	}
-	
 }
