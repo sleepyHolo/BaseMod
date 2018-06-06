@@ -1,25 +1,32 @@
 package basemod;
 
 import java.io.File;
-import java.lang.reflect.*;
-import java.net.MalformedURLException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.function.Consumer;
 
-import basemod.abstracts.DynamicVariable;
-import basemod.helpers.dynamicvariables.BlockVariable;
-import basemod.helpers.dynamicvariables.DamageVariable;
-import basemod.helpers.dynamicvariables.MagicNumberVariable;
-import basemod.screens.ModalChoiceScreen;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.clapper.util.classutil.AbstractClassFilter;
+import org.clapper.util.classutil.AndClassFilter;
+import org.clapper.util.classutil.ClassFilter;
+import org.clapper.util.classutil.ClassFinder;
+import org.clapper.util.classutil.ClassInfo;
+import org.clapper.util.classutil.FieldInfo;
+import org.clapper.util.classutil.InterfaceOnlyClassFilter;
+import org.clapper.util.classutil.NotClassFilter;
+import org.clapper.util.classutil.RegexClassFilter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -30,17 +37,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.red.DarkEmbrace;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.characters.Ironclad;
@@ -66,11 +75,13 @@ import com.megacrit.cardcrawl.localization.TutorialStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
@@ -79,7 +90,11 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
+import basemod.abstracts.DynamicVariable;
 import basemod.helpers.RelicType;
+import basemod.helpers.dynamicvariables.BlockVariable;
+import basemod.helpers.dynamicvariables.DamageVariable;
+import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditKeywordsSubscriber;
@@ -99,6 +114,7 @@ import basemod.interfaces.PostCreateSilentStartingDeckSubscriber;
 import basemod.interfaces.PostCreateSilentStartingRelicsSubscriber;
 import basemod.interfaces.PostCreateStartingDeckSubscriber;
 import basemod.interfaces.PostCreateStartingRelicsSubscriber;
+import basemod.interfaces.PostDeathSubscriber;
 import basemod.interfaces.PostDrawSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
 import basemod.interfaces.PostEnergyRechargeSubscriber;
@@ -119,8 +135,7 @@ import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
 import basemod.interfaces.StartGameSubscriber;
-import basemod.interfaces.PostDeathSubscriber;
-import org.clapper.util.classutil.*;
+import basemod.screens.ModalChoiceScreen;
 
 @SpireInitializer
 public class BaseMod {
@@ -290,7 +305,9 @@ public class BaseMod {
 	}
 	
 	private static void maybeSaveConfig() {
-		if (spireConfig == null) return;
+		if (spireConfig == null) {
+			return;
+		}
 		
 		try {
 			Method save = spireConfig.getDeclaredMethod("save");
@@ -302,7 +319,9 @@ public class BaseMod {
 	}
 	
 	public static String maybeGetString(String key) {
-		if (spireConfig == null) return null;
+		if (spireConfig == null) {
+			return null;
+		}
 		
 		try {
 			Method getString = spireConfig.getDeclaredMethod("getString", String.class);
@@ -315,7 +334,9 @@ public class BaseMod {
 	}
 	
 	public static void maybeSetString(String key, String value) {
-		if (spireConfig == null) return;
+		if (spireConfig == null) {
+			return;
+		}
 		
 		try {
 			Method setString = spireConfig.getDeclaredMethod("setString", String.class, String.class);
@@ -328,7 +349,9 @@ public class BaseMod {
 	}
 	
 	public static Boolean maybeGetBoolean(String key) {
-		if (spireConfig == null) return null;
+		if (spireConfig == null) {
+			return null;
+		}
 		
 		try {
 			Method getBoolean = spireConfig.getDeclaredMethod("getBool", String.class);
@@ -341,7 +364,9 @@ public class BaseMod {
 	}
 	
 	public static void maybeSetBoolean(String key, Boolean value) {
-		if (spireConfig == null) return;
+		if (spireConfig == null) {
+			return;
+		}
 		
 		try {
 			Method setBoolean = spireConfig.getDeclaredMethod("setBool", String.class, boolean.class);
@@ -360,9 +385,13 @@ public class BaseMod {
 		}
 		
 		String consoleKey = maybeGetString("console-key");
-		if (consoleKey != null) DevConsole.toggleKey = Keys.valueOf(consoleKey);
+		if (consoleKey != null) {
+			DevConsole.toggleKey = Keys.valueOf(consoleKey);
+		}
 		Boolean consoleEnabled = maybeGetBoolean("console-enabled");
-		if (consoleEnabled != null) DevConsole.enabled = consoleEnabled;
+		if (consoleEnabled != null) {
+			DevConsole.enabled = consoleEnabled;
+		}
 	}
 	
 	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
@@ -579,10 +608,10 @@ public class BaseMod {
 	
 	@SuppressWarnings("rawtypes")
 	private static void initializePotionMap() { 
-	      potionClassMap = new HashMap<String, Class>(); 
-	      potionHybridColorMap = new HashMap<String, Color>(); 
-	      potionLiquidColorMap = new HashMap<String, Color>(); 
-	      potionSpotsColorMap = new HashMap<String, Color>(); 
+	      potionClassMap = new HashMap<>(); 
+	      potionHybridColorMap = new HashMap<>(); 
+	      potionLiquidColorMap = new HashMap<>(); 
+	      potionSpotsColorMap = new HashMap<>(); 
 	} 
 	
 	private static void initializePotionList() { 
@@ -1040,8 +1069,9 @@ public class BaseMod {
 	// get unlock bundle for class and level
 	public static CustomUnlockBundle getUnlockBundleFor(AbstractPlayer.PlayerClass c, int unlockLevel) {
 		HashMap<Integer, CustomUnlockBundle> levelMap = unlockBundles.get(c);
-		if (levelMap == null)
+		if (levelMap == null) {
 			return null;
+		}
 		return levelMap.get(unlockLevel);
 	}
 
@@ -2091,7 +2121,7 @@ public class BaseMod {
 	@SuppressWarnings("unchecked")
 	private static <T> void unsubscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
 		if (clazz.isInstance(sub)) {
-			list.remove((T) sub);
+			list.remove(sub);
 		}
 	}
 	
