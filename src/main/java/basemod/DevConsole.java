@@ -3,6 +3,7 @@ package basemod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,6 +79,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 	public static ArrayList<String> log;
 	public static ArrayList<Boolean> prompted;
 	public static int commandPos;
+
+	public static HashMap<String, String> spaceCardIDs;
 
 	public DevConsole() {
 		BaseMod.subscribe(this);
@@ -389,6 +392,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, countIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
+			// If the ID was written using underscores, find the original ID
+			if (spaceCardIDs.containsKey(cardName)) {
+				cardName = spaceCardIDs.get(cardName);
+			}
+
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
 				AbstractCard c = CardLibrary.getCard(cardName);
 				if (c != null) {
@@ -649,6 +657,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			String[] cardNameArray = Arrays.copyOfRange(tokens, 2, countIndex + 1);
 			String cardName = String.join(" ", cardNameArray);
 
+			// If the ID was written using underscores, find the original ID
+			if (spaceCardIDs.containsKey(cardName)) {
+				cardName = spaceCardIDs.get(cardName);
+			}
+
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
 				AbstractCard c = CardLibrary.getCard(cardName);
 				if (c != null) {
@@ -862,7 +875,20 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 		consoleBackground = ImageMaster.loadImage("img/ConsoleBackground.png");
 
+		findSpaceCards();
+
 		AutoComplete.postInit();
+	}
+
+	// Finds cards that have IDS with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	private void findSpaceCards() {
+		spaceCardIDs = new HashMap<>();
+		for (String key : CardLibrary.cards.keySet()) {
+			if (key.contains(" ")) {
+				spaceCardIDs.put(key.replace(' ', '_'), key);
+			}
+		}
 	}
 
 	public static void log(String text) {
@@ -961,7 +987,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			}
 		}
 		// If the fill in key is pressed automaticallly fill in what the user wants
-		if (AutoComplete.enabled && Gdx.input.isKeyJustPressed(AutoComplete.fillKey)) {
+		if (AutoComplete.enabled && (Gdx.input.isKeyJustPressed(AutoComplete.fillKey1)
+				|| Gdx.input.isKeyJustPressed(AutoComplete.fillKey2))) {
 			AutoComplete.fillInSuggestion();
 		}
 	}
