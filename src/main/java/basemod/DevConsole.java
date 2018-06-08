@@ -767,9 +767,6 @@ public class DevConsole
 		AbstractDungeon.closeCurrentScreen();
 		AbstractDungeon.topPanel.unhoverHitboxes();
 		AbstractDungeon.fadeIn();
-		AbstractDungeon.genericEventDialog.clear();
-		AbstractDungeon.dialog.hide();
-		AbstractDungeon.dialog.clear();
 		AbstractDungeon.effectList.clear();
 		AbstractDungeon.topLevelEffects.clear();
 		AbstractDungeon.topLevelEffectsQueue.clear();
