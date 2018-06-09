@@ -81,7 +81,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 				AutoComplete.enabled, settingsPanel, (label) -> {}, (button) -> {
 					AutoComplete.enabled = button.enabled;
 					AutoComplete.resetAndSuggest();
-					BaseMod.maybeSetBoolean("autocomplete-enabled", button.enabled);
+					BaseMod.maybeSetString("autocomplete-enabled", button.enabled ? "true" : "false");
 					autoCompleteInfo.text = AutoComplete.enabled ? AUTOCOMPLETE_INFO : "";
 				});
 		settingsPanel.addUIElement(enableAutoComplete);

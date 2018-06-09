@@ -70,8 +70,6 @@ public class AutoComplete {
 	private static float promptWidth = 0;
 	private static GlyphLayout glyphs;
 
-	// TODO reorder and comment
-
 	public static void init() {
 		reset();
 	}
@@ -124,6 +122,7 @@ public class AutoComplete {
 		}
 	}
 
+	
 	public static void fillInSuggestion() {
 		if (!noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
 			DevConsole.currentText = getTextWithoutRightmostToken(false)

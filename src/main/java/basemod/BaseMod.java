@@ -407,9 +407,11 @@ public class BaseMod {
 		if (consoleEnabled != null) {
 			DevConsole.enabled = consoleEnabled;
 		}
-		Boolean autoCompleteEnabled = maybeGetBoolean("autocomplete-enabled");
+		
+		// This is done because the default value for getBoolean is false but I want true
+		String autoCompleteEnabled = maybeGetString("autocomplete-enabled");
 		if (autoCompleteEnabled != null) {
-			AutoComplete.enabled = autoCompleteEnabled;
+			AutoComplete.enabled = !autoCompleteEnabled.equalsIgnoreCase("false");
 		}
 	}
 
