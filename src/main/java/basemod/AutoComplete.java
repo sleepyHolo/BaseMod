@@ -865,7 +865,7 @@ public class AutoComplete {
 	public static void render(SpriteBatch sb) {
 		DevConsole.consoleFont.setColor(TEXT_COLOR);
 		if (shouldRenderInfo()) {
-			sb.draw(DevConsole.consoleBackground, getBGX(), getY(1), getWidth(), getHeight());
+			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(), -getHeight());
 			String text = "[No Match found]";
 			if (!implementedYet) {
 				text = "[Not implemented yet]";
@@ -883,20 +883,31 @@ public class AutoComplete {
 			if (amount > MAX_SUGGESTIONS) {
 				amount = MAX_SUGGESTIONS;
 			}
-			if (amount > 1 + pair.end - pair.start) {
-				amount = 1 + pair.end - pair.start;
+			if (amount > pair.end - pair.start) {
+				amount = pair.end - pair.start;
 			}
 
 			float y = (DevConsole.CONSOLE_Y * Settings.scale
 					+ (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale));
 			DevConsole.consoleFont.draw(sb, suggestions.get(selected + pair.start), drawX, y);
+			
+			// There's probably some easy Math to figure this out but somehow I can't get it so this is the best I came up with
+			int factor;
+			for (factor = 1; factor <= amount; factor++) {
+				int item = selected + pair.start + factor;
+				if (item > pair.end || item >= suggestions.size()) {
+					break;
+				}
+			}
+			factor--;
+			
+			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(), -getHeight() * factor);
 			for (int i = 1; i <= amount; i++) {
 				int item = selected + pair.start + i;
 				if (item > pair.end || item >= suggestions.size()) {
 					break;
 				}
 				y -= (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale);
-				sb.draw(DevConsole.consoleBackground, getBGX(), getY(i), getWidth(), getHeight());
 				DevConsole.consoleFont.draw(sb, suggestions.get(item), drawX, y);
 			}
 		}
@@ -909,7 +920,7 @@ public class AutoComplete {
 
 	private static float getY(int i) {
 		return DevConsole.CONSOLE_Y * Settings.scale
-				- (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale * i);
+				- (float) Math.round((DevConsole.CONSOLE_TEXT_SIZE * Settings.scale * i) - 1);
 	}
 
 	private static float getWidth() {
