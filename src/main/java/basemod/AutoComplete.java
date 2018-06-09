@@ -24,6 +24,7 @@ public class AutoComplete {
 
 	public static class Pair {
 		public int start, end;
+
 		public Pair(int start, int end) {
 			this.start = start;
 			this.end = end;
@@ -95,13 +96,15 @@ public class AutoComplete {
 	}
 
 	/**
-	 * This should only be called if there is already text (that doesn't end with a space) in the console and then suggestions should be shown
-	 * (e.g. prior command or AutoComplete enabled toggled form off to on)
+	 * This should only be called if there is already text (that doesn't end with a
+	 * space) in the console and then suggestions should be shown (e.g. prior
+	 * command or AutoComplete enabled toggled form off to on)
 	 */
 	public static void resetAndSuggest() {
 		if (AutoComplete.enabled) {
 			reset();
-			// Make sure to load whitespace to avoid getting a full unfiltered list of suggestions
+			// Make sure to load whitespace to avoid getting a full unfiltered list of
+			// suggestions
 			lastWhiteSpaces = countSpaces();
 			suggest(false);
 		}
@@ -122,7 +125,6 @@ public class AutoComplete {
 		}
 	}
 
-	
 	public static void fillInSuggestion() {
 		if (!noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
 			DevConsole.currentText = getTextWithoutRightmostToken(false)
@@ -143,7 +145,7 @@ public class AutoComplete {
 		return text;
 	}
 
-	private static int countSpaces( ) {
+	private static int countSpaces() {
 		int spaces = 0;
 		Matcher spaceMatcher = spacePattern.matcher(DevConsole.currentText);
 		// Count the spaces (ignore it if it is the very first Character)
@@ -156,8 +158,10 @@ public class AutoComplete {
 	}
 
 	public static void suggest(boolean isCharacterRemoved) {
-		// To get the tokens, we first trim the current Text (removing whitespaces from the start and end)
-		// then we split it using a pattern that matches one or more consecutive whitespaces
+		// To get the tokens, we first trim the current Text (removing whitespaces from
+		// the start and end)
+		// then we split it using a pattern that matches one or more consecutive
+		// whitespaces
 		// The resulting array tokens only has Strings with no whitespaces
 		tokens = DevConsole.currentText.trim().split(DevConsole.PATTERN);
 
@@ -386,9 +390,10 @@ public class AutoComplete {
 			}
 		}
 	}
-	
+
 	private static final String[] RELIC_CMDS = { "add", "desc", "flavor", "list", "pool", "remove" };
-	private static final String[] RELIC_LIST_CMDS = { "boss", "common", "rare", "shop", "special", "starter", "uncommon" };
+	private static final String[] RELIC_LIST_CMDS = { "boss", "common", "rare", "shop", "special", "starter",
+			"uncommon" };
 
 	public static final int RELIC = ID_CREATOR++;
 	public static final int RELIC_LIST = ID_CREATOR++;
@@ -412,7 +417,7 @@ public class AutoComplete {
 				currentID = RELIC_LIST;
 				suggestions.clear();
 				suggestions.addAll(Arrays.asList(RELIC_LIST_CMDS));
-			} else if (isRelicIDsCMD()){
+			} else if (isRelicIDsCMD()) {
 				if (currentID == RELIC_IDS) {
 					alreadySorted = true;
 					return;
@@ -432,7 +437,9 @@ public class AutoComplete {
 	}
 
 	private static boolean isRelicIDsCMD() {
-		return tokens[1].equalsIgnoreCase("a") || tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("r") || tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("desc") || tokens[1].equalsIgnoreCase("flavor") || tokens[1].equalsIgnoreCase("pool");
+		return tokens[1].equalsIgnoreCase("a") || tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("r")
+				|| tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("desc")
+				|| tokens[1].equalsIgnoreCase("flavor") || tokens[1].equalsIgnoreCase("pool");
 	}
 
 	private static final String[] HAND_CMDS = { "add", "remove" };
@@ -613,11 +620,11 @@ public class AutoComplete {
 			}
 			currentID = EVENT;
 			suggestions.clear();
-			
+
 			// Not actually unchecked
 			@SuppressWarnings("unchecked")
-			Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
-					"events"));
+			Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks
+					.getPrivateStatic(LocalizedStrings.class, "events"));
 			if (events != null) {
 				for (String key : events.keySet()) {
 					suggestions.add(key.replace(' ', '_'));
@@ -640,13 +647,14 @@ public class AutoComplete {
 			}
 			currentID = POTION;
 			suggestions.clear();
-			
-			// Add the potion slots. If the player has PotionBelt, show 0 to 4, else show 0 to 2
+
+			// Add the potion slots. If the player has PotionBelt, show 0 to 4, else show 0
+			// to 2
 			int slots = 3;
 			if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(PotionBelt.ID)) {
 				slots = 5;
 			}
-			
+
 			for (int i = 0; i < slots; i++) {
 				suggestions.add(String.valueOf(i));
 			}
@@ -662,8 +670,8 @@ public class AutoComplete {
 
 			// Not actually unchecked
 			@SuppressWarnings("unchecked")
-			Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
-					"potions"));
+			Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
+					.getPrivateStatic(LocalizedStrings.class, "potions"));
 			if (potions != null) {
 				for (String key : potions.keySet()) {
 					suggestions.add(key.replace(' ', '_'));
@@ -673,7 +681,7 @@ public class AutoComplete {
 			commandComplete = true;
 		}
 	}
-	
+
 	private static final String[] UNLOCK_CMDS = { "always", "level" };
 
 	public static final int UNLOCK = ID_CREATOR++;
@@ -714,15 +722,15 @@ public class AutoComplete {
 			currentID = POWER;
 			suggestions.clear();
 			for (String key : BaseMod.getPowerKeys()) {
-				suggestions.add(key.replace(' ' , '_'));
+				suggestions.add(key.replace(' ', '_'));
 			}
-		} else if (whiteSpaces == 2) { 
+		} else if (whiteSpaces == 2) {
 			smallNumbers();
 		} else {
 			commandComplete = true;
 		}
 	}
-	
+
 	private static final String[] CLEAR_CMDS = { "cmd", "log" };
 
 	public static final int CLEAR = ID_CREATOR++;
@@ -740,9 +748,9 @@ public class AutoComplete {
 			commandComplete = true;
 		}
 	}
-	
+
 	private static final String[] HP_CMDS = { "add", "lose" };
-	
+
 	public static final int HP = ID_CREATOR++;
 
 	private static void createHPSuggestions() {
@@ -762,7 +770,7 @@ public class AutoComplete {
 	}
 
 	private static final String[] MAX_HP_CMDS = { "add", "lose" };
-	
+
 	public static final int MAX_HP = ID_CREATOR++;
 
 	private static void createMaxHPSuggestions() {
@@ -813,7 +821,7 @@ public class AutoComplete {
 			suggestions.add(String.valueOf(i));
 		}
 	}
-	
+
 	public static final int MEDIUM_NUMBERS = ID_CREATOR++;
 
 	private static void mediumNumbers() {
@@ -865,7 +873,8 @@ public class AutoComplete {
 	public static void render(SpriteBatch sb) {
 		DevConsole.consoleFont.setColor(TEXT_COLOR);
 		if (shouldRenderInfo()) {
-			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(), -getHeight());
+			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(),
+					-getHeight());
 			String text = "[No Match found]";
 			if (!implementedYet) {
 				text = "[Not implemented yet]";
@@ -890,8 +899,9 @@ public class AutoComplete {
 			float y = (DevConsole.CONSOLE_Y * Settings.scale
 					+ (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale));
 			DevConsole.consoleFont.draw(sb, suggestions.get(selected + pair.start), drawX, y);
-			
-			// There's probably some easy Math to figure this out but somehow I can't get it so this is the best I came up with
+
+			// There's probably some easy Math to figure this out but somehow I can't get it
+			// so this is the best I came up with
 			int factor;
 			for (factor = 1; factor <= amount; factor++) {
 				int item = selected + pair.start + factor;
@@ -900,8 +910,9 @@ public class AutoComplete {
 				}
 			}
 			factor--;
-			
-			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(), -getHeight() * factor);
+
+			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(),
+					-getHeight() * factor);
 			for (int i = 1; i <= amount; i++) {
 				int item = selected + pair.start + i;
 				if (item > pair.end || item >= suggestions.size()) {
@@ -916,11 +927,6 @@ public class AutoComplete {
 
 	private static float getBGX() {
 		return drawX - DevConsole.CONSOLE_PAD_X * Settings.scale;
-	}
-
-	private static float getY(int i) {
-		return DevConsole.CONSOLE_Y * Settings.scale
-				- (float) Math.round((DevConsole.CONSOLE_TEXT_SIZE * Settings.scale * i) - 1);
 	}
 
 	private static float getWidth() {
