@@ -16,6 +16,7 @@ import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
+import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
@@ -50,20 +51,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
-import com.megacrit.cardcrawl.localization.AchievementStrings;
-import com.megacrit.cardcrawl.localization.CardStrings;
-import com.megacrit.cardcrawl.localization.CharacterStrings;
-import com.megacrit.cardcrawl.localization.CreditStrings;
-import com.megacrit.cardcrawl.localization.EventStrings;
-import com.megacrit.cardcrawl.localization.KeywordStrings;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import com.megacrit.cardcrawl.localization.MonsterStrings;
-import com.megacrit.cardcrawl.localization.PotionStrings;
-import com.megacrit.cardcrawl.localization.PowerStrings;
-import com.megacrit.cardcrawl.localization.RelicStrings;
-import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
-import com.megacrit.cardcrawl.localization.TutorialStrings;
-import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -441,6 +428,7 @@ public class BaseMod {
 		typeMaps.put(ScoreBonusStrings.class, "scoreBonuses");
 		typeMaps.put(TutorialStrings.class, "tutorials");
 		typeMaps.put(UIStrings.class, "ui");
+		typeMaps.put(OrbStrings.class, "orb");
 
 		typeTokens = new HashMap<>();
 		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {
@@ -468,6 +456,8 @@ public class BaseMod {
 		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {
 		}.getType());
 		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {
+		}.getType());
+		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {
 		}.getType());
 	}
 
