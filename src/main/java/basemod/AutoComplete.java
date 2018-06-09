@@ -18,7 +18,6 @@ import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.localization.PotionStrings;
-import com.megacrit.cardcrawl.relics.PotionBelt;
 
 public class AutoComplete {
 
@@ -648,11 +647,10 @@ public class AutoComplete {
 			currentID = POTION;
 			suggestions.clear();
 
-			// Add the potion slots. If the player has PotionBelt, show 0 to 4, else show 0
-			// to 2
-			int slots = 3;
-			if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(PotionBelt.ID)) {
-				slots = 5;
+			// Don't show more options than player has potion slots
+			int slots = 0;
+			if (AbstractDungeon.player != null) {
+				slots = AbstractDungeon.player.potionSlots;
 			}
 
 			for (int i = 0; i < slots; i++) {
