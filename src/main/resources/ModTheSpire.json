@@ -1,7 +1,7 @@
 {
   "modid": "basemod",
   "name": "BaseMod",
-  "author_list": ["t-larson", "test447", "Haashi", "kiooeht", "Blank The Evil", "robojumper", "FlipskiZ", "DemoXinMC"],
+  "author_list": ["t-larson", "test447", "Haashi", "kiooeht", "Blank The Evil", "robojumper", "FlipskiZ", "DemoXinMC", "Skrelpoid"],
   "description": "Unofficial modding API for Slay the Spire. Also a Dev Console.",
   "version": "2.11.0",
   "sts_version": "05-31-2018",

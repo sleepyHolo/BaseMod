@@ -19,7 +19,7 @@ public class ConsoleInputProcessor implements InputProcessor {
 			{
 				DevConsole.currentText = DevConsole.currentText.substring(0, DevConsole.currentText.length()-1);
 				if (AutoComplete.enabled) {
-					AutoComplete.complete(true);
+					AutoComplete.suggest(true);
 				}
 				return true;
 			}
@@ -30,7 +30,7 @@ public class ConsoleInputProcessor implements InputProcessor {
 				DevConsole.execute();
 				if (AutoComplete.enabled) {
 					AutoComplete.reset();
-					AutoComplete.complete(false);
+					AutoComplete.suggest(false);
 				}
 			}
 			return true;
@@ -42,9 +42,13 @@ public class ConsoleInputProcessor implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		// For some reason the validation procedure thinks uppercase D is invalid
-		// uppercase K as well
-		if (character == 'D' || character =='K') {
+		// uppercase K and H as well
+		if (character == 'D' || character == 'K' || character == 'H') {
 			DevConsole.currentText += character;
+
+			if (AutoComplete.enabled) {
+				AutoComplete.suggest(false);
+			}
 			return true;
 		}
 
@@ -60,7 +64,7 @@ public class ConsoleInputProcessor implements InputProcessor {
 		DevConsole.currentText += character;
 
 		if (AutoComplete.enabled) {
-			AutoComplete.complete(false);
+			AutoComplete.suggest(false);
 		}
 		return true;
 	}

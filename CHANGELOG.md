@@ -300,3 +300,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Death hook (alexdriedger)
 
 #### dev ####
+ * Added AutoComplete to DevConsole (Skrelpoid)

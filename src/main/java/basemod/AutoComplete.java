@@ -3,6 +3,7 @@ package basemod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +13,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import com.megacrit.cardcrawl.localization.PotionStrings;
+import com.megacrit.cardcrawl.relics.PotionBelt;
 
 public class AutoComplete {
 
@@ -34,44 +40,21 @@ public class AutoComplete {
 		}
 	}
 
-	private static int ID = -1;
+	private static int ID_CREATOR = -1;
 
-	public static final int SMALL_NUMBERS = 12345;
-	public static final int BIG_NUMBERS = 54321;
-	public static final int CMDS = ++ID;
-	public static final int CLEAR = ++ID;
-	public static final int DECK = ++ID;
-	public static final int DRAW = ++ID;
-	public static final int ENERGY = ++ID;
-	public static final int EVENT = ++ID;
-	public static final int FIGHT = ++ID;
-	public static final int GOLD = ++ID;
-	public static final int HAND = ++ID;
-	public static final int HELP = ++ID;
-	public static final int HP = ++ID;
-	public static final int INFO = ++ID;
-	public static final int KILL = ++ID;
-	public static final int MAX_HP = ++ID;
-	public static final int POTION = ++ID;
-	public static final int POWER = ++ID;
-	public static final int RELIC = ++ID;
-	public static final int UNLOCK = ++ID;
-	public static final int HAND_ADD = ++ID;
-	public static final int HAND_REMOVE = ++ID;
-
-	public static final String[] COMMANDS = { "clear", "deck", "draw", "energy", "event", "fight", "gold", "hand",
-			"help", "hp", "info", "kill", "maxhp", "potion", "power", "relic", "unlock" };
+	public static final int RESET = ID_CREATOR++;
 
 	private static final int MAX_SUGGESTIONS = 5;
 	private static final Color TEXT_COLOR = Color.GRAY.cpy();
 
 	public static boolean enabled = true;
 	public static int selectKey = Keys.SHIFT_LEFT;
-	public static int fillKey1 = Keys.RIGHT; // TODO LEFT to delete last token
+	public static int deleteTokenKey = Keys.LEFT;
+	public static int fillKey1 = Keys.RIGHT;
 	public static int fillKey2 = Keys.TAB;
 	public static int selected = 0;
-	private static ArrayList<String> lastCompletions;
-	private static Stack<Pair> completionPairs;
+	private static ArrayList<String> suggestions;
+	private static Stack<Pair> suggestionPairs;
 	private static String[] tokens;
 	private static boolean foundStart, foundEnd, noMatch;
 	private static boolean alreadySorted;
@@ -82,7 +65,7 @@ public class AutoComplete {
 	private static int lastWhiteSpaces = 0;
 	private static Pattern spacePattern = Pattern.compile(DevConsole.PATTERN);
 
-	private static boolean implementedYet = false;
+	private static boolean implementedYet = true;
 	private static float drawX;
 	private static float promptWidth = 0;
 	private static GlyphLayout glyphs;
@@ -97,14 +80,14 @@ public class AutoComplete {
 		glyphs = new GlyphLayout(DevConsole.consoleFont, DevConsole.PROMPT);
 		promptWidth = glyphs.width;
 		calculateDrawX();
-		complete(false);
+		suggest(false);
 	}
 
 	public static void reset() {
 		calculateDrawX();
-		currentID = -1;
-		lastCompletions = new ArrayList<>();
-		completionPairs = new Stack<>();
+		currentID = RESET;
+		suggestions = new ArrayList<>();
+		suggestionPairs = new Stack<>();
 		tokens = new String[] {};
 		selected = 0;
 		foundStart = foundEnd = noMatch = false;
@@ -113,68 +96,90 @@ public class AutoComplete {
 		lastLength = 0;
 	}
 
+	/**
+	 * This should only be called if there is already text (that doesn't end with a space) in the console and then suggestions should be shown
+	 * (e.g. prior command or AutoComplete enabled toggled form off to on)
+	 */
+	public static void resetAndSuggest() {
+		if (AutoComplete.enabled) {
+			reset();
+			// Make sure to load whitespace to avoid getting a full unfiltered list of suggestions
+			lastWhiteSpaces = countSpaces();
+			suggest(false);
+		}
+	}
+
 	public static void selectUp() {
-		if (selected > 0 && !noMatch && !lastCompletions.isEmpty() && !completionPairs.isEmpty()) {
+		if (selected > 0 && !noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
 			selected--;
 		}
 	}
 
 	public static void selectDown() {
-		if (!noMatch && !lastCompletions.isEmpty() && !completionPairs.isEmpty()) {
-			Pair pair = completionPairs.peek();
-			if (selected < pair.end - pair.start && selected < lastCompletions.size() - 1) {
+		if (!noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
+			Pair pair = suggestionPairs.peek();
+			if (selected < pair.end - pair.start && selected < suggestions.size() - 1) {
 				selected++;
 			}
 		}
 	}
 
 	public static void fillInSuggestion() {
-		if (!noMatch && !lastCompletions.isEmpty() && !completionPairs.isEmpty()) {
-			DevConsole.currentText = getUncompletedText()
-					+ lastCompletions.get(selected + completionPairs.peek().start) + " ";
+		if (!noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
+			DevConsole.currentText = getTextWithoutRightmostToken(false)
+					+ suggestions.get(selected + suggestionPairs.peek().start) + " ";
 			reset();
-			complete(false);
+			suggest(false);
 		}
 	}
 
-	// returns the text before the last Space (with the Space appended)
-	private static String getUncompletedText() {
+	// returns the text without the rightmost token
+	public static String getTextWithoutRightmostToken(boolean removeSingleSpace) {
 		int lastSpace = DevConsole.currentText.lastIndexOf(' ');
 		String text = "";
+		int offset = (removeSingleSpace && lastSpace == DevConsole.currentText.length() - 1) ? 0 : 1;
 		if (lastSpace != -1) {
-			text = DevConsole.currentText.substring(0, lastSpace + 1);
+			text = DevConsole.currentText.substring(0, lastSpace + offset);
 		}
 		return text;
 	}
 
-	public static void complete(boolean isCharacterRemoved) {
+	private static int countSpaces( ) {
+		int spaces = 0;
+		Matcher spaceMatcher = spacePattern.matcher(DevConsole.currentText);
+		// Count the spaces (ignore it if it is the very first Character)
+		while (spaceMatcher.find()) {
+			if (spaceMatcher.start() != 0) {
+				spaces++;
+			}
+		}
+		return spaces;
+	}
+
+	public static void suggest(boolean isCharacterRemoved) {
 		// To get the tokens, we first trim the current Text (removing whitespaces from the start and end)
 		// then we split it using a pattern that matches one or more consecutive whitespaces
 		// The resulting array tokens only has Strings with no whitespaces
 		tokens = DevConsole.currentText.trim().split(DevConsole.PATTERN);
 
-		Matcher spaceMatcher = spacePattern.matcher(DevConsole.currentText);
-		whiteSpaces = 0;
-		while (spaceMatcher.find()) {
-			if (spaceMatcher.start() != 0) {
-				whiteSpaces++;
-			}
+		whiteSpaces = countSpaces();
+
+		createCMDSuggestions();
+
+		if (tokenLengthChanged() || DevConsole.currentText.isEmpty() || currentID == RESET) {
+			suggestionPairs.clear();
 		}
 
-		createCMDCompletions();
-
-		// clear if a new token is started TODO sometimes completionPairs is not
-		// cleared? Clear somewhere else too or completely get rid of the stack
-		if (tokenLengthChanged() || DevConsole.currentText.isEmpty()) {
-			completionPairs.clear();
+		if (currentID == RESET) {
+			suggestions.clear();
 		}
 
 		// if the user just deleted the last character we don't calculate the pairs
 		// again but instead just use the pair before this one on the stack if it exists
-		if (isCharacterRemoved && !tokenLengthChanged() && completionPairs.size() >= 2) {
-			completionPairs.pop();
+		if (isCharacterRemoved && !tokenLengthChanged() && suggestionPairs.size() >= 2) {
+			suggestionPairs.pop();
 			selected = 0;
-			if (completionPairs.peek().end <= -1) {
+			if (suggestionPairs.peek().end <= -1) {
 				noMatch = true;
 			}
 		} else {
@@ -188,16 +193,8 @@ public class AutoComplete {
 		return lastLength != tokens.length;
 	}
 
-	private static boolean tokenLengthIncreased() {
-		return lastLength != tokens.length;
-	}
-
 	private static boolean whiteSpacesIncreased() {
 		return whiteSpaces > lastWhiteSpaces;
-	}
-
-	private static boolean whiteSpacesChanged() {
-		return whiteSpaces != lastWhiteSpaces;
 	}
 
 	private static void createPair() {
@@ -211,19 +208,30 @@ public class AutoComplete {
 	private static void createPair(String prefix) {
 		selected = 0;
 		Pair pair = null;
-		if (!completionPairs.isEmpty()) {
+		if (!suggestionPairs.isEmpty()) {
 			// if we already have pairs get the last pair to set a smaller searching scope
-			pair = completionPairs.peek().cpy();
+			pair = suggestionPairs.peek().cpy();
 		} else {
-			pair = new Pair(0, lastCompletions.size() - 1);
+			pair = new Pair(0, suggestions.size() - 1);
 		}
-		if (prefix == null || prefix.isEmpty() || prefix.equals(" ")) {
+		if (shouldShowAll(prefix)) {
 			foundStart = foundEnd = true;
 			noMatch = false;
-			completionPairs.push(pair.set(0, lastCompletions.size()));
+			suggestionPairs.push(pair.set(0, suggestions.size() - 1));
 			return;
 		}
 		linearSearch(pair, prefix);
+	}
+
+	private static boolean shouldShowAll(String prefix) {
+		if (DevConsole.currentText.isEmpty()) {
+			return true;
+		} else {
+			// if the prefix is empty or a space, or the last Character in the consoles text
+			// is a space, return true
+			return prefix == null || prefix.isEmpty() || prefix.equals(" ")
+					|| DevConsole.currentText.lastIndexOf(' ') == DevConsole.currentText.length() - 1;
+		}
 	}
 
 	// I tried implementing a binary search for this but that didn't work so this
@@ -231,14 +239,14 @@ public class AutoComplete {
 	private static void linearSearch(Pair pair, String prefix) {
 
 		foundStart = foundEnd = noMatch = false;
-		int size = lastCompletions.size();
+		int size = suggestions.size();
 		// Search for the start
 		while (!foundStart && !noMatch) {
 			if (pair.start >= size) {
 				noMatch = true;
 			} else {
-				// The first completion that starts with our prefix is our start
-				if (lastCompletions.get(pair.start).startsWith(prefix)) {
+				// The first suggestion that starts with our prefix is our start
+				if (suggestions.get(pair.start).startsWith(prefix)) {
 					foundStart = true;
 				} else {
 					pair.start++;
@@ -251,9 +259,9 @@ public class AutoComplete {
 			pair.end = pair.start + 1;
 			while (!foundEnd) {
 				// The last element that starts with the prefix is the last element of
-				// lastCompletions OR the current element doesnt start with the prefix
+				// suggestions OR the current element doesnt start with the prefix
 				// Either way the index we found is the Element directly before this element
-				if (pair.end >= size || !lastCompletions.get(pair.end).startsWith(prefix)) {
+				if (pair.end >= size || !suggestions.get(pair.end).startsWith(prefix)) {
 					foundEnd = true;
 					pair.end--;
 				} else {
@@ -268,234 +276,532 @@ public class AutoComplete {
 			// because start is bigger than end (and size)
 			pair.set(Integer.MAX_VALUE, Integer.MIN_VALUE);
 		}
-		completionPairs.push(pair);
+		suggestionPairs.push(pair);
 	}
 
-	private static void createCMDCompletions() {
+	// if you add a new command here make sure you sort it in alphabetically
+	public static final String[] COMMANDS = { "clear", "deck", "draw", "energy", "event", "fight", "gold", "hand",
+			"help", "hp", "info", "kill", "maxhp", "potion", "power", "relic", "unlock" };
+
+	public static final int CMDS = ID_CREATOR++;
+
+	public static final int INFO = ID_CREATOR++;
+	public static final int HELP = ID_CREATOR++;
+
+	private static void createCMDSuggestions() {
 		alreadySorted = false;
-		implementedYet = false;
+		implementedYet = true;
 		commandComplete = false;
 		if (whiteSpaces == 0) {
-			implementedYet = true;
 			alreadySorted = true;
 			if (currentID != CMDS) {
 				currentID = CMDS;
-				lastCompletions.clear();
-				lastCompletions.addAll(Arrays.asList(COMMANDS));
+				suggestions.clear();
+				suggestions.addAll(Arrays.asList(COMMANDS));
 			}
 		} else {
 			switch (tokens[0].toLowerCase()) {
 			case "relic": {
-				createRelicCompletions();
+				createRelicSuggestions();
 				break;
 			}
 			case "hand": {
-				createHandCompletions();
+				createHandSuggestions();
 				break;
 			}
 			case "info": {
+				currentID = INFO;
+				suggestions.clear();
+				alreadySorted = true;
 				commandComplete = true;
-				implementedYet = true;
 				break;
 			}
 			case "kill": {
-				createKillCompletions();
+				createKillSuggestions();
 				break;
 			}
 			case "gold": {
-				createGoldCompletions();
+				createGoldSuggestions();
 				break;
 			}
 			case "energy": {
-				createEnergyCompletions();
+				createEnergySuggestions();
 				break;
 			}
 			case "deck": {
-				createDeckCompletions();
+				createDeckSuggestions();
 				break;
 			}
 			case "draw": {
-				createDrawCompletions();
+				createDrawSuggestions();
 				break;
 			}
 			case "fight": {
-				createFightCompletions();
+				createFightSuggestions();
 				break;
 			}
 			case "event": {
-				createEventCompletions();
+				createEventSuggestions();
 				break;
 			}
 			case "potion": {
-				createPotionCompletions();
+				createPotionSuggestions();
 				break;
 			}
 			case "unlock": {
-				createUnlockCompletions();
+				createUnlockSuggestions();
 				break;
 			}
 			case "power": {
-				createPowerCompletions();
+				createPowerSuggestions();
 				break;
 			}
 			case "clear": {
-				createClearCompletions();
+				createClearSuggestions();
 				break;
 			}
 			case "help": {
+				currentID = HELP;
+				suggestions.clear();
+				alreadySorted = true;
 				commandComplete = true;
-				implementedYet = true;
 				break;
 			}
 			case "hp": {
-				createHPCompletions();
+				createHPSuggestions();
 				break;
 			}
 			case "maxhp": {
-				createMaxHPCompletions();
+				createMaxHPSuggestions();
 				break;
 			}
 			default: {
 				noMatch = true;
+				currentID = RESET;
 				break;
 			}
 			}
-			if (!alreadySorted) {
+			if (!alreadySorted && currentID != RESET && !commandComplete) {
 				alreadySorted = true;
-				Collections.sort(lastCompletions);
+				Collections.sort(suggestions);
 			}
 		}
 	}
+	
+	private static final String[] RELIC_CMDS = { "add", "desc", "flavor", "list", "pool", "remove" };
+	private static final String[] RELIC_LIST_CMDS = { "boss", "common", "rare", "shop", "special", "starter", "uncommon" };
 
-	private static void createMaxHPCompletions() {
-		// TODO Auto-generated method stub
+	public static final int RELIC = ID_CREATOR++;
+	public static final int RELIC_LIST = ID_CREATOR++;
+	public static final int RELIC_IDS = ID_CREATOR++;
 
-	}
-
-	private static void createHPCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createClearCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createPowerCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createUnlockCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createPotionCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createEventCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createFightCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createDrawCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createDeckCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void createEnergyCompletions() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static final String[] GOLD_CMDS = { "add", "lose" };
-
-	private static void createGoldCompletions() {
-		implementedYet = true;
+	private static void createRelicSuggestions() {
 		if (whiteSpaces == 1) {
 			alreadySorted = true;
-			if (currentID == GOLD) {
+			if (currentID == RELIC) {
 				return;
 			}
-			currentID = GOLD;
-			lastCompletions.clear();
-			lastCompletions.addAll(Arrays.asList(GOLD_CMDS));
-		} else if (whiteSpaces == 2){
-			bigNumbers();
+			currentID = RELIC;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(RELIC_CMDS));
+		} else if (whiteSpaces == 2) {
+			if (tokens[1].equalsIgnoreCase("list")) {
+				alreadySorted = true;
+				if (currentID == RELIC_LIST) {
+					return;
+				}
+				currentID = RELIC_LIST;
+				suggestions.clear();
+				suggestions.addAll(Arrays.asList(RELIC_LIST_CMDS));
+			} else if (isRelicIDsCMD()){
+				if (currentID == RELIC_IDS) {
+					alreadySorted = true;
+					return;
+				}
+				currentID = RELIC_IDS;
+				suggestions.clear();
+				for (String id : BaseMod.listAllRelicIDs()) {
+					suggestions.add(id.replace(' ', '_'));
+				}
+			} else {
+				currentID = RESET;
+				noMatch = true;
+			}
 		} else {
 			commandComplete = true;
 		}
 	}
 
-	private static void createKillCompletions() {
-		// TODO Auto-generated method stub
-
+	private static boolean isRelicIDsCMD() {
+		return tokens[1].equalsIgnoreCase("a") || tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("r") || tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("desc") || tokens[1].equalsIgnoreCase("flavor") || tokens[1].equalsIgnoreCase("pool");
 	}
 
 	private static final String[] HAND_CMDS = { "add", "remove" };
 
-	private static void createHandCompletions() {
-		implementedYet = true;
+	public static final int HAND = ID_CREATOR++;
+	public static final int HAND_ADD = ID_CREATOR++;
+	public static final int HAND_REMOVE = ID_CREATOR++;
+
+	private static void createHandSuggestions() {
 		if (whiteSpaces == 1) {
 			alreadySorted = true;
 			if (currentID == HAND) {
 				return;
 			}
 			currentID = HAND;
-			lastCompletions.clear();
-			lastCompletions.addAll(Arrays.asList(HAND_CMDS));
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(HAND_CMDS));
 		} else if (whiteSpaces == 2) {
-			if (tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("a")) {
+			if (isAdd()) {
 				if (currentID == HAND_ADD) {
 					alreadySorted = true;
 					return;
 				}
 				currentID = HAND_ADD;
 				cardIDList(false);
-			} else if (tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("r")) {
+			} else if (isRemove()) {
 				if (currentID == HAND_REMOVE) {
 					alreadySorted = true;
 					return;
 				}
 				currentID = HAND_REMOVE;
 				cardIDList(true);
+			} else {
+				currentID = RESET;
+				noMatch = true;
 			}
-		} else if (whiteSpaces == 3 || whiteSpaces == 4 && !tokens[2].equalsIgnoreCase("all")) {
+		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove()) {
 			smallNumbers();
 		} else {
 			commandComplete = true;
 		}
 	}
 
+	private static final String[] KILL_CMDS = { "all", "self" };
+
+	public static final int KILL = ID_CREATOR++;
+
+	private static void createKillSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == KILL) {
+				return;
+			}
+			currentID = KILL;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(KILL_CMDS));
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	private static final String[] ENERGY_CMDS = { "add", "lose", "inf" };
+
+	public static final int ENERGY = ID_CREATOR++;
+
+	private static void createEnergySuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == ENERGY) {
+				return;
+			}
+			currentID = ENERGY;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(ENERGY_CMDS));
+		} else if (whiteSpaces == 2 && !tokens[1].equalsIgnoreCase("inf")) {
+			mediumNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	private static final String[] GOLD_CMDS = { "add", "lose" };
+
+	public static final int GOLD = ID_CREATOR++;
+
+	private static void createGoldSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == GOLD) {
+				return;
+			}
+			currentID = GOLD;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(GOLD_CMDS));
+		} else if (whiteSpaces == 2) {
+			bigNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	private static final String[] DECK_CMDS = { "add", "remove" };
+
+	public static final int DECK = ID_CREATOR++;
+	public static final int DECK_ADD = ID_CREATOR++;
+	public static final int DECK_REMOVE = ID_CREATOR++;
+
+	private static void createDeckSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == DECK) {
+				return;
+			}
+			currentID = DECK;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(DECK_CMDS));
+		} else if (whiteSpaces == 2) {
+			if (isAdd()) {
+				if (currentID == DECK_ADD) {
+					alreadySorted = true;
+					return;
+				}
+				currentID = DECK_ADD;
+				cardIDList(false);
+			} else if (isRemove()) {
+				if (currentID == DECK_REMOVE) {
+					alreadySorted = true;
+					return;
+				}
+				currentID = DECK_REMOVE;
+				cardIDList(true);
+			} else {
+				currentID = RESET;
+				noMatch = true;
+			}
+		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove()) {
+			smallNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	public static final int DRAW = ID_CREATOR++;
+
+	private static void createDrawSuggestions() {
+		if (whiteSpaces == 1) {
+			smallNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	public static final int FIGHT = ID_CREATOR++;
+
+	private static void createFightSuggestions() {
+		if (whiteSpaces == 1) {
+			if (currentID == FIGHT) {
+				alreadySorted = true;
+				return;
+			}
+			currentID = FIGHT;
+			suggestions.clear();
+			for (String id : BaseMod.encounterList) {
+				suggestions.add(id.replace(' ', '_'));
+			}
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	public static final int EVENT = ID_CREATOR++;
+
+	private static void createEventSuggestions() {
+		if (whiteSpaces == 1) {
+			if (currentID == EVENT) {
+				alreadySorted = true;
+				return;
+			}
+			currentID = EVENT;
+			suggestions.clear();
+			
+			// Not actually unchecked
+			@SuppressWarnings("unchecked")
+			Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
+					"events"));
+			if (events != null) {
+				for (String key : events.keySet()) {
+					suggestions.add(key.replace(' ', '_'));
+				}
+			}
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	public static final int POTION = ID_CREATOR++;
+
+	public static final int OBTAIN_POTION = ID_CREATOR++;
+
+	private static void createPotionSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == POTION) {
+				return;
+			}
+			currentID = POTION;
+			suggestions.clear();
+			
+			// Add the potion slots. If the player has PotionBelt, show 0 to 4, else show 0 to 2
+			int slots = 3;
+			if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(PotionBelt.ID)) {
+				slots = 5;
+			}
+			
+			for (int i = 0; i < slots; i++) {
+				suggestions.add(String.valueOf(i));
+			}
+			// Add the option to list Potions
+			suggestions.add("list");
+		} else if (whiteSpaces == 2 && !tokens[1].equalsIgnoreCase("list")) {
+			if (currentID == OBTAIN_POTION) {
+				alreadySorted = true;
+				return;
+			}
+			currentID = OBTAIN_POTION;
+			suggestions.clear();
+
+			// Not actually unchecked
+			@SuppressWarnings("unchecked")
+			Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
+					"potions"));
+			if (potions != null) {
+				for (String key : potions.keySet()) {
+					suggestions.add(key.replace(' ', '_'));
+				}
+			}
+		} else {
+			commandComplete = true;
+		}
+	}
+	
+	private static final String[] UNLOCK_CMDS = { "always", "level" };
+
+	public static final int UNLOCK = ID_CREATOR++;
+	public static final int UNLOCK_LEVEL = ID_CREATOR++;
+
+	private static void createUnlockSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == UNLOCK) {
+				return;
+			}
+			currentID = UNLOCK;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(UNLOCK_CMDS));
+		} else if (whiteSpaces == 2 && !tokens[1].equalsIgnoreCase("always")) {
+			alreadySorted = true;
+			if (currentID == UNLOCK_LEVEL) {
+				return;
+			}
+			currentID = UNLOCK_LEVEL;
+			suggestions.clear();
+			for (int i = 0; i < 5; i++) {
+				suggestions.add(String.valueOf(i));
+			}
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	public static final int POWER = ID_CREATOR++;
+
+	private static void createPowerSuggestions() {
+		if (whiteSpaces == 1) {
+			if (currentID == POWER) {
+				alreadySorted = true;
+				return;
+			}
+			currentID = POWER;
+			suggestions.clear();
+			for (String key : BaseMod.getPowerKeys()) {
+				suggestions.add(key.replace(' ' , '_'));
+			}
+		} else if (whiteSpaces == 2) { 
+			smallNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+	
+	private static final String[] CLEAR_CMDS = { "cmd", "log" };
+
+	public static final int CLEAR = ID_CREATOR++;
+
+	private static void createClearSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == CLEAR) {
+				return;
+			}
+			currentID = CLEAR;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(CLEAR_CMDS));
+		} else {
+			commandComplete = true;
+		}
+	}
+	
+	private static final String[] HP_CMDS = { "add", "lose" };
+	
+	public static final int HP = ID_CREATOR++;
+
+	private static void createHPSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == HP) {
+				return;
+			}
+			currentID = HP;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(HP_CMDS));
+		} else if (whiteSpaces == 2) {
+			mediumNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	private static final String[] MAX_HP_CMDS = { "add", "lose" };
+	
+	public static final int MAX_HP = ID_CREATOR++;
+
+	private static void createMaxHPSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if (currentID == MAX_HP) {
+				return;
+			}
+			currentID = MAX_HP;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(MAX_HP_CMDS));
+		} else if (whiteSpaces == 2) {
+			mediumNumbers();
+		} else {
+			commandComplete = true;
+		}
+	}
+
+	private static boolean isAdd() {
+		return tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("a");
+	}
+
+	private static boolean isRemove() {
+		return tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("r");
+	}
+
 	private static void cardIDList(boolean isRemove) {
-		lastCompletions.clear();
+		suggestions.clear();
 		if (isRemove) {
-			lastCompletions.add("all");
+			suggestions.add("all");
 		}
 		// Replace spaces with underscores to avoid an id being more than one token
 		for (String key : CardLibrary.cards.keySet()) {
-			lastCompletions.add(key.replace(' ', '_'));
+			suggestions.add(key.replace(' ', '_'));
 		}
 	}
 
-	private static void createRelicCompletions() {
-		// TODO Auto-generated method stub
-
-	}
+	public static final int SMALL_NUMBERS = ID_CREATOR++;
 
 	private static void smallNumbers() {
 		alreadySorted = true;
@@ -503,11 +809,28 @@ public class AutoComplete {
 			return;
 		}
 		currentID = SMALL_NUMBERS;
-		lastCompletions.clear();
-		for (int i = 1; i < 10; i++) {
-			lastCompletions.add(String.valueOf(i));
+		suggestions.clear();
+		for (int i = 1; i <= 9; i++) {
+			suggestions.add(String.valueOf(i));
 		}
 	}
+	
+	public static final int MEDIUM_NUMBERS = ID_CREATOR++;
+
+	private static void mediumNumbers() {
+		alreadySorted = true;
+		if (currentID == MEDIUM_NUMBERS) {
+			return;
+		}
+		currentID = MEDIUM_NUMBERS;
+		suggestions.clear();
+		for (int i = 10; i <= 90; i += 10) {
+			suggestions.add(String.valueOf(i));
+			suggestions.add(String.valueOf(i * 10));
+		}
+	}
+
+	public static final int BIG_NUMBERS = ID_CREATOR++;
 
 	private static void bigNumbers() {
 		alreadySorted = true;
@@ -515,10 +838,10 @@ public class AutoComplete {
 			return;
 		}
 		currentID = BIG_NUMBERS;
-		lastCompletions.clear();
-		for (int i = 10; i < 100; i += 10) {
-			lastCompletions.add(String.valueOf(i * 10));
-			lastCompletions.add(String.valueOf(i * 100));
+		suggestions.clear();
+		for (int i = 100; i <= 900; i += 100) {
+			suggestions.add(String.valueOf(i));
+			suggestions.add(String.valueOf(i * 10));
 		}
 	}
 
@@ -531,26 +854,32 @@ public class AutoComplete {
 		if (glyphs == null || DevConsole.currentText.isEmpty()) {
 			return 0;
 		} else {
-			glyphs.setText(DevConsole.consoleFont, getUncompletedText());
+			glyphs.setText(DevConsole.consoleFont, getTextWithoutRightmostToken(false));
 			return glyphs.width;
 		}
 	}
 
+	private static boolean shouldRenderInfo() {
+		return noMatch || suggestionPairs.isEmpty() || suggestions.isEmpty() || !implementedYet || commandComplete;
+	}
+
 	public static void render(SpriteBatch sb) {
 		DevConsole.consoleFont.setColor(TEXT_COLOR);
-
-		if (noMatch || completionPairs.isEmpty() || lastCompletions.isEmpty() || !implementedYet || commandComplete) {
+		if (shouldRenderInfo()) {
 			sb.draw(DevConsole.consoleBackground, getBGX(), getY(1), getWidth(), getHeight());
 			String text = "[No Match found]";
 			if (!implementedYet) {
 				text = "[Not implemented yet]";
+			}
+			if (noMatch && (currentID == SMALL_NUMBERS || currentID == BIG_NUMBERS)) {
+				text = "[Number]";
 			}
 			if (commandComplete) {
 				text = "[Command is complete]";
 			}
 			DevConsole.consoleFont.draw(sb, text, drawX, DevConsole.CONSOLE_Y * Settings.scale);
 		} else {
-			Pair pair = completionPairs.peek();
+			Pair pair = suggestionPairs.peek();
 			int amount = pair.end - selected;
 			if (amount > MAX_SUGGESTIONS) {
 				amount = MAX_SUGGESTIONS;
@@ -561,15 +890,15 @@ public class AutoComplete {
 
 			float y = (DevConsole.CONSOLE_Y * Settings.scale
 					+ (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale));
-			DevConsole.consoleFont.draw(sb, lastCompletions.get(selected + pair.start), drawX, y);
+			DevConsole.consoleFont.draw(sb, suggestions.get(selected + pair.start), drawX, y);
 			for (int i = 1; i <= amount; i++) {
 				int item = selected + pair.start + i;
-				if (item > pair.end || item >= lastCompletions.size()) {
+				if (item > pair.end || item >= suggestions.size()) {
 					break;
 				}
 				y -= (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale);
 				sb.draw(DevConsole.consoleBackground, getBGX(), getY(i), getWidth(), getHeight());
-				DevConsole.consoleFont.draw(sb, lastCompletions.get(item), drawX, y);
+				DevConsole.consoleFont.draw(sb, suggestions.get(item), drawX, y);
 			}
 		}
 		DevConsole.consoleFont.setColor(Color.WHITE);

@@ -80,8 +80,6 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 	public static ArrayList<Boolean> prompted;
 	public static int commandPos;
 
-	public static HashMap<String, String> spaceCardIDs;
-
 	public DevConsole() {
 		BaseMod.subscribe(this);
 
@@ -250,6 +248,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			powerID = powerID.concat(tokens[tokens.length - 1]);
 		}
 		powerID = powerID.trim();
+		
+		// If the ID was written using underscores, find the original ID
+		if (BaseMod.underScorePowerIDs.containsKey(powerID)) {
+			powerID = BaseMod.underScorePowerIDs.get(powerID);
+		}
 
 		Class power;
 		try {
@@ -274,6 +277,14 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		log("options are:");
 		log("* [id] [amt]");
 	}
+	
+	private static String getRelicName(String[] relicNameArray) {
+		String relic = String.join(" ", relicNameArray);
+		if (BaseMod.underScoreRelicIDs.containsKey(relic)) {
+			relic = BaseMod.underScoreRelicIDs.get(relic);
+		}
+		return relic;
+	}
 
 	private static void cmdRelic(String[] tokens) {
 		if (AbstractDungeon.player != null) {
@@ -285,25 +296,25 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			if ((tokens[1].toLowerCase().equals("remove") || tokens[1].toLowerCase().equals("r"))
 					&& tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String relicName = String.join(" ", relicNameArray);
+				String relicName = getRelicName(relicNameArray);
 				AbstractDungeon.player.loseRelic(relicName);
 			} else if ((tokens[1].toLowerCase().equals("add")  || tokens[1].toLowerCase().equals("a"))
 					&& tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String relicName = String.join(" ", relicNameArray);
+				String relicName = getRelicName(relicNameArray);
 				AbstractDungeon.getCurrRoom().spawnRelicAndObtain(Settings.WIDTH / 2, Settings.HEIGHT / 2,
 						RelicLibrary.getRelic(relicName).makeCopy());
 			} else if (tokens[1].toLowerCase().equals("desc") && tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String relicName = String.join(" ", relicNameArray);
+				String relicName = getRelicName(relicNameArray);
 				log(RelicLibrary.getRelic(relicName).description);
 			} else if (tokens[1].toLowerCase().equals("flavor") && tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String relicName = String.join(" ", relicNameArray);
+				String relicName = getRelicName(relicNameArray);
 				log(RelicLibrary.getRelic(relicName).flavorText);
 			} else if (tokens[1].toLowerCase().equals("pool") && tokens.length > 2) {
 				String[] relicNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
-				String relicName = String.join(" ", relicNameArray);
+				String relicName = getRelicName(relicNameArray);
 				log(RelicLibrary.getRelic(relicName).tier.toString());
 			} else if (tokens[1].toLowerCase().equals("list")) {
 				if (tokens.length < 3) {
@@ -393,8 +404,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			String cardName = String.join(" ", cardNameArray);
 
 			// If the ID was written using underscores, find the original ID
-			if (spaceCardIDs.containsKey(cardName)) {
-				cardName = spaceCardIDs.get(cardName);
+			if (BaseMod.underScoreCardIDs.containsKey(cardName)) {
+				cardName = BaseMod.underScoreCardIDs.get(cardName);
 			}
 
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
@@ -658,8 +669,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			String cardName = String.join(" ", cardNameArray);
 
 			// If the ID was written using underscores, find the original ID
-			if (spaceCardIDs.containsKey(cardName)) {
-				cardName = spaceCardIDs.get(cardName);
+			if (BaseMod.underScoreCardIDs.containsKey(cardName)) {
+				cardName = BaseMod.underScoreCardIDs.get(cardName);
 			}
 
 			if (tokens[1].toLowerCase().equals("add") || tokens[1].toLowerCase().equals("a")) {
@@ -743,6 +754,10 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 		String[] encounterArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String encounterName = String.join(" ", encounterArray);
+		// If the ID was written using underscores, find the original ID
+		if (BaseMod.underScoreEncounterIDs.containsKey(encounterName)) {
+			encounterName = BaseMod.underScoreEncounterIDs.get(encounterName);
+		}
 		AbstractDungeon.monsterList.add(0, encounterName);
 
 		MapRoomNode cur = AbstractDungeon.currMapNode;
@@ -765,6 +780,12 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 		String[] eventArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String eventName = String.join(" ", eventArray);
+
+		// If the ID was written using underscores, find the original ID
+		if (BaseMod.underScoreEventIDs.containsKey(eventName)) {
+			eventName = BaseMod.underScoreEventIDs.get(eventName);
+		}
+		
 		if (EventHelper.getEvent(eventName) == null) {
 			couldNotParse();
 			log(eventName + " is not an event ID");
@@ -830,6 +851,10 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 				potionID = potionID.concat(" ");
 			}
 		}
+		// If the ID was written using underscores, find the original ID
+		if (BaseMod.underScorePotionIDs.containsKey(potionID)) {
+			potionID = BaseMod.underScorePotionIDs.get(potionID);
+		}
 
 		AbstractPotion p = null;
 		if (PotionHelper.potions.contains(potionID)) {
@@ -875,20 +900,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 		consoleBackground = ImageMaster.loadImage("img/ConsoleBackground.png");
 
-		findSpaceCards();
-
 		AutoComplete.postInit();
-	}
-
-	// Finds cards that have IDS with spaces in them and maps those IDs with
-	// underscores instead of spaces to the original id
-	private void findSpaceCards() {
-		spaceCardIDs = new HashMap<>();
-		for (String key : CardLibrary.cards.keySet()) {
-			if (key.contains(" ")) {
-				spaceCardIDs.put(key.replace(' ', '_'), key);
-			}
-		}
 	}
 
 	public static void log(String text) {
@@ -931,11 +943,16 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 	@Override
 	public void receivePostUpdate() {
 		if (Gdx.input.isKeyJustPressed(toggleKey)) {
+			AutoComplete.reset();
 			if (visible) {
 				currentText = "";
 				commandPos = -1;
 			} else {
 				otherInputProcessor = Gdx.input.getInputProcessor();
+				
+				if (AutoComplete.enabled) {
+					AutoComplete.suggest(false);
+				}
 			}
 
 			// only allow opening console when enabled but allow closing the console anytime
@@ -944,7 +961,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 				visible = !visible;
 			}
 		}
-
+		
 		//	If AutoComplete is enabled and the key to select a suggestion is pressed
 		//	select the next or previous suggestion
 		if (AutoComplete.enabled && Gdx.input.isKeyPressed(AutoComplete.selectKey)) {
@@ -967,8 +984,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 					if (commandPos + 1 < priorCommands.size()) {
 						commandPos++;
 						currentText = priorCommands.get(commandPos);
-						AutoComplete.reset();
-						AutoComplete.complete(false);
+						AutoComplete.resetAndSuggest();
 					}
 				}
 			}
@@ -981,8 +997,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 						commandPos--;
 						currentText = priorCommands.get(commandPos);
 					}
-					AutoComplete.reset();
-					AutoComplete.complete(false);
+					AutoComplete.resetAndSuggest();
 				}
 			}
 		}
@@ -990,6 +1005,14 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (AutoComplete.enabled && (Gdx.input.isKeyJustPressed(AutoComplete.fillKey1)
 				|| Gdx.input.isKeyJustPressed(AutoComplete.fillKey2))) {
 			AutoComplete.fillInSuggestion();
+		}
+
+		// if the key to delete the last token is pressed, delete the rightmost token
+		if (Gdx.input.isKeyJustPressed(AutoComplete.deleteTokenKey)) {
+			currentText = AutoComplete.getTextWithoutRightmostToken(true);
+			if (AutoComplete.enabled) {
+				AutoComplete.suggest(false);
+			}
 		}
 	}
 }
