@@ -877,7 +877,7 @@ public class AutoComplete {
 			if (!implementedYet) {
 				text = "[Not implemented yet]";
 			}
-			if (noMatch && (currentID == SMALL_NUMBERS || currentID == BIG_NUMBERS)) {
+			if (noMatch && (currentID == SMALL_NUMBERS || currentID == MEDIUM_NUMBERS || currentID == BIG_NUMBERS)) {
 				text = "[Number]";
 			}
 			if (commandComplete) {
