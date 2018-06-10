@@ -15,9 +15,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import com.megacrit.cardcrawl.localization.PotionStrings;
 
 public class AutoComplete {
 
@@ -666,12 +666,8 @@ public class AutoComplete {
 			currentID = OBTAIN_POTION;
 			suggestions.clear();
 
-			// Not actually unchecked
-			@SuppressWarnings("unchecked")
-			Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
-					.getPrivateStatic(LocalizedStrings.class, "potions"));
-			if (potions != null) {
-				for (String key : potions.keySet()) {
+			if (PotionHelper.potions != null) {
+				for (String key : PotionHelper.potions) {
 					suggestions.add(key.replace(' ', '_'));
 				}
 			}

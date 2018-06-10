@@ -13,24 +13,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import basemod.abstracts.DynamicVariable;
-import basemod.helpers.dynamicvariables.BlockVariable;
-import basemod.helpers.dynamicvariables.DamageVariable;
-import basemod.helpers.dynamicvariables.MagicNumberVariable;
-import basemod.screens.ModalChoiceScreen;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.localization.*;
-import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.clapper.util.classutil.AbstractClassFilter;
@@ -60,7 +48,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.evacipated.cardcrawl.modthespire.ReflectionHelper;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,6 +64,21 @@ import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.localization.AchievementStrings;
+import com.megacrit.cardcrawl.localization.CardStrings;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.localization.CreditStrings;
+import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.localization.KeywordStrings;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import com.megacrit.cardcrawl.localization.MonsterStrings;
+import com.megacrit.cardcrawl.localization.OrbStrings;
+import com.megacrit.cardcrawl.localization.PotionStrings;
+import com.megacrit.cardcrawl.localization.PowerStrings;
+import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
+import com.megacrit.cardcrawl.localization.TutorialStrings;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -306,11 +308,13 @@ public class BaseMod {
 
 		try {
 			spireConfig = Class.forName("com.evacipated.cardcrawl.modthespire.lib.SpireConfig");
-			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class).newInstance(
-					BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
+			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class)
+					.newInstance(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
 			return configObject;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			logger.info("could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.info(
+					"could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
 			spireConfig = null;
 			return null;
 		}
@@ -404,8 +408,9 @@ public class BaseMod {
 		if (consoleEnabled != null) {
 			DevConsole.enabled = consoleEnabled;
 		}
-		
-		// This is done because the default value for getBoolean is false but I want true
+
+		// This is done because the default value for getBoolean is false but I want
+		// true
 		String autoCompleteEnabled = maybeGetString("autocomplete-enabled");
 		if (autoCompleteEnabled != null) {
 			AutoComplete.enabled = !autoCompleteEnabled.equalsIgnoreCase("false");
@@ -413,8 +418,9 @@ public class BaseMod {
 	}
 
 	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
-		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD || chosenClass == AbstractPlayer.PlayerClass.THE_SILENT ||
-				chosenClass == AbstractPlayer.PlayerClass.DEFECT);
+		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD
+				|| chosenClass == AbstractPlayer.PlayerClass.THE_SILENT
+				|| chosenClass == AbstractPlayer.PlayerClass.DEFECT);
 	}
 
 	// initialize -
@@ -442,7 +448,6 @@ public class BaseMod {
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 
-
 		config = maybeGetConfig();
 		setProperties();
 		console = new DevConsole();
@@ -451,18 +456,15 @@ public class BaseMod {
 
 	// setupAnimationGfx -
 	private static void setupAnimationGfx() {
-		animationCamera =  new OrthographicCamera(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		animationCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		animationCamera.near = 1.0f;
 		animationCamera.far = 300.0f;
 		animationCamera.position.z = 200.0f;
 		animationCamera.update();
 		batch = new ModelBatch();
 		animationEnvironment = new Environment();
-		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight,
-				1f, 1f, 1f, 1f));
-		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), false);
+		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
+		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	}
 
 	// initializeGson -
@@ -493,34 +495,20 @@ public class BaseMod {
 		typeMaps.put(OrbStrings.class, "orb");
 
 		typeTokens = new HashMap<>();
-		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {
-		}.getType());
-		typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>() {
-		}.getType());
-		typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>() {
-		}.getType());
-		typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>() {
-		}.getType());
-		typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>() {
-		}.getType());
-		typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>() {
-		}.getType());
-		typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>() {
-		}.getType());
-		typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>() {
-		}.getType());
-		typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>() {
-		}.getType());
-		typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>() {
-		}.getType());
-		typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>() {
-		}.getType());
-		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {
-		}.getType());
-		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {
-		}.getType());
-		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {
-		}.getType());
+		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {}.getType());
+		typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>() {}.getType());
+		typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>() {}.getType());
+		typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>() {}.getType());
+		typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>() {}.getType());
+		typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>() {}.getType());
+		typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>() {}.getType());
+		typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>() {}.getType());
+		typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>() {}.getType());
+		typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>() {}.getType());
+		typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>() {}.getType());
+		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {}.getType());
+		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {}.getType());
+		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {}.getType());
 	}
 
 	// initializeSubscriptions -
@@ -640,17 +628,19 @@ public class BaseMod {
 	private static void initializePotionList() {
 		potionsToRemove = new ArrayList<>();
 	}
-	
+
 	// Finds potions that have IDs with spaces in them and maps those IDs with
 	// underscores instead of spaces to the original id
 	public static void initializeUnderscorePotionIDs() {
 		logger.info("initializeUnderscorePotionIDs");
 		underScorePotionIDs = new HashMap<>();
-		
+
 		// Not actually unchecked
 		@SuppressWarnings("unchecked")
-		Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
-				"potions"));
+		// This has to be LocalizedStrings and not PotionHelper.potions, because
+		// PotionHelper.potions is empty on the games startup
+		Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
+				.getPrivateStatic(LocalizedStrings.class, "potions"));
 		if (potions != null) {
 			for (String key : potions.keySet()) {
 				if (key.contains(" ")) {
@@ -659,17 +649,17 @@ public class BaseMod {
 			}
 		}
 	}
-	
+
 	// Finds potions that have IDs with spaces in them and maps those IDs with
 	// underscores instead of spaces to the original id
 	public static void initializeUnderscoreEventIDs() {
 		logger.info("initializeUnderscoreEventIDs");
 		underScoreEventIDs = new HashMap<>();
-		
+
 		// Not actually unchecked
 		@SuppressWarnings("unchecked")
-		Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks.getPrivateStatic(LocalizedStrings.class,
-				"events"));
+		Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks
+				.getPrivateStatic(LocalizedStrings.class, "events"));
 		if (events != null) {
 			for (String key : events.keySet()) {
 				if (key.contains(" ")) {
@@ -680,7 +670,8 @@ public class BaseMod {
 	}
 
 	private static void initializeEncounters() {
-		//maybe change this to use LocalizedStrings instead (like initializeUnderScorePotionIDs)
+		// maybe change this to use LocalizedStrings instead (like
+		// initializeUnderScorePotionIDs)
 		logger.info("initializeEncounters");
 		encounterList = new ArrayList<>();
 		// Construct Encounters
@@ -723,7 +714,7 @@ public class BaseMod {
 			}
 		}
 	}
-	
+
 	// Finds relics that have IDs with spaces in them and maps those IDs with
 	// underscores instead of spaces to the original id
 	public static void initializeUnderscoreRelicIDs() {
@@ -745,12 +736,9 @@ public class BaseMod {
 		try {
 			finder.add(new File(url.toURI()));
 
-			ClassFilter filter =
-					new AndClassFilter(
-							new NotClassFilter(new InterfaceOnlyClassFilter()),
-							new NotClassFilter(new AbstractClassFilter()),
-							new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+")
-							);
+			ClassFilter filter = new AndClassFilter(new NotClassFilter(new InterfaceOnlyClassFilter()),
+					new NotClassFilter(new AbstractClassFilter()),
+					new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+"));
 			Collection<ClassInfo> foundClasses = new ArrayList<>();
 			finder.findClasses(foundClasses, filter);
 
@@ -761,7 +749,8 @@ public class BaseMod {
 				try {
 					for (FieldInfo fieldInfo : classInfo.getFields()) {
 						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
-							powerMap.put((String) fieldInfo.getValue(), BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
+							powerMap.put((String) fieldInfo.getValue(),
+									BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
 							break;
 						}
 					}
@@ -773,7 +762,7 @@ public class BaseMod {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Finds powers that have IDs with spaces in them and maps those IDs with
 	// underscores instead of spaces to the original id
 	public static void initializeUnderscorePowerIDs() {
@@ -804,7 +793,8 @@ public class BaseMod {
 	//
 	// UI
 	//
-	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue, String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
+	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue,
+			String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
 		CardCrawlGame.mainMenuScreen.lighten();
 		CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.RENAME;
 		CardCrawlGame.cancelButton.hideInstantly();
@@ -812,10 +802,8 @@ public class BaseMod {
 	}
 
 	public static boolean baseGameSaveExists() {
-		return (SaveAndContinue.ironcladSaveExists) ||
-				(SaveAndContinue.silentSaveExists) ||
-				(SaveAndContinue.crowbotSaveExists) ||
-				(SaveAndContinue.defectSaveExists);
+		return (SaveAndContinue.ironcladSaveExists) || (SaveAndContinue.silentSaveExists)
+				|| (SaveAndContinue.crowbotSaveExists) || (SaveAndContinue.defectSaveExists);
 	}
 
 	public static boolean moddedSaveExists() {
@@ -987,18 +975,21 @@ public class BaseMod {
 	}
 
 	/**
-	 * Modifies the damage done by a card by seeing if the card is a CustomCard
-	 * and if so, going ahead and calling the damage modification method
-	 *
-	 * default implementation leaves the damage the same
-	 * @param player the player casting this card
-	 * @param mo the monster this card is targetting (may be null for multiTarget)
-	 * @param c the card being cast
-	 * @param tmp the current damage amount
+	 * Modifies the damage done by a card by seeing if the card is a CustomCard and
+	 * if so, going ahead and calling the damage modification method default
+	 * implementation leaves the damage the same
+	 * 
+	 * @param player
+	 *            the player casting this card
+	 * @param mo
+	 *            the monster this card is targetting (may be null for multiTarget)
+	 * @param c
+	 *            the card being cast
+	 * @param tmp
+	 *            the current damage amount
 	 * @return the modified damage amount
 	 */
-	public static float calculateCardDamage(AbstractPlayer player,
-			AbstractMonster mo, AbstractCard c, float tmp) {
+	public static float calculateCardDamage(AbstractPlayer player, AbstractMonster mo, AbstractCard c, float tmp) {
 		if (c instanceof CustomCard) {
 			float newVal = ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
 			if ((int) newVal != c.baseDamage) {
@@ -1057,7 +1048,7 @@ public class BaseMod {
 		switch (type) {
 		case SHARED:
 			HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-			.getPrivateStatic(RelicLibrary.class, "sharedRelics");
+					.getPrivateStatic(RelicLibrary.class, "sharedRelics");
 			if (sharedRelics.containsKey(relic.relicId)) {
 				sharedRelics.remove(relic.relicId);
 				RelicLibrary.totalRelicCount--;
@@ -1066,7 +1057,7 @@ public class BaseMod {
 			break;
 		case RED:
 			HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-			.getPrivateStatic(RelicLibrary.class, "redRelics");
+					.getPrivateStatic(RelicLibrary.class, "redRelics");
 			if (redRelics.containsKey(relic.relicId)) {
 				redRelics.remove(relic.relicId);
 				RelicLibrary.totalRelicCount--;
@@ -1075,7 +1066,7 @@ public class BaseMod {
 			break;
 		case GREEN:
 			HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-			.getPrivateStatic(RelicLibrary.class, "greenRelics");
+					.getPrivateStatic(RelicLibrary.class, "greenRelics");
 			if (greenRelics.containsKey(relic.relicId)) {
 				greenRelics.remove(relic.relicId);
 				RelicLibrary.totalRelicCount--;
@@ -1159,30 +1150,35 @@ public class BaseMod {
 		removeRelic(relic, RelicType.RED);
 		removeRelic(relic, RelicType.GREEN);
 	}
-	
-	// lists the IDs of all Relics from all pools. The casts are actually not unchecked
+
+	// lists the IDs of all Relics from all pools. The casts are actually not
+	// unchecked
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> listAllRelicIDs() {
 		ArrayList<String> relicIDs = new ArrayList<>();
-		
-		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "sharedRelics");
+
+		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "sharedRelics");
 		if (sharedRelics != null) {
 			relicIDs.addAll(sharedRelics.keySet());
 		}
-		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "redRelics");
+		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "redRelics");
 		if (redRelics != null) {
 			relicIDs.addAll(redRelics.keySet());
 		}
-		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "greenRelics");
+		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "greenRelics");
 		if (greenRelics != null) {
 			relicIDs.addAll(greenRelics.keySet());
 		}
-		HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks.getPrivateStatic(RelicLibrary.class, "blueRelics");
+		HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "blueRelics");
 		if (blueRelics != null) {
 			relicIDs.addAll(blueRelics.keySet());
 		}
 		if (getAllCustomRelics() != null) {
-			for (Entry<String, HashMap<String, AbstractRelic>> e: getAllCustomRelics().entrySet()) {
+			for (Entry<String, HashMap<String, AbstractRelic>> e : getAllCustomRelics().entrySet()) {
 				if (e != null && e.getValue() != null) {
 					relicIDs.addAll(e.getValue().keySet());
 				}
@@ -1192,13 +1188,13 @@ public class BaseMod {
 	}
 
 	//
-	//Keywords
+	// Keywords
 	//
 
 	public static void addKeyword(String[] names, String description) {
 		String parent = names[0];
 
-		for(String name : names) {
+		for (String name : names) {
 			GameDictionary.keywords.put(name, description);
 			GameDictionary.parentWord.put(name, parent);
 		}
@@ -1706,7 +1702,7 @@ public class BaseMod {
 	}
 
 	//
-	//Potions
+	// Potions
 	//
 
 	public static ArrayList<String> getPotionsToRemove() {
@@ -1717,30 +1713,36 @@ public class BaseMod {
 		potionsToRemove.add(potionID);
 	}
 
-	//add the Potion to the map (fake ENUM)
+	// add the Potion to the map (fake ENUM)
 	@SuppressWarnings("rawtypes")
-	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) {
+	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,
+			String potionID) {
 		potionClassMap.put(potionID, potionClass);
 		potionLiquidColorMap.put(potionID, liquidColor);
-		potionHybridColorMap.put(potionID,hybridColor);
+		potionHybridColorMap.put(potionID, hybridColor);
 		potionSpotsColorMap.put(potionID, spotsColor);
 	}
-	//(fake ENUM) return Class corresponding to potionID
+
+	// (fake ENUM) return Class corresponding to potionID
 	@SuppressWarnings("rawtypes")
 	public static Class getPotionClass(String potionID) {
 		return potionClassMap.get(potionID);
 	}
-	//(fake ENUM) return Colors corresponding to potionID
+
+	// (fake ENUM) return Colors corresponding to potionID
 	public static Color getPotionLiquidColor(String potionID) {
 		return potionLiquidColorMap.get(potionID);
 	}
+
 	public static Color getPotionHybridColor(String potionID) {
 		return potionHybridColorMap.get(potionID);
 	}
+
 	public static Color getPotionSpotsColor(String potionID) {
 		return potionSpotsColorMap.get(potionID);
 	}
-	//get all entry in fake ENUM
+
+	// get all entry in fake ENUM
 	public static Set<String> getPotionIDs() {
 		return potionClassMap.keySet();
 	}
@@ -1749,7 +1751,7 @@ public class BaseMod {
 	// Powers
 	//
 
-	public static void addPower(@SuppressWarnings("rawtypes") Class powerClass,String potionID) {
+	public static void addPower(@SuppressWarnings("rawtypes") Class powerClass, String potionID) {
 		powerMap.put(potionID, powerClass);
 	}
 
@@ -1757,7 +1759,7 @@ public class BaseMod {
 	public static Class getPowerClass(String powerID) {
 		return powerMap.get(powerID);
 	}
-	
+
 	public static Set<String> getPowerKeys() {
 		return powerMap.keySet();
 	}
@@ -2223,7 +2225,7 @@ public class BaseMod {
 	public static void publishPostPowerApply(AbstractPower p, AbstractCreature target, AbstractCreature source) {
 		logger.info("publish on post power apply");
 
-		for(PostPowerApplySubscriber sub: postPowerApplySubscribers) {
+		for (PostPowerApplySubscriber sub : postPowerApplySubscribers) {
 			sub.receivePostPowerApplySubscriber(p, target, source);
 		}
 		unsubscribeLaterHelper(PostPowerApplySubscriber.class);
@@ -2233,7 +2235,7 @@ public class BaseMod {
 	public static void publishEditKeywords() {
 		logger.info("editting keywords");
 
-		addKeyword(new String[]{"[E]"}, GameDictionary.TEXT[0]);
+		addKeyword(new String[] { "[E]" }, GameDictionary.TEXT[0]);
 
 		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
 			sub.receiveEditKeywords();
@@ -2289,7 +2291,6 @@ public class BaseMod {
 			list.remove(sub);
 		}
 	}
-
 
 	// subscribe -
 	// will subscribe to all lists this sub implements
@@ -2522,7 +2523,6 @@ public class BaseMod {
 			postDeathSubscribers.remove(sub);
 		}
 	}
-
 
 	// unsubscribeLater -
 	public static void unsubscribeLater(ISubscriber sub) {
