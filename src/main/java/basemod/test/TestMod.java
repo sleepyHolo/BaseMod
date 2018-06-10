@@ -260,14 +260,12 @@ public class TestMod implements
 	}
 	
 	@Override
-	public boolean receivePostCreateStartingDeck(ArrayList<String> addCardsToMe) {
+	public void receivePostCreateStartingDeck(AbstractPlayer.PlayerClass chosenClass, ArrayList<String> addCardsToMe) {
 		// add one copy of Transmutation, Panacea, and Panache
 		// to the starting deck
 		addCardToStartingDeck(addCardsToMe, CARD_1);
 		addCardToStartingDeck(addCardsToMe, CARD_2);
 		addCardToStartingDeck(addCardsToMe, CARD_3);
-		// overwrite the starting deck
-		return true;
 	}
 	
 	private static void addRelicToStartingSet(ArrayList<String> addRelicsToMe, String relic) {

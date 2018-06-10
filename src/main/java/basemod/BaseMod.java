@@ -1754,43 +1754,28 @@ public class BaseMod {
 	public static void publishPostCreateStartingDeck(PlayerClass chosenClass, ArrayList<String> cards) {
 		logger.info("postCreateStartingDeck for: " + chosenClass);
 
-		boolean clearDefault = false;
-		ArrayList<String> cardsToAdd = new ArrayList<>();
-
 		for (PostCreateStartingDeckSubscriber sub : postCreateStartingDeckSubscribers) {
 			logger.info("postCreateStartingDeck modifying starting deck for: " + sub);
-			switch (chosenClass) {
-			case IRONCLAD:
-				if (sub instanceof PostCreateIroncladStartingDeckSubscriber) {
-					if (sub.receivePostCreateStartingDeck(cardsToAdd)) {
-						clearDefault = true;
-					}
+			if (sub instanceof PostCreateIroncladStartingDeckSubscriber) {
+				if (chosenClass.equals(PlayerClass.IRONCLAD)) {
+					sub.receivePostCreateStartingDeck(chosenClass, cards);
 				}
-				break;
-			case THE_SILENT:
-				if (sub instanceof PostCreateSilentStartingDeckSubscriber) {
-					if (sub.receivePostCreateStartingDeck(cardsToAdd)) {
-						clearDefault = true;
-					}
+			} else if (sub instanceof PostCreateSilentStartingDeckSubscriber) {
+				if (chosenClass.equals(PlayerClass.THE_SILENT)) {
+					sub.receivePostCreateStartingDeck(chosenClass, cards);
 				}
-				break;
-			default:
-				break;
+			} else {
+				sub.receivePostCreateStartingDeck(chosenClass, cards);
 			}
 		}
 
 		StringBuilder logString = new StringBuilder("postCreateStartingDeck adding [ ");
-		for (String card : cardsToAdd) {
+		for (String card : cards) {
 			logString.append(card).append(" ");
 		}
 		logString.append("]");
 		logger.info(logString.toString());
-
-		if (clearDefault) {
-			logger.info("postCreateStartingDeck clearing initial deck");
-			cards.clear();
-		}
-		cards.addAll(cardsToAdd);
+		
 		unsubscribeLaterHelper(PostCreateStartingDeckSubscriber.class);
 	}
 
