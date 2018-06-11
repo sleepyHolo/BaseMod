@@ -299,8 +299,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix modal choice cards to not counts towards cards played count (kiooeht)
 * Death hook (alexdriedger)
 
+
 #### v2.12.0 ####
 * Support week 28 (kiooeht)
 * Add OrbStrings to localization support (kiooeht)
 
 #### dev ####
+* Add AutoComplete to DevConsole (Skrelpoid)
