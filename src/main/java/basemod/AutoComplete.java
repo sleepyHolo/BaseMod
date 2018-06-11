@@ -248,7 +248,7 @@ public class AutoComplete {
 				noMatch = true;
 			} else {
 				// The first suggestion that starts with our prefix is our start
-				if (suggestions.get(pair.start).startsWith(prefix)) {
+				if (suggestions.get(pair.start).toLowerCase().startsWith(prefix.toLowerCase())) {
 					foundStart = true;
 				} else {
 					pair.start++;
@@ -263,7 +263,7 @@ public class AutoComplete {
 				// The last element that starts with the prefix is the last element of
 				// suggestions OR the current element doesnt start with the prefix
 				// Either way the index we found is the Element directly before this element
-				if (pair.end >= size || !suggestions.get(pair.end).startsWith(prefix)) {
+				if (pair.end >= size || !suggestions.get(pair.end).toLowerCase().startsWith(prefix.toLowerCase())) {
 					foundEnd = true;
 					pair.end--;
 				} else {
@@ -892,7 +892,6 @@ public class AutoComplete {
 
 			float y = (DevConsole.CONSOLE_Y * Settings.scale
 					+ (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale));
-			DevConsole.consoleFont.draw(sb, suggestions.get(selected + pair.start), drawX, y);
 
 			// There's probably some easy Math to figure this out but somehow I can't get it
 			// so this is the best I came up with
@@ -903,11 +902,10 @@ public class AutoComplete {
 					break;
 				}
 			}
-			factor--;
 
 			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(),
 					-getHeight() * factor);
-			for (int i = 1; i <= amount; i++) {
+			for (int i = 0; i <= amount; i++) {
 				int item = selected + pair.start + i;
 				if (item > pair.end || item >= suggestions.size()) {
 					break;
