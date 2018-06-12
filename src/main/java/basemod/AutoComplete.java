@@ -3,6 +3,7 @@ package basemod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -239,6 +240,8 @@ public class AutoComplete {
 	// I tried implementing a binary search for this but that didn't work so this
 	// has to suffice. If anyone can do this please help
 	private static void linearSearch(Pair pair, String prefix) {
+		
+		String lowerCasePrefix = prefix.toLowerCase();
 
 		foundStart = foundEnd = noMatch = false;
 		int size = suggestions.size();
@@ -248,7 +251,7 @@ public class AutoComplete {
 				noMatch = true;
 			} else {
 				// The first suggestion that starts with our prefix is our start
-				if (suggestions.get(pair.start).toLowerCase().startsWith(prefix.toLowerCase())) {
+				if (suggestions.get(pair.start).toLowerCase().startsWith(lowerCasePrefix)) {
 					foundStart = true;
 				} else {
 					pair.start++;
@@ -263,7 +266,7 @@ public class AutoComplete {
 				// The last element that starts with the prefix is the last element of
 				// suggestions OR the current element doesnt start with the prefix
 				// Either way the index we found is the Element directly before this element
-				if (pair.end >= size || !suggestions.get(pair.end).toLowerCase().startsWith(prefix.toLowerCase())) {
+				if (pair.end >= size || !suggestions.get(pair.end).toLowerCase().startsWith(lowerCasePrefix)) {
 					foundEnd = true;
 					pair.end--;
 				} else {
@@ -289,6 +292,12 @@ public class AutoComplete {
 
 	public static final int INFO = ID_CREATOR++;
 	public static final int HELP = ID_CREATOR++;
+	
+	private static Comparator<String> caseInsensitiveCompare = AutoComplete::compareCaseInsensitive;
+	
+	private static int compareCaseInsensitive(String s1, String s2) {
+		return s1.toLowerCase().compareTo(s2.toLowerCase());
+	}
 
 	private static void createCMDSuggestions() {
 		alreadySorted = false;
@@ -385,7 +394,7 @@ public class AutoComplete {
 			}
 			if (!alreadySorted && currentID != RESET && !commandComplete) {
 				alreadySorted = true;
-				Collections.sort(suggestions);
+				Collections.sort(suggestions, caseInsensitiveCompare);
 			}
 		}
 	}
