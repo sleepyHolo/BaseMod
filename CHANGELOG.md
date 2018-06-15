@@ -304,6 +304,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support week 28 (kiooeht)
 * Add OrbStrings to localization support (kiooeht)
 
-#### dev ####
+#### v2.13.0 ####
 * Support for week 29 (kiooeht)
 * Add AutoComplete to DevConsole (Skrelpoid)
+
+#### dev ####
