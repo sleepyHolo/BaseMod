@@ -1,4 +1,4 @@
-package basemod.patches.com.megacrit.cardcrawl.helpers.InputAction;
+package basemod.patches.com.megacrit.cardcrawl.helpers.input.InputAction;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
@@ -8,7 +8,7 @@ import javassist.expr.MethodCall;
 
 public class ConsoleDisable {
 
-	@SpirePatch(cls="com.megacrit.cardcrawl.helpers.InputAction", method="isJustPressed")
+	@SpirePatch(cls="com.megacrit.cardcrawl.helpers.input.InputAction", method="isJustPressed")
 	public static class IsJustPressedFix {
 		
 		public static ExprEditor Instrument() {
@@ -23,7 +23,7 @@ public class ConsoleDisable {
 		
 	}
 	
-	@SpirePatch(cls="com.megacrit.cardcrawl.helpers.InputAction", method="isPressed")
+	@SpirePatch(cls="com.megacrit.cardcrawl.helpers.input.InputAction", method="isPressed")
 	public static class IsPressedFix {
 		
 		public static ExprEditor Instrument() {
