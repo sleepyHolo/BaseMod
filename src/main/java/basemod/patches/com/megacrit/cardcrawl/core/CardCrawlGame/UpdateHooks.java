@@ -1,18 +1,12 @@
 package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
-import java.util.ArrayList;
-
-import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
-import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
-import com.megacrit.cardcrawl.helpers.InputHelper;
-
 import basemod.BaseMod;
+import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 public class UpdateHooks {
 
@@ -35,7 +29,7 @@ public class UpdateHooks {
 		{
 			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 			{
-				Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.InputHelper", "updateFirst");
+				Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.input.InputHelper", "updateFirst");
 
 				int[] beforeLines = LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
 
@@ -58,7 +52,7 @@ public class UpdateHooks {
 	    {
 	        public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 	        {
-	            Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.InputHelper", "updateLast");
+	            Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.helpers.input.InputHelper", "updateLast");
 
 	            return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
 	        }

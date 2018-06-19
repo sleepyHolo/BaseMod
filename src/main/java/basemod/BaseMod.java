@@ -1,26 +1,35 @@
 package basemod;
 
 import java.io.File;
-import java.lang.reflect.*;
-import java.net.MalformedURLException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 import java.util.function.Consumer;
 
-import basemod.abstracts.DynamicVariable;
-import basemod.helpers.dynamicvariables.BlockVariable;
-import basemod.helpers.dynamicvariables.DamageVariable;
-import basemod.helpers.dynamicvariables.MagicNumberVariable;
-import basemod.screens.ModalChoiceScreen;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.localization.*;
-import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.relics.Circlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.clapper.util.classutil.AbstractClassFilter;
+import org.clapper.util.classutil.AndClassFilter;
+import org.clapper.util.classutil.ClassFilter;
+import org.clapper.util.classutil.ClassFinder;
+import org.clapper.util.classutil.ClassInfo;
+import org.clapper.util.classutil.FieldInfo;
+import org.clapper.util.classutil.InterfaceOnlyClassFilter;
+import org.clapper.util.classutil.NotClassFilter;
+import org.clapper.util.classutil.RegexClassFilter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -31,17 +40,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.red.DarkEmbrace;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.characters.Ironclad;
@@ -49,15 +60,34 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
+import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.localization.AchievementStrings;
+import com.megacrit.cardcrawl.localization.CardStrings;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.localization.CreditStrings;
+import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.localization.KeywordStrings;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import com.megacrit.cardcrawl.localization.MonsterStrings;
+import com.megacrit.cardcrawl.localization.OrbStrings;
+import com.megacrit.cardcrawl.localization.PotionStrings;
+import com.megacrit.cardcrawl.localization.PowerStrings;
+import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
+import com.megacrit.cardcrawl.localization.TutorialStrings;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
@@ -66,7 +96,11 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
+import basemod.abstracts.DynamicVariable;
 import basemod.helpers.RelicType;
+import basemod.helpers.dynamicvariables.BlockVariable;
+import basemod.helpers.dynamicvariables.DamageVariable;
+import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.EditCardsSubscriber;
 import basemod.interfaces.EditCharactersSubscriber;
 import basemod.interfaces.EditKeywordsSubscriber;
@@ -86,6 +120,7 @@ import basemod.interfaces.PostCreateSilentStartingDeckSubscriber;
 import basemod.interfaces.PostCreateSilentStartingRelicsSubscriber;
 import basemod.interfaces.PostCreateStartingDeckSubscriber;
 import basemod.interfaces.PostCreateStartingRelicsSubscriber;
+import basemod.interfaces.PostDeathSubscriber;
 import basemod.interfaces.PostDrawSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
 import basemod.interfaces.PostEnergyRechargeSubscriber;
@@ -106,8 +141,7 @@ import basemod.interfaces.RenderSubscriber;
 import basemod.interfaces.SetUnlocksSubscriber;
 import basemod.interfaces.StartActSubscriber;
 import basemod.interfaces.StartGameSubscriber;
-import basemod.interfaces.PostDeathSubscriber;
-import org.clapper.util.classutil.*;
+import basemod.screens.ModalChoiceScreen;
 
 @SpireInitializer
 public class BaseMod {
@@ -121,9 +155,9 @@ public class BaseMod {
 
 	private static HashMap<Type, String> typeMaps;
 	private static HashMap<Type, Type> typeTokens;
-	
+
 	private static ArrayList<ModBadge> modBadges;
-	
+
 	private static ArrayList<ISubscriber> toRemove;
 	private static ArrayList<StartActSubscriber> startActSubscribers;
 	private static ArrayList<PostCampfireSubscriber> postCampfireSubscribers;
@@ -160,7 +194,7 @@ public class BaseMod {
 	private static ArrayList<PostPowerApplySubscriber> postPowerApplySubscribers;
 	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
 	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
-	
+
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
 	private static ArrayList<AbstractCard> greenToAdd;
@@ -172,11 +206,11 @@ public class BaseMod {
 	private static ArrayList<AbstractCard> customToAdd;
 	private static ArrayList<String> customToRemove;
 	private static ArrayList<String> customToRemoveColors;
-	
+
 	private static HashMap<String, HashMap<String, AbstractRelic>> customRelicPools;
 	private static HashMap<String, ArrayList<AbstractRelic>> customRelicLists;
-	
-	private static ArrayList<String> potionsToRemove; 
+
+	private static ArrayList<String> potionsToRemove;
 
 	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> playerClassMap;
@@ -190,16 +224,24 @@ public class BaseMod {
 	public static HashMap<String, CharStat> playerStatsMap;
 
 	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
-	
+
 	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> potionClassMap; 
-	private static HashMap<String, Color> potionHybridColorMap; 
-	private static HashMap<String, Color> potionLiquidColorMap; 
-	private static HashMap<String, Color> potionSpotsColorMap; 
+	private static HashMap<String, Class> potionClassMap;
+	private static HashMap<String, Color> potionHybridColorMap;
+	private static HashMap<String, Color> potionLiquidColorMap;
+	private static HashMap<String, Color> potionSpotsColorMap;
 
 	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> powerMap;
-	
+
+	public static ArrayList<String> encounterList;
+	public static HashMap<String, String> underScoreEncounterIDs;
+	public static HashMap<String, String> underScoreCardIDs;
+	public static HashMap<String, String> underScorePotionIDs;
+	public static HashMap<String, String> underScorePowerIDs;
+	public static HashMap<String, String> underScoreEventIDs;
+	public static HashMap<String, String> underScoreRelicIDs;
+
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameColorMap;
@@ -227,18 +269,18 @@ public class BaseMod {
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
-	
+
 	private static OrthographicCamera animationCamera;
 	private static ModelBatch batch;
 	private static Environment animationEnvironment;
 	private static FrameBuffer animationBuffer;
 	private static Texture animationTexture;
 	private static TextureRegion animationTextureRegion;
-	
+
 	public static final String CONFIG_FILE = "basemod-config";
 	private static Object config;
 	private static Class<?> spireConfig;
-	
+
 	/* should be final but the compiler doesn't like me */
 	public static String save_path = "saves" + File.separator;
 
@@ -248,13 +290,13 @@ public class BaseMod {
 
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
-	
+
 	// Text input
-	
+
 	private static ModTextPanel textPanel;
 
 	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
-	
+
 	//
 	// Initialization
 	//
@@ -263,22 +305,26 @@ public class BaseMod {
 		Properties defaultProperties = new Properties();
 		defaultProperties.setProperty("console-key", "`");
 		Object configObject;
-		
+
 		try {
 			spireConfig = Class.forName("com.evacipated.cardcrawl.modthespire.lib.SpireConfig");
-			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class).newInstance(
-					BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
+			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class)
+					.newInstance(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
 			return configObject;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			logger.info("could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.info(
+					"could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
 			spireConfig = null;
 			return null;
 		}
 	}
-	
+
 	private static void maybeSaveConfig() {
-		if (spireConfig == null) return;
-		
+		if (spireConfig == null) {
+			return;
+		}
+
 		try {
 			Method save = spireConfig.getDeclaredMethod("save");
 			save.invoke(config);
@@ -287,10 +333,12 @@ public class BaseMod {
 			logger.error(e.toString());
 		}
 	}
-	
+
 	public static String maybeGetString(String key) {
-		if (spireConfig == null) return null;
-		
+		if (spireConfig == null) {
+			return null;
+		}
+
 		try {
 			Method getString = spireConfig.getDeclaredMethod("getString", String.class);
 			return (String) getString.invoke(config, key);
@@ -300,10 +348,12 @@ public class BaseMod {
 			return null;
 		}
 	}
-	
+
 	public static void maybeSetString(String key, String value) {
-		if (spireConfig == null) return;
-		
+		if (spireConfig == null) {
+			return;
+		}
+
 		try {
 			Method setString = spireConfig.getDeclaredMethod("setString", String.class, String.class);
 			setString.invoke(config, key, value);
@@ -313,10 +363,12 @@ public class BaseMod {
 			logger.error(e.toString());
 		}
 	}
-	
+
 	public static Boolean maybeGetBoolean(String key) {
-		if (spireConfig == null) return null;
-		
+		if (spireConfig == null) {
+			return null;
+		}
+
 		try {
 			Method getBoolean = spireConfig.getDeclaredMethod("getBool", String.class);
 			return (Boolean) getBoolean.invoke(config, key);
@@ -326,10 +378,12 @@ public class BaseMod {
 			return null;
 		}
 	}
-	
+
 	public static void maybeSetBoolean(String key, Boolean value) {
-		if (spireConfig == null) return;
-		
+		if (spireConfig == null) {
+			return;
+		}
+
 		try {
 			Method setBoolean = spireConfig.getDeclaredMethod("setBool", String.class, boolean.class);
 			setBoolean.invoke(config, key, value);
@@ -339,28 +393,40 @@ public class BaseMod {
 			logger.error(e.toString());
 		}
 	}
-	
+
 	private static void setProperties() {
 		// if config can't be loaded leave things at defaults
 		if (config == null) {
 			return;
 		}
-		
+
 		String consoleKey = maybeGetString("console-key");
-		if (consoleKey != null) DevConsole.toggleKey = Keys.valueOf(consoleKey);
+		if (consoleKey != null) {
+			DevConsole.toggleKey = Keys.valueOf(consoleKey);
+		}
 		Boolean consoleEnabled = maybeGetBoolean("console-enabled");
-		if (consoleEnabled != null) DevConsole.enabled = consoleEnabled;
+		if (consoleEnabled != null) {
+			DevConsole.enabled = consoleEnabled;
+		}
+
+		// This is done because the default value for getBoolean is false but I want
+		// true
+		String autoCompleteEnabled = maybeGetString("autocomplete-enabled");
+		if (autoCompleteEnabled != null) {
+			AutoComplete.enabled = !autoCompleteEnabled.equalsIgnoreCase("false");
+		}
 	}
-	
+
 	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
-		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD || chosenClass == AbstractPlayer.PlayerClass.THE_SILENT ||
-				chosenClass == AbstractPlayer.PlayerClass.DEFECT);
+		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD
+				|| chosenClass == AbstractPlayer.PlayerClass.THE_SILENT
+				|| chosenClass == AbstractPlayer.PlayerClass.DEFECT);
 	}
-	
+
 	// initialize -
 	public static void initialize() {
 		System.out.println("libgdx version " + Version.VERSION);
-		
+
 		modBadges = new ArrayList<>();
 
 		initializeGson();
@@ -374,33 +440,31 @@ public class BaseMod {
 		initializePotionMap();
 		initializePotionList();
 		initializePowerMap();
+		initializeUnderscorePowerIDs();
+		initializeEncounters();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribeToPostInitialize(baseModInit);
 
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
-		
-		
+
 		config = maybeGetConfig();
 		setProperties();
 		console = new DevConsole();
 		textPanel = new ModTextPanel();
 	}
-	
+
 	// setupAnimationGfx -
 	private static void setupAnimationGfx() {
-		animationCamera =  new OrthographicCamera(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		animationCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		animationCamera.near = 1.0f;
 		animationCamera.far = 300.0f;
 		animationCamera.position.z = 200.0f;
 		animationCamera.update();
 		batch = new ModelBatch();
 		animationEnvironment = new Environment();
-		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight,
-				1f, 1f, 1f, 1f));
-		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), false);
+		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
+		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	}
 
 	// initializeGson -
@@ -431,34 +495,20 @@ public class BaseMod {
 		typeMaps.put(OrbStrings.class, "orb");
 
 		typeTokens = new HashMap<>();
-		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {
-		}.getType());
-		typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>() {
-		}.getType());
-		typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>() {
-		}.getType());
-		typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>() {
-		}.getType());
-		typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>() {
-		}.getType());
-		typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>() {
-		}.getType());
-		typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>() {
-		}.getType());
-		typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>() {
-		}.getType());
-		typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>() {
-		}.getType());
-		typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>() {
-		}.getType());
-		typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>() {
-		}.getType());
-		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {
-		}.getType());
-		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {
-		}.getType());
-		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {
-		}.getType());
+		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {}.getType());
+		typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>() {}.getType());
+		typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>() {}.getType());
+		typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>() {}.getType());
+		typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>() {}.getType());
+		typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>() {}.getType());
+		typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>() {}.getType());
+		typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>() {}.getType());
+		typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>() {}.getType());
+		typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>() {}.getType());
+		typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>() {}.getType());
+		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {}.getType());
+		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {}.getType());
+		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {}.getType());
 	}
 
 	// initializeSubscriptions -
@@ -556,7 +606,7 @@ public class BaseMod {
 		colorPowerBgPortraitTextureMap = new HashMap<>();
 		colorEnergyOrbPortraitTextureMap = new HashMap<>();
 	}
-	
+
 	private static void initializeRelicPool() {
 		customRelicPools = new HashMap<>();
 		customRelicLists = new HashMap<>();
@@ -566,17 +616,115 @@ public class BaseMod {
 	private static void initializeUnlocks() {
 		unlockBundles = new HashMap<>();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
-	private static void initializePotionMap() { 
-	      potionClassMap = new HashMap<String, Class>(); 
-	      potionHybridColorMap = new HashMap<String, Color>(); 
-	      potionLiquidColorMap = new HashMap<String, Color>(); 
-	      potionSpotsColorMap = new HashMap<String, Color>(); 
-	} 
-	
-	private static void initializePotionList() { 
-	      potionsToRemove= new ArrayList<>(); 
+	private static void initializePotionMap() {
+		potionClassMap = new HashMap<>();
+		potionHybridColorMap = new HashMap<>();
+		potionLiquidColorMap = new HashMap<>();
+		potionSpotsColorMap = new HashMap<>();
+	}
+
+	private static void initializePotionList() {
+		potionsToRemove = new ArrayList<>();
+	}
+
+	// Finds potions that have IDs with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	public static void initializeUnderscorePotionIDs() {
+		logger.info("initializeUnderscorePotionIDs");
+		underScorePotionIDs = new HashMap<>();
+
+		// Not actually unchecked
+		@SuppressWarnings("unchecked")
+		// This has to be LocalizedStrings and not PotionHelper.potions, because
+		// PotionHelper.potions is empty on the games startup
+		Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
+				.getPrivateStatic(LocalizedStrings.class, "potions"));
+		if (potions != null) {
+			for (String key : potions.keySet()) {
+				if (key.contains(" ")) {
+					underScorePotionIDs.put(key.replace(' ', '_'), key);
+				}
+			}
+		}
+	}
+
+	// Finds potions that have IDs with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	public static void initializeUnderscoreEventIDs() {
+		logger.info("initializeUnderscoreEventIDs");
+		underScoreEventIDs = new HashMap<>();
+
+		// Not actually unchecked
+		@SuppressWarnings("unchecked")
+		Map<String, EventStrings> events = (Map<String, EventStrings>) (ReflectionHacks
+				.getPrivateStatic(LocalizedStrings.class, "events"));
+		if (events != null) {
+			for (String key : events.keySet()) {
+				if (key.contains(" ")) {
+					underScoreEventIDs.put(key.replace(' ', '_'), key);
+				}
+			}
+		}
+	}
+
+	private static void initializeEncounters() {
+		// maybe change this to use LocalizedStrings instead (like
+		// initializeUnderScorePotionIDs)
+		logger.info("initializeEncounters");
+		encounterList = new ArrayList<>();
+		// Construct Encounters
+		try {
+			Field[] fields = MonsterHelper.class.getDeclaredFields();
+			for (Field f : fields) {
+				// All encounters are public static final Strings
+				// Currently, there are no false positives because the encounters are the only
+				// public static final Strings in the MonsterHelper class. If this changes, the
+				// other constants have to be manually blacklisted here
+				if (f.getType() == String.class) {
+					int mods = f.getModifiers();
+					if (Modifier.isStatic(mods) && Modifier.isPublic(mods) && Modifier.isFinal(mods)) {
+						encounterList.add((String) f.get(null));
+					}
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		// Finds encounters that have IDs with spaces in them and maps those IDs with
+		// underscores instead of spaces to the original id
+		underScoreEncounterIDs = new HashMap<>();
+		for (String id : encounterList) {
+			if (id.contains(" ")) {
+				underScoreEncounterIDs.put(id.replace(' ', '_'), id);
+			}
+		}
+	}
+
+	// Finds cards that have IDs with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	public static void initializeUnderscoreCardIDs() {
+		logger.info("initializeUnderscoreCardIDs");
+		underScoreCardIDs = new HashMap<>();
+		for (String key : CardLibrary.cards.keySet()) {
+			if (key.contains(" ")) {
+				underScoreCardIDs.put(key.replace(' ', '_'), key);
+			}
+		}
+	}
+
+	// Finds relics that have IDs with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	public static void initializeUnderscoreRelicIDs() {
+		logger.info("initializeUnderscoreRelicIDs");
+		underScoreRelicIDs = new HashMap<>();
+		for (String id : listAllRelicIDs()) {
+			if (id.contains(" ")) {
+				underScoreRelicIDs.put(id.replace(' ', '_'), id);
+			}
+		}
 	}
 
 	private static void initializePowerMap() {
@@ -588,12 +736,9 @@ public class BaseMod {
 		try {
 			finder.add(new File(url.toURI()));
 
-			ClassFilter filter =
-					new AndClassFilter(
-							new NotClassFilter(new InterfaceOnlyClassFilter()),
-							new NotClassFilter(new AbstractClassFilter()),
-							new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+")
-					);
+			ClassFilter filter = new AndClassFilter(new NotClassFilter(new InterfaceOnlyClassFilter()),
+					new NotClassFilter(new AbstractClassFilter()),
+					new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+"));
 			Collection<ClassInfo> foundClasses = new ArrayList<>();
 			finder.findClasses(foundClasses, filter);
 
@@ -604,7 +749,8 @@ public class BaseMod {
 				try {
 					for (FieldInfo fieldInfo : classInfo.getFields()) {
 						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
-							powerMap.put((String) fieldInfo.getValue(), BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
+							powerMap.put((String) fieldInfo.getValue(),
+									BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
 							break;
 						}
 					}
@@ -616,7 +762,19 @@ public class BaseMod {
 			e.printStackTrace();
 		}
 	}
-	
+
+	// Finds powers that have IDs with spaces in them and maps those IDs with
+	// underscores instead of spaces to the original id
+	public static void initializeUnderscorePowerIDs() {
+		logger.info("initializeUnderscorePowerIDs");
+		underScorePowerIDs = new HashMap<>();
+		for (String key : powerMap.keySet()) {
+			if (key.contains(" ")) {
+				underScorePowerIDs.put(key.replace(' ', '_'), key);
+			}
+		}
+	}
+
 	//
 	// Mod badges
 	//
@@ -631,24 +789,23 @@ public class BaseMod {
 		ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
 		modBadges.add(badge);
 	}
-	
+
 	//
 	// UI
 	//
-	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue, String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
-        CardCrawlGame.mainMenuScreen.lighten();
-        CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.RENAME;
-        CardCrawlGame.cancelButton.hideInstantly();
+	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue,
+			String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
+		CardCrawlGame.mainMenuScreen.lighten();
+		CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.RENAME;
+		CardCrawlGame.cancelButton.hideInstantly();
 		textPanel.show(panel, startingValue, defaultValue, explanationText, cancel, confirm);
 	}
 
 	public static boolean baseGameSaveExists() {
-		return (SaveAndContinue.ironcladSaveExists) ||
-				(SaveAndContinue.silentSaveExists) ||
-				(SaveAndContinue.crowbotSaveExists) ||
-				(SaveAndContinue.defectSaveExists);
+		return (SaveAndContinue.ironcladSaveExists) || (SaveAndContinue.silentSaveExists)
+				|| (SaveAndContinue.crowbotSaveExists) || (SaveAndContinue.defectSaveExists);
 	}
-	
+
 	public static boolean moddedSaveExists() {
 		System.out.println("checking if save exists");
 		for (String playerClass : playerClassMap.keySet()) {
@@ -816,20 +973,23 @@ public class BaseMod {
 	public static void addDynamicVariable(DynamicVariable dv) {
 		cardDynamicVariableMap.put(dv.key(), dv);
 	}
-	
+
 	/**
-	 * Modifies the damage done by a card by seeing if the card is a CustomCard
-	 * and if so, going ahead and calling the damage modification method
+	 * Modifies the damage done by a card by seeing if the card is a CustomCard and
+	 * if so, going ahead and calling the damage modification method default
+	 * implementation leaves the damage the same
 	 * 
-	 * default implementation leaves the damage the same
-	 * @param player the player casting this card
-	 * @param mo the monster this card is targetting (may be null for multiTarget)
-	 * @param c the card being cast
-	 * @param tmp the current damage amount
+	 * @param player
+	 *            the player casting this card
+	 * @param mo
+	 *            the monster this card is targetting (may be null for multiTarget)
+	 * @param c
+	 *            the card being cast
+	 * @param tmp
+	 *            the current damage amount
 	 * @return the modified damage amount
 	 */
-	public static float calculateCardDamage(AbstractPlayer player,
-			AbstractMonster mo, AbstractCard c, float tmp) {
+	public static float calculateCardDamage(AbstractPlayer player, AbstractMonster mo, AbstractCard c, float tmp) {
 		if (c instanceof CustomCard) {
 			float newVal = ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
 			if ((int) newVal != c.baseDamage) {
@@ -840,7 +1000,7 @@ public class BaseMod {
 			return tmp;
 		}
 	}
-	
+
 	/*
 	 * same as above but without the monster
 	 */
@@ -917,7 +1077,7 @@ public class BaseMod {
 			logger.info("tried to remove relic of unsupported type: " + relic + " " + type);
 		}
 	}
-	
+
 	// addRelicToCustomPool -
 	public static void addRelicToCustomPool(AbstractRelic relic, String color) {
 		if (customRelicPools.containsKey(color)) {
@@ -932,12 +1092,12 @@ public class BaseMod {
 			logger.error("could not add relic to non existent custom pool: " + color);
 		}
 	}
-	
+
 	// getRelicsInCustomPool -
 	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(String color) {
 		return customRelicPools.get(color);
 	}
-	
+
 	// getAllCustomRelics -
 	public static HashMap<String, HashMap<String, AbstractRelic>> getAllCustomRelics() {
 		return customRelicPools;
@@ -991,19 +1151,55 @@ public class BaseMod {
 		removeRelic(relic, RelicType.GREEN);
 	}
 
+	// lists the IDs of all Relics from all pools. The casts are actually not
+	// unchecked
+	@SuppressWarnings("unchecked")
+	public static ArrayList<String> listAllRelicIDs() {
+		ArrayList<String> relicIDs = new ArrayList<>();
+
+		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "sharedRelics");
+		if (sharedRelics != null) {
+			relicIDs.addAll(sharedRelics.keySet());
+		}
+		HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "redRelics");
+		if (redRelics != null) {
+			relicIDs.addAll(redRelics.keySet());
+		}
+		HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "greenRelics");
+		if (greenRelics != null) {
+			relicIDs.addAll(greenRelics.keySet());
+		}
+		HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "blueRelics");
+		if (blueRelics != null) {
+			relicIDs.addAll(blueRelics.keySet());
+		}
+		if (getAllCustomRelics() != null) {
+			for (Entry<String, HashMap<String, AbstractRelic>> e : getAllCustomRelics().entrySet()) {
+				if (e != null && e.getValue() != null) {
+					relicIDs.addAll(e.getValue().keySet());
+				}
+			}
+		}
+		return relicIDs;
+	}
+
 	//
-	//Keywords
+	// Keywords
 	//
-	
+
 	public static void addKeyword(String[] names, String description) {
 		String parent = names[0];
-		
-		for(String name : names) {
+
+		for (String name : names) {
 			GameDictionary.keywords.put(name, description);
 			GameDictionary.parentWord.put(name, parent);
 		}
 	}
-	
+
 	//
 	// Unlocks
 	//
@@ -1030,8 +1226,9 @@ public class BaseMod {
 	// get unlock bundle for class and level
 	public static CustomUnlockBundle getUnlockBundleFor(AbstractPlayer.PlayerClass c, int unlockLevel) {
 		HashMap<Integer, CustomUnlockBundle> levelMap = unlockBundles.get(c);
-		if (levelMap == null)
+		if (levelMap == null) {
 			return null;
+		}
 		return levelMap.get(unlockLevel);
 	}
 
@@ -1160,29 +1357,29 @@ public class BaseMod {
 			return AbstractCard.orb_red;
 		}
 		switch (AbstractDungeon.player.chosenClass) {
-			case IRONCLAD:
-				return AbstractCard.orb_red;
-			case THE_SILENT:
-				return AbstractCard.orb_green;
-			case DEFECT:
-				return AbstractCard.orb_blue;
-			default:
-				// TODO: mod orbs
-				// TODO: Not requiring TextureAtlas.AtlasRegion
-				return AbstractCard.orb_red;
+		case IRONCLAD:
+			return AbstractCard.orb_red;
+		case THE_SILENT:
+			return AbstractCard.orb_green;
+		case DEFECT:
+			return AbstractCard.orb_blue;
+		default:
+			// TODO: mod orbs
+			// TODO: Not requiring TextureAtlas.AtlasRegion
+			return AbstractCard.orb_red;
 		}
 	}
 
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy(AbstractCard card) {
 		switch (card.color) {
-			case RED:
-				return AbstractCard.orb_red;
-			case GREEN:
-				return AbstractCard.orb_green;
-			case BLUE:
-				return AbstractCard.orb_blue;
-			default:
-				return getCardSmallEnergy();
+		case RED:
+			return AbstractCard.orb_red;
+		case GREEN:
+			return AbstractCard.orb_green;
+		case BLUE:
+			return AbstractCard.orb_blue;
+		default:
+			return getCardSmallEnergy();
 		}
 	}
 
@@ -1274,7 +1471,7 @@ public class BaseMod {
 		colorSkillBgPortraitMap.put(color, skillBgPortrait);
 		colorPowerBgPortraitMap.put(color, powerBgPortrait);
 		colorEnergyOrbPortraitMap.put(color, energyOrbPortrait);
-		
+
 		customRelicPools.put(color, new HashMap<>());
 		customRelicLists.put(color, new ArrayList<>());
 	}
@@ -1299,7 +1496,7 @@ public class BaseMod {
 		colorSkillBgPortraitMap.remove(color);
 		colorPowerBgPortraitMap.remove(color);
 		colorEnergyOrbPortraitMap.remove(color);
-		
+
 		customRelicPools.remove(color);
 		customRelicLists.remove(color, new ArrayList<>());
 	}
@@ -1503,60 +1700,70 @@ public class BaseMod {
 	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbPortraitTextureMap.put(color, tex);
 	}
-	
-	// 
-    //Potions 
-    // 
-	
-	public static ArrayList<String> getPotionsToRemove() { 
-	      return potionsToRemove; 
-	} 
-	
-	public static void removePotion(String potionID) { 
-	      potionsToRemove.add(potionID); 
+
+	//
+	// Potions
+	//
+
+	public static ArrayList<String> getPotionsToRemove() {
+		return potionsToRemove;
 	}
-	
-	//add the Potion to the map (fake ENUM) 
-    @SuppressWarnings("rawtypes")
-	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,String potionID) { 
-	    potionClassMap.put(potionID, potionClass); 
-	    potionLiquidColorMap.put(potionID, liquidColor); 
-	    potionHybridColorMap.put(potionID,hybridColor); 
-	    potionSpotsColorMap.put(potionID, spotsColor); 
-	} 
-    //(fake ENUM) return Class corresponding to potionID 
-    @SuppressWarnings("rawtypes")
-	public static Class getPotionClass(String potionID) { 
-    	return potionClassMap.get(potionID); 
-    } 
-    //(fake ENUM) return Colors corresponding to potionID 
-    public static Color getPotionLiquidColor(String potionID) { 
-    	return potionLiquidColorMap.get(potionID); 
-    } 
-    public static Color getPotionHybridColor(String potionID) { 
-    	return potionHybridColorMap.get(potionID); 
-    } 
-    public static Color getPotionSpotsColor(String potionID) { 
-    	return potionSpotsColorMap.get(potionID); 
-    } 
-    //get all entry in fake ENUM 
-    public static Set<String> getPotionIDs() { 
-    	return potionClassMap.keySet(); 
-    } 
-    
-    //
-    // Powers
-    //
-    
-    public static void addPower(@SuppressWarnings("rawtypes") Class powerClass,String potionID) {
-    	powerMap.put(potionID, powerClass);
-    }
-    
-    @SuppressWarnings("rawtypes")
+
+	public static void removePotion(String potionID) {
+		potionsToRemove.add(potionID);
+	}
+
+	// add the Potion to the map (fake ENUM)
+	@SuppressWarnings("rawtypes")
+	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,
+			String potionID) {
+		potionClassMap.put(potionID, potionClass);
+		potionLiquidColorMap.put(potionID, liquidColor);
+		potionHybridColorMap.put(potionID, hybridColor);
+		potionSpotsColorMap.put(potionID, spotsColor);
+	}
+
+	// (fake ENUM) return Class corresponding to potionID
+	@SuppressWarnings("rawtypes")
+	public static Class getPotionClass(String potionID) {
+		return potionClassMap.get(potionID);
+	}
+
+	// (fake ENUM) return Colors corresponding to potionID
+	public static Color getPotionLiquidColor(String potionID) {
+		return potionLiquidColorMap.get(potionID);
+	}
+
+	public static Color getPotionHybridColor(String potionID) {
+		return potionHybridColorMap.get(potionID);
+	}
+
+	public static Color getPotionSpotsColor(String potionID) {
+		return potionSpotsColorMap.get(potionID);
+	}
+
+	// get all entry in fake ENUM
+	public static Set<String> getPotionIDs() {
+		return potionClassMap.keySet();
+	}
+
+	//
+	// Powers
+	//
+
+	public static void addPower(@SuppressWarnings("rawtypes") Class powerClass, String potionID) {
+		powerMap.put(potionID, powerClass);
+	}
+
+	@SuppressWarnings("rawtypes")
 	public static Class getPowerClass(String powerID) {
-    	return powerMap.get(powerID);
-    }
-    
+		return powerMap.get(powerID);
+	}
+
+	public static Set<String> getPowerKeys() {
+		return powerMap.keySet();
+	}
+
 	//
 	// Publishers
 	//
@@ -1629,7 +1836,7 @@ public class BaseMod {
 
 		// setup the necessary bits for custom animations to work
 		setupAnimationGfx();
-		
+
 		// Publish
 		for (PostInitializeSubscriber sub : postInitializeSubscribers) {
 			sub.receivePostInitialize();
@@ -1660,7 +1867,7 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(RenderSubscriber.class);
 	}
-	
+
 	// publishAnimationRender -
 	public static void publishAnimationRender(SpriteBatch sb) {
 		if (modelRenderSubscribers.size() > 0) {
@@ -1670,35 +1877,35 @@ public class BaseMod {
 			CardCrawlGame.psb.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			CardCrawlGame.psb.draw(animationTextureRegion, 0, 0);
 			CardCrawlGame.psb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-	        CardCrawlGame.psb.end();
-	        sb.begin();
+			CardCrawlGame.psb.end();
+			sb.begin();
 		}
 	}
-	
+
 	// publishPreRender -
 	public static void publishPreRender(OrthographicCamera camera) {
 		for (PreRenderSubscriber sub : preRenderSubscribers) {
 			sub.receiveCameraRender(camera);
 		}
-		
+
 		if (modelRenderSubscribers.size() > 0) {
 			// custom animations
 			animationBuffer.begin();
-		    Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-		    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		    batch.begin(animationCamera);
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			batch.begin(animationCamera);
 
-		    for (ModelRenderSubscriber sub : modelRenderSubscribers) {
-		    	sub.receiveModelRender(batch, animationEnvironment);
-		    }
-		    
-		    batch.end();
-		    animationBuffer.end();
-	        animationTexture = animationBuffer.getColorBufferTexture();
-	        animationTextureRegion = new TextureRegion(animationTexture);
-	        animationTextureRegion.flip(false, true);
+			for (ModelRenderSubscriber sub : modelRenderSubscribers) {
+				sub.receiveModelRender(batch, animationEnvironment);
+			}
+
+			batch.end();
+			animationBuffer.end();
+			animationTexture = animationBuffer.getColorBufferTexture();
+			animationTextureRegion = new TextureRegion(animationTexture);
+			animationTextureRegion.flip(false, true);
 		}
-		
+
 		unsubscribeLaterHelper(PreRenderSubscriber.class);
 		unsubscribeLaterHelper(ModelRenderSubscriber.class);
 	}
@@ -1730,7 +1937,7 @@ public class BaseMod {
 		}
 
 		logger.info("mapDensityMultiplier: " + mapPathDensityMultiplier);
-		
+
 		unsubscribeLaterHelper(StartGameSubscriber.class);
 	}
 
@@ -1932,7 +2139,7 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(OnCardUseSubscriber.class);
 	}
-	
+
 	// publishPostUsePotion -
 	public static void publishPostPotionUse(AbstractPotion p) {
 		logger.info("publish on post potion use");
@@ -1941,27 +2148,27 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(PostPotionUseSubscriber.class);
 	}
-	
+
 	// publishPostPotionUse -
 	public static void publishPrePotionUse(AbstractPotion p) {
 		logger.info("publish on pre potion use");
-		
+
 		for (PrePotionUseSubscriber sub : prePotionUseSubscribers) {
 			sub.receivePrePotionUse(p);
 		}
 		unsubscribeLaterHelper(PrePotionUseSubscriber.class);
 	}
-	
+
 	// publishPotionGet -
 	public static void publishPotionGet(AbstractPotion p) {
 		logger.info("publish on potion get");
-		
+
 		for (PotionGetSubscriber sub : potionGetSubscribers) {
 			sub.receivePotionGet(p);
 		}
 		unsubscribeLaterHelper(PotionGetSubscriber.class);
 	}
-	
+
 	// publishRelicGet -
 	public static void publishRelicGet(AbstractRelic r) {
 		logger.info("publish on relic get");
@@ -1970,33 +2177,33 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(RelicGetSubscriber.class);
 	}
-	
+
 	// publishPostPowerApply
 	public static void publishPostPowerApply(AbstractPower p, AbstractCreature target, AbstractCreature source) {
 		logger.info("publish on post power apply");
-		
-		for(PostPowerApplySubscriber sub: postPowerApplySubscribers) {
+
+		for (PostPowerApplySubscriber sub : postPowerApplySubscribers) {
 			sub.receivePostPowerApplySubscriber(p, target, source);
 		}
 		unsubscribeLaterHelper(PostPowerApplySubscriber.class);
 	}
-	
+
 	// publishEditKeywords
 	public static void publishEditKeywords() {
 		logger.info("editting keywords");
 
-		addKeyword(new String[]{"[E]"}, GameDictionary.TEXT[0]);
-		
+		addKeyword(new String[] { "[E]" }, GameDictionary.TEXT[0]);
+
 		for (EditKeywordsSubscriber sub : editKeywordsSubscribers) {
 			sub.receiveEditKeywords();
 		}
 		unsubscribeLaterHelper(EditKeywordsSubscriber.class);
 	}
-	
+
 	// publishOnPowersModified
 	public static void publishOnPowersModified() {
 		logger.info("powers modified");
-		
+
 		for (OnPowersModifiedSubscriber sub : onPowersModifiedSubscribers) {
 			sub.receivePowersModified();
 		}
@@ -2012,7 +2219,7 @@ public class BaseMod {
 		}
 		unsubscribeLaterHelper(PostDeathSubscriber.class);
 	}
-	
+
 	//
 	// Subscription handlers
 	//
@@ -2025,7 +2232,7 @@ public class BaseMod {
 			}
 		}
 	}
-	
+
 	// not actually unchecked because we do an isInstance check at runtime
 	@SuppressWarnings("unchecked")
 	private static <T> void subscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
@@ -2033,16 +2240,15 @@ public class BaseMod {
 			list.add((T) sub);
 		}
 	}
-	
+
 	// not actually unchecked because we do an isInstance check at runtime
 	@SuppressWarnings("unchecked")
 	private static <T> void unsubscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
 		if (clazz.isInstance(sub)) {
-			list.remove((T) sub);
+			list.remove(sub);
 		}
 	}
-	
-	
+
 	// subscribe -
 	// will subscribe to all lists this sub implements
 	public static void subscribe(ISubscriber sub) {
@@ -2082,7 +2288,7 @@ public class BaseMod {
 		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
-	
+
 	// subscribe -
 	// only subscribers to a specific list
 	public static void subscribe(ISubscriber sub, Class<? extends ISubscriber> additionClass) {
@@ -2158,7 +2364,7 @@ public class BaseMod {
 			postDeathSubscribers.add((PostDeathSubscriber) sub);
 		}
 	}
-	
+
 	// unsubscribe -
 	// will unsubscribe from all lists this sub implements
 	public static void unsubscribe(ISubscriber sub) {
@@ -2198,7 +2404,7 @@ public class BaseMod {
 		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 	}
-	
+
 	// unsubscribe -
 	// only unsubscribe from a specific list
 	public static void unsubscribe(ISubscriber sub, Class<? extends ISubscriber> removalClass) {
@@ -2274,8 +2480,7 @@ public class BaseMod {
 			postDeathSubscribers.remove(sub);
 		}
 	}
-	
-	
+
 	// unsubscribeLater -
 	public static void unsubscribeLater(ISubscriber sub) {
 		toRemove.add(sub);
@@ -2312,8 +2517,8 @@ public class BaseMod {
 
 	public static String findCallingModName() {
 		return null;
-    }
-	
+	}
+
 	// subscribeToStartAct -
 	@Deprecated
 	public static void subscribeToStartAct(StartActSubscriber sub) {
@@ -2421,7 +2626,7 @@ public class BaseMod {
 	public static void unsubscribeFromRender(RenderSubscriber sub) {
 		renderSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToPreRender -
 	@Deprecated
 	public static void subscribeToPreRender(PreRenderSubscriber sub) {
@@ -2445,13 +2650,13 @@ public class BaseMod {
 	public static void unsubscribeFromPostRender(PostRenderSubscriber sub) {
 		postRenderSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToModelRender -
 	@Deprecated
 	public static void subscribeToModelRender(ModelRenderSubscriber sub) {
 		modelRenderSubscribers.add(sub);
 	}
-	
+
 	// unsubscribeFromModelRender -
 	@Deprecated
 	public static void unsubscribeFromModelRender(ModelRenderSubscriber sub) {
@@ -2637,7 +2842,7 @@ public class BaseMod {
 	public static void unsubscribeFromOnCardUse(OnCardUseSubscriber sub) {
 		onCardUseSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToPostPotionUse
 	@Deprecated
 	public static void subscribeToPostPotionUse(PostPotionUseSubscriber sub) {
@@ -2649,7 +2854,7 @@ public class BaseMod {
 	public static void unsubscribeFromPostPotionUse(PostPotionUseSubscriber sub) {
 		postPotionUseSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToprePotionUse
 	@Deprecated
 	public static void subscribeToPrePotionUse(PrePotionUseSubscriber sub) {
@@ -2661,7 +2866,7 @@ public class BaseMod {
 	public static void unsubscribeFromPrePotionUse(PrePotionUseSubscriber sub) {
 		prePotionUseSubscribers.remove(sub);
 	}
-		
+
 	// subscribeToPotionGet
 	@Deprecated
 	public static void subscribeToPotionGet(PotionGetSubscriber sub) {
@@ -2673,7 +2878,7 @@ public class BaseMod {
 	public static void unsubscribeFromPotionGet(PotionGetSubscriber sub) {
 		potionGetSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToRelicGet
 	@Deprecated
 	public static void subscribeToRelicGet(RelicGetSubscriber sub) {
@@ -2685,37 +2890,37 @@ public class BaseMod {
 	public static void unsubscribeFromRelicGet(RelicGetSubscriber sub) {
 		relicGetSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToPostPowerApply
 	@Deprecated
 	public static void subscribeToPostPowerApply(PostPowerApplySubscriber sub) {
 		postPowerApplySubscribers.add(sub);
 	}
-	
+
 	// unsubscribeToPostPowerApply
 	@Deprecated
 	public static void unsubscribeToPostPowerApply(PostPowerApplySubscriber sub) {
 		postPowerApplySubscribers.remove(sub);
 	}
-	
+
 	// subscribeToEditKeywords
 	@Deprecated
 	public static void subscribeToEditKeywords(EditKeywordsSubscriber sub) {
 		editKeywordsSubscribers.add(sub);
 	}
-	
+
 	// unsubscribeFromEditKeywords
 	@Deprecated
 	public static void unsubscribeFromEditKeywords(EditKeywordsSubscriber sub) {
 		editKeywordsSubscribers.remove(sub);
 	}
-	
+
 	// subscribeToOnPowersModified
 	@Deprecated
 	public static void subscribeToOnPowersModified(OnPowersModifiedSubscriber sub) {
 		onPowersModifiedSubscribers.add(sub);
 	}
-	
+
 	// unsubscribeFromOnPowersModified
 	@Deprecated
 	public static void unsubscribeFromOnPowersModified(OnPowersModifiedSubscriber sub) {
