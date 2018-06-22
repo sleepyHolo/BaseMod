@@ -1990,43 +1990,34 @@ public class BaseMod {
 	public static void publishPostCreateStartingRelics(PlayerClass chosenClass, ArrayList<String> relics) {
 		logger.info("postCreateStartingRelics for: " + chosenClass);
 
-		boolean clearDefault = false;
-		ArrayList<String> relicsToAdd = new ArrayList<>();
-
 		for (PostCreateStartingRelicsSubscriber sub : postCreateStartingRelicsSubscribers) {
 			logger.info("postCreateStartingRelics modifying starting relics for: " + sub);
-			switch (chosenClass) {
-			case IRONCLAD:
-				if (sub instanceof PostCreateIroncladStartingRelicsSubscriber) {
-					if (sub.receivePostCreateStartingRelics(relicsToAdd)) {
-						clearDefault = true;
-					}
+			if (sub instanceof PostCreateIroncladStartingRelicsSubscriber) {
+				if (chosenClass.equals(PlayerClass.IRONCLAD)) {
+					sub.receivePostCreateStartingRelics(chosenClass, relics);
 				}
-				break;
-			case THE_SILENT:
-				if (sub instanceof PostCreateSilentStartingRelicsSubscriber) {
-					if (sub.receivePostCreateStartingRelics(relicsToAdd)) {
-						clearDefault = true;
-					}
+			} else if (sub instanceof PostCreateSilentStartingRelicsSubscriber) {
+				if (chosenClass.equals(PlayerClass.THE_SILENT)) {
+					sub.receivePostCreateStartingRelics(chosenClass, relics);
 				}
-				break;
-			default:
-				break;
+			} else {
+				sub.receivePostCreateStartingRelics(chosenClass, relics);
 			}
 		}
 
 		StringBuilder logString = new StringBuilder("postCreateStartingRelics adding [ ");
-		for (String relic : relicsToAdd) {
+		for (String relic : relics) {
 			logString.append(relic).append(" ");
 		}
 		logString.append("]");
 		logger.info(logString.toString());
 
 		// mark as seen
-		for (String relic : relicsToAdd) {
+		for (String relic : relics) {
 			UnlockTracker.markRelicAsSeen(relic);
 		}
 
+<<<<<<< HEAD
 		// the default setup for adding starting relics does not do
 		// equip triggers on the relics so we circumvent that by
 		// adding relics ourself on dungeon initialize and force
@@ -2051,6 +2042,9 @@ public class BaseMod {
 		}
 
 		AbstractDungeon.relicsToRemoveOnStart.addAll(relicsToAdd);
+=======
+		AbstractDungeon.relicsToRemoveOnStart.addAll(relics);
+>>>>>>> f6939318671a0f88b66c5782b084485a35491281
 		unsubscribeLaterHelper(PostCreateStartingRelicsSubscriber.class);
 	}
 
