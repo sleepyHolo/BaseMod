@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import basemod.interfaces.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,37 +31,13 @@ import com.megacrit.cardcrawl.shop.StoreRelic;
 
 import basemod.BaseMod;
 import basemod.ModPanel;
-import basemod.interfaces.EditCardsSubscriber;
-import basemod.interfaces.EditCharactersSubscriber;
-import basemod.interfaces.EditRelicsSubscriber;
-import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.PostCampfireSubscriber;
-import basemod.interfaces.PostCreateIroncladStartingDeckSubscriber;
-import basemod.interfaces.PostCreateIroncladStartingRelicsSubscriber;
-import basemod.interfaces.PostCreateShopPotionSubscriber;
-import basemod.interfaces.PostCreateShopRelicSubscriber;
-import basemod.interfaces.PostCreateSilentStartingDeckSubscriber;
-import basemod.interfaces.PostCreateSilentStartingRelicsSubscriber;
-import basemod.interfaces.PostDrawSubscriber;
-import basemod.interfaces.PostDungeonInitializeSubscriber;
-import basemod.interfaces.PostEnergyRechargeSubscriber;
-import basemod.interfaces.PostInitializeSubscriber;
-import basemod.interfaces.PostRenderSubscriber;
-import basemod.interfaces.PostUpdateSubscriber;
-import basemod.interfaces.PreMonsterTurnSubscriber;
-import basemod.interfaces.PreStartGameSubscriber;
-import basemod.interfaces.PreUpdateSubscriber;
-import basemod.interfaces.RenderSubscriber;
-import basemod.interfaces.StartActSubscriber;
-import basemod.interfaces.StartGameSubscriber;
 
 @SpireInitializer
 public class TestMod implements
 	EditCardsSubscriber, EditCharactersSubscriber, EditRelicsSubscriber,
-	EditStringsSubscriber, PostCampfireSubscriber, PostCreateIroncladStartingDeckSubscriber,
-	PostCreateIroncladStartingRelicsSubscriber, PostCreateShopPotionSubscriber,
-	PostCreateShopRelicSubscriber, PostCreateSilentStartingDeckSubscriber,
-	PostCreateSilentStartingRelicsSubscriber, PostDrawSubscriber,
+	EditStringsSubscriber, PostCampfireSubscriber, PostCreateStartingDeckSubscriber,
+	PostCreateStartingRelicsSubscriber, PostCreateShopPotionSubscriber,
+	PostCreateShopRelicSubscriber, PostDrawSubscriber,
 	PostDungeonInitializeSubscriber, PostEnergyRechargeSubscriber,
 	PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber,
 	PreMonsterTurnSubscriber, PreStartGameSubscriber,

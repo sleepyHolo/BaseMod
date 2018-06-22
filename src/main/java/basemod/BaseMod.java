@@ -112,12 +112,8 @@ import basemod.interfaces.OnCardUseSubscriber;
 import basemod.interfaces.OnPowersModifiedSubscriber;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostCampfireSubscriber;
-import basemod.interfaces.PostCreateIroncladStartingDeckSubscriber;
-import basemod.interfaces.PostCreateIroncladStartingRelicsSubscriber;
 import basemod.interfaces.PostCreateShopPotionSubscriber;
 import basemod.interfaces.PostCreateShopRelicSubscriber;
-import basemod.interfaces.PostCreateSilentStartingDeckSubscriber;
-import basemod.interfaces.PostCreateSilentStartingRelicsSubscriber;
 import basemod.interfaces.PostCreateStartingDeckSubscriber;
 import basemod.interfaces.PostCreateStartingRelicsSubscriber;
 import basemod.interfaces.PostDeathSubscriber;
@@ -1963,17 +1959,7 @@ public class BaseMod {
 
 		for (PostCreateStartingDeckSubscriber sub : postCreateStartingDeckSubscribers) {
 			logger.info("postCreateStartingDeck modifying starting deck for: " + sub);
-			if (sub instanceof PostCreateIroncladStartingDeckSubscriber) {
-				if (chosenClass.equals(PlayerClass.IRONCLAD)) {
-					sub.receivePostCreateStartingDeck(chosenClass, cards);
-				}
-			} else if (sub instanceof PostCreateSilentStartingDeckSubscriber) {
-				if (chosenClass.equals(PlayerClass.THE_SILENT)) {
-					sub.receivePostCreateStartingDeck(chosenClass, cards);
-				}
-			} else {
-				sub.receivePostCreateStartingDeck(chosenClass, cards);
-			}
+			sub.receivePostCreateStartingDeck(chosenClass, cards);
 		}
 
 		StringBuilder logString = new StringBuilder("postCreateStartingDeck adding [ ");
@@ -1992,17 +1978,7 @@ public class BaseMod {
 
 		for (PostCreateStartingRelicsSubscriber sub : postCreateStartingRelicsSubscribers) {
 			logger.info("postCreateStartingRelics modifying starting relics for: " + sub);
-			if (sub instanceof PostCreateIroncladStartingRelicsSubscriber) {
-				if (chosenClass.equals(PlayerClass.IRONCLAD)) {
-					sub.receivePostCreateStartingRelics(chosenClass, relics);
-				}
-			} else if (sub instanceof PostCreateSilentStartingRelicsSubscriber) {
-				if (chosenClass.equals(PlayerClass.THE_SILENT)) {
-					sub.receivePostCreateStartingRelics(chosenClass, relics);
-				}
-			} else {
-				sub.receivePostCreateStartingRelics(chosenClass, relics);
-			}
+			sub.receivePostCreateStartingRelics(chosenClass, relics);
 		}
 
 		StringBuilder logString = new StringBuilder("postCreateStartingRelics adding [ ");
