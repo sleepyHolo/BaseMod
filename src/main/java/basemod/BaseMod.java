@@ -2017,34 +2017,7 @@ public class BaseMod {
 			UnlockTracker.markRelicAsSeen(relic);
 		}
 
-<<<<<<< HEAD
-		// the default setup for adding starting relics does not do
-		// equip triggers on the relics so we circumvent that by
-		// adding relics ourself on dungeon initialize and force
-		// the equip trigger
-		subscribeToPostDungeonInitialize(() -> {
-			int relicIndex = AbstractDungeon.player.relics.size();
-			int relicRemoveIndex = relicsToAdd.size() - 1;
-			while (relicsToAdd.size() > 0) {
-				System.out.println("Attempting to add: " + relicsToAdd.get(relicRemoveIndex));
-				AbstractRelic relic = RelicLibrary.getRelic(relicsToAdd.remove(relicRemoveIndex));
-				System.out.println("Found relic is: " + relic);
-				AbstractRelic relicCopy = relic.makeCopy();
-				relicCopy.instantObtain(AbstractDungeon.player, relicIndex, true);
-				relicRemoveIndex--;
-				relicIndex++;
-			}
-		});
-
-		if (clearDefault) {
-			logger.info("postCreateStartingRelics clearing initial relics");
-			relics.clear();
-		}
-
-		AbstractDungeon.relicsToRemoveOnStart.addAll(relicsToAdd);
-=======
 		AbstractDungeon.relicsToRemoveOnStart.addAll(relics);
->>>>>>> f6939318671a0f88b66c5782b084485a35491281
 		unsubscribeLaterHelper(PostCreateStartingRelicsSubscriber.class);
 	}
 
