@@ -308,4 +308,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for week 29 (kiooeht)
 * Add AutoComplete to DevConsole (Skrelpoid)
 
+#### v2.14.0 ####
+* Support for week 30 (kiooeht)
+* Deprecate starting deck and relic hooks (kiooeht)
+
 #### dev ####
