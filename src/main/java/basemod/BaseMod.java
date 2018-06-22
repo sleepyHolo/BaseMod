@@ -2001,16 +2001,6 @@ public class BaseMod {
 		unsubscribeLaterHelper(PostCreateStartingDeckSubscriber.class);
 	}
 
-	public static ArrayList<String> relicsThatNeedSpecificPlayer = new ArrayList<>();
-
-	// populate relics that require a specific player for copy list
-	static {
-		String[] relicsThatNeedSpecificPlayerStrArr = { "Ancient Tea Set", "Art of War", "Happy Flower", "Lantern",
-				"Dodecahedron", "Sundial", "Cursed Key", "Ectoplasm", "Mark of Pain", "Philosopher's Stone",
-				"Runic Dome", "Sozu", "Velvet Choker" };
-		Collections.addAll(relicsThatNeedSpecificPlayer, relicsThatNeedSpecificPlayerStrArr);
-	}
-
 	// publishPostCreateStartingRelics -
 	public static void publishPostCreateStartingRelics(PlayerClass chosenClass, ArrayList<String> relics) {
 		logger.info("postCreateStartingRelics for: " + chosenClass);
@@ -2063,17 +2053,7 @@ public class BaseMod {
 				System.out.println("Attempting to add: " + relicsToAdd.get(relicRemoveIndex));
 				AbstractRelic relic = RelicLibrary.getRelic(relicsToAdd.remove(relicRemoveIndex));
 				System.out.println("Found relic is: " + relic);
-				AbstractRelic relicCopy;
-				// without checking if the relic wants to have a player class
-				// provided
-				// the makeCopy() method would return null in cases where the
-				// relic
-				// didn't implement it
-				if (relicsThatNeedSpecificPlayer.contains(relic.name)) {
-					relicCopy = relic.makeCopy(AbstractDungeon.player.chosenClass);
-				} else {
-					relicCopy = relic.makeCopy();
-				}
+				AbstractRelic relicCopy = relic.makeCopy();
 				relicCopy.instantObtain(AbstractDungeon.player, relicIndex, true);
 				relicRemoveIndex--;
 				relicIndex++;
