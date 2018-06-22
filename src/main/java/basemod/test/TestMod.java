@@ -190,27 +190,7 @@ public class TestMod implements
 	@SuppressWarnings("deprecation")
 	public TestMod() {
 		loudWrite(writer, "Begin subscribing to hooks");
-		subscribe("editCards", () -> BaseMod.subscribeToEditCards(this));
-		subscribe("editCharacters", () -> BaseMod.subscribeToEditCharacters(this));
-		subscribe("editRelics", () -> BaseMod.subscribeToEditRelics(this));
-		subscribe("editStrings", () -> BaseMod.subscribeToEditStrings(this));
-		subscribe("postCampfire", () -> BaseMod.subscribeToPostCampfire(this));
-		subscribe("postCreateShopPotion", () -> BaseMod.subscribeToPostCreateShopPotion(this));
-		subscribe("postCreateShopRelic", () -> BaseMod.subscribeToPostCreateShopRelic(this));
-		subscribe("postCreateStartingDeck", () -> BaseMod.subscribeToPostCreateStartingDeck(this));
-		subscribe("postCreateStartingRelics", () -> BaseMod.subscribeToPostCreateStartingRelics(this));
-		subscribe("postDraw", () -> BaseMod.subscribeToPostDraw(this));
-		subscribe("postDungeonInitialize", () -> BaseMod.subscribeToPostDungeonInitialize(this));
-		subscribe("postEnergyRecharge", () -> BaseMod.subscribeToPostEnergyRecharge(this));
-		subscribe("postInitialize", () -> BaseMod.subscribeToPostInitialize(this));
-		subscribe("postRender", () -> BaseMod.subscribeToPostRender(this));
-		subscribe("postUpdate", () -> BaseMod.subscribeToPostUpdate(this));
-		subscribe("preMonsterTurn", () -> BaseMod.subscribeToPreMonsterTurn(this));
-		subscribe("postEnergyRecharge", () -> BaseMod.subscribeToPreStartGame(this));
-		subscribe("postInitialize", () -> BaseMod.subscribeToPreUpdate(this));
-		subscribe("postRender", () -> BaseMod.subscribeToRender(this));
-		subscribe("postUpdate", () -> BaseMod.subscribeToRender(this));
-		subscribe("preMonsterTurn", () -> BaseMod.subscribeToPreUpdate(this));
+		subscribe("subscribe", () -> BaseMod.subscribe(this));
 		loudWrite(writer, "End subscribing to hooks");
 		
 		loudWrite(writer, "Setup new colors");
