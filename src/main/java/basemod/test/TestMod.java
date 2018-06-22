@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import basemod.ModLabel;
 import basemod.interfaces.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -349,7 +350,7 @@ public class TestMod implements
         	// setup ModBadge for TestMod
             Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
             ModPanel settingsPanel = new ModPanel();
-            settingsPanel.addLabel("Test Mod - no settings", 400.0f, 700.0f, (me) -> {});
+            settingsPanel.addUIElement(new ModLabel("Test Mod - no settings", 400.0f, 700.0f, settingsPanel, (me) -> {}));
             BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
         } catch (Exception e) {
         	couldNotCrash("CREATE MOD BADGE", e);

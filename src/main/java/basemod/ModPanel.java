@@ -90,56 +90,6 @@ public class ModPanel {
     	}
     }
     
-    @Deprecated
-    public void addButton(float x, float y, Consumer<ModButton> click) {
-        addUIElement(new ModButton(x, y, this, click));
-    }
-    
-    @Deprecated
-    public void addLabel(String text, float x, float y, Consumer<ModLabel> update) {
-    	addUIElement(new ModLabel(text, x, y, this, update));
-    }
-    
-    @Deprecated
-    public void addSlider(String label, float x, float y, float multi, String suffix, Consumer<ModSlider> change) {
-        addUIElement(new ModSlider(label, x, y, multi, suffix, this, change));
-    }
-    
-    @Deprecated
-    public void addColorDisplay(float x, float y, Texture texture, Texture outline, Consumer<ModColorDisplay> update) {
-    	addUIElement(new ModColorDisplay(x, y, texture, outline, update));
-    }
-    
-    @Deprecated
-    public void addButton(ModButton button) {
-    	addUIElement(button);
-    }
-    
-    @Deprecated
-    public void addLabel(ModLabel label) {
-    	addUIElement(label);
-    }
-    
-    @Deprecated
-    public void addSlider(ModSlider slider) {
-    	addUIElement(slider);
-    }
-    
-    @Deprecated
-    public void addColorDisplay(ModColorDisplay mcd) {
-    	addUIElement(mcd);
-    }
-    
-    @Deprecated
-    public void addImage(ModImage img) {
-    	addUIElement(img);
-    }
-    
-    @Deprecated
-    public void addToggleButton(ModToggleButton button) {
-    	addUIElement(button);
-    }
-    
     public void addUIElement(IUIElement element) {
     	uiElementsRender.add(element);
     	Collections.sort(uiElementsRender, renderComparator);
@@ -151,13 +101,6 @@ public class ModPanel {
         // Background pane
         renderBg(sb);
         
-        // maintain backwards compatibility with mods that refined these methods in a subclass
-        renderImages(sb);
-        renderButtons(sb);
-        renderSliders(sb);
-        renderColorDisplays(sb);
-        renderText(sb);
-        
         // Render UI elements
         // TreeSet maintains an ordering on inserted elements at insertion time
         // and IUIElement specifies a layer so iterating through and rendering each
@@ -167,33 +110,12 @@ public class ModPanel {
         }
     }
     
-    @Deprecated
-    public void renderText(SpriteBatch sb) {}
-    
-    @Deprecated
-    public void renderButtons(SpriteBatch sb) {}
-    
-    @Deprecated
-    public void renderSliders(SpriteBatch sb) {}
-    
-    @Deprecated
-    public void renderColorDisplays(SpriteBatch sb) {}
-    
-    @Deprecated
-    public void renderImages(SpriteBatch sb) {}
-    
     public void renderBg(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
         sb.draw(background, (float)Settings.WIDTH / 2.0f - 682.0f, Settings.OPTION_Y - 376.0f, 682.0f, 376.0f, 1364.0f, 752.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 1364, 752, false, false);
     }
     
     public void update() {
-    	// maintain backwards compatibility with mods that refined these methods in a subclass
-        updateText();
-        updateButtons();
-        updateSliders();
-        updateColorDisplays();
-    	
         // Update UI elements
         // TreeSet maintains an ordering on inserted elements at insertion time
         // and IUIElement specifies a layer so iterating through and updating each
@@ -216,16 +138,4 @@ public class ModPanel {
             isUp = false;
         }
     }
-    
-    @Deprecated
-    private void updateText() {}
-    
-    @Deprecated
-    private void updateButtons() {}
-    
-    @Deprecated
-    private void updateSliders() {}
-    
-    @Deprecated
-    private void updateColorDisplays() {}
 }
