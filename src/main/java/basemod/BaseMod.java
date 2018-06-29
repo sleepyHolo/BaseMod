@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.clapper.util.classutil.AbstractClassFilter;
@@ -1425,6 +1426,15 @@ public class BaseMod {
 					// basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
 					playerSelectButtonMap.get(character), playerPortraitMap.get(character));
 			options.add(option);
+		}
+		return options;
+	}
+
+	// generate character options for CustomModeScreen based on added players
+	public static ArrayList<CustomModeCharacterButton> generateCustomCharacterOptions() {
+		ArrayList<CustomModeCharacterButton> options = new ArrayList<>();
+		for (String character : playerClassMap.keySet()) {
+			options.add(new CustomModeCharacterButton(AbstractPlayer.PlayerClass.valueOf(character), false));
 		}
 		return options;
 	}

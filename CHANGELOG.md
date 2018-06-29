@@ -312,4 +312,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for week 30 (kiooeht)
 * Deprecate starting deck and relic hooks (kiooeht)
 
+#### v2.15.0 ####
+* Support for week 31 (kobting)
+* Add modded characters to the Custom mode screen (kiooeht)
+
 #### dev ####
