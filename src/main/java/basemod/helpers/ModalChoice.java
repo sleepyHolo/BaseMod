@@ -37,7 +37,7 @@ public class ModalChoice
     {
         List<AbstractCard> cards_copy = new ArrayList<>(cards.size());
         for (AbstractCard c : cards) {
-            AbstractCard copy = c.makeCopy();
+            AbstractCard copy = c.makeStatEquivalentCopy();
             copy.dontTriggerOnUseCard = true;
             if (copy.type != AbstractCard.CardType.POWER) {
                 copy.purgeOnUse = true;
