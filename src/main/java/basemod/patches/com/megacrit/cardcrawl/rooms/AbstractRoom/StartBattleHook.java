@@ -10,9 +10,8 @@ import com.megacrit.cardcrawl.rooms.MonsterRoom;
 )
 public class StartBattleHook {
 
-    public static void Prefix(Object object) {
-        MonsterRoom monsterRoom = (MonsterRoom) object;
-        BaseMod.publishStartBattle(monsterRoom);
+    public static void Prefix(MonsterRoom __instance) {
+        BaseMod.publishStartBattle(__instance);
     }
 
 }
