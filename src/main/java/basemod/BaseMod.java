@@ -1163,14 +1163,10 @@ public class BaseMod {
 	//
 	
 	//Event hashmaps
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> customExordiumEvents = new HashMap<String, Class>();
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> customCityEvents = new HashMap<String, Class>();
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> customBeyondEvents = new HashMap<String, Class>();
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> customAllEvents = new HashMap<String, Class>();
+	private static HashMap<String, Class<? extends AbstractEvent>> customExordiumEvents = new HashMap<>();
+	private static HashMap<String, Class<? extends AbstractEvent>> customCityEvents = new HashMap<>();
+	private static HashMap<String, Class<? extends AbstractEvent>> customBeyondEvents = new HashMap<>();
+	private static HashMap<String, Class<? extends AbstractEvent>> customAllEvents = new HashMap<>();
 
 	//Event type enum
 	public enum EventPool{
@@ -1180,7 +1176,7 @@ public class BaseMod {
 		ANY
 	}
 	
-	public static void addEvent(String eventID, @SuppressWarnings("rawtypes") Class c, EventPool pool) {
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> c, EventPool pool) {
 		
 		logger.info("Adding " + eventID + " to " + pool.toString());
 		
@@ -1201,9 +1197,8 @@ public class BaseMod {
 			break;
 		}
 	}
-	
-	@SuppressWarnings("rawtypes")
-	public static HashMap<String, Class> getEventList(EventPool pool) {
+
+	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(EventPool pool) {
 		switch(pool) {
 		case ANY:
 			return customAllEvents;
