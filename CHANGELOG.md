@@ -317,5 +317,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add modded characters to the Custom mode screen (kiooeht)
 
 #### dev ####
-* Add debug command (Blank the Evil)
+* Add debug command (Blank The Evil)
 * Fix Run History screen (kiooeht)
+* StartBattleHook (kobting)
+* Diverse includes modded character's cards (Moocowsgomoo)
+* Patch events and relics that care about Strikes and Defends (twanvl)
+* Fix portrait image in right-click card previews (twanvl)
+* Custom event support (Blank The Evil)
