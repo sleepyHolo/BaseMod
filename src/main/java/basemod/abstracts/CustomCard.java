@@ -217,4 +217,16 @@ public abstract class CustomCard extends AbstractCard {
 	{
 		return null;
 	}
+	
+	//
+	// For events that care about Strikes and Defends
+	//
+	
+	public boolean isStrike() {
+		return false;
+	}
+	
+	public boolean isDefend() {
+		return false;
+	}
 }

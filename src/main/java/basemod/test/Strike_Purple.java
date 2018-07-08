@@ -58,4 +58,8 @@ public class Strike_Purple extends CustomCard {
 			upgradeDamage(UPGRADE_PLUS_DMG);
 		}
 	}
+
+	public boolean isStrike() {
+		return true;
+	}
 }
