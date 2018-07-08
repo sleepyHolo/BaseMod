@@ -1196,6 +1196,8 @@ public class BaseMod {
 		default:
 			break;
 		}
+		
+		underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
 	}
 
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(EventPool pool) {
