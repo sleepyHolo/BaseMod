@@ -63,6 +63,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.MonsterHelper;
@@ -231,6 +232,7 @@ public class BaseMod {
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgPortraitTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgPortraitTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
+	
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 
@@ -261,6 +263,9 @@ public class BaseMod {
 
 	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
 
+	
+	
+	
 	//
 	// Initialization
 	//
@@ -1152,7 +1157,67 @@ public class BaseMod {
 		}
 		return relicIDs;
 	}
+	
+	//
+	// Events
+	//
+	
+	//Event hashmaps
+	@SuppressWarnings("rawtypes")
+	private static HashMap<String, Class> customExordiumEvents = new HashMap<String, Class>();
+	@SuppressWarnings("rawtypes")
+	private static HashMap<String, Class> customCityEvents = new HashMap<String, Class>();
+	@SuppressWarnings("rawtypes")
+	private static HashMap<String, Class> customBeyondEvents = new HashMap<String, Class>();
+	@SuppressWarnings("rawtypes")
+	private static HashMap<String, Class> customAllEvents = new HashMap<String, Class>();
 
+	//Event type enum
+	public enum EventPool{
+		THE_EXORDIUM,
+		THE_CITY,
+		THE_BEYOND,
+		ANY
+	}
+	
+	public static void addEvent(String eventID, @SuppressWarnings("rawtypes") Class c, EventPool pool) {
+		
+		logger.info("Adding " + eventID + " to " + pool.toString());
+		
+		switch(pool) {
+		case ANY:
+			customAllEvents.put(eventID, c);
+			break;
+		case THE_BEYOND:
+			customBeyondEvents.put(eventID, c);
+			break;
+		case THE_CITY:
+			customCityEvents.put(eventID, c);
+			break;
+		case THE_EXORDIUM:
+			customExordiumEvents.put(eventID, c);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static HashMap<String, Class> getEventList(EventPool pool) {
+		switch(pool) {
+		case ANY:
+			return customAllEvents;
+		case THE_BEYOND:
+			return customBeyondEvents;
+		case THE_CITY:
+			return customCityEvents;
+		case THE_EXORDIUM:
+			return customExordiumEvents;
+		default:
+			return null;
+		}
+	}
+	
 	//
 	// Keywords
 	//
