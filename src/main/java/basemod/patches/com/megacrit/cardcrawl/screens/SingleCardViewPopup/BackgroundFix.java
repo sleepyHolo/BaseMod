@@ -27,7 +27,6 @@ public class BackgroundFix {
 			method="renderCardBack")
 	public static class BackgroundTexture {
 		public static void Prefix(Object __obj_instance, Object sbObject) {
-			System.out.println("trying to render background textures but they're small");
 			try {
 				SingleCardViewPopup popup = (SingleCardViewPopup) __obj_instance;
 				SpriteBatch sb = (SpriteBatch) sbObject;
