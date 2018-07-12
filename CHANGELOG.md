@@ -324,3 +324,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Patch events and relics that care about Strikes and Defends (twanvl)
 * Fix portrait image in right-click card previews (twanvl)
 * Custom event support (Blank The Evil)
+* Character select screen pages with many characters (kobting)
+* Allow custom energy symbols on cards (twanvl)
+* Fix [E] rendering in portait mode (twanvl)
