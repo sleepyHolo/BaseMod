@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
@@ -482,6 +483,25 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 						AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
 					}
 				}
+			} else if (tokens[1].toLowerCase().equals("discard") || tokens[1].toLowerCase().equals("d")) {
+				if (tokens[2].equals("all")) {
+					// discard all cards
+					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
+						AbstractDungeon.player.hand.moveToDiscardPile(c);
+						c.triggerOnManualDiscard();
+						GameActionManager.incrementDiscard(false);
+					}
+				} else {
+					// discard single card
+					for (AbstractCard c : AbstractDungeon.player.hand.group) {
+						if (c.cardID.equals(cardName)) {
+							AbstractDungeon.player.hand.moveToDiscardPile(c);
+							c.triggerOnManualDiscard();
+							GameActionManager.incrementDiscard(false);
+							return;
+						}
+					}
+				}
 			} else {
 				cmdHandHelp();
 			}
@@ -496,6 +516,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		log("* add [id] {count} {upgrade amt}");
 		log("* remove [id]");
 		log("* remove all");
+		log("* discard [id]");
+		log("* discard all");
 	}
 
 	private static void cmdKill(String[] tokens) {

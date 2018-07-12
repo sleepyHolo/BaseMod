@@ -454,7 +454,7 @@ public class AutoComplete {
 				|| tokens[1].equalsIgnoreCase("flavor") || tokens[1].equalsIgnoreCase("pool");
 	}
 
-	private static final String[] HAND_CMDS = { "add", "remove" };
+	private static final String[] HAND_CMDS = { "add", "discard", "remove" };
 
 	public static final int HAND = ID_CREATOR++;
 	public static final int HAND_ADD = ID_CREATOR++;
@@ -484,11 +484,18 @@ public class AutoComplete {
 				}
 				currentID = HAND_REMOVE;
 				cardIDList(true);
+			} else if (isDiscard()) {
+				if (currentID == HAND_REMOVE) {
+					alreadySorted = true;
+					return;
+				}
+				currentID = HAND_REMOVE;
+				cardIDList(true);
 			} else {
 				currentID = RESET;
 				noMatch = true;
 			}
-		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove()) {
+		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove() && !isDiscard()) {
 			smallNumbers();
 		} else {
 			commandComplete = true;
@@ -819,6 +826,10 @@ public class AutoComplete {
 
 	private static boolean isRemove() {
 		return tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("r");
+	}
+
+	private static boolean isDiscard() {
+		return tokens[1].equalsIgnoreCase("discard") || tokens[1].equalsIgnoreCase("d");
 	}
 
 	private static void cardIDList(boolean isRemove) {
