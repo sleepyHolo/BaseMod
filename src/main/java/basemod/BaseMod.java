@@ -220,6 +220,7 @@ public class BaseMod {
 	private static HashMap<String, String> colorSkillBgMap;
 	private static HashMap<String, String> colorPowerBgMap;
 	private static HashMap<String, String> colorEnergyOrbMap;
+	private static HashMap<String, String> colorCardEnergyOrbMap;
 	private static HashMap<String, String> colorAttackBgPortraitMap;
 	private static HashMap<String, String> colorSkillBgPortraitMap;
 	private static HashMap<String, String> colorPowerBgPortraitMap;
@@ -232,7 +233,7 @@ public class BaseMod {
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgPortraitTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgPortraitTextureMap;
 	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
-	
+	private static HashMap<String, TextureAtlas.AtlasRegion> colorCardEnergyOrbAtlasRegionMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 
@@ -564,6 +565,7 @@ public class BaseMod {
 		colorSkillBgMap = new HashMap<>();
 		colorPowerBgMap = new HashMap<>();
 		colorEnergyOrbMap = new HashMap<>();
+		colorCardEnergyOrbMap = new HashMap<>();
 		colorAttackBgPortraitMap = new HashMap<>();
 		colorSkillBgPortraitMap = new HashMap<>();
 		colorPowerBgPortraitMap = new HashMap<>();
@@ -576,6 +578,7 @@ public class BaseMod {
 		colorSkillBgPortraitTextureMap = new HashMap<>();
 		colorPowerBgPortraitTextureMap = new HashMap<>();
 		colorEnergyOrbPortraitTextureMap = new HashMap<>();
+		colorCardEnergyOrbAtlasRegionMap = new HashMap<>();
 	}
 
 	private static void initializeRelicPool() {
@@ -1392,9 +1395,7 @@ public class BaseMod {
 		case DEFECT:
 			return AbstractCard.orb_blue;
 		default:
-			// TODO: mod orbs
-			// TODO: Not requiring TextureAtlas.AtlasRegion
-			return AbstractCard.orb_red;
+			return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass.toString()));
 		}
 	}
 
@@ -1406,8 +1407,10 @@ public class BaseMod {
 			return AbstractCard.orb_green;
 		case BLUE:
 			return AbstractCard.orb_blue;
+		case COLORLESS:
+			return getCardSmallEnergy(); // for colorless cards, use the player color
 		default:
-			return getCardSmallEnergy();
+			return getCardEnergyOrbAtlasRegion(card.color.toString());
 		}
 	}
 
@@ -1488,9 +1491,18 @@ public class BaseMod {
 	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
 			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
 			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
-			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor, String attackBg,
-			String skillBg, String powerBg, String energyOrb, String attackBgPortrait, String skillBgPortrait,
-			String powerBgPortrait, String energyOrbPortrait) {
+			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
+			String attackBg, String skillBg, String powerBg, String energyOrb,
+			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait) {
+		addColor(color, bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, null);
+	}
+	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
+			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
+			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
+			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
+			String attackBg, String skillBg, String powerBg, String energyOrb,
+			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
+			String cardEnergyOrb) {
 		colorBgColorMap.put(color, bgColor);
 		colorBackColorMap.put(color, backColor);
 		colorFrameColorMap.put(color, frameColor);
@@ -1508,6 +1520,7 @@ public class BaseMod {
 		colorSkillBgPortraitMap.put(color, skillBgPortrait);
 		colorPowerBgPortraitMap.put(color, powerBgPortrait);
 		colorEnergyOrbPortraitMap.put(color, energyOrbPortrait);
+		colorCardEnergyOrbMap.put(color, cardEnergyOrb);
 
 		customRelicPools.put(color, new HashMap<>());
 		customRelicLists.put(color, new ArrayList<>());
@@ -1529,6 +1542,7 @@ public class BaseMod {
 		colorSkillBgMap.remove(color);
 		colorPowerBgMap.remove(color);
 		colorEnergyOrbMap.remove(color);
+		colorCardEnergyOrbMap.remove(color);
 		colorAttackBgPortraitMap.remove(color);
 		colorSkillBgPortraitMap.remove(color);
 		colorPowerBgPortraitMap.remove(color);
@@ -1676,6 +1690,24 @@ public class BaseMod {
 	// convert a color String (fake ENUM) into an energy texture
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(String color) {
 		return colorEnergyOrbTextureMap.get(color);
+	}
+
+	// convert a color String (fake ENUM) into an energy texture path
+	public static TextureAtlas.AtlasRegion getCardEnergyOrbAtlasRegion(String color) {
+		TextureAtlas.AtlasRegion orb = colorCardEnergyOrbAtlasRegionMap.get(color);
+		if (orb != null) return orb;
+		String orbFile = colorCardEnergyOrbMap.get(color);
+		if (orbFile != null) {
+			Texture orbTexture = new Texture(orbFile);
+			orbTexture.setFilter(Texture.TextureFilter.Linear,  Texture.TextureFilter.Linear);
+			int tw = orbTexture.getWidth();
+			int th = orbTexture.getHeight();
+			orb = new TextureAtlas.AtlasRegion(orbTexture, 0, 0, tw, th);
+			colorCardEnergyOrbAtlasRegionMap.put(color, orb);
+			return orb;
+		} else {
+			return AbstractCard.orb_red;
+		}
 	}
 
 	// convert a color String (fake ENUM) into an attack background texture
