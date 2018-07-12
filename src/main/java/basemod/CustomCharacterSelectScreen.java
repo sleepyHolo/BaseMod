@@ -25,8 +25,6 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
     public CustomCharacterSelectScreen(){
         super();
-        selectIndex = 0;
-        maxSelectIndex = (int)Math.ceil(this.options.size() / 3);
         leftArrow = new LeftOptionsButton("img/tinyLeftArrow.png", (int)(425 * Settings.scale),(int)(180 * Settings.scale));
         rightArrow = new RightOptionsButton("img/tinyRightArrow.png", (int)(1425 * Settings.scale), (int)(180 * Settings.scale));
         updateOptionsIndex();
@@ -46,7 +44,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
         selectIndex = 0;
 		updateOptionsIndex();
-        maxSelectIndex = (int)Math.ceil(this.options.size() / 3) - 1;
+        maxSelectIndex = (int)Math.ceil((float)allOptions.size() / optionsPerIndex) - 1;
         this.options = new ArrayList<> (allOptions.subList(0, Math.min(optionsPerIndex, allOptions.size())));
         this.positionButtons();
     }
