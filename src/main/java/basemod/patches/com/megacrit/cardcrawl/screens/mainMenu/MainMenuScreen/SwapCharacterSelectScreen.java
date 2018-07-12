@@ -29,7 +29,7 @@ public class SwapCharacterSelectScreen
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception
         {
-            Matcher finalMatcher = new Matcher.MethodCallMatcher(CharacterSelectScreen.class.getCanonicalName(), "initialize");
+            Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen", "initialize");
 
             return LineFinder.findInOrder(ctBehavior, new ArrayList<Matcher>(), finalMatcher);
         }
