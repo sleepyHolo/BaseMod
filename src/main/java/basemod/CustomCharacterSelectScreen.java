@@ -3,6 +3,7 @@ package basemod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
     //Number of characters per selection screen. If changed update arrow positions.
-    private final int optionsPerIndex = 4;
+    private static final int optionsPerIndex = 4;
     private int selectIndex = 0;
     private int maxSelectIndex;
     private int optionsIndex;
@@ -42,8 +43,8 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             allOptions.add(option);
         }
 
-        maxSelectIndex = (int)Math.ceil(this.options.size() / 3);
-        this.options = new ArrayList<> (allOptions.subList(0, optionsPerIndex));
+        maxSelectIndex = (int)Math.ceil(this.options.size() / 3) - 1;
+        this.options = new ArrayList<> (allOptions.subList(0, Math.min(optionsPerIndex, allOptions.size())));
         this.positionButtons();
     }
 
@@ -61,8 +62,12 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
     @Override
     public void update() {
         super.update();
-        rightArrow.update();
-        leftArrow.update();
+        if (this.selectIndex < this.maxSelectIndex) {
+            rightArrow.update();
+        }
+        if (this.selectIndex != 0) {
+            leftArrow.update();
+        }
     }
 
     private void positionButtons() {
@@ -88,7 +93,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
         int endIndex = optionsIndex + optionsPerIndex;
 
-        this.options = new ArrayList<> (this.allOptions.subList(optionsIndex, endIndex > allOptions.size() ? allOptions.size() : endIndex));
+        this.options = new ArrayList<> (this.allOptions.subList(optionsIndex, Math.min(allOptions.size(), endIndex)));
         this.options.forEach(o -> o.selected = false);
         this.positionButtons();
     }
@@ -128,6 +133,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
         public void update() {
             hitbox.update();
             if(this.hitbox.hovered && InputHelper.justClickedLeft) {
+                CardCrawlGame.sound.play("UI_CLICK_1");
                 setCurrentOptions(false);
             }
         }
@@ -175,6 +181,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
         public void update() {
             hitbox.update();
             if(this.hitbox.hovered && InputHelper.justClickedLeft) {
+                CardCrawlGame.sound.play("UI_CLICK_1");
                 setCurrentOptions(true);
             }
         }
