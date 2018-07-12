@@ -36,13 +36,16 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
     @Override
     public void initialize() {
         super.initialize();
+        allOptions.clear();
         for (CharacterOption option : BaseMod.generateCharacterOptions()) {
             options.add(option);
         }
-        for(CharacterOption option : this.options) {
+        for (CharacterOption option : this.options) {
             allOptions.add(option);
         }
 
+        selectIndex = 0;
+		updateOptionsIndex();
         maxSelectIndex = (int)Math.ceil(this.options.size() / 3) - 1;
         this.options = new ArrayList<> (allOptions.subList(0, Math.min(optionsPerIndex, allOptions.size())));
         this.positionButtons();
