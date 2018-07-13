@@ -316,7 +316,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for week 31 (kobting)
 * Add modded characters to the Custom mode screen (kiooeht)
 
-#### dev ####
+#### v2.16.0 ####
 * Add debug command (Blank The Evil)
 * Fix Run History screen (kiooeht)
 * StartBattleHook (kobting)
@@ -329,3 +329,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix [E] rendering in portait mode (twanvl)
 * Dev console: Discard command (twanvl)
 * Dev console: Set card numbers command (twanvl)
+
+#### dev ####
