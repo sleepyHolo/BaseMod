@@ -20,8 +20,11 @@ public class PotionHelperInitialize
 	public static void Postfix(AbstractPlayer.PlayerClass chosenClass)
 	{
 		for (String potionID : BaseMod.getPotionIDs()) {
-			logger.info("Adding " + potionID);
-			PotionHelper.potions.add(potionID);
+			AbstractPlayer.PlayerClass potionClass = BaseMod.getPotionPlayerClass(potionID);
+			if (potionClass == null || potionClass == chosenClass) {
+				logger.info("Adding " + potionID);
+				PotionHelper.potions.add(potionID);
+			}
 		}
 	}
 } 
