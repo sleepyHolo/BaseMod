@@ -3,7 +3,6 @@ package basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import basemod.BaseMod;
 import basemod.CustomCharacterSelectScreen;
 import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import javassist.CtBehavior;
 
