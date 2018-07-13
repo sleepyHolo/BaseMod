@@ -327,3 +327,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Character select screen pages with many characters (kobting)
 * Allow custom energy symbols on cards (twanvl)
 * Fix [E] rendering in portait mode (twanvl)
+* Dev console: Discard command (twanvl)
+* Dev console: Set card numbers command (twanvl)
