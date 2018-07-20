@@ -330,7 +330,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Dev console: Discard command (twanvl)
 * Dev console: Set card numbers command (twanvl)
 
-#### dev ####
+#### v2.17.0 ####
 * Support for week 34 (kiooeht)
 * Fix RelicViewScreen not scrolling far enough with mods that add relics (kiooeht)
 * Potions can be specific to a character (twanvl)
+
+#### dev ####
