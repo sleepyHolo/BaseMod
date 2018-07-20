@@ -195,6 +195,7 @@ public class BaseMod {
 	private static HashMap<String, Color> potionHybridColorMap;
 	private static HashMap<String, Color> potionLiquidColorMap;
 	private static HashMap<String, Color> potionSpotsColorMap;
+	private static HashMap<String, AbstractPlayer.PlayerClass> potionPlayerClassMap;
 
 	@SuppressWarnings("rawtypes")
 	private static HashMap<String, Class> powerMap;
@@ -597,6 +598,7 @@ public class BaseMod {
 		potionHybridColorMap = new HashMap<>();
 		potionLiquidColorMap = new HashMap<>();
 		potionSpotsColorMap = new HashMap<>();
+		potionPlayerClassMap = new HashMap<>();
 	}
 
 	private static void initializePotionList() {
@@ -1784,12 +1786,15 @@ public class BaseMod {
 
 	// add the Potion to the map (fake ENUM)
 	@SuppressWarnings("rawtypes")
-	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor,
-			String potionID) {
+	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID) {
+		addPotion(potionClass, liquidColor, hybridColor, spotsColor, potionID, null);
+	}
+	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID, AbstractPlayer.PlayerClass playerClass) {
 		potionClassMap.put(potionID, potionClass);
 		potionLiquidColorMap.put(potionID, liquidColor);
 		potionHybridColorMap.put(potionID, hybridColor);
 		potionSpotsColorMap.put(potionID, spotsColor);
+		potionPlayerClassMap.put(potionID, playerClass);
 	}
 
 	// (fake ENUM) return Class corresponding to potionID
@@ -1809,6 +1814,10 @@ public class BaseMod {
 
 	public static Color getPotionSpotsColor(String potionID) {
 		return potionSpotsColorMap.get(potionID);
+	}
+
+	public static AbstractPlayer.PlayerClass getPotionPlayerClass(String potionID) {
+		return potionPlayerClassMap.get(potionID);
 	}
 
 	// get all entry in fake ENUM
