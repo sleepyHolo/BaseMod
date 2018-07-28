@@ -10,28 +10,6 @@
   <name>BaseMod</name>
   <description>Slay the Spire mod which tests BaseMod.</description>
   
-  <dependencies>
-    <dependency>
-      <groupId>com.megacrit.cardcrawl</groupId>
-      <artifactId>slaythespire</artifactId>
-      <version>016</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/desktop-1.0.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.evacipated.cardcrawl</groupId>
-      <artifactId>ModTheSpire</artifactId>
-      <version>2.2.1</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/ModTheSpire.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.github.trixt0r</groupId>
-      <artifactId>Spriter</artifactId>
-      <version>1.1</version>
-    </dependency>
-
-  </dependencies>
   
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
