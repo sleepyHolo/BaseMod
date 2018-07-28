@@ -112,7 +112,7 @@ public class RenderFixSwitches {
 			
 			Color costColor = Color.WHITE.cpy();
 			if(AbstractDungeon.player != null && AbstractDungeon.player.hand.contains(card)) {
-				if(card.hasEnoughEnergy()) {
+				if(!card.hasEnoughEnergy()) {
 					costColor = (Color) ReflectionHacks.getPrivateStatic(AbstractCard.class, "ENERGY_COST_RESTRICTED_COLOR");
 				} else if(card.isCostModified || card.isCostModifiedForTurn || card.freeToPlayOnce) {
 					costColor = (Color) ReflectionHacks.getPrivateStatic(AbstractCard.class, "ENERGY_COST_MODIFIED_COLOR");
