@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -33,6 +34,8 @@ public class BaseModInit implements PostInitializeSubscriber {
 	public static final float AUTOCOMPLETE_LABEL_X = 350.0f;
 	public static final float AUTOCOMPLETE_LABEL_Y = 425.0f;
 	private static final String AUTOCOMPLETE_INFO = "Press L_Shift + Up/Down to scroll through suggestions.\nPress Tab or Right to complete the current command.\nPress Left to delete the last token.";
+	public static final float WHATMOD_BUTTON_X = 350.0f;
+	public static final float WHATMOD_BUTTON_Y = 350.0f;
 	
 	@Override
 	public void receivePostInitialize() {
@@ -85,6 +88,18 @@ public class BaseModInit implements PostInitializeSubscriber {
 					autoCompleteInfo.text = AutoComplete.enabled ? AUTOCOMPLETE_INFO : "";
 				});
 		settingsPanel.addUIElement(enableAutoComplete);
+
+		ModLabeledToggleButton enableWhatMod = new ModLabeledToggleButton("Enable mod name in tooltips",
+				WHATMOD_BUTTON_X, WHATMOD_BUTTON_Y, Settings.CREAM_COLOR, FontHelper.charDescFont,
+				WhatMod.enabled, settingsPanel, (label) -> {},
+				(button) -> {
+					WhatMod.enabled = button.enabled;
+					BaseMod.maybeSetBoolean("whatmod-enabled", button.enabled);
+
+				}
+		);
+		settingsPanel.addUIElement(enableWhatMod);
+		settingsPanel.addUIElement(new ModLabel("Must restart game to take effect", WHATMOD_BUTTON_X, WHATMOD_BUTTON_Y - 30.0f, settingsPanel, (me) -> {} ));
 
 		Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
 		BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);

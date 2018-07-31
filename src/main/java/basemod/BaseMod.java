@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import basemod.interfaces.*;
+import basemod.patches.whatmod.WhatMod;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
@@ -275,6 +276,7 @@ public class BaseMod {
 	private static Object maybeGetConfig() {
 		Properties defaultProperties = new Properties();
 		defaultProperties.setProperty("console-key", "`");
+		defaultProperties.setProperty("whatmod-enabled", Boolean.toString(true));
 		Object configObject;
 
 		try {
@@ -385,6 +387,11 @@ public class BaseMod {
 		String autoCompleteEnabled = maybeGetString("autocomplete-enabled");
 		if (autoCompleteEnabled != null) {
 			AutoComplete.enabled = !autoCompleteEnabled.equalsIgnoreCase("false");
+		}
+
+		Boolean whatmodEnabled = maybeGetBoolean("whatmod-enabled");
+		if (whatmodEnabled != null) {
+			WhatMod.enabled = whatmodEnabled;
 		}
 	}
 

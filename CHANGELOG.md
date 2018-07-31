@@ -336,3 +336,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Potions can be specific to a character (twanvl)
 
 #### dev ####
+* Identify what mod relics, cards, and powers are from (kiooeht)
