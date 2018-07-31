@@ -58,7 +58,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 				@Override
 				public boolean keyUp(int keycode) {
 					DevConsole.toggleKey = keycode;
-					BaseMod.maybeSetString("console-key", Keys.toString(keycode));
+					BaseMod.setString("console-key", Keys.toString(keycode));
 					me.parent.waitingOnEvent = false;
 					Gdx.input.setInputProcessor(oldInputProcessor);
 					return true;
@@ -71,7 +71,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 				BUTTON_ENABLE_X, BUTTON_ENABLE_Y, Settings.CREAM_COLOR, FontHelper.charDescFont,
 				DevConsole.enabled, settingsPanel, (label) -> {}, (button) -> {
 					DevConsole.enabled = button.enabled;
-					BaseMod.maybeSetBoolean("console-enabled", button.enabled);
+					BaseMod.setBoolean("console-enabled", button.enabled);
 				});
 		settingsPanel.addUIElement(enableConsole);
 		
@@ -84,7 +84,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 				AutoComplete.enabled, settingsPanel, (label) -> {}, (button) -> {
 					AutoComplete.enabled = button.enabled;
 					AutoComplete.resetAndSuggest();
-					BaseMod.maybeSetString("autocomplete-enabled", button.enabled ? "true" : "false");
+					BaseMod.setString("autocomplete-enabled", button.enabled ? "true" : "false");
 					autoCompleteInfo.text = AutoComplete.enabled ? AUTOCOMPLETE_INFO : "";
 				});
 		settingsPanel.addUIElement(enableAutoComplete);
@@ -94,7 +94,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 				WhatMod.enabled, settingsPanel, (label) -> {},
 				(button) -> {
 					WhatMod.enabled = button.enabled;
-					BaseMod.maybeSetBoolean("whatmod-enabled", button.enabled);
+					BaseMod.setBoolean("whatmod-enabled", button.enabled);
 
 				}
 		);

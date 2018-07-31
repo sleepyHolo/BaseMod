@@ -1,6 +1,7 @@
 package basemod;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +12,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
@@ -247,8 +248,7 @@ public class BaseMod {
 	private static TextureRegion animationTextureRegion;
 
 	public static final String CONFIG_FILE = "basemod-config";
-	private static Object config;
-	private static Class<?> spireConfig;
+	private static SpireConfig config;
 
 	/* should be final but the compiler doesn't like me */
 	public static String save_path = "saves" + File.separator;
@@ -273,98 +273,34 @@ public class BaseMod {
 	// Initialization
 	//
 
-	private static Object maybeGetConfig() {
+	private static SpireConfig makeConfig() {
 		Properties defaultProperties = new Properties();
 		defaultProperties.setProperty("console-key", "`");
+		defaultProperties.setProperty("autocomplete-enabled", Boolean.toString(true));
 		defaultProperties.setProperty("whatmod-enabled", Boolean.toString(true));
-		Object configObject;
 
 		try {
-			spireConfig = Class.forName("com.evacipated.cardcrawl.modthespire.lib.SpireConfig");
-			configObject = spireConfig.getDeclaredConstructor(String.class, String.class, Properties.class)
-					.newInstance(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
-			return configObject;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			logger.info(
-					"could not find and/or initialize SpireConfig - persistent config for BaseMod only available for MTS version 2.5.0+");
-			spireConfig = null;
+			SpireConfig retConfig = new SpireConfig(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
+			return retConfig;
+		} catch (IOException e) {
 			return null;
 		}
 	}
 
-	private static void maybeSaveConfig() {
-		if (spireConfig == null) {
-			return;
-		}
-
-		try {
-			Method save = spireConfig.getDeclaredMethod("save");
-			save.invoke(config);
-		} catch (Exception e) {
-			logger.info("could not save config");
-			logger.error(e.toString());
-		}
+	private static String getString(String key) {
+		return config.getString(key);
 	}
 
-	public static String maybeGetString(String key) {
-		if (spireConfig == null) {
-			return null;
-		}
-
-		try {
-			Method getString = spireConfig.getDeclaredMethod("getString", String.class);
-			return (String) getString.invoke(config, key);
-		} catch (Exception e) {
-			logger.info("could not get string: " + key);
-			logger.error(e.toString());
-			return null;
-		}
+	static void setString(String key, String value) {
+		config.setString(key, value);
 	}
 
-	public static void maybeSetString(String key, String value) {
-		if (spireConfig == null) {
-			return;
-		}
-
-		try {
-			Method setString = spireConfig.getDeclaredMethod("setString", String.class, String.class);
-			setString.invoke(config, key, value);
-			maybeSaveConfig();
-		} catch (Exception e) {
-			logger.info("could not set string: " + key + " to value: " + value);
-			logger.error(e.toString());
-		}
+	private static Boolean getBoolean(String key) {
+		return config.getBool(key);
 	}
 
-	public static Boolean maybeGetBoolean(String key) {
-		if (spireConfig == null) {
-			return null;
-		}
-
-		try {
-			Method getBoolean = spireConfig.getDeclaredMethod("getBool", String.class);
-			return (Boolean) getBoolean.invoke(config, key);
-		} catch (Exception e) {
-			logger.info("could not get boolean: " + key);
-			logger.error(e.toString());
-			return null;
-		}
-	}
-
-	public static void maybeSetBoolean(String key, Boolean value) {
-		if (spireConfig == null) {
-			return;
-		}
-
-		try {
-			Method setBoolean = spireConfig.getDeclaredMethod("setBool", String.class, boolean.class);
-			setBoolean.invoke(config, key, value);
-			maybeSaveConfig();
-		} catch (Exception e) {
-			logger.info("could not set boolean: " + key + " to value: " + value);
-			logger.error(e.toString());
-		}
+	static void setBoolean(String key, Boolean value) {
+		config.setBool(key, value);
 	}
 
 	private static void setProperties() {
@@ -373,23 +309,21 @@ public class BaseMod {
 			return;
 		}
 
-		String consoleKey = maybeGetString("console-key");
+		String consoleKey = getString("console-key");
 		if (consoleKey != null) {
 			DevConsole.toggleKey = Keys.valueOf(consoleKey);
 		}
-		Boolean consoleEnabled = maybeGetBoolean("console-enabled");
+		Boolean consoleEnabled = getBoolean("console-enabled");
 		if (consoleEnabled != null) {
 			DevConsole.enabled = consoleEnabled;
 		}
 
-		// This is done because the default value for getBoolean is false but I want
-		// true
-		String autoCompleteEnabled = maybeGetString("autocomplete-enabled");
+		Boolean autoCompleteEnabled = getBoolean("autocomplete-enabled");
 		if (autoCompleteEnabled != null) {
-			AutoComplete.enabled = !autoCompleteEnabled.equalsIgnoreCase("false");
+			AutoComplete.enabled = autoCompleteEnabled;
 		}
 
-		Boolean whatmodEnabled = maybeGetBoolean("whatmod-enabled");
+		Boolean whatmodEnabled = getBoolean("whatmod-enabled");
 		if (whatmodEnabled != null) {
 			WhatMod.enabled = whatmodEnabled;
 		}
@@ -426,7 +360,7 @@ public class BaseMod {
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
 		BaseMod.subscribeToPostInitialize(editCharactersInit);
 
-		config = maybeGetConfig();
+		config = makeConfig();
 		setProperties();
 		console = new DevConsole();
 		textPanel = new ModTextPanel();
