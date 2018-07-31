@@ -355,10 +355,10 @@ public class BaseMod {
 		initializeUnderscorePowerIDs();
 		initializeEncounters();
 		BaseModInit baseModInit = new BaseModInit();
-		BaseMod.subscribeToPostInitialize(baseModInit);
+		BaseMod.subscribe(baseModInit);
 
 		EditCharactersInit editCharactersInit = new EditCharactersInit();
-		BaseMod.subscribeToPostInitialize(editCharactersInit);
+		BaseMod.subscribe(editCharactersInit);
 
 		config = makeConfig();
 		setProperties();
