@@ -946,6 +946,9 @@ public class BaseMod {
 		case GREEN:
 			RelicLibrary.addGreen(relic);
 			break;
+		case BLUE:
+			RelicLibrary.addBlue(relic);
+			break;
 		default:
 			logger.info("tried to add relic of unsupported type: " + relic + " " + type);
 		}
@@ -986,6 +989,15 @@ public class BaseMod {
 					.getPrivateStatic(RelicLibrary.class, "greenRelics");
 			if (greenRelics.containsKey(relic.relicId)) {
 				greenRelics.remove(relic.relicId);
+				RelicLibrary.totalRelicCount--;
+				removeRelicFromTierList(relic);
+			}
+			break;
+		case BLUE:
+			HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+					.getPrivateStatic(RelicLibrary.class, "blueRelics");
+			if (blueRelics.containsKey(relic.relicId)) {
+				blueRelics.remove(relic.relicId);
 				RelicLibrary.totalRelicCount--;
 				removeRelicFromTierList(relic);
 			}
@@ -1066,6 +1078,7 @@ public class BaseMod {
 		removeRelic(relic, RelicType.SHARED);
 		removeRelic(relic, RelicType.RED);
 		removeRelic(relic, RelicType.GREEN);
+		removeRelic(relic, RelicType.BLUE);
 	}
 
 	// lists the IDs of all Relics from all pools. The casts are actually not
