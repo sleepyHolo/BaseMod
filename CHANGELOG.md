@@ -338,3 +338,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Identify what mod relics, cards, and powers are from (kiooeht)
 * Allowing adding relics to blue pool (kiooeht)
+* Make relic and power onEvokeOrb actually usable (kiooeht)
