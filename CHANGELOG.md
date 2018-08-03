@@ -341,5 +341,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make relic and power onEvokeOrb actually usable (kiooeht)
 * Fix ascension for modded characters (kiooeht)
 * Fix crash if Note For Yourself event (kiooeht)
+* Fix card rendering to not draw curse texture (Blank The Evil)
 
 #### dev ####
