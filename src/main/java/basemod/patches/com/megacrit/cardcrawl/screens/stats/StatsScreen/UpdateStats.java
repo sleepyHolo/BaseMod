@@ -162,4 +162,13 @@ public class UpdateStats {
 		}
 	}
 
+	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "unlockAscension")
+	public static class UnlockAscension {
+		public static void Postfix(AbstractPlayer.PlayerClass c) {
+			if (c.toString() != null) {
+				BaseMod.playerStatsMap.get(c.toString()).unlockAscension();
+			}
+		}
+	}
+
 }

@@ -38,6 +38,7 @@ public class AddCustomCharacters {
 			ArrayList<CharStat> allChars = new ArrayList<>();
 			allChars.add((CharStat) ironcladField.get(screen));
 			allChars.add((CharStat) silentField.get(screen));
+			allChars.add((CharStat) defectField.get(screen));
 			
 			for (CharStat stat : BaseMod.generateCharacterStats()) {
 				allChars.add(stat);
