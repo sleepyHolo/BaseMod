@@ -293,6 +293,11 @@ public class BaseMod {
 
 	static void setString(String key, String value) {
 		config.setString(key, value);
+		try {
+			config.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static Boolean getBoolean(String key) {
@@ -301,6 +306,21 @@ public class BaseMod {
 
 	static void setBoolean(String key, Boolean value) {
 		config.setBool(key, value);
+		try {
+			config.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Deprecated
+	public static Boolean maybeGetBoolean(String key) {
+		return getBoolean(key);
+	}
+
+	@Deprecated
+	public static void maybeSetBoolean(String key, Boolean value) {
+		setBoolean(key, value);
 	}
 
 	private static void setProperties() {
