@@ -335,9 +335,11 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix RelicViewScreen not scrolling far enough with mods that add relics (kiooeht)
 * Potions can be specific to a character (twanvl)
 
-#### dev ####
+#### v2.18.0 ####
 * Identify what mod relics, cards, and powers are from (kiooeht)
 * Allowing adding relics to blue pool (kiooeht)
 * Make relic and power onEvokeOrb actually usable (kiooeht)
 * Fix ascension for modded characters (kiooeht)
 * Fix crash if Note For Yourself event (kiooeht)
+
+#### dev ####
