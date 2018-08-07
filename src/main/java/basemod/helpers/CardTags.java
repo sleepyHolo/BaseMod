@@ -12,6 +12,8 @@ public class CardTags
 	public static final String BASIC_DEFEND = "basic_defend";
 	// For Perfected Strike
 	public static final String STRIKE = "strike";
+	// For My True Form
+	public static final String FORM = "form";
 
 	public static boolean hasTag(AbstractCard card, String tag)
 	{
