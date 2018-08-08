@@ -3,8 +3,8 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpirePatch(
 		cls="com.megacrit.cardcrawl.cards.AbstractCard",
@@ -12,5 +12,5 @@ import java.util.Map;
 )
 public class CardTagsField
 {
-	public static SpireField<Map<String, Boolean>> tags = new SpireField<>(HashMap::new);
+	public static SpireField<Set<String>> tags = new SpireField<>(HashSet::new);
 }

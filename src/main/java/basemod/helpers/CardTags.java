@@ -17,25 +17,29 @@ public class CardTags
 
 	public static boolean hasTag(AbstractCard card, String tag)
 	{
-		return BooleanUtils.isTrue(CardTagsField.tags.get(card).get(tag));
+		return BooleanUtils.isTrue(CardTagsField.tags.get(card).contains(tag));
 	}
 
-	public static void addTag(AbstractCard card, String tag)
+	public static void addTags(AbstractCard card, String... tags)
 	{
-		CardTagsField.tags.get(card).put(tag, true);
+		for (String tag : tags) {
+			CardTagsField.tags.get(card).add(tag);
+		}
 	}
 
-	public static void removeTag(AbstractCard card, String tag)
+	public static void removeTags(AbstractCard card, String... tags)
 	{
-		CardTagsField.tags.get(card).remove(tag);
+		for (String tag : tags) {
+			CardTagsField.tags.get(card).remove(tag);
+		}
 	}
 
 	public static void toggleTag(AbstractCard card, String tag)
 	{
 		if (hasTag(card, tag)) {
-			removeTag(card, tag);
+			removeTags(card, tag);
 		} else {
-			addTag(card, tag);
+			addTags(card, tag);
 		}
 	}
 }
