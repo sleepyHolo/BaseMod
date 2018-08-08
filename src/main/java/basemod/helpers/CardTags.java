@@ -8,12 +8,15 @@ public class CardTags
 {
 	// Some default tag definitions
 	// For Back to Basics, Vampires, Pandora's Box
-	public static final String BASIC_STRIKE = "basic_strike";
-	public static final String BASIC_DEFEND = "basic_defend";
+	public static final String BASIC_STRIKE = "basemod:basic_strike";
+	public static final String BASIC_DEFEND = "basemod:basic_defend";
 	// For Perfected Strike
-	public static final String STRIKE = "strike";
+	public static final String STRIKE = "basemod:strike";
 	// For My True Form
-	public static final String FORM = "form";
+	public static final String FORM = "basemod:form";
+
+	// TODO: Force tags to have form "modid:tag"
+	// TODO: Deal with AbstractCard.makeCopy
 
 	public static boolean hasTag(AbstractCard card, String tag)
 	{
