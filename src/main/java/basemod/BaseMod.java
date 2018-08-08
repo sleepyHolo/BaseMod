@@ -260,10 +260,6 @@ public class BaseMod {
 	// Map generation
 	public static float mapPathDensityMultiplier = 1.0f;
 
-	// Text input
-
-	private static ModTextPanel textPanel;
-
 	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
 
 	
@@ -383,7 +379,6 @@ public class BaseMod {
 		config = makeConfig();
 		setProperties();
 		console = new DevConsole();
-		textPanel = new ModTextPanel();
 	}
 
 	// setupAnimationGfx -
@@ -725,17 +720,6 @@ public class BaseMod {
 
 		ModBadge badge = new ModBadge(t, x, y, name, author, desc, settingsPanel);
 		modBadges.add(badge);
-	}
-
-	//
-	// UI
-	//
-	public static void openTextPanel(ModPanel panel, String prompt, String startingValue, String defaultValue,
-			String explanationText, Consumer<ModTextPanel> cancel, Consumer<ModTextPanel> confirm) {
-		CardCrawlGame.mainMenuScreen.lighten();
-		CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.RENAME;
-		CardCrawlGame.cancelButton.hideInstantly();
-		textPanel.show(panel, startingValue, defaultValue, explanationText, cancel, confirm);
 	}
 
 	public static boolean baseGameSaveExists() {
