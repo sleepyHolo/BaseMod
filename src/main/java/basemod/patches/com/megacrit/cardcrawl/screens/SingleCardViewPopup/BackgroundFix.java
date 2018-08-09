@@ -46,7 +46,7 @@ public class BackgroundFix {
 						if (bgTexture == null) {
 							bgTexture = BaseMod.getAttackBgPortraitTexture(color.toString());
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getAttackBgPortrait(color.toString()));
+								bgTexture = ImageMaster.loadImage(BaseMod.getAttackBgPortrait(color.toString()));
 								BaseMod.saveAttackBgPortraitTexture(color.toString(), bgTexture);
 							}
 						}
@@ -63,7 +63,7 @@ public class BackgroundFix {
 						if (bgTexture == null) {
 							bgTexture = BaseMod.getPowerBgPortraitTexture(color.toString());
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getPowerBgPortrait(color.toString()));
+								bgTexture = ImageMaster.loadImage(BaseMod.getPowerBgPortrait(color.toString()));
 								BaseMod.savePowerBgPortraitTexture(color.toString(), bgTexture);
 							}
 						}
@@ -95,7 +95,7 @@ public class BackgroundFix {
 						if (bgTexture == null) {
 							bgTexture = BaseMod.getSkillBgPortraitTexture(color.toString());
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getSkillBgPortrait(color.toString()));
+								bgTexture = ImageMaster.loadImage(BaseMod.getSkillBgPortrait(color.toString()));
 								BaseMod.saveSkillBgPortraitTexture(color.toString(), bgTexture);
 							}
 						}
@@ -134,7 +134,7 @@ public class BackgroundFix {
 						if(orbTexture == null) {
 							orbTexture = BaseMod.getEnergyOrbPortraitTexture(color.toString());
 							if (orbTexture == null) {
-								orbTexture = new Texture(BaseMod.getEnergyOrbPortrait(color.toString()));
+								orbTexture = ImageMaster.loadImage(BaseMod.getEnergyOrbPortrait(color.toString()));
 								BaseMod.saveEnergyOrbPortraitTexture(color.toString(), orbTexture);
 							}
 						}

@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
@@ -49,7 +50,7 @@ public class CtorSwitch
 				// fix texture loading
 				Field buttonImgField = CustomModeCharacterButton.class.getDeclaredField("buttonImg");
 				buttonImgField.setAccessible(true);
-				buttonImgField.set(__instance, new Texture(BaseMod.getPlayerButton(c.toString())));
+				buttonImgField.set(__instance, ImageMaster.loadImage(BaseMod.getPlayerButton(c.toString())));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				logger.error("could not create character select button for " + c.toString());
 				logger.error("with exception: " + e.getMessage());

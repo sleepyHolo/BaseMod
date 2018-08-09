@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
@@ -66,10 +67,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.helpers.GameDictionary;
-import com.megacrit.cardcrawl.helpers.MonsterHelper;
-import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.AchievementStrings;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
@@ -1674,8 +1671,7 @@ public class BaseMod {
 		if (orb != null) return orb;
 		String orbFile = colorCardEnergyOrbMap.get(color);
 		if (orbFile != null) {
-			Texture orbTexture = new Texture(orbFile);
-			orbTexture.setFilter(Texture.TextureFilter.Linear,  Texture.TextureFilter.Linear);
+			Texture orbTexture = ImageMaster.loadImage(orbFile);
 			int tw = orbTexture.getWidth();
 			int th = orbTexture.getHeight();
 			orb = new TextureAtlas.AtlasRegion(orbTexture, 0, 0, tw, th);
