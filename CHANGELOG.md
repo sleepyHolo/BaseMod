@@ -344,3 +344,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card rendering to not draw curse texture (Blank The Evil)
 
 #### dev ####
+* Fix Ascension 14 for modded characters (kiooeht)
