@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
@@ -190,6 +191,7 @@ public class BaseMod {
 	public static HashMap<String, String> playerSelectTextMap;
 	public static HashMap<String, String> playerSelectButtonMap;
 	public static HashMap<String, String> playerPortraitMap;
+	public static HashMap<String, String> playerGremlinMatchCardIDMap;
 
 	public static HashMap<String, CharStat> playerStatsMap;
 
@@ -539,6 +541,7 @@ public class BaseMod {
 		playerSelectButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
 		playerStatsMap = new HashMap<>();
+		playerGremlinMatchCardIDMap = new HashMap<>();
 	}
 
 	// initializeColorMap -
@@ -893,6 +896,17 @@ public class BaseMod {
 		return customToRemoveColors;
 	}
 
+	private static void checkGremlinMatchCard(AbstractCard card) {
+		if (CardTags.hasTag(card, BaseModTags.GREMLIN_MATCH)) {
+			for (Map.Entry<String, String> kv : playerGremlinMatchCardIDMap.entrySet()) {
+				if (kv.getValue().equals(card.color.toString())) {
+					playerGremlinMatchCardIDMap.put(kv.getKey(), card.cardID);
+					break;
+				}
+			}
+		}
+	}
+
 	// add card
 	public static void addCard(AbstractCard card) {
 		switch (card.color) {
@@ -910,6 +924,7 @@ public class BaseMod {
 			break;
 		default:
 			customToAdd.add(card);
+			checkGremlinMatchCard(card);
 			break;
 		}
 	}
