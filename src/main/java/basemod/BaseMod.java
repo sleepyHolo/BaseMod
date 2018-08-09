@@ -872,10 +872,6 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static void removeCard(String card, String color) {
-		removeCard(card, AbstractCard.CardColor.valueOf(color));
-	}
 	// remove card
 	public static void removeCard(String card, AbstractCard.CardColor color) {
 		switch (color) {
@@ -1018,10 +1014,6 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static void addRelicToCustomPool(AbstractRelic relic, String color) {
-		addRelicToCustomPool(relic, AbstractCard.CardColor.valueOf(color));
-	}
 	// addRelicToCustomPool -
 	public static void addRelicToCustomPool(AbstractRelic relic, AbstractCard.CardColor color) {
 		if (customRelicPools.containsKey(color)) {
@@ -1037,10 +1029,6 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(String color) {
-		return getRelicsInCustomPool(AbstractCard.CardColor.valueOf(color));
-	}
 	// getRelicsInCustomPool -
 	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(AbstractCard.CardColor color) {
 		return customRelicPools.get(color);
@@ -1242,14 +1230,6 @@ public class BaseMod {
 	// Characters
 	//
 
-	@Deprecated
-	public static void addCharacter(Class<?> characterClass, String titleString,
-			String classString, String color, String selectText, String selectButton, String portrait,
-			String characterID) {
-		addCharacter(characterClass, titleString,
-				classString, AbstractCard.CardColor.valueOf(color), selectText, selectButton, portrait,
-				PlayerClass.valueOf(characterID));
-	}
 	// add character - the String characterID *must* be the exact same as what
 	// you put in the PlayerClass enum
 	public static void addCharacter(Class<?> characterClass, String titleString,
@@ -1264,20 +1244,12 @@ public class BaseMod {
 		playerPortraitMap.put(characterID, portrait);
 	}
 
-	@Deprecated
-	public static void removeCharacter(String characterID) {
-		removeCharacter(PlayerClass.valueOf(characterID));
-	}
 	// I have no idea if this implementation comes even remotely close to
 	// working
 	public static void removeCharacter(PlayerClass characterID) {
 		playerClassMap.remove(characterID);
 	}
 
-	@Deprecated
-	public static AbstractPlayer createCharacter(String playerClass, String playerName) {
-		return createCharacter(PlayerClass.valueOf(playerClass), playerName);
-	}
 	// convert a playerClass into the actual player class used by CardCrawlGame when creating the player for the game
 	public static AbstractPlayer createCharacter(PlayerClass playerClass, String playerName) {
 		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
@@ -1311,20 +1283,12 @@ public class BaseMod {
 		return thePlayer;
 	}
 
-	@Deprecated
-	public static String getTitle(String playerClass) {
-		return getTitle(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the actual title string for that class
 	// used by AbstractPlayer when getting the title string for the player
 	public static String getTitle(PlayerClass playerClass) {
 		return playerTitleStringMap.get(playerClass);
 	}
 
-	@Deprecated
-	public static ArrayList<String> getStartingDeck(String playerClass) {
-		return getStartingDeck(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the actual starting deck for that class
 	public static ArrayList<String> getStartingDeck(PlayerClass playerClass) {
 		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
@@ -1349,10 +1313,6 @@ public class BaseMod {
 		return (ArrayList<String>) startingDeckObj;
 	}
 
-	@Deprecated
-	public static ArrayList<String> getStartingRelics(String playerClass) {
-		return getStartingRelics(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the actual starting relics for that class
 	public static ArrayList<String> getStartingRelics(PlayerClass playerClass) {
 		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
@@ -1408,46 +1368,26 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static String getClass(String playerClass) {
-		return getClass(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the actual class ID for that class
 	public static String getClass(PlayerClass playerClass) {
 		return playerClassStringMap.get(playerClass);
 	}
 
-	@Deprecated
-	public static String getColor(String playerClass) {
-		return getColor(PlayerClass.valueOf(playerClass)).name();
-	}
 	// convert a playerClass into the actual color for that class
 	public static AbstractCard.CardColor getColor(PlayerClass playerClass) {
 		return playerColorMap.get(playerClass);
 	}
 
-	@Deprecated
-	public static Class<?> getPlayerClass(String playerClass) {
-		return getPlayerClass(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the actual player class
 	public static Class<?> getPlayerClass(PlayerClass playerClass) {
 		return playerClassMap.get(playerClass);
 	}
 
-	@Deprecated
-	public static String getPlayerButton(String playerClass) {
-		return getPlayerButton(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the player select button
 	public static String getPlayerButton(PlayerClass playerClass) {
 		return playerSelectButtonMap.get(playerClass);
 	}
 
-	@Deprecated
-	public static String getPlayerPortrait(String playerClass) {
-		return getPlayerPortrait(PlayerClass.valueOf(playerClass));
-	}
 	// convert a playerClass into the player portrait
 	public static String getPlayerPortrait(PlayerClass playerClass) {
 		return playerPortraitMap.get(playerClass);
@@ -1507,15 +1447,6 @@ public class BaseMod {
 								String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait) {
 		addColor(color, bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, null);
 	}
-	@Deprecated
-	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
-			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
-			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
-			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
-			String attackBg, String skillBg, String powerBg, String energyOrb,
-			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait) {
-		addColor(color, bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, null);
-	}
 	public static void addColor(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Color bgColor,
 								com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
 								com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
@@ -1545,23 +1476,9 @@ public class BaseMod {
 		customRelicPools.put(color, new HashMap<>());
 		customRelicLists.put(color, new ArrayList<>());
 	}
-	@Deprecated
-	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
-			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
-			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
-			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
-			String attackBg, String skillBg, String powerBg, String energyOrb,
-			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
-			String cardEnergyOrb) {
-		addColor(AbstractCard.CardColor.valueOf(color), bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, cardEnergyOrb);
-	}
 
 	// remove a custom color -
 	// removing existing colors not currently supported
-	@Deprecated
-	public static void removeColor(String color) {
-		removeColor(AbstractCard.CardColor.valueOf(color));
-	}
 	public static void removeColor(AbstractCard.CardColor color) {
 		colorBgColorMap.remove(color);
 		colorBackColorMap.remove(color);
@@ -1586,64 +1503,36 @@ public class BaseMod {
 		customRelicLists.remove(color, new ArrayList<AbstractRelic>());
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getBgColor(String color) {
-		return getBgColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a background color
 	public static com.badlogic.gdx.graphics.Color getBgColor(AbstractCard.CardColor color) {
 		return colorBgColorMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getBackColor(String color) {
-		return getBackColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a back color
 	public static com.badlogic.gdx.graphics.Color getBackColor(AbstractCard.CardColor color) {
 		return colorBackColorMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getFrameColor(String color) {
-		return getFrameColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a frame color
 	public static com.badlogic.gdx.graphics.Color getFrameColor(AbstractCard.CardColor color) {
 		return colorFrameColorMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getFrameOutlineColor(String color) {
-		return getFrameOutlineColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a frame outline color
 	public static com.badlogic.gdx.graphics.Color getFrameOutlineColor(AbstractCard.CardColor color) {
 		return colorFrameOutlineColorMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getDescBoxColor(String color) {
-		return getDescBoxColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a desc box color
 	public static com.badlogic.gdx.graphics.Color getDescBoxColor(AbstractCard.CardColor color) {
 		return colorDescBoxColorMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getTrailVfxColor(String color) {
-		return colorTrailVfxMap.get(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a trail vfx color
 	public static com.badlogic.gdx.graphics.Color getTrailVfxColor(AbstractCard.CardColor color) {
 		return colorTrailVfxMap.get(color);
 	}
 
-	@Deprecated
-	public static void incrementCardCount(String color) {
-		incrementCardCount(AbstractCard.CardColor.valueOf(color));
-	}
 	// increment the card count for a color
 	public static void incrementCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardCountMap.get(color);
@@ -1655,10 +1544,6 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static void decrementCardCount(String color) {
-		decrementCardCount(AbstractCard.CardColor.valueOf(color));
-	}
 	// decrement the card count for a color
 	public static void decrementCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardCountMap.get(color);
@@ -1670,19 +1555,11 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static Integer getCardCount(String color) {
-		return getCardCount(AbstractCard.CardColor.valueOf(color));
-	}
 	// get card count for a color
 	public static Integer getCardCount(AbstractCard.CardColor color) {
 		return colorCardCountMap.get(color);
 	}
 
-	@Deprecated
-	public static void incrementSeenCardCount(String color) {
-		incrementSeenCardCount(AbstractCard.CardColor.valueOf(color));
-	}
 	// increment the seen card count for a color
 	public static void incrementSeenCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardSeenCountMap.get(color);
@@ -1693,136 +1570,76 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static Integer getSeenCardCount(String color) {
-		return getSeenCardCount(AbstractCard.CardColor.valueOf(color));
-	}
 	// get seen card count for a color
 	public static Integer getSeenCardCount(AbstractCard.CardColor color) {
 		return colorCardSeenCountMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Color getGlowColor(String color) {
-		return getGlowColor(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into a glow color
 	public static com.badlogic.gdx.graphics.Color getGlowColor(AbstractCard.CardColor color) {
 		return colorGlowColorMap.get(color);
 	}
 
-	@Deprecated
-	public static String getAttackBg(String color) {
-		return getAttackBg(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an attack background texture path
 	public static String getAttackBg(AbstractCard.CardColor color) {
 		return colorAttackBgMap.get(color);
 	}
 
-	@Deprecated
-	public static String getSkillBg(String color) {
-		return getSkillBg(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an skill background texture path
 	public static String getSkillBg(AbstractCard.CardColor color) {
 		return colorSkillBgMap.get(color);
 	}
 
-	@Deprecated
-	public static String getPowerBg(String color) {
-		return getPowerBg(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an power background texture path
 	public static String getPowerBg(AbstractCard.CardColor color) {
 		return colorPowerBgMap.get(color);
 	}
 
-	@Deprecated
-	public static String getEnergyOrb(String color) {
-		return getEnergyOrb(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an energy texture path
 	public static String getEnergyOrb(AbstractCard.CardColor color) {
 		return colorEnergyOrbMap.get(color);
 	}
 
-	@Deprecated
-	public static String getAttackBgPortrait(String color) {
-		return getAttackBgPortrait(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an attack background portrait texture path
 	public static String getAttackBgPortrait(AbstractCard.CardColor color) {
 		return colorAttackBgPortraitMap.get(color);
 	}
 
-	@Deprecated
-	public static String getSkillBgPortrait(String color) {
-		return getSkillBgPortrait(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an skill background portrait texture path
 	public static String getSkillBgPortrait(AbstractCard.CardColor color) {
 		return colorSkillBgPortraitMap.get(color);
 	}
 
-	@Deprecated
-	public static String getPowerBgPortrait(String color) {
-		return getPowerBgPortrait(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an power background portrait texture path
 	public static String getPowerBgPortrait(AbstractCard.CardColor color) {
 		return colorPowerBgPortraitMap.get(color);
 	}
 
-	@Deprecated
-	public static String getEnergyOrbPortrait(String color) {
-		return getEnergyOrbPortrait(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an energy portrait texture path
 	public static String getEnergyOrbPortrait(AbstractCard.CardColor color) {
 		return colorEnergyOrbPortraitMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getAttackBgTexture(String color) {
-		return getAttackBgTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an attack background texture
 	public static com.badlogic.gdx.graphics.Texture getAttackBgTexture(AbstractCard.CardColor color) {
 		return colorAttackBgTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getSkillBgTexture(String color) {
-		return getSkillBgTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an skill background texture
 	public static com.badlogic.gdx.graphics.Texture getSkillBgTexture(AbstractCard.CardColor color) {
 		return colorSkillBgTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getPowerBgTexture(String color) {
-		return getPowerBgTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an power background texture
 	public static com.badlogic.gdx.graphics.Texture getPowerBgTexture(AbstractCard.CardColor color) {
 		return colorPowerBgTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(String color) {
-		return getEnergyOrbTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an energy texture
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(AbstractCard.CardColor color) {
 		return colorEnergyOrbTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static TextureAtlas.AtlasRegion getCardEnergyOrbAtlasRegion(String color) {
-		return getCardEnergyOrbAtlasRegion(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an energy texture path
 	public static TextureAtlas.AtlasRegion getCardEnergyOrbAtlasRegion(AbstractCard.CardColor color) {
 		TextureAtlas.AtlasRegion orb = colorCardEnergyOrbAtlasRegionMap.get(color);
@@ -1841,109 +1658,61 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(String color) {
-		return getAttackBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an attack background texture
 	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorAttackBgPortraitTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getSkillBgPortraitTexture(String color) {
-		return getSkillBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an skill background texture
 	public static com.badlogic.gdx.graphics.Texture getSkillBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorSkillBgPortraitTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getPowerBgPortraitTexture(String color) {
-		return getPowerBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an power background texture
 	public static com.badlogic.gdx.graphics.Texture getPowerBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorPowerBgPortraitTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static com.badlogic.gdx.graphics.Texture getEnergyOrbPortraitTexture(String color) {
-		return getEnergyOrbPortraitTexture(AbstractCard.CardColor.valueOf(color));
-	}
 	// convert a color into an energy texture
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbPortraitTexture(AbstractCard.CardColor color) {
 		return colorEnergyOrbPortraitTextureMap.get(color);
 	}
 
-	@Deprecated
-	public static void saveAttackBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveAttackBgTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a attack background texture for a color
 	public static void saveAttackBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorAttackBgTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void saveSkillBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveSkillBgTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a skill background texture for a color
 	public static void saveSkillBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorSkillBgTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void savePowerBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		savePowerBgTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a power background texture for a color
 	public static void savePowerBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorPowerBgTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void saveEnergyOrbTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveEnergyOrbTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save an energy orb texture for a color
 	public static void saveEnergyOrbTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void saveAttackBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveAttackBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a attack background texture for a color
 	public static void saveAttackBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorAttackBgPortraitTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void saveSkillBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveSkillBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a skill background texture for a color
 	public static void saveSkillBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorSkillBgPortraitTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void savePowerBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		savePowerBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save a power background texture for a color
 	public static void savePowerBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorPowerBgPortraitTextureMap.put(color, tex);
 	}
 
-	@Deprecated
-	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
-		saveEnergyOrbPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
-	}
 	// save an energy orb texture for a color
 	public static void saveEnergyOrbPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbPortraitTextureMap.put(color, tex);
