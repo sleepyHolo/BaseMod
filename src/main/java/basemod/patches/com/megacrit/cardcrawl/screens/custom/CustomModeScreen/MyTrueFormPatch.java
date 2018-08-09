@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.custom.CustomModeScreen;
 
+import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -27,7 +28,7 @@ public class MyTrueFormPatch
 					case "My True Form":
 						List<String> cards = new ArrayList<>();
 						for (AbstractCard card : CardLibrary.getAllCards()) {
-							if (CardTags.hasTag(card, CardTags.FORM)) {
+							if (CardTags.hasTag(card, BaseModTags.FORM)) {
 								cards.add(card.cardID);
 							}
 						}
@@ -47,7 +48,7 @@ public class MyTrueFormPatch
 		public static ArrayList<String> Postfix(ArrayList<String> __result, MyTrueFormTrial __instance)
 		{
 			for (AbstractCard card : CardLibrary.getAllCards()) {
-				if (CardTags.hasTag(card, CardTags.FORM)) {
+				if (CardTags.hasTag(card, BaseModTags.FORM)) {
 					__result.add(card.cardID);
 				}
 			}

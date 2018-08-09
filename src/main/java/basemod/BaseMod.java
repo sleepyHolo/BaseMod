@@ -19,8 +19,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import basemod.helpers.CardTags;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
+import com.evacipated.cardcrawl.modthespire.Patcher;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
@@ -108,6 +110,7 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
+import org.scannotation.AnnotationDB;
 
 @SpireInitializer
 public class BaseMod {
@@ -361,6 +364,7 @@ public class BaseMod {
 
 		modBadges = new ArrayList<>();
 
+		initializeCardTags();
 		initializeGson();
 		initializeTypeMaps();
 		initializeSubscriptions();
@@ -397,6 +401,31 @@ public class BaseMod {
 		animationEnvironment = new Environment();
 		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
 		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+	}
+
+	// initializeCardTags -
+	private static void initializeCardTags() {
+		logger.info("initializeCardTags");
+		for (AnnotationDB db : Patcher.annotationDBMap.values()) {
+			Set<String> tagNames = db.getAnnotationIndex().get(CardTags.AutoTag.class.getName());
+			if (tagNames != null) {
+				for (String tagClassName : tagNames) {
+					try {
+						Class<?> tagClass = BaseMod.class.getClassLoader().loadClass(tagClassName);
+						for (Field field : tagClass.getDeclaredFields()) {
+							if (Modifier.isStatic(field.getModifiers()) &&
+									field.getDeclaredAnnotation(CardTags.AutoTag.class) != null) {
+								field.setAccessible(true);
+								logger.info("Making AutoTag: " + tagClassName + "." + field.getName());
+								field.set(null, new CardTags.BasicTag(tagClass.getSimpleName(), field.getName()));
+							}
+						}
+					} catch (ClassNotFoundException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	// initializeGson -

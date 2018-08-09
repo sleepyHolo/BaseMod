@@ -3,6 +3,7 @@ package basemod.abstracts;
 import java.util.HashMap;
 import java.util.List;
 
+import basemod.helpers.BaseModTags;
 import basemod.helpers.TooltipInfo;
 
 import basemod.helpers.CardTags;
@@ -224,10 +225,10 @@ public abstract class CustomCard extends AbstractCard {
 	//
 	
 	public boolean isStrike() {
-		return CardTags.hasTag(this, CardTags.BASIC_STRIKE);
+		return CardTags.hasTag(this, BaseModTags.BASIC_STRIKE);
 	}
 	
 	public boolean isDefend() {
-		return CardTags.hasTag(this, CardTags.BASIC_DEFEND);
+		return CardTags.hasTag(this, BaseModTags.BASIC_DEFEND);
 	}
 }

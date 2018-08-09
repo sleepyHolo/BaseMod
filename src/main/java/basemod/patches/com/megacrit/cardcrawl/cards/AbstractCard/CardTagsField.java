@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 
@@ -12,5 +13,5 @@ import java.util.Set;
 )
 public class CardTagsField
 {
-	public static SpireField<Set<String>> tags = new SpireField<>(HashSet::new);
+	public static SpireField<Set<CardTags.Tag>> tags = new SpireField<>(HashSet::new);
 }
