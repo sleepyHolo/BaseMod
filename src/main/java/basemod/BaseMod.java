@@ -313,16 +313,6 @@ public class BaseMod {
 		}
 	}
 
-	@Deprecated
-	public static Boolean maybeGetBoolean(String key) {
-		return getBoolean(key);
-	}
-
-	@Deprecated
-	public static void maybeSetBoolean(String key, Boolean value) {
-		setBoolean(key, value);
-	}
-
 	private static void setProperties() {
 		// if config can't be loaded leave things at defaults
 		if (config == null) {
