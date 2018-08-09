@@ -178,7 +178,7 @@ public class BaseMod {
 
 	private static ArrayList<String> potionsToRemove;
 
-	public static HashMap<PlayerClass, Class<?>> playerClassMap;
+	public static HashMap<PlayerClass, Class<? extends AbstractPlayer>> playerClassMap;
 	public static HashMap<PlayerClass, String> playerTitleStringMap;
 	public static HashMap<PlayerClass, String> playerClassStringMap;
 	public static HashMap<PlayerClass, AbstractCard.CardColor> playerColorMap;
@@ -1232,7 +1232,7 @@ public class BaseMod {
 
 	// add character - the String characterID *must* be the exact same as what
 	// you put in the PlayerClass enum
-	public static void addCharacter(Class<?> characterClass, String titleString,
+	public static void addCharacter(Class<? extends AbstractPlayer> characterClass, String titleString,
 									String classString, AbstractCard.CardColor color, String selectText, String selectButton, String portrait,
 									PlayerClass characterID) {
 		playerClassMap.put(characterID, characterClass);
