@@ -28,7 +28,7 @@ public class CtorSwitch {
 		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			try {
 				Field charInfoField;
-				charInfoField = option.getClass().getDeclaredField("charInfo");
+				charInfoField = CharacterOption.class.getDeclaredField("charInfo");
 				charInfoField.setAccessible(true);
 				@SuppressWarnings("rawtypes")
 				Class characterClass = BaseMod.getPlayerClass(chosenClass.toString());
@@ -44,7 +44,7 @@ public class CtorSwitch {
 			try {
 				// fix texture loading
 				Field buttonImgField;
-				buttonImgField = option.getClass().getDeclaredField("buttonImg");
+				buttonImgField = CharacterOption.class.getDeclaredField("buttonImg");
 				buttonImgField.setAccessible(true);
 				buttonImgField.set(option, new Texture(BaseMod.getPlayerButton(chosenClass.toString())));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

@@ -7,6 +7,8 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.DeadBranch;
 
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class ModalChoiceScreen
     private String header;
     private float showTimer;
     private CardGroup savedHand;
+
+    private CardGroup exhaustCardGroup;
+    private AbstractCard exhaustCard;
 
     public void open(List<AbstractCard> cards, String header)
     {
@@ -62,6 +67,10 @@ public class ModalChoiceScreen
         AbstractDungeon.dynamicBanner.hide();
         AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NONE;
         AbstractDungeon.isScreenUp = false;
+
+        if (exhaustCardGroup != null) {
+            exhaustCardGroup.moveToExhaustPile(exhaustCard);
+        }
     }
 
     private void fakeClose()
@@ -69,6 +78,12 @@ public class ModalChoiceScreen
         AbstractDungeon.overlayMenu.endTurnButton.disable();
         AbstractDungeon.screen = AbstractDungeon.CurrentScreen.NONE;
         AbstractDungeon.isScreenUp = false;
+    }
+
+    public void delayExhaust(CardGroup group, AbstractCard card)
+    {
+        exhaustCardGroup = group;
+        exhaustCard = card;
     }
 
     public void update()

@@ -285,8 +285,8 @@ public class AutoComplete {
 	}
 
 	// if you add a new command here make sure you sort it in alphabetically
-	public static final String[] COMMANDS = { "clear", "deck", "draw", "energy", "event", "fight", "gold", "hand",
-			"help", "hp", "info", "kill", "maxhp", "potion", "power", "relic", "unlock" };
+	public static final String[] COMMANDS = { "clear", "debug", "deck", "draw", "energy", "event", "fight", "gold", "hand",
+			"help", "hp", "info", "kill", "maxhp", "potion", "power", "relic", "unlock"};
 
 	public static final int CMDS = ID_CREATOR++;
 
@@ -386,6 +386,10 @@ public class AutoComplete {
 				createMaxHPSuggestions();
 				break;
 			}
+			case "debug":{
+				createDebugSuggestions();
+				break;
+			}
 			default: {
 				noMatch = true;
 				currentID = RESET;
@@ -450,11 +454,15 @@ public class AutoComplete {
 				|| tokens[1].equalsIgnoreCase("flavor") || tokens[1].equalsIgnoreCase("pool");
 	}
 
-	private static final String[] HAND_CMDS = { "add", "remove" };
+	private static final String[] HAND_CMDS = { "add", "discard", "remove", "set" };
+	private static final String[] HAND_SET_CMDS = { "block", "cost", "damage", "magic" };
 
 	public static final int HAND = ID_CREATOR++;
 	public static final int HAND_ADD = ID_CREATOR++;
 	public static final int HAND_REMOVE = ID_CREATOR++;
+	public static final int HAND_DISCARD = ID_CREATOR++;
+	public static final int HAND_SET = ID_CREATOR++;
+	public static final int HAND_SET_CARD = ID_CREATOR++;
 
 	private static void createHandSuggestions() {
 		if (whiteSpaces == 1) {
@@ -480,11 +488,33 @@ public class AutoComplete {
 				}
 				currentID = HAND_REMOVE;
 				cardIDList(true);
+			} else if (isDiscard()) {
+				if (currentID == HAND_DISCARD) {
+					alreadySorted = true;
+					return;
+				}
+				currentID = HAND_DISCARD;
+				cardIDList(true);
+			} else if (isSet()) {
+				alreadySorted = true;
+				if (currentID == HAND_SET) {
+					return;
+				}
+				currentID = HAND_SET;
+				suggestions.clear();
+				suggestions.addAll(Arrays.asList(HAND_SET_CMDS));
 			} else {
 				currentID = RESET;
 				noMatch = true;
 			}
-		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove()) {
+		} else if (whiteSpaces == 3 && isSet()) {
+			if (currentID == HAND_SET_CARD) {
+				alreadySorted = true;
+				return;
+			}
+			currentID = HAND_SET_CARD;
+			cardIDList(true);
+		} else if ((whiteSpaces == 3 || whiteSpaces == 4) && !isRemove() && !isDiscard()) {
 			smallNumbers();
 		} else {
 			commandComplete = true;
@@ -791,6 +821,23 @@ public class AutoComplete {
 			commandComplete = true;
 		}
 	}
+	
+	private static final String[] DEBUG_CMDS = {"true", "false"};
+	public static final int DEBUG = ID_CREATOR++;
+	
+	private static void createDebugSuggestions() {
+		if (whiteSpaces == 1) {
+			alreadySorted = true;
+			if(currentID == DEBUG) {
+				return;
+			}
+			currentID = DEBUG;
+			suggestions.clear();
+			suggestions.addAll(Arrays.asList(DEBUG_CMDS));
+		} else {
+			commandComplete = true;
+		}
+	}
 
 	private static boolean isAdd() {
 		return tokens[1].equalsIgnoreCase("add") || tokens[1].equalsIgnoreCase("a");
@@ -798,6 +845,14 @@ public class AutoComplete {
 
 	private static boolean isRemove() {
 		return tokens[1].equalsIgnoreCase("remove") || tokens[1].equalsIgnoreCase("r");
+	}
+
+	private static boolean isDiscard() {
+		return tokens[1].equalsIgnoreCase("discard") || tokens[1].equalsIgnoreCase("d");
+	}
+
+	private static boolean isSet() {
+		return tokens[1].equalsIgnoreCase("set") || tokens[1].equalsIgnoreCase("s");
 	}
 
 	private static void cardIDList(boolean isRemove) {

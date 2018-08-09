@@ -44,4 +44,8 @@ public class Defend_Purple extends CustomCard {
 			upgradeBlock(UPGRADE_PLUS_BLOCK);
 		}
 	}
+
+	public boolean isDefend() {
+		return true;
+	}
 }

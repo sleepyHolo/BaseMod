@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
@@ -181,10 +182,33 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			cmdMaxHP(tokens);
 			break;
 		}
+		case "debug":{
+			cmdDebugMode(tokens);
+			break;
+		}	
 		default: {
 			log("invalid command");
 			break;
 		}
+		}
+	}
+	
+	private static void cmdDebugMode(String[] tokens) {
+		if(tokens.length == 2 && (tokens[1].equals("true") || tokens[1].equals("false"))) {
+			try {
+				Settings.isDebug = Boolean.parseBoolean(tokens[1]);
+				log("Setting debug mode to: " + Settings.isDebug);
+			} catch(Exception e) {
+				couldNotParse();
+				log("options are:");
+				log("* true");
+				log("* false");
+			}
+		}else {
+			couldNotParse();
+			log("options are:");
+			log("* true");
+			log("* false");
 		}
 	}
 
@@ -459,6 +483,58 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 						AbstractDungeon.player.hand.moveToExhaustPile(toRemove);
 					}
 				}
+			} else if (tokens[1].toLowerCase().equals("discard") || tokens[1].toLowerCase().equals("d")) {
+				if (tokens[2].equals("all")) {
+					// discard all cards
+					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
+						AbstractDungeon.player.hand.moveToDiscardPile(c);
+						c.triggerOnManualDiscard();
+						GameActionManager.incrementDiscard(false);
+					}
+				} else {
+					// discard single card
+					for (AbstractCard c : AbstractDungeon.player.hand.group) {
+						if (c.cardID.equals(cardName)) {
+							AbstractDungeon.player.hand.moveToDiscardPile(c);
+							c.triggerOnManualDiscard();
+							GameActionManager.incrementDiscard(false);
+							return;
+						}
+					}
+				}
+			} else if ((tokens[1].equalsIgnoreCase("set") || tokens[1].equalsIgnoreCase("s")) &&
+			           (tokens[2].equalsIgnoreCase("damage") || tokens[2].equalsIgnoreCase("block") || tokens[2].equalsIgnoreCase("magic") || tokens[2].equalsIgnoreCase("cost") || tokens[2].equalsIgnoreCase("d") || tokens[2].equalsIgnoreCase("b") || tokens[2].equalsIgnoreCase("m") || tokens[2].equalsIgnoreCase("c")) && tokens.length == 5) {
+				try{
+					cardNameArray = Arrays.copyOfRange(tokens, 3, countIndex + 1);
+					cardName = String.join(" ", cardNameArray);
+					boolean all = tokens[3].equals("all");
+					int v = Integer.parseInt(tokens[4]);
+					for (AbstractCard c : new ArrayList<>(AbstractDungeon.player.hand.group)) {
+						if (all || c.cardID.equals(cardName)) {
+							if (tokens[2].equalsIgnoreCase("damage") || tokens[2].equalsIgnoreCase("d")) {
+								if (c.baseDamage != v) c.upgradedDamage = true;
+								c.baseDamage = v;
+							}
+							if (tokens[2].equalsIgnoreCase("block") || tokens[2].equalsIgnoreCase("b")) {
+								if (c.baseBlock != v) c.upgradedBlock = true;
+								c.baseBlock = v;
+							}
+							if (tokens[2].equalsIgnoreCase("magic") || tokens[2].equalsIgnoreCase("m")) {
+								if (c.baseMagicNumber != v) c.upgradedMagicNumber = true;
+								c.magicNumber = c.baseMagicNumber = v;
+							}
+							if (tokens[2].equalsIgnoreCase("cost") || tokens[2].equalsIgnoreCase("c")) {
+								if (c.cost != v) c.upgradedCost = true;
+								c.cost = v;
+							}
+							c.displayUpgrades();
+							c.applyPowers();
+							if (!all) break;
+						}
+					}
+				} catch (NumberFormatException e) {
+					cmdHandHelp();
+				}
 			} else {
 				cmdHandHelp();
 			}
@@ -473,6 +549,12 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		log("* add [id] {count} {upgrade amt}");
 		log("* remove [id]");
 		log("* remove all");
+		log("* discard [id]");
+		log("* discard all");
+		log("* set damage [id] [amount]");
+		log("* set block [id] [amount]");
+		log("* set magic [id] [amount]");
+		log("* set cost [id] [amount]");
 	}
 
 	private static void cmdKill(String[] tokens) {

@@ -10,7 +10,16 @@ import basemod.BaseMod;
 
 public class ActChangeHooks {
 
-	@SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="ctor")
+	@SpirePatch(
+			cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon",
+			method=SpirePatch.CONSTRUCTOR,
+			paramtypes={
+					"java.lang.String",
+					"java.lang.String",
+					"com.megacrit.cardcrawl.characters.AbstractPlayer",
+					"java.util.ArrayList"
+			}
+	)
 	public static class InGameConstructor {
 		
 		public static void Postfix(Object __obj_instance,
@@ -23,8 +32,15 @@ public class ActChangeHooks {
 		
 	}
 	
-	@SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="ctor",
-			paramtypes={"java.lang.String", "com.megacrit.cardcrawl.characters.AbstractPlayer", "com.megacrit.cardcrawl.saveAndContinue.SaveFile"})
+	@SpirePatch(
+			cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon",
+			method=SpirePatch.CONSTRUCTOR,
+			paramtypes={
+					"java.lang.String",
+					"com.megacrit.cardcrawl.characters.AbstractPlayer",
+					"com.megacrit.cardcrawl.saveAndContinue.SaveFile"
+			}
+	)
 	public static class SavedGameConstructor {
 
 		public static void Postfix(Object __obj_instance,

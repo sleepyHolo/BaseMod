@@ -312,4 +312,35 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for week 30 (kiooeht)
 * Deprecate starting deck and relic hooks (kiooeht)
 
+#### v2.15.0 ####
+* Support for week 31 (kobting)
+* Add modded characters to the Custom mode screen (kiooeht)
+
+#### v2.16.0 ####
+* Add debug command (Blank The Evil)
+* Fix Run History screen (kiooeht)
+* StartBattleHook (kobting)
+* Diverse includes modded character's cards (Moocowsgomoo)
+* Patch events and relics that care about Strikes and Defends (twanvl)
+* Fix portrait image in right-click card previews (twanvl)
+* Custom event support (Blank The Evil)
+* Character select screen pages with many characters (kobting)
+* Allow custom energy symbols on cards (twanvl)
+* Fix [E] rendering in portait mode (twanvl)
+* Dev console: Discard command (twanvl)
+* Dev console: Set card numbers command (twanvl)
+
+#### v2.17.0 ####
+* Support for week 34 (kiooeht)
+* Fix RelicViewScreen not scrolling far enough with mods that add relics (kiooeht)
+* Potions can be specific to a character (twanvl)
+
+#### v2.18.0 ####
+* Identify what mod relics, cards, and powers are from (kiooeht)
+* Allowing adding relics to blue pool (kiooeht)
+* Make relic and power onEvokeOrb actually usable (kiooeht)
+* Fix ascension for modded characters (kiooeht)
+* Fix crash if Note For Yourself event (kiooeht)
+* Fix card rendering to not draw curse texture (Blank The Evil)
+
 #### dev ####
