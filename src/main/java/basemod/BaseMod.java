@@ -190,7 +190,7 @@ public class BaseMod {
 
 	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
 
-	private static HashMap<String, Class<?>> potionClassMap;
+	private static HashMap<String, Class<? extends AbstractPotion>> potionClassMap;
 	private static HashMap<String, Color> potionHybridColorMap;
 	private static HashMap<String, Color> potionLiquidColorMap;
 	private static HashMap<String, Color> potionSpotsColorMap;
@@ -1730,11 +1730,11 @@ public class BaseMod {
 		potionsToRemove.add(potionID);
 	}
 
-	// add the Potion to the map (fake ENUM)
-	public static void addPotion(Class<?> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID) {
+	// add the Potion to the map
+	public static void addPotion(Class<? extends AbstractPotion> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID) {
 		addPotion(potionClass, liquidColor, hybridColor, spotsColor, potionID, null);
 	}
-	public static void addPotion(Class<?> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID, AbstractPlayer.PlayerClass playerClass) {
+	public static void addPotion(Class<? extends AbstractPotion> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID, AbstractPlayer.PlayerClass playerClass) {
 		potionClassMap.put(potionID, potionClass);
 		potionLiquidColorMap.put(potionID, liquidColor);
 		potionHybridColorMap.put(potionID, hybridColor);
@@ -1742,12 +1742,12 @@ public class BaseMod {
 		potionPlayerClassMap.put(potionID, playerClass);
 	}
 
-	// (fake ENUM) return Class corresponding to potionID
-	public static Class<?> getPotionClass(String potionID) {
+	// return Class corresponding to potionID
+	public static Class<? extends AbstractPotion> getPotionClass(String potionID) {
 		return potionClassMap.get(potionID);
 	}
 
-	// (fake ENUM) return Colors corresponding to potionID
+	// return Colors corresponding to potionID
 	public static Color getPotionLiquidColor(String potionID) {
 		return potionLiquidColorMap.get(potionID);
 	}
@@ -1764,7 +1764,7 @@ public class BaseMod {
 		return potionPlayerClassMap.get(potionID);
 	}
 
-	// get all entry in fake ENUM
+	// get all potion IDs
 	public static Set<String> getPotionIDs() {
 		return potionClassMap.keySet();
 	}
