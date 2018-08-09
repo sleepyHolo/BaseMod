@@ -30,9 +30,7 @@ public class CtorSwitch {
 				Field charInfoField;
 				charInfoField = CharacterOption.class.getDeclaredField("charInfo");
 				charInfoField.setAccessible(true);
-				@SuppressWarnings("rawtypes")
-				Class characterClass = BaseMod.getPlayerClass(chosenClass.toString());
-				@SuppressWarnings("unchecked")
+				Class<?> characterClass = BaseMod.getPlayerClass(chosenClass);
 				Method getLoadout = characterClass.getMethod("getLoadout");
 				charInfoField.set(option, getLoadout.invoke(null));
 			} catch (NoSuchFieldException | SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
@@ -46,7 +44,7 @@ public class CtorSwitch {
 				Field buttonImgField;
 				buttonImgField = CharacterOption.class.getDeclaredField("buttonImg");
 				buttonImgField.setAccessible(true);
-				buttonImgField.set(option, new Texture(BaseMod.getPlayerButton(chosenClass.toString())));
+				buttonImgField.set(option, new Texture(BaseMod.getPlayerButton(chosenClass)));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				logger.error("could not create character select button for " + chosenClass.toString());
 				logger.error("with exception: " + e.getMessage());

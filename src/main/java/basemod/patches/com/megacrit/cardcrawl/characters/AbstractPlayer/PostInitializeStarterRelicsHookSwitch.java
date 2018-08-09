@@ -17,7 +17,7 @@ public class PostInitializeStarterRelicsHookSwitch {
     	AbstractPlayer me = (AbstractPlayer) mObj;
 		ArrayList<String> theRelics = relicsObj[0];
     	if (!BaseMod.isBaseGameCharacter(chosenClass)) {
-        	theRelics = BaseMod.getStartingRelics(me.chosenClass.toString());
+        	theRelics = BaseMod.getStartingRelics(me.chosenClass);
         	relicsObj[0] = theRelics;
         } else {
         	BaseMod.publishPostCreateStartingRelics(me.chosenClass, theRelics);

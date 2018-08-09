@@ -24,11 +24,11 @@ public class CreateCardImageSwitch {
 			}
 			
 			//sets the card colors
-			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "bgColor", BaseMod.getBgColor(__instance.color.toString()).cpy());
-			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "backColor", BaseMod.getBackColor(__instance.color.toString()).cpy());
-			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "frameColor", BaseMod.getFrameColor(__instance.color.toString()).cpy());
-			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "frameOutlineColor", BaseMod.getFrameOutlineColor(__instance.color.toString()).cpy());
-			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "descBoxColor", BaseMod.getDescBoxColor(__instance.color.toString()).cpy());
+			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "bgColor", BaseMod.getBgColor(__instance.color).cpy());
+			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "backColor", BaseMod.getBackColor(__instance.color).cpy());
+			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "frameColor", BaseMod.getFrameColor(__instance.color).cpy());
+			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "frameOutlineColor", BaseMod.getFrameOutlineColor(__instance.color).cpy());
+			ReflectionHacks.setPrivate(__instance, AbstractCard.class, "descBoxColor", BaseMod.getDescBoxColor(__instance.color).cpy());
 			
 			//sets rarity colors
 			switch(__instance.rarity) {

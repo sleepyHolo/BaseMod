@@ -26,7 +26,7 @@ public class CreateCharacterSwitch {
 		AbstractPlayer p;
 		if (!BaseMod.isBaseGameCharacter(selection)) {
 			logger.info("creating character " + selection.toString());
-			p = BaseMod.createCharacter(selection.toString(), CardCrawlGame.playerName);
+			p = BaseMod.createCharacter(selection, CardCrawlGame.playerName);
 			
 			pObj[0] = p;
 		}

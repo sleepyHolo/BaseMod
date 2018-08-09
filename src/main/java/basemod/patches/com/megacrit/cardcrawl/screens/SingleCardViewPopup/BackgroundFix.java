@@ -44,10 +44,10 @@ public class BackgroundFix {
 							bgTexture = ((CustomCard) card).getBackgroundLargeTexture();
 						}
 						if (bgTexture == null) {
-							bgTexture = BaseMod.getAttackBgPortraitTexture(color.toString());
+							bgTexture = BaseMod.getAttackBgPortraitTexture(color);
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getAttackBgPortrait(color.toString()));
-								BaseMod.saveAttackBgPortraitTexture(color.toString(), bgTexture);
+								bgTexture = new Texture(BaseMod.getAttackBgPortrait(color));
+								BaseMod.saveAttackBgPortraitTexture(color, bgTexture);
 							}
 						}
 						sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
@@ -61,10 +61,10 @@ public class BackgroundFix {
 							bgTexture = ((CustomCard) card).getBackgroundLargeTexture();
 						}
 						if (bgTexture == null) {
-							bgTexture = BaseMod.getPowerBgPortraitTexture(color.toString());
+							bgTexture = BaseMod.getPowerBgPortraitTexture(color);
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getPowerBgPortrait(color.toString()));
-								BaseMod.savePowerBgPortraitTexture(color.toString(), bgTexture);
+								bgTexture = new Texture(BaseMod.getPowerBgPortrait(color));
+								BaseMod.savePowerBgPortraitTexture(color, bgTexture);
 							}
 						}
 						sb.draw(bgTexture, 
@@ -86,17 +86,17 @@ public class BackgroundFix {
 					}
 					break;
 				default:
-					if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
-							&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
+					if (color != AbstractCard.CardColor.RED && color != AbstractCard.CardColor.GREEN && color != AbstractCard.CardColor.BLUE
+							&& color != AbstractCard.CardColor.COLORLESS && color != AbstractCard.CardColor.CURSE) {
 						Texture bgTexture = null;
 						if (card instanceof CustomCard) {
 							bgTexture = ((CustomCard) card).getBackgroundLargeTexture();
 						}
 						if (bgTexture == null) {
-							bgTexture = BaseMod.getSkillBgPortraitTexture(color.toString());
+							bgTexture = BaseMod.getSkillBgPortraitTexture(color);
 							if (bgTexture == null) {
-								bgTexture = new Texture(BaseMod.getSkillBgPortrait(color.toString()));
-								BaseMod.saveSkillBgPortraitTexture(color.toString(), bgTexture);
+								bgTexture = new Texture(BaseMod.getSkillBgPortrait(color));
+								BaseMod.saveSkillBgPortraitTexture(color, bgTexture);
 							}
 						}
 						sb.draw(bgTexture, Settings.WIDTH / 2.0F - 512.0F, Settings.HEIGHT / 2.0F - 512.0F, 512.0F, 512.0F, 1024.0F, 1024.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1024, 1024, false, false);
@@ -132,10 +132,10 @@ public class BackgroundFix {
 						}
 							
 						if(orbTexture == null) {
-							orbTexture = BaseMod.getEnergyOrbPortraitTexture(color.toString());
+							orbTexture = BaseMod.getEnergyOrbPortraitTexture(color);
 							if (orbTexture == null) {
-								orbTexture = new Texture(BaseMod.getEnergyOrbPortrait(color.toString()));
-								BaseMod.saveEnergyOrbPortraitTexture(color.toString(), orbTexture);
+								orbTexture = new Texture(BaseMod.getEnergyOrbPortrait(color));
+								BaseMod.saveEnergyOrbPortraitTexture(color, orbTexture);
 							}
 						}
 						

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -172,35 +171,32 @@ public class BaseMod {
 	private static ArrayList<String> curseToRemove;
 	private static ArrayList<AbstractCard> customToAdd;
 	private static ArrayList<String> customToRemove;
-	private static ArrayList<String> customToRemoveColors;
+	private static ArrayList<AbstractCard.CardColor> customToRemoveColors;
 
-	private static HashMap<String, HashMap<String, AbstractRelic>> customRelicPools;
-	private static HashMap<String, ArrayList<AbstractRelic>> customRelicLists;
+	private static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelicPools;
+	private static HashMap<AbstractCard.CardColor, ArrayList<AbstractRelic>> customRelicLists;
 
 	private static ArrayList<String> potionsToRemove;
 
-	@SuppressWarnings("rawtypes")
-	public static HashMap<String, Class> playerClassMap;
-	public static HashMap<String, String> playerTitleStringMap;
-	public static HashMap<String, String> playerClassStringMap;
-	public static HashMap<String, String> playerColorMap;
-	public static HashMap<String, String> playerSelectTextMap;
-	public static HashMap<String, String> playerSelectButtonMap;
-	public static HashMap<String, String> playerPortraitMap;
+	public static HashMap<PlayerClass, Class<?>> playerClassMap;
+	public static HashMap<PlayerClass, String> playerTitleStringMap;
+	public static HashMap<PlayerClass, String> playerClassStringMap;
+	public static HashMap<PlayerClass, AbstractCard.CardColor> playerColorMap;
+	public static HashMap<PlayerClass, String> playerSelectTextMap;
+	public static HashMap<PlayerClass, String> playerSelectButtonMap;
+	public static HashMap<PlayerClass, String> playerPortraitMap;
 
-	public static HashMap<String, CharStat> playerStatsMap;
+	public static HashMap<PlayerClass, CharStat> playerStatsMap;
 
 	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
 
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> potionClassMap;
+	private static HashMap<String, Class<?>> potionClassMap;
 	private static HashMap<String, Color> potionHybridColorMap;
 	private static HashMap<String, Color> potionLiquidColorMap;
 	private static HashMap<String, Color> potionSpotsColorMap;
 	private static HashMap<String, AbstractPlayer.PlayerClass> potionPlayerClassMap;
 
-	@SuppressWarnings("rawtypes")
-	private static HashMap<String, Class> powerMap;
+	private static HashMap<String, Class<? extends AbstractPower>> powerMap;
 
 	public static ArrayList<String> encounterList;
 	public static HashMap<String, String> underScoreEncounterIDs;
@@ -210,33 +206,33 @@ public class BaseMod {
 	public static HashMap<String, String> underScoreEventIDs;
 	public static HashMap<String, String> underScoreRelicIDs;
 
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBgColorMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorBackColorMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameColorMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorFrameOutlineColorMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorDescBoxColorMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorTrailVfxMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Color> colorGlowColorMap;
-	private static HashMap<String, Integer> colorCardCountMap;
-	private static HashMap<String, Integer> colorCardSeenCountMap;
-	private static HashMap<String, String> colorAttackBgMap;
-	private static HashMap<String, String> colorSkillBgMap;
-	private static HashMap<String, String> colorPowerBgMap;
-	private static HashMap<String, String> colorEnergyOrbMap;
-	private static HashMap<String, String> colorCardEnergyOrbMap;
-	private static HashMap<String, String> colorAttackBgPortraitMap;
-	private static HashMap<String, String> colorSkillBgPortraitMap;
-	private static HashMap<String, String> colorPowerBgPortraitMap;
-	private static HashMap<String, String> colorEnergyOrbPortraitMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorAttackBgTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorAttackBgPortraitTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorSkillBgPortraitTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorPowerBgPortraitTextureMap;
-	private static HashMap<String, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
-	private static HashMap<String, TextureAtlas.AtlasRegion> colorCardEnergyOrbAtlasRegionMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorBgColorMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorBackColorMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorFrameColorMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorFrameOutlineColorMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorDescBoxColorMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorTrailVfxMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Color> colorGlowColorMap;
+	private static HashMap<AbstractCard.CardColor, Integer> colorCardCountMap;
+	private static HashMap<AbstractCard.CardColor, Integer> colorCardSeenCountMap;
+	private static HashMap<AbstractCard.CardColor, String> colorAttackBgMap;
+	private static HashMap<AbstractCard.CardColor, String> colorSkillBgMap;
+	private static HashMap<AbstractCard.CardColor, String> colorPowerBgMap;
+	private static HashMap<AbstractCard.CardColor, String> colorEnergyOrbMap;
+	private static HashMap<AbstractCard.CardColor, String> colorCardEnergyOrbMap;
+	private static HashMap<AbstractCard.CardColor, String> colorAttackBgPortraitMap;
+	private static HashMap<AbstractCard.CardColor, String> colorSkillBgPortraitMap;
+	private static HashMap<AbstractCard.CardColor, String> colorPowerBgPortraitMap;
+	private static HashMap<AbstractCard.CardColor, String> colorEnergyOrbPortraitMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorAttackBgTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorSkillBgTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorPowerBgTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorEnergyOrbTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorAttackBgPortraitTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorSkillBgPortraitTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorPowerBgPortraitTextureMap;
+	private static HashMap<AbstractCard.CardColor, com.badlogic.gdx.graphics.Texture> colorEnergyOrbPortraitTextureMap;
+	private static HashMap<AbstractCard.CardColor, TextureAtlas.AtlasRegion> colorCardEnergyOrbAtlasRegionMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 
@@ -543,7 +539,6 @@ public class BaseMod {
 		unlockBundles = new HashMap<>();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static void initializePotionMap() {
 		potionClassMap = new HashMap<>();
 		potionHybridColorMap = new HashMap<>();
@@ -663,9 +658,11 @@ public class BaseMod {
 		try {
 			finder.add(new File(url.toURI()));
 
-			ClassFilter filter = new AndClassFilter(new NotClassFilter(new InterfaceOnlyClassFilter()),
+			ClassFilter filter = new AndClassFilter(
+					new NotClassFilter(new InterfaceOnlyClassFilter()),
 					new NotClassFilter(new AbstractClassFilter()),
-					new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+"));
+					new RegexClassFilter("com\\.megacrit\\.cardcrawl\\.powers\\..+")
+			);
 			Collection<ClassInfo> foundClasses = new ArrayList<>();
 			finder.findClasses(foundClasses, filter);
 
@@ -677,7 +674,7 @@ public class BaseMod {
 					for (FieldInfo fieldInfo : classInfo.getFields()) {
 						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
 							powerMap.put((String) fieldInfo.getValue(),
-									BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
+									(Class<? extends AbstractPower>) BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()));
 							break;
 						}
 					}
@@ -735,14 +732,14 @@ public class BaseMod {
 
 	public static boolean moddedSaveExists() {
 		System.out.println("checking if save exists");
-		for (String playerClass : playerClassMap.keySet()) {
-			String filepath = save_path + playerClass + ".autosave";
+		for (PlayerClass playerClass : playerClassMap.keySet()) {
+			String filepath = save_path + playerClass.name() + ".autosave";
 			System.out.println("looking for " + filepath);
 			boolean fileExists = Gdx.files.local(filepath).exists();
 			// delete corrupted saves
 			if ((fileExists)
-					&& (SaveAndContinue.loadSaveFile(AbstractPlayer.PlayerClass.valueOf(playerClass)) == null)) {
-				SaveAndContinue.deleteSave(AbstractPlayer.PlayerClass.valueOf(playerClass));
+					&& (SaveAndContinue.loadSaveFile(playerClass) == null)) {
+				SaveAndContinue.deleteSave(playerClass);
 			}
 			if (fileExists) {
 				return true;
@@ -752,10 +749,10 @@ public class BaseMod {
 	}
 
 	public static AbstractPlayer.PlayerClass getSaveClass() {
-		for (String playerClass : playerClassMap.keySet()) {
+		for (PlayerClass playerClass : playerClassMap.keySet()) {
 			String filepath = save_path + playerClass + ".autosave";
 			if (Gdx.files.local(filepath).exists()) {
-				return AbstractPlayer.PlayerClass.valueOf(playerClass);
+				return playerClass;
 			}
 		}
 		return null;
@@ -791,7 +788,7 @@ public class BaseMod {
 	// loadCustomRelicStrings - loads custom RelicStrings from provided JSON
 	// should be done inside the callback of an implementation of
 	// EditStringsSubscriber
-	public static void loadCustomStrings(@SuppressWarnings("rawtypes") Class stringType, String jsonString) {
+	public static void loadCustomStrings(Class<?> stringType, String jsonString) {
 		loadJsonStrings(stringType, jsonString);
 	}
 
@@ -850,7 +847,7 @@ public class BaseMod {
 	}
 
 	// custom remove colors -
-	public static ArrayList<String> getCustomCardsToRemoveColors() {
+	public static ArrayList<AbstractCard.CardColor> getCustomCardsToRemoveColors() {
 		return customToRemoveColors;
 	}
 
@@ -875,19 +872,23 @@ public class BaseMod {
 		}
 	}
 
-	// remove card
+	@Deprecated
 	public static void removeCard(String card, String color) {
+		removeCard(card, AbstractCard.CardColor.valueOf(color));
+	}
+	// remove card
+	public static void removeCard(String card, AbstractCard.CardColor color) {
 		switch (color) {
-		case "RED":
+		case RED:
 			redToRemove.add(card);
 			break;
-		case "GREEN":
+		case GREEN:
 			greenToRemove.add(card);
 			break;
-		case "COLORLESS":
+		case COLORLESS:
 			colorlessToRemove.add(card);
 			break;
-		case "CURSE":
+		case CURSE:
 			curseToRemove.add(card);
 			break;
 		default:
@@ -1017,8 +1018,12 @@ public class BaseMod {
 		}
 	}
 
-	// addRelicToCustomPool -
+	@Deprecated
 	public static void addRelicToCustomPool(AbstractRelic relic, String color) {
+		addRelicToCustomPool(relic, AbstractCard.CardColor.valueOf(color));
+	}
+	// addRelicToCustomPool -
+	public static void addRelicToCustomPool(AbstractRelic relic, AbstractCard.CardColor color) {
 		if (customRelicPools.containsKey(color)) {
 			if (UnlockTracker.isRelicSeen(relic.relicId)) {
 				RelicLibrary.seenRelics++;
@@ -1032,21 +1037,25 @@ public class BaseMod {
 		}
 	}
 
-	// getRelicsInCustomPool -
+	@Deprecated
 	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(String color) {
+		return getRelicsInCustomPool(AbstractCard.CardColor.valueOf(color));
+	}
+	// getRelicsInCustomPool -
+	public static HashMap<String, AbstractRelic> getRelicsInCustomPool(AbstractCard.CardColor color) {
 		return customRelicPools.get(color);
 	}
 
 	// getAllCustomRelics -
-	public static HashMap<String, HashMap<String, AbstractRelic>> getAllCustomRelics() {
+	public static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> getAllCustomRelics() {
 		return customRelicPools;
 	}
 
 	// getCustomRelic -
 	public static AbstractRelic getCustomRelic(String key) {
-		for (Map.Entry<String, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
-			if (map.getValue().containsKey(key)) {
-				return map.getValue().get(key);
+		for (HashMap<String, AbstractRelic> map : BaseMod.getAllCustomRelics().values()) {
+			if (map.containsKey(key)) {
+				return map.get(key);
 			}
 		}
 		return new Circlet();
@@ -1118,9 +1127,9 @@ public class BaseMod {
 			relicIDs.addAll(blueRelics.keySet());
 		}
 		if (getAllCustomRelics() != null) {
-			for (Entry<String, HashMap<String, AbstractRelic>> e : getAllCustomRelics().entrySet()) {
-				if (e != null && e.getValue() != null) {
-					relicIDs.addAll(e.getValue().keySet());
+			for (HashMap<String, AbstractRelic> e : getAllCustomRelics().values()) {
+				if (e != null) {
+					relicIDs.addAll(e.keySet());
 				}
 			}
 		}
@@ -1233,11 +1242,19 @@ public class BaseMod {
 	// Characters
 	//
 
-	// add character - the String characterID *must* be the exact same as what
-	// you put in the PlayerClass enum
-	public static void addCharacter(@SuppressWarnings("rawtypes") Class characterClass, String titleString,
+	@Deprecated
+	public static void addCharacter(Class<?> characterClass, String titleString,
 			String classString, String color, String selectText, String selectButton, String portrait,
 			String characterID) {
+		addCharacter(characterClass, titleString,
+				classString, AbstractCard.CardColor.valueOf(color), selectText, selectButton, portrait,
+				PlayerClass.valueOf(characterID));
+	}
+	// add character - the String characterID *must* be the exact same as what
+	// you put in the PlayerClass enum
+	public static void addCharacter(Class<?> characterClass, String titleString,
+									String classString, AbstractCard.CardColor color, String selectText, String selectButton, String portrait,
+									PlayerClass characterID) {
 		playerClassMap.put(characterID, characterClass);
 		playerTitleStringMap.put(characterID, titleString);
 		playerClassStringMap.put(characterID, classString);
@@ -1247,18 +1264,24 @@ public class BaseMod {
 		playerPortraitMap.put(characterID, portrait);
 	}
 
+	@Deprecated
+	public static void removeCharacter(String characterID) {
+		removeCharacter(PlayerClass.valueOf(characterID));
+	}
 	// I have no idea if this implementation comes even remotely close to
 	// working
-	public static void removeCharacter(String characterID) {
+	public static void removeCharacter(PlayerClass characterID) {
 		playerClassMap.remove(characterID);
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual player class
-	// used by CardCrawlGame when creating the player for the game
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Deprecated
 	public static AbstractPlayer createCharacter(String playerClass, String playerName) {
-		Class playerClassAsClass = playerClassMap.get(playerClass);
-		Constructor ctor;
+		return createCharacter(PlayerClass.valueOf(playerClass), playerName);
+	}
+	// convert a playerClass into the actual player class used by CardCrawlGame when creating the player for the game
+	public static AbstractPlayer createCharacter(PlayerClass playerClass, String playerName) {
+		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
+		Constructor<?> ctor;
 		try {
 			ctor = playerClassAsClass.getConstructor(String.class, AbstractPlayer.PlayerClass.class);
 		} catch (NoSuchMethodException | SecurityException e) {
@@ -1272,7 +1295,7 @@ public class BaseMod {
 		AbstractPlayer thePlayer;
 		try {
 			thePlayer = (AbstractPlayer) ctor
-					.newInstance(new Object[] { playerName, PlayerClass.valueOf(playerClass) });
+					.newInstance(new Object[] { playerName, playerClass });
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			// if we fail to instantiate using java reflections just start the
@@ -1288,19 +1311,23 @@ public class BaseMod {
 		return thePlayer;
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual title string for
-	// that class
-	// used by AbstractPlayer when getting the title string for the player
+	@Deprecated
 	public static String getTitle(String playerClass) {
+		return getTitle(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the actual title string for that class
+	// used by AbstractPlayer when getting the title string for the player
+	public static String getTitle(PlayerClass playerClass) {
 		return playerTitleStringMap.get(playerClass);
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual starting deck
-	// for that class
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static ArrayList<String> getStartingDeck(String playerClass) {
-		@SuppressWarnings("rawtypes")
-		Class playerClassAsClass = playerClassMap.get(playerClass);
+		return getStartingDeck(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the actual starting deck for that class
+	public static ArrayList<String> getStartingDeck(PlayerClass playerClass) {
+		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
 		Method getStartingDeck;
 		try {
 			getStartingDeck = playerClassAsClass.getMethod("getStartingDeck");
@@ -1322,12 +1349,13 @@ public class BaseMod {
 		return (ArrayList<String>) startingDeckObj;
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual starting relics
-	// for that class
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static ArrayList<String> getStartingRelics(String playerClass) {
-		@SuppressWarnings("rawtypes")
-		Class playerClassAsClass = playerClassMap.get(playerClass);
+		return getStartingRelics(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the actual starting relics for that class
+	public static ArrayList<String> getStartingRelics(PlayerClass playerClass) {
+		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
 		Method getStartingRelics;
 		try {
 			getStartingRelics = playerClassAsClass.getMethod("getStartingRelics");
@@ -1361,7 +1389,7 @@ public class BaseMod {
 		case DEFECT:
 			return AbstractCard.orb_blue;
 		default:
-			return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass.toString()));
+			return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass));
 		}
 	}
 
@@ -1376,35 +1404,52 @@ public class BaseMod {
 		case COLORLESS:
 			return getCardSmallEnergy(); // for colorless cards, use the player color
 		default:
-			return getCardEnergyOrbAtlasRegion(card.color.toString());
+			return getCardEnergyOrbAtlasRegion(card.color);
 		}
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual class ID for
-	// that class
+	@Deprecated
 	public static String getClass(String playerClass) {
+		return getClass(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the actual class ID for that class
+	public static String getClass(PlayerClass playerClass) {
 		return playerClassStringMap.get(playerClass);
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual color String
-	// (fake ENUM) for that class
+	@Deprecated
 	public static String getColor(String playerClass) {
+		return getColor(PlayerClass.valueOf(playerClass)).name();
+	}
+	// convert a playerClass into the actual color for that class
+	public static AbstractCard.CardColor getColor(PlayerClass playerClass) {
 		return playerColorMap.get(playerClass);
 	}
 
-	// convert a playerClass String (fake ENUM) into the actual player class
-	@SuppressWarnings("rawtypes")
-	public static Class getPlayerClass(String playerClass) {
+	@Deprecated
+	public static Class<?> getPlayerClass(String playerClass) {
+		return getPlayerClass(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the actual player class
+	public static Class<?> getPlayerClass(PlayerClass playerClass) {
 		return playerClassMap.get(playerClass);
 	}
 
-	// convert a playerClass String (fake ENUM) into the player select button
+	@Deprecated
 	public static String getPlayerButton(String playerClass) {
+		return getPlayerButton(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the player select button
+	public static String getPlayerButton(PlayerClass playerClass) {
 		return playerSelectButtonMap.get(playerClass);
 	}
 
-	// convert a playerClass String (fake ENUM) into the player portrait
+	@Deprecated
 	public static String getPlayerPortrait(String playerClass) {
+		return getPlayerPortrait(PlayerClass.valueOf(playerClass));
+	}
+	// convert a playerClass into the player portrait
+	public static String getPlayerPortrait(PlayerClass playerClass) {
 		return playerPortraitMap.get(playerClass);
 	}
 
@@ -1412,12 +1457,12 @@ public class BaseMod {
 	// players
 	public static ArrayList<CharacterOption> generateCharacterOptions() {
 		ArrayList<CharacterOption> options = new ArrayList<>();
-		for (String character : playerClassMap.keySet()) {
+		for (PlayerClass character : playerClassMap.keySet()) {
 			// the game by default prepends "images/ui/charSelect" to the image
 			// load request
 			// so we override that with "../../.."
 			CharacterOption option = new CharacterOption(playerSelectTextMap.get(character),
-					AbstractPlayer.PlayerClass.valueOf(character),
+					character,
 					// note that these will fail so we patch this in
 					// basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
 					playerSelectButtonMap.get(character), playerPortraitMap.get(character));
@@ -1429,8 +1474,8 @@ public class BaseMod {
 	// generate character options for CustomModeScreen based on added players
 	public static ArrayList<CustomModeCharacterButton> generateCustomCharacterOptions() {
 		ArrayList<CustomModeCharacterButton> options = new ArrayList<>();
-		for (String character : playerClassMap.keySet()) {
-			options.add(new CustomModeCharacterButton(AbstractPlayer.PlayerClass.valueOf(character), false));
+		for (PlayerClass character : playerClassMap.keySet()) {
+			options.add(new CustomModeCharacterButton(character, false));
 		}
 		return options;
 	}
@@ -1438,10 +1483,10 @@ public class BaseMod {
 	// generate stats for StatsScreen based on added players
 	public static ArrayList<CharStat> generateCharacterStats() {
 		ArrayList<CharStat> stats = new ArrayList<>();
-		for (String character : playerClassMap.keySet()) {
+		for (PlayerClass character : playerClassMap.keySet()) {
 			CharStat stat = playerStatsMap.get(character);
 			if (stat == null) {
-				stat = new CharStat(AbstractPlayer.PlayerClass.valueOf(character));
+				stat = new CharStat(character);
 				playerStatsMap.put(character, stat);
 			}
 			stats.add(stat);
@@ -1454,6 +1499,15 @@ public class BaseMod {
 	//
 
 	// add a color -
+	public static void addColor(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Color bgColor,
+								com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
+								com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
+								com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
+								String attackBg, String skillBg, String powerBg, String energyOrb,
+								String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait) {
+		addColor(color, bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, null);
+	}
+	@Deprecated
 	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
 			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
 			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
@@ -1462,13 +1516,13 @@ public class BaseMod {
 			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait) {
 		addColor(color, bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, null);
 	}
-	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
-			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
-			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
-			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
-			String attackBg, String skillBg, String powerBg, String energyOrb,
-			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
-			String cardEnergyOrb) {
+	public static void addColor(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Color bgColor,
+								com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
+								com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
+								com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
+								String attackBg, String skillBg, String powerBg, String energyOrb,
+								String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
+								String cardEnergyOrb) {
 		colorBgColorMap.put(color, bgColor);
 		colorBackColorMap.put(color, backColor);
 		colorFrameColorMap.put(color, frameColor);
@@ -1491,10 +1545,24 @@ public class BaseMod {
 		customRelicPools.put(color, new HashMap<>());
 		customRelicLists.put(color, new ArrayList<>());
 	}
+	@Deprecated
+	public static void addColor(String color, com.badlogic.gdx.graphics.Color bgColor,
+			com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
+			com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
+			com.badlogic.gdx.graphics.Color trailVfxColor, com.badlogic.gdx.graphics.Color glowColor,
+			String attackBg, String skillBg, String powerBg, String energyOrb,
+			String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
+			String cardEnergyOrb) {
+		addColor(AbstractCard.CardColor.valueOf(color), bgColor, backColor, frameColor, frameOutlineColor, descBoxColor, trailVfxColor, glowColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, cardEnergyOrb);
+	}
 
 	// remove a custom color -
 	// removing existing colors not currently supported
+	@Deprecated
 	public static void removeColor(String color) {
+		removeColor(AbstractCard.CardColor.valueOf(color));
+	}
+	public static void removeColor(AbstractCard.CardColor color) {
 		colorBgColorMap.remove(color);
 		colorBackColorMap.remove(color);
 		colorFrameColorMap.remove(color);
@@ -1515,41 +1583,69 @@ public class BaseMod {
 		colorEnergyOrbPortraitMap.remove(color);
 
 		customRelicPools.remove(color);
-		customRelicLists.remove(color, new ArrayList<>());
+		customRelicLists.remove(color, new ArrayList<AbstractRelic>());
 	}
 
-	// convert a color String (fake ENUM) into a background color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getBgColor(String color) {
+		return getBgColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a background color
+	public static com.badlogic.gdx.graphics.Color getBgColor(AbstractCard.CardColor color) {
 		return colorBgColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a back color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getBackColor(String color) {
+		return getBackColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a back color
+	public static com.badlogic.gdx.graphics.Color getBackColor(AbstractCard.CardColor color) {
 		return colorBackColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a frame color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getFrameColor(String color) {
+		return getFrameColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a frame color
+	public static com.badlogic.gdx.graphics.Color getFrameColor(AbstractCard.CardColor color) {
 		return colorFrameColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a frame outline color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getFrameOutlineColor(String color) {
+		return getFrameOutlineColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a frame outline color
+	public static com.badlogic.gdx.graphics.Color getFrameOutlineColor(AbstractCard.CardColor color) {
 		return colorFrameOutlineColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a desc box color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getDescBoxColor(String color) {
+		return getDescBoxColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a desc box color
+	public static com.badlogic.gdx.graphics.Color getDescBoxColor(AbstractCard.CardColor color) {
 		return colorDescBoxColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a trail vfx color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getTrailVfxColor(String color) {
+		return colorTrailVfxMap.get(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a trail vfx color
+	public static com.badlogic.gdx.graphics.Color getTrailVfxColor(AbstractCard.CardColor color) {
 		return colorTrailVfxMap.get(color);
 	}
 
-	// increment the card count for a color String (fake ENUM)
+	@Deprecated
 	public static void incrementCardCount(String color) {
+		incrementCardCount(AbstractCard.CardColor.valueOf(color));
+	}
+	// increment the card count for a color
+	public static void incrementCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardCountMap.get(color);
 		System.out.println("incrementing card count for " + color + " to " + colorCardCountMap.get(color));
 		if (count != null) {
@@ -1559,8 +1655,12 @@ public class BaseMod {
 		}
 	}
 
-	// decrement the card count for a color String (fake ENUM)
+	@Deprecated
 	public static void decrementCardCount(String color) {
+		decrementCardCount(AbstractCard.CardColor.valueOf(color));
+	}
+	// decrement the card count for a color
+	public static void decrementCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardCountMap.get(color);
 		if (count != null) {
 			colorCardCountMap.put(color, count - 1);
@@ -1570,13 +1670,21 @@ public class BaseMod {
 		}
 	}
 
-	// get card count for a color String (fake ENUM)
+	@Deprecated
 	public static Integer getCardCount(String color) {
+		return getCardCount(AbstractCard.CardColor.valueOf(color));
+	}
+	// get card count for a color
+	public static Integer getCardCount(AbstractCard.CardColor color) {
 		return colorCardCountMap.get(color);
 	}
 
-	// increment the seen card count for a color String (fake ENUM)
+	@Deprecated
 	public static void incrementSeenCardCount(String color) {
+		incrementSeenCardCount(AbstractCard.CardColor.valueOf(color));
+	}
+	// increment the seen card count for a color
+	public static void incrementSeenCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardSeenCountMap.get(color);
 		if (count != null) {
 			colorCardSeenCountMap.put(color, count + 1);
@@ -1585,81 +1693,138 @@ public class BaseMod {
 		}
 	}
 
-	// get seen card count for a color String (fake ENUM)
+	@Deprecated
 	public static Integer getSeenCardCount(String color) {
+		return getSeenCardCount(AbstractCard.CardColor.valueOf(color));
+	}
+	// get seen card count for a color
+	public static Integer getSeenCardCount(AbstractCard.CardColor color) {
 		return colorCardSeenCountMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into a glow color
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Color getGlowColor(String color) {
+		return getGlowColor(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into a glow color
+	public static com.badlogic.gdx.graphics.Color getGlowColor(AbstractCard.CardColor color) {
 		return colorGlowColorMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an attack background texture path
+	@Deprecated
 	public static String getAttackBg(String color) {
+		return getAttackBg(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an attack background texture path
+	public static String getAttackBg(AbstractCard.CardColor color) {
 		return colorAttackBgMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an skill background texture path
+	@Deprecated
 	public static String getSkillBg(String color) {
+		return getSkillBg(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an skill background texture path
+	public static String getSkillBg(AbstractCard.CardColor color) {
 		return colorSkillBgMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an power background texture path
+	@Deprecated
 	public static String getPowerBg(String color) {
+		return getPowerBg(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an power background texture path
+	public static String getPowerBg(AbstractCard.CardColor color) {
 		return colorPowerBgMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an energy texture path
+	@Deprecated
 	public static String getEnergyOrb(String color) {
+		return getEnergyOrb(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an energy texture path
+	public static String getEnergyOrb(AbstractCard.CardColor color) {
 		return colorEnergyOrbMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an attack background portrait
-	// texture path
+	@Deprecated
 	public static String getAttackBgPortrait(String color) {
+		return getAttackBgPortrait(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an attack background portrait texture path
+	public static String getAttackBgPortrait(AbstractCard.CardColor color) {
 		return colorAttackBgPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an skill background portrait
-	// texture path
+	@Deprecated
 	public static String getSkillBgPortrait(String color) {
+		return getSkillBgPortrait(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an skill background portrait texture path
+	public static String getSkillBgPortrait(AbstractCard.CardColor color) {
 		return colorSkillBgPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an power background portrait
-	// texture path
+	@Deprecated
 	public static String getPowerBgPortrait(String color) {
+		return getPowerBgPortrait(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an power background portrait texture path
+	public static String getPowerBgPortrait(AbstractCard.CardColor color) {
 		return colorPowerBgPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an energy portrait texture path
+	@Deprecated
 	public static String getEnergyOrbPortrait(String color) {
+		return getEnergyOrbPortrait(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an energy portrait texture path
+	public static String getEnergyOrbPortrait(AbstractCard.CardColor color) {
 		return colorEnergyOrbPortraitMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an attack background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getAttackBgTexture(String color) {
+		return getAttackBgTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an attack background texture
+	public static com.badlogic.gdx.graphics.Texture getAttackBgTexture(AbstractCard.CardColor color) {
 		return colorAttackBgTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an skill background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getSkillBgTexture(String color) {
+		return getSkillBgTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an skill background texture
+	public static com.badlogic.gdx.graphics.Texture getSkillBgTexture(AbstractCard.CardColor color) {
 		return colorSkillBgTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an power background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getPowerBgTexture(String color) {
+		return getPowerBgTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an power background texture
+	public static com.badlogic.gdx.graphics.Texture getPowerBgTexture(AbstractCard.CardColor color) {
 		return colorPowerBgTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an energy texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(String color) {
+		return getEnergyOrbTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an energy texture
+	public static com.badlogic.gdx.graphics.Texture getEnergyOrbTexture(AbstractCard.CardColor color) {
 		return colorEnergyOrbTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an energy texture path
+	@Deprecated
 	public static TextureAtlas.AtlasRegion getCardEnergyOrbAtlasRegion(String color) {
+		return getCardEnergyOrbAtlasRegion(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an energy texture path
+	public static TextureAtlas.AtlasRegion getCardEnergyOrbAtlasRegion(AbstractCard.CardColor color) {
 		TextureAtlas.AtlasRegion orb = colorCardEnergyOrbAtlasRegionMap.get(color);
 		if (orb != null) return orb;
 		String orbFile = colorCardEnergyOrbMap.get(color);
@@ -1676,63 +1841,111 @@ public class BaseMod {
 		}
 	}
 
-	// convert a color String (fake ENUM) into an attack background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(String color) {
+		return getAttackBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an attack background texture
+	public static com.badlogic.gdx.graphics.Texture getAttackBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorAttackBgPortraitTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an skill background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getSkillBgPortraitTexture(String color) {
+		return getSkillBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an skill background texture
+	public static com.badlogic.gdx.graphics.Texture getSkillBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorSkillBgPortraitTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an power background texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getPowerBgPortraitTexture(String color) {
+		return getPowerBgPortraitTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an power background texture
+	public static com.badlogic.gdx.graphics.Texture getPowerBgPortraitTexture(AbstractCard.CardColor color) {
 		return colorPowerBgPortraitTextureMap.get(color);
 	}
 
-	// convert a color String (fake ENUM) into an energy texture
+	@Deprecated
 	public static com.badlogic.gdx.graphics.Texture getEnergyOrbPortraitTexture(String color) {
+		return getEnergyOrbPortraitTexture(AbstractCard.CardColor.valueOf(color));
+	}
+	// convert a color into an energy texture
+	public static com.badlogic.gdx.graphics.Texture getEnergyOrbPortraitTexture(AbstractCard.CardColor color) {
 		return colorEnergyOrbPortraitTextureMap.get(color);
 	}
 
-	// save a attack background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveAttackBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveAttackBgTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a attack background texture for a color
+	public static void saveAttackBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorAttackBgTextureMap.put(color, tex);
 	}
 
-	// save a skill background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveSkillBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveSkillBgTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a skill background texture for a color
+	public static void saveSkillBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorSkillBgTextureMap.put(color, tex);
 	}
 
-	// save a power background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void savePowerBgTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		savePowerBgTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a power background texture for a color
+	public static void savePowerBgTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorPowerBgTextureMap.put(color, tex);
 	}
 
-	// save an energy orb texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveEnergyOrbTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveEnergyOrbTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save an energy orb texture for a color
+	public static void saveEnergyOrbTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbTextureMap.put(color, tex);
 	}
 
-	// save a attack background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveAttackBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveAttackBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a attack background texture for a color
+	public static void saveAttackBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorAttackBgPortraitTextureMap.put(color, tex);
 	}
 
-	// save a skill background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveSkillBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveSkillBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a skill background texture for a color
+	public static void saveSkillBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorSkillBgPortraitTextureMap.put(color, tex);
 	}
 
-	// save a power background texture for a color String (fake ENUM)
+	@Deprecated
 	public static void savePowerBgPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		savePowerBgPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save a power background texture for a color
+	public static void savePowerBgPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorPowerBgPortraitTextureMap.put(color, tex);
 	}
 
-	// save an energy orb texture for a color String (fake ENUM)
+	@Deprecated
 	public static void saveEnergyOrbPortraitTexture(String color, com.badlogic.gdx.graphics.Texture tex) {
+		saveEnergyOrbPortraitTexture(AbstractCard.CardColor.valueOf(color), tex);
+	}
+	// save an energy orb texture for a color
+	public static void saveEnergyOrbPortraitTexture(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Texture tex) {
 		colorEnergyOrbPortraitTextureMap.put(color, tex);
 	}
 
@@ -1749,11 +1962,10 @@ public class BaseMod {
 	}
 
 	// add the Potion to the map (fake ENUM)
-	@SuppressWarnings("rawtypes")
-	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID) {
+	public static void addPotion(Class<?> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID) {
 		addPotion(potionClass, liquidColor, hybridColor, spotsColor, potionID, null);
 	}
-	public static void addPotion(Class potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID, AbstractPlayer.PlayerClass playerClass) {
+	public static void addPotion(Class<?> potionClass, Color liquidColor, Color hybridColor, Color spotsColor, String potionID, AbstractPlayer.PlayerClass playerClass) {
 		potionClassMap.put(potionID, potionClass);
 		potionLiquidColorMap.put(potionID, liquidColor);
 		potionHybridColorMap.put(potionID, hybridColor);
@@ -1762,8 +1974,7 @@ public class BaseMod {
 	}
 
 	// (fake ENUM) return Class corresponding to potionID
-	@SuppressWarnings("rawtypes")
-	public static Class getPotionClass(String potionID) {
+	public static Class<?> getPotionClass(String potionID) {
 		return potionClassMap.get(potionID);
 	}
 
@@ -1793,12 +2004,11 @@ public class BaseMod {
 	// Powers
 	//
 
-	public static void addPower(@SuppressWarnings("rawtypes") Class powerClass, String potionID) {
-		powerMap.put(potionID, powerClass);
+	public static void addPower(Class<? extends AbstractPower> powerClass, String powerID) {
+		powerMap.put(powerID, powerClass);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static Class getPowerClass(String powerID) {
+	public static Class<? extends AbstractPower> getPowerClass(String powerID) {
 		return powerMap.get(powerID);
 	}
 

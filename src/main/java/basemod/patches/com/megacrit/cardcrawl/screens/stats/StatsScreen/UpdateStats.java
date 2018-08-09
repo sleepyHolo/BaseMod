@@ -56,7 +56,7 @@ public class UpdateStats {
 				Method renderCharacterStats = screen.getClass().getDeclaredMethod("renderCharacterStats", sb.getClass(), CharStat.class);
 				renderCharacterStats.setAccessible(true);
 				
-				for (String playerClass : BaseMod.playerStatsMap.keySet()) {
+				for (AbstractPlayer.PlayerClass playerClass : BaseMod.playerStatsMap.keySet()) {
 					CharStat stats = BaseMod.playerStatsMap.get(playerClass);
 					renderYField.set(screen, renderYField.getFloat(screen) - 400.0F * Settings.scale);
 					renderHeader.invoke(screen, sb, BaseMod.getTitle(playerClass));

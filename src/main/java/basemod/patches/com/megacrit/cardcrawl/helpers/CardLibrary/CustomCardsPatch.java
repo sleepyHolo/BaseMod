@@ -22,7 +22,7 @@ public class CustomCardsPatch {
 		
 		// remove old cards
 		ArrayList<String> cardIDs = BaseMod.getCustomCardsToRemove();
-		ArrayList<String> colors = BaseMod.getCustomCardsToRemoveColors();
+		ArrayList<AbstractCard.CardColor> colors = BaseMod.getCustomCardsToRemoveColors();
 		for (int i = 0; i < cardIDs.size(); i++) {
 			String cardID = cardIDs.get(i);
 			CardLibrary.cards.remove(cardID);

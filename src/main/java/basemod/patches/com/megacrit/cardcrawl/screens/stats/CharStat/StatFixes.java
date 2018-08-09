@@ -52,11 +52,11 @@ public class StatFixes {
 					Field cardsToDiscoverField = stats.getClass().getDeclaredField("cardsToDiscover");
 					cardsToDiscoverField.setAccessible(true);
 					
-					System.out.println("looking at character " + c.toString() + " with color " + BaseMod.getColor(c.toString()));
+					System.out.println("looking at character " + c.toString() + " with color " + BaseMod.getColor(c));
 					
 					cardsUnlockedField.set(stats, 0);
-					cardsDiscoveredField.set(stats, BaseMod.getSeenCardCount(BaseMod.getColor(c.toString())));
-					cardsToDiscoverField.set(stats, BaseMod.getCardCount(BaseMod.getColor(c.toString())));
+					cardsDiscoveredField.set(stats, BaseMod.getSeenCardCount(BaseMod.getColor(c)));
+					cardsToDiscoverField.set(stats, BaseMod.getCardCount(BaseMod.getColor(c)));
 						
 				}
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

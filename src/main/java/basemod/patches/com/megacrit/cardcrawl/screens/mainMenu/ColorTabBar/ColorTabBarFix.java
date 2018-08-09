@@ -105,7 +105,7 @@ public class ColorTabBarFix
             for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {
                 int i = icolor - AbstractCard.CardColor.CURSE.ordinal();
 
-                Color color = BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[icolor].name()).cpy();
+                Color color = BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[icolor]).cpy();
                 if (curTab != Enums.MOD || Fields.modTabIndex != i-1) {
                     color = color.lerp(Color.GRAY, 0.5f);
                 }
@@ -151,7 +151,7 @@ public class ColorTabBarFix
                     Field f = ColorTabBar.class.getDeclaredField("curTab");
                     f.setAccessible(true);
                     if (f.get(__instance) == Enums.MOD) {
-                        return BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[AbstractCard.CardColor.CURSE.ordinal() + 1 + Fields.modTabIndex].name());
+                        return BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[AbstractCard.CardColor.CURSE.ordinal() + 1 + Fields.modTabIndex]);
                     }
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     e.printStackTrace();

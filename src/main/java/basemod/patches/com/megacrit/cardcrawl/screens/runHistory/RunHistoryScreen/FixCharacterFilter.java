@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,8 +97,8 @@ public class FixCharacterFilter {
 				int index = 4; // start at index 4 b/c 0,1,2,3 are used by base game
 				if (selectedIndex < index) return; // don't need to filter if base game handled the filter
 				
-				String compareTo = null;
-				for (String name : BaseMod.playerSelectTextMap.keySet()) {
+				AbstractPlayer.PlayerClass compareTo = null;
+				for (AbstractPlayer.PlayerClass name : BaseMod.playerSelectTextMap.keySet()) {
 					if (selectedIndex == index) {
 						compareTo = name;
 						break;
@@ -106,7 +107,7 @@ public class FixCharacterFilter {
 				}
 				if (compareTo != null) {
 					String runCharacter = data.character_chosen;
-					includeMe[0] = includeMe[0] && (runCharacter.equals(compareTo));
+					includeMe[0] = includeMe[0] && (runCharacter.equals(compareTo.name()));
 				}
 			} catch (Exception e) {
 				logger.error("unable to filter characters on run history screen");

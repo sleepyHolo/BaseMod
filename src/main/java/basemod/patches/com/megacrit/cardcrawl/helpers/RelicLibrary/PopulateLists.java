@@ -17,7 +17,7 @@ public class PopulateLists {
 		AbstractPlayer.PlayerClass selection = AbstractDungeon.player.chosenClass;
 		if (!BaseMod.isBaseGameCharacter(selection)) {
 			for (Map.Entry<String, AbstractRelic> r : BaseMod.getRelicsInCustomPool(
-					BaseMod.getColor(selection.toString())).entrySet()) {
+					BaseMod.getColor(selection)).entrySet()) {
 				relicPool.add(r.getValue());
 			}
 		}

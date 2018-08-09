@@ -17,7 +17,7 @@ public class PopulatePools {
 	public static void Postfix(ArrayList<String> pool, AbstractRelic.RelicTier tier, AbstractPlayer.PlayerClass chosenClass) {
 		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			for (Map.Entry<String, AbstractRelic> r : BaseMod.getRelicsInCustomPool(
-					BaseMod.getColor(chosenClass.toString())).entrySet()) {
+					BaseMod.getColor(chosenClass)).entrySet()) {
 				if (((AbstractRelic) r.getValue()).tier  == tier && (
 						!UnlockTracker.isRelicLocked((String) r.getKey()) ||
 						Settings.isDailyRun)) {

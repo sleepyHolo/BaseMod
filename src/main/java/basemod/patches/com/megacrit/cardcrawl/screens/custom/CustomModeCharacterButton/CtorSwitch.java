@@ -30,7 +30,7 @@ public class CtorSwitch
 				Field charStringsField = CustomModeCharacterButton.class.getDeclaredField("charStrings");
 				charStringsField.setAccessible(true);
 
-				Class characterClass = BaseMod.getPlayerClass(c.toString());
+				Class<?> characterClass = BaseMod.getPlayerClass(c);
 				Method getLoadout = characterClass.getMethod("getLoadout");
 				CharSelectInfo charInfo = (CharSelectInfo) getLoadout.invoke(null);
 
@@ -49,7 +49,7 @@ public class CtorSwitch
 				// fix texture loading
 				Field buttonImgField = CustomModeCharacterButton.class.getDeclaredField("buttonImg");
 				buttonImgField.setAccessible(true);
-				buttonImgField.set(__instance, new Texture(BaseMod.getPlayerButton(c.toString())));
+				buttonImgField.set(__instance, new Texture(BaseMod.getPlayerButton(c)));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				logger.error("could not create character select button for " + c.toString());
 				logger.error("with exception: " + e.getMessage());

@@ -16,9 +16,9 @@ public class AddSwitch {
 		CardColor color = card.color;
 		if (!color.toString().equals("RED") && !color.toString().equals("GREEN") && !color.toString().equals("BLUE")
 				&& !color.toString().equals("COLORLESS") && !color.toString().equals("CURSE")) {
-			BaseMod.incrementCardCount(color.toString());
+			BaseMod.incrementCardCount(color);
 			if (UnlockTracker.isCardSeen(card.cardID)) {
-				BaseMod.incrementSeenCardCount(color.toString());
+				BaseMod.incrementSeenCardCount(color);
 			}
 		}
 	}

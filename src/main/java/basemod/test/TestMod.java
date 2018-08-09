@@ -53,27 +53,6 @@ public class TestMod implements
 	private static final String DESCRIPTION = "v1.6.4";
 	
 	//
-	// Subscriptions
-	//
-	
-	private static interface SubInterface {
-		void doSubscribe();
-	}
-	
-	private static void subscribe(String msg, SubInterface subCall) {
-		logger.info("registering subscriber: " + msg);
-		try {
-			subCall.doSubscribe();
-		} catch (Exception e) {
-			logger.info("failed");
-			loudWrite(writer, "subscribe to " + msg + ": 0/1");
-			return;
-		}
-		logger.info("done");
-		loudWrite(writer, "subscribe to " + msg + ": 1/1");
-	}
-	
-	//
 	// Logging
 	//
 	
@@ -168,11 +147,11 @@ public class TestMod implements
 	@SuppressWarnings("deprecation")
 	public TestMod() {
 		loudWrite(writer, "Begin subscribing to hooks");
-		subscribe("subscribe", () -> BaseMod.subscribe(this));
+		BaseMod.subscribe(this);
 		loudWrite(writer, "End subscribing to hooks");
 		
 		loudWrite(writer, "Setup new colors");
-		BaseMod.addColor(ColorEnumPatch.PURPLE.toString(),
+		BaseMod.addColor(ColorEnumPatch.PURPLE,
         		PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE,
         		makePath(ASSET_FOLDER, ATTACK_PURPLE), 
         		makePath(ASSET_FOLDER, SKILL_PURPLE),
@@ -426,10 +405,10 @@ public class TestMod implements
 		loudWrite(writer, "begin editting characters");
 		
 		BaseMod.addCharacter(Purpleclad.class, "The Purpleclad", "Purpleclad class string",
-				ColorEnumPatch.PURPLE.toString(), "The Purpleclad",
+				ColorEnumPatch.PURPLE, "The Purpleclad",
 				makePath(ASSET_FOLDER, PURPLECLAD_BUTTON),
 				makePath(ASSET_FOLDER, PURPLECLAD_PORTRAIT),
-				CharacterEnumPatch.THE_PURPLECLAD.toString());
+				CharacterEnumPatch.THE_PURPLECLAD);
 		
 		loudWrite(writer, "done editting characters");
 	}

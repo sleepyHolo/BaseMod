@@ -11,7 +11,7 @@ public class GetTitleSwitch {
 	public static Object Postfix(Object __original_ret, Object plyrClassObj) {
 		AbstractPlayer.PlayerClass selection = (AbstractPlayer.PlayerClass) plyrClassObj;
 		if (!BaseMod.isBaseGameCharacter(selection)) {
-			return BaseMod.getTitle(selection.toString());
+			return BaseMod.getTitle(selection);
 		} else {
 			return __original_ret;
 		}

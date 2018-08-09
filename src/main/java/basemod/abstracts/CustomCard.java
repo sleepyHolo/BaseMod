@@ -78,7 +78,7 @@ public abstract class CustomCard extends AbstractCard {
 	
 	public Texture getOrbSmallTexture() {
 		if (textureOrbSmallImg == null) {
-			return BaseMod.getEnergyOrbTexture(this.color.toString());
+			return BaseMod.getEnergyOrbTexture(this.color);
 		}
 		
 		return getTextureFromString(textureOrbSmallImg);
@@ -86,7 +86,7 @@ public abstract class CustomCard extends AbstractCard {
 	
 	public Texture getOrbLargeTexture() {
 		if (textureOrbLargeImg == null) {
-			return BaseMod.getEnergyOrbPortraitTexture(this.color.toString());
+			return BaseMod.getEnergyOrbPortraitTexture(this.color);
 		}
 		
 		return getTextureFromString(textureOrbLargeImg);
@@ -108,11 +108,11 @@ public abstract class CustomCard extends AbstractCard {
 		if (textureBackgroundSmallImg == null) {
 			switch (this.type) {
 			case ATTACK:
-				return BaseMod.getAttackBgTexture(this.color.toString());
+				return BaseMod.getAttackBgTexture(this.color);
 			case POWER:
-				return BaseMod.getPowerBgTexture(this.color.toString());
+				return BaseMod.getPowerBgTexture(this.color);
 			default:
-				return BaseMod.getSkillBgTexture(this.color.toString());
+				return BaseMod.getSkillBgTexture(this.color);
 			}
 		}
 		
@@ -123,11 +123,11 @@ public abstract class CustomCard extends AbstractCard {
 		if (textureBackgroundLargeImg == null) {
 			switch (this.type) {
 			case ATTACK:
-				return BaseMod.getAttackBgPortraitTexture(this.color.toString());
+				return BaseMod.getAttackBgPortraitTexture(this.color);
 			case POWER:
-				return BaseMod.getPowerBgPortraitTexture(this.color.toString());
+				return BaseMod.getPowerBgPortraitTexture(this.color);
 			default:
-				return BaseMod.getSkillBgPortraitTexture(this.color.toString());
+				return BaseMod.getSkillBgPortraitTexture(this.color);
 			}
 		}
 		

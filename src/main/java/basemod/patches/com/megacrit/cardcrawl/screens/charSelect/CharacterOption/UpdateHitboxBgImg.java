@@ -30,7 +30,7 @@ public class UpdateHitboxBgImg {
 		if (BaseMod.isBaseGameCharacter(chosenClass)) {
 			return (Texture)original;
 		} else {
-			return new Texture(BaseMod.getPlayerPortrait(chosenClass.toString()));
+			return new Texture(BaseMod.getPlayerPortrait(chosenClass));
 		}
 	}
 	
