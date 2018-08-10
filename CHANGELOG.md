@@ -345,3 +345,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix Ascension 14 for modded characters (kiooeht)
+* Fix Shiny modifier for modded characters (kiooeht)
