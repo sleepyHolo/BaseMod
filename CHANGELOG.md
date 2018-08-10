@@ -351,3 +351,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Anti-alias modded art assets automatically (kiooeht)
 
 #### dev ####
+* Custom monsters (kiooeht)
+* Custom bosses (kiooeht)
