@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.megacrit.cardcrawl.dungeons.Exordium;
+import com.megacrit.cardcrawl.dungeons.TheBeyond;
+import com.megacrit.cardcrawl.dungeons.TheCity;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
@@ -1118,56 +1121,93 @@ public class BaseMod {
 	//
 	
 	//Event hashmaps
-	private static HashMap<String, Class<? extends AbstractEvent>> customExordiumEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customCityEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customBeyondEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customAllEvents = new HashMap<>();
+	// Key: Event ID
+	private static HashMap<String, Class<? extends AbstractEvent>> allCustomEvents = new HashMap<>();
+	// Key: Dungeon ID
+	// Inner Key: Event ID
+	private static HashMap<String, HashMap<String, Class<? extends AbstractEvent>>> customEvents = new HashMap<>();
 
 	//Event type enum
+	@Deprecated
 	public enum EventPool{
+		@Deprecated
 		THE_EXORDIUM,
+		@Deprecated
 		THE_CITY,
+		@Deprecated
 		THE_BEYOND,
+		@Deprecated
 		ANY
 	}
-	
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> c, EventPool pool) {
-		
-		logger.info("Adding " + eventID + " to " + pool.toString());
-		
+
+	@Deprecated
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, EventPool pool) {
+		String dungeonID = null;
 		switch(pool) {
 		case ANY:
-			customAllEvents.put(eventID, c);
+			dungeonID = null;
 			break;
 		case THE_BEYOND:
-			customBeyondEvents.put(eventID, c);
+			dungeonID = TheBeyond.ID;
 			break;
 		case THE_CITY:
-			customCityEvents.put(eventID, c);
+			dungeonID = TheCity.ID;
 			break;
 		case THE_EXORDIUM:
-			customExordiumEvents.put(eventID, c);
+			dungeonID = Exordium.ID;
 			break;
 		default:
 			break;
 		}
-		
+
+		addEvent(eventID, eventClass, dungeonID);
+	}
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
+		addEvent(eventID, eventClass, (String)null);
+	}
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
+		if (!customEvents.containsKey(dungeonID)) {
+			customEvents.put(dungeonID, new HashMap<>());
+		}
+		logger.info("Adding " + eventID + " to " + (dungeonID != null ? dungeonID : "ALL") + " pool");
+
+		customEvents.get(dungeonID).put(eventID, eventClass);
+		allCustomEvents.put(eventID, eventClass);
+
 		underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
 	}
 
+	@Deprecated
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(EventPool pool) {
+		String dungeonID = null;
 		switch(pool) {
-		case ANY:
-			return customAllEvents;
-		case THE_BEYOND:
-			return customBeyondEvents;
-		case THE_CITY:
-			return customCityEvents;
-		case THE_EXORDIUM:
-			return customExordiumEvents;
-		default:
-			return null;
+			case ANY:
+				dungeonID = null;
+				break;
+			case THE_BEYOND:
+				dungeonID = TheBeyond.ID;
+				break;
+			case THE_CITY:
+				dungeonID = TheCity.ID;
+				break;
+			case THE_EXORDIUM:
+				dungeonID = Exordium.ID;
+				break;
+			default:
+				break;
 		}
+
+		return getEventList(dungeonID);
+	}
+	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(String dungeonID) {
+		if (customEvents.containsKey(dungeonID)) {
+			return customEvents.get(dungeonID);
+		}
+		return new HashMap<>();
+	}
+
+	public static Class<? extends AbstractEvent> getEvent(String eventID) {
+		return allCustomEvents.get(eventID);
 	}
 
 	//

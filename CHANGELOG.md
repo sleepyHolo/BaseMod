@@ -353,3 +353,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Custom monsters (kiooeht)
 * Custom bosses (kiooeht)
+* Fix and improve custom events API (kiooeht)
