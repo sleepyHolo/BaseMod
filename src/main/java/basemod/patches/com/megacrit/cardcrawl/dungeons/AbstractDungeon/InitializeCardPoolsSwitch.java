@@ -53,7 +53,8 @@ public class InitializeCardPoolsSwitch {
 			Matcher finalMatcher = new Matcher.MethodCallMatcher(
 					"com.megacrit.cardcrawl.dungeons.AbstractDungeon", "addColorlessCards");
 
-			return LineFinder.findInOrder(ctBehavior, new ArrayList<>(), finalMatcher);
+			int[] lines = LineFinder.findAllInOrder(ctBehavior, new ArrayList<>(), finalMatcher);
+			return new int[]{lines[lines.length-1]};
 		}
 	}
 }
