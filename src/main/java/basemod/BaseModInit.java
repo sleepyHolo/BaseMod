@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 
 import basemod.interfaces.PostInitializeSubscriber;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 /**
  *
@@ -101,7 +102,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 		settingsPanel.addUIElement(enableWhatMod);
 		settingsPanel.addUIElement(new ModLabel("Must restart game to take effect", WHATMOD_BUTTON_X, WHATMOD_BUTTON_Y - 30.0f, settingsPanel, (me) -> {} ));
 
-		Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
+		Texture badgeTexture = ImageMaster.loadImage("img/BaseModBadge.png");
 		BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 		
 		// Couldn't find a better place to put these. If they're not right here, please move them to a different classes' receivePostInitialize()

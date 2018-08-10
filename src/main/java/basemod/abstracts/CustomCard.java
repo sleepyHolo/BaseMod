@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
 import basemod.BaseMod;
@@ -32,7 +33,7 @@ public abstract class CustomCard extends AbstractCard {
 		System.out.println("Finding texture: " + newPath);
 		Texture portraitTexture;
 		try {
-			portraitTexture = new Texture(newPath);
+			portraitTexture = ImageMaster.loadImage(newPath);
 		} catch (Exception e) {
 			portraitTexture = null;
 		}
@@ -41,7 +42,7 @@ public abstract class CustomCard extends AbstractCard {
 	
 	private static void loadTextureFromString(String textureString) {
 		if (!imgMap.containsKey(textureString)) {
-			imgMap.put(textureString, new Texture(Gdx.files.internal(textureString)));
+			imgMap.put(textureString, ImageMaster.loadImage(textureString));
 		}
 	}
 	
@@ -198,7 +199,7 @@ public abstract class CustomCard extends AbstractCard {
 		if (imgMap.containsKey(img)) {
 			cardTexture = imgMap.get(img);
 		} else {
-			cardTexture = new Texture(img);
+			cardTexture = ImageMaster.loadImage(img);
 			imgMap.put(img, cardTexture);
 		}
 		cardTexture.setFilter(Texture.TextureFilter.Linear,  Texture.TextureFilter.Linear);

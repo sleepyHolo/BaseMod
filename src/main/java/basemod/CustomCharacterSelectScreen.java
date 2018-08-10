@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
@@ -115,7 +116,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
 
         public LeftOptionsButton (String imgUrl, int x, int y) {
-            this.arrow = new Texture(imgUrl);
+            this.arrow = ImageMaster.loadImage(imgUrl);
             this.x = x;
             this.y = y;
             this.w = (int)(Settings.scale * arrow.getWidth());
@@ -163,7 +164,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
 
         public RightOptionsButton (String imgUrl, int x, int y) {
-            this.arrow = new Texture(imgUrl);
+            this.arrow = ImageMaster.loadImage(imgUrl);
             this.x = x;
             this.y = y;
             this.w = (int)(Settings.scale * arrow.getWidth());

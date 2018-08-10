@@ -2,6 +2,7 @@ package basemod.abstracts;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 
 public abstract class CustomOrb extends AbstractOrb {
@@ -20,7 +21,7 @@ public abstract class CustomOrb extends AbstractOrb {
         this.evokeAmount = this.baseEvokeAmount;
         this.passiveDescription = passiveDescription;
         this.evokeDescription = evokeDescription;
-        this.img = new Texture(imgPath);
+        this.img = ImageMaster.loadImage(imgPath);
         updateDescription();
     }
 

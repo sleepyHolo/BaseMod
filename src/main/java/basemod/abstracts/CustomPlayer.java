@@ -128,10 +128,10 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	
 	private void buildCustomOrb(String[] orbTextures, String orbVfxPath) {
 		for(String texPath : orbTextures) {
-			energyLayers.add(new Texture(Gdx.files.internal(texPath)));
+			energyLayers.add(ImageMaster.loadImage(texPath));
 		}
 		
-		orbVfx = new Texture(Gdx.files.internal(orbVfxPath));
+		orbVfx = ImageMaster.loadImage(orbVfxPath);
 	}
 	
 	public void renderOrb(EnergyPanel panel, SpriteBatch sb) {

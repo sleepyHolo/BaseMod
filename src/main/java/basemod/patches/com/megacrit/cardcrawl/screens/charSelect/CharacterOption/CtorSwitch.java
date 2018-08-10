@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +45,7 @@ public class CtorSwitch {
 				Field buttonImgField;
 				buttonImgField = CharacterOption.class.getDeclaredField("buttonImg");
 				buttonImgField.setAccessible(true);
-				buttonImgField.set(option, new Texture(BaseMod.getPlayerButton(chosenClass)));
+				buttonImgField.set(option, ImageMaster.loadImage(BaseMod.getPlayerButton(chosenClass)));
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				logger.error("could not create character select button for " + chosenClass.toString());
 				logger.error("with exception: " + e.getMessage());

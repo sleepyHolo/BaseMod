@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import basemod.ModLabel;
 import basemod.interfaces.*;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -130,7 +131,7 @@ public class TestMod implements
     private static final String PURPLECLAD_PORTRAIT = "charSelect/purplecladPortrait.jpg";
     
     public static Texture getArcanoSphereTexture() {
-    	return new Texture(makePath(ASSET_FOLDER,ARCANOSPHERE_RELIC));
+    	return ImageMaster.loadImage(makePath(ASSET_FOLDER,ARCANOSPHERE_RELIC));
     }
     
 	private static BufferedWriter writer = null;
@@ -327,7 +328,7 @@ public class TestMod implements
 	public void receivePostInitialize() {
         try {
         	// setup ModBadge for TestMod
-            Texture badgeTexture = new Texture(Gdx.files.internal("img/BaseModBadge.png"));
+            Texture badgeTexture = ImageMaster.loadImage("img/BaseModBadge.png");
             ModPanel settingsPanel = new ModPanel();
             settingsPanel.addUIElement(new ModLabel("Test Mod - no settings", 400.0f, 700.0f, settingsPanel, (me) -> {}));
             BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
@@ -30,7 +31,7 @@ public class UpdateHitboxBgImg {
 		if (BaseMod.isBaseGameCharacter(chosenClass)) {
 			return (Texture)original;
 		} else {
-			return new Texture(BaseMod.getPlayerPortrait(chosenClass));
+			return ImageMaster.loadImage(BaseMod.getPlayerPortrait(chosenClass));
 		}
 	}
 	

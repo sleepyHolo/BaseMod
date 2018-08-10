@@ -80,7 +80,7 @@ public class RenderFixSwitches {
 							card.color != AbstractCard.CardColor.BLUE &&
 							card.color != AbstractCard.CardColor.COLORLESS &&
 							card.color != AbstractCard.CardColor.CURSE) {
-						texture = new Texture(BaseMod.getEnergyOrb(card.color));
+						texture = ImageMaster.loadImage(BaseMod.getEnergyOrb(card.color));
 						BaseMod.saveEnergyOrbTexture(card.color, texture);
 					} else {
 						switch(card.color) {
@@ -194,19 +194,19 @@ public class RenderFixSwitches {
 			switch(card.type) {
 			case POWER:
 				if (BaseMod.getPowerBgTexture(color) == null) {
-					BaseMod.savePowerBgTexture(color, new Texture(BaseMod.getPowerBg(color)));
+					BaseMod.savePowerBgTexture(color, ImageMaster.loadImage(BaseMod.getPowerBg(color)));
 				}
 				texture = BaseMod.getPowerBgTexture(color);
 				break;
 			case ATTACK:
 				if (BaseMod.getAttackBgTexture(color) == null) {
-					BaseMod.saveAttackBgTexture(color, new Texture(BaseMod.getAttackBg(color)));
+					BaseMod.saveAttackBgTexture(color, ImageMaster.loadImage(BaseMod.getAttackBg(color)));
 				}
 				texture = BaseMod.getAttackBgTexture(color);
 				break;
 			case SKILL:
 				if (BaseMod.getSkillBgTexture(color) == null) {
-					BaseMod.saveSkillBgTexture(color, new Texture(BaseMod.getSkillBg(color)));
+					BaseMod.saveSkillBgTexture(color, ImageMaster.loadImage(BaseMod.getSkillBg(color)));
 				}
 				texture = BaseMod.getSkillBgTexture(color);
 				break;

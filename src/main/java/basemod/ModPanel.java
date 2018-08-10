@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 
@@ -70,7 +71,7 @@ public class ModPanel {
     }
     
     public ModPanel(Consumer<ModPanel> createFunc) {
-        background = new Texture(Gdx.files.internal("img/ModPanelBg.png"));
+        background = ImageMaster.loadImage("img/ModPanelBg.png");
         
         uiElementsRender = new ArrayList<>();
         uiElementsUpdate = new ArrayList<>();
