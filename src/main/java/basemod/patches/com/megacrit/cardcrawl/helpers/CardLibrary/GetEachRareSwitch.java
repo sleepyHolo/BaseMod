@@ -18,7 +18,8 @@ public class GetEachRareSwitch
 		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
 			__result.clear();
 			for (AbstractCard c : CardLibrary.cards.values()) {
-				if (c.rarity == AbstractCard.CardRarity.RARE && BaseMod.getColor(chosenClass.name()).equals(c.color.name())) {
+				if (c.rarity == AbstractCard.CardRarity.RARE
+						&& AbstractCard.CardColor.valueOf(BaseMod.getColor(chosenClass.name())) == c.color) {
 					__result.addToBottom(c.makeCopy());
 				}
 			}
