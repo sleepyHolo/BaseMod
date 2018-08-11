@@ -12,8 +12,8 @@ public class GetEncounter
 {
 	public static MonsterGroup Postfix(MonsterGroup __result, String key)
 	{
-		if (BaseMod.customMonsterEncounterExists(key)) {
-			return BaseMod.getMonsterEncounter(key);
+		if (BaseMod.customMonsterExists(key)) {
+			return BaseMod.getMonster(key);
 		}
 		return __result;
 	}

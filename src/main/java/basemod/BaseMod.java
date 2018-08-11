@@ -22,6 +22,7 @@ import com.megacrit.cardcrawl.dungeons.TheBeyond;
 import com.megacrit.cardcrawl.dungeons.TheCity;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
@@ -1214,7 +1215,17 @@ public class BaseMod {
 	// Monsters
 	//
 
-	private static HashMap<String, GetMonsterGroup> customMonsterEncounters = new HashMap<>();
+	// Key: Encounter ID
+	private static HashMap<String, GetMonsterGroup> customMonsters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customMonsterEncounters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customStrongMonsterEncounters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customEliteEncounters = new HashMap<>();
 
 	public interface GetMonsterGroup {
 		MonsterGroup get();
@@ -1224,24 +1235,66 @@ public class BaseMod {
 		AbstractMonster get();
 	}
 
-	public static void addMonsterEncounter(String encounterID, GetMonster monster) {
-		customMonsterEncounters.put(encounterID, () -> new MonsterGroup(monster.get()));
+	public static void addMonster(String encounterID, GetMonster monster) {
+		customMonsters.put(encounterID, () -> new MonsterGroup(monster.get()));
 	}
 
-	public static void addMonsterEncounter(String encounterID, GetMonsterGroup group) {
-		customMonsterEncounters.put(encounterID, group);
+	public static void addMonster(String encounterID, GetMonsterGroup group) {
+		customMonsters.put(encounterID, group);
 	}
 
-	public static MonsterGroup getMonsterEncounter(String encounterID) {
-		GetMonsterGroup getter = customMonsterEncounters.get(encounterID);
+	public static MonsterGroup getMonster(String encounterID) {
+		GetMonsterGroup getter = customMonsters.get(encounterID);
 		if (getter == null) {
 			return null;
 		}
 		return getter.get();
 	}
 
-	public static boolean customMonsterEncounterExists(String encounterID) {
-		return customMonsterEncounters.containsKey(encounterID);
+	public static boolean customMonsterExists(String encounterID) {
+		return customMonsters.containsKey(encounterID);
+	}
+
+	public static void addEliteEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customEliteEncounters.containsKey(dungeonID)) {
+			customEliteEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customEliteEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static void addStrongMonsterEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customStrongMonsterEncounters.containsKey(dungeonID)) {
+			customStrongMonsterEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customStrongMonsterEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static void addMonsterEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customMonsterEncounters.containsKey(dungeonID)) {
+			customMonsterEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customMonsterEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static List<MonsterInfo> getEliteEncounters(String dungeonID) {
+		if (customEliteEncounters.containsKey(dungeonID)) {
+			return customEliteEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
+	}
+
+	public static List<MonsterInfo> getStrongMonsterEncounters(String dungeonID) {
+		if (customStrongMonsterEncounters.containsKey(dungeonID)) {
+			return customStrongMonsterEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
+	}
+
+	public static List<MonsterInfo> getMonsterEncounters(String dungeonID) {
+		if (customMonsterEncounters.containsKey(dungeonID)) {
+			return customMonsterEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
 	}
 
 	//
