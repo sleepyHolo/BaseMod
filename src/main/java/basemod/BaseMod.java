@@ -10,18 +10,18 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.megacrit.cardcrawl.dungeons.Exordium;
+import com.megacrit.cardcrawl.dungeons.TheBeyond;
+import com.megacrit.cardcrawl.dungeons.TheCity;
 import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import org.apache.logging.log4j.LogManager;
@@ -89,7 +89,6 @@ import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
@@ -1110,58 +1109,239 @@ public class BaseMod {
 	//
 	
 	//Event hashmaps
-	private static HashMap<String, Class<? extends AbstractEvent>> customExordiumEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customCityEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customBeyondEvents = new HashMap<>();
-	private static HashMap<String, Class<? extends AbstractEvent>> customAllEvents = new HashMap<>();
+	// Key: Event ID
+	private static HashMap<String, Class<? extends AbstractEvent>> allCustomEvents = new HashMap<>();
+	// Key: Dungeon ID
+	// Inner Key: Event ID
+	private static HashMap<String, HashMap<String, Class<? extends AbstractEvent>>> customEvents = new HashMap<>();
 
 	//Event type enum
+	@Deprecated
 	public enum EventPool{
+		@Deprecated
 		THE_EXORDIUM,
+		@Deprecated
 		THE_CITY,
+		@Deprecated
 		THE_BEYOND,
+		@Deprecated
 		ANY
 	}
-	
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> c, EventPool pool) {
-		
-		logger.info("Adding " + eventID + " to " + pool.toString());
-		
+
+	@Deprecated
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, EventPool pool) {
+		String dungeonID = null;
 		switch(pool) {
 		case ANY:
-			customAllEvents.put(eventID, c);
+			dungeonID = null;
 			break;
 		case THE_BEYOND:
-			customBeyondEvents.put(eventID, c);
+			dungeonID = TheBeyond.ID;
 			break;
 		case THE_CITY:
-			customCityEvents.put(eventID, c);
+			dungeonID = TheCity.ID;
 			break;
 		case THE_EXORDIUM:
-			customExordiumEvents.put(eventID, c);
+			dungeonID = Exordium.ID;
 			break;
 		default:
 			break;
 		}
-		
+
+		addEvent(eventID, eventClass, dungeonID);
+	}
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
+		addEvent(eventID, eventClass, (String)null);
+	}
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
+		if (!customEvents.containsKey(dungeonID)) {
+			customEvents.put(dungeonID, new HashMap<>());
+		}
+		logger.info("Adding " + eventID + " to " + (dungeonID != null ? dungeonID : "ALL") + " pool");
+
+		customEvents.get(dungeonID).put(eventID, eventClass);
+		allCustomEvents.put(eventID, eventClass);
+
 		underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
 	}
 
+	@Deprecated
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(EventPool pool) {
+		String dungeonID = null;
 		switch(pool) {
-		case ANY:
-			return customAllEvents;
-		case THE_BEYOND:
-			return customBeyondEvents;
-		case THE_CITY:
-			return customCityEvents;
-		case THE_EXORDIUM:
-			return customExordiumEvents;
-		default:
+			case ANY:
+				dungeonID = null;
+				break;
+			case THE_BEYOND:
+				dungeonID = TheBeyond.ID;
+				break;
+			case THE_CITY:
+				dungeonID = TheCity.ID;
+				break;
+			case THE_EXORDIUM:
+				dungeonID = Exordium.ID;
+				break;
+			default:
+				break;
+		}
+
+		return getEventList(dungeonID);
+	}
+	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(String dungeonID) {
+		if (customEvents.containsKey(dungeonID)) {
+			return customEvents.get(dungeonID);
+		}
+		return new HashMap<>();
+	}
+
+	public static Class<? extends AbstractEvent> getEvent(String eventID) {
+		return allCustomEvents.get(eventID);
+	}
+
+	//
+	// Monsters
+	//
+
+	// Key: Encounter ID
+	private static HashMap<String, GetMonsterGroup> customMonsters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customMonsterEncounters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customStrongMonsterEncounters = new HashMap<>();
+	// Key: Dungeon ID
+	// Value: Encounter ID
+	private static HashMap<String, List<MonsterInfo>> customEliteEncounters = new HashMap<>();
+
+	public interface GetMonsterGroup {
+		MonsterGroup get();
+	}
+
+	public interface GetMonster {
+		AbstractMonster get();
+	}
+
+	public static void addMonster(String encounterID, GetMonster monster) {
+		customMonsters.put(encounterID, () -> new MonsterGroup(monster.get()));
+	}
+
+	public static void addMonster(String encounterID, GetMonsterGroup group) {
+		customMonsters.put(encounterID, group);
+	}
+
+	public static MonsterGroup getMonster(String encounterID) {
+		GetMonsterGroup getter = customMonsters.get(encounterID);
+		if (getter == null) {
 			return null;
 		}
+		return getter.get();
 	}
-	
+
+	public static boolean customMonsterExists(String encounterID) {
+		return customMonsters.containsKey(encounterID);
+	}
+
+	public static void addEliteEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customEliteEncounters.containsKey(dungeonID)) {
+			customEliteEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customEliteEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static void addStrongMonsterEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customStrongMonsterEncounters.containsKey(dungeonID)) {
+			customStrongMonsterEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customStrongMonsterEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static void addMonsterEncounter(String dungeonID, MonsterInfo encounter) {
+		if (!customMonsterEncounters.containsKey(dungeonID)) {
+			customMonsterEncounters.put(dungeonID, new ArrayList<>());
+		}
+		customMonsterEncounters.get(dungeonID).add(encounter);
+	}
+
+	public static List<MonsterInfo> getEliteEncounters(String dungeonID) {
+		if (customEliteEncounters.containsKey(dungeonID)) {
+			return customEliteEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
+	}
+
+	public static List<MonsterInfo> getStrongMonsterEncounters(String dungeonID) {
+		if (customStrongMonsterEncounters.containsKey(dungeonID)) {
+			return customStrongMonsterEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
+	}
+
+	public static List<MonsterInfo> getMonsterEncounters(String dungeonID) {
+		if (customMonsterEncounters.containsKey(dungeonID)) {
+			return customMonsterEncounters.get(dungeonID);
+		}
+		return new ArrayList<>();
+	}
+
+	//
+	// Bosses
+	//
+
+	private static HashMap<String, List<BossInfo>> customBosses = new HashMap<>();
+
+	public static class BossInfo {
+		public final String id;
+		public final Texture bossMap;
+		public final Texture bossMapOutline;
+
+		private BossInfo(String id, String mapIcon, String mapIconOutline) {
+			this.id = id;
+			if (mapIcon != null) {
+				bossMap = ImageMaster.loadImage(mapIcon);
+			} else {
+				bossMap = null;
+			}
+			if (mapIconOutline != null) {
+				bossMapOutline = ImageMaster.loadImage(mapIconOutline);
+			} else {
+				bossMapOutline = null;
+			}
+		}
+	}
+
+	public static void addBoss(String dungeon, String bossID, String mapIcon, String mapIconOutline) {
+		if (!customBosses.containsKey(dungeon)) {
+			customBosses.put(dungeon, new ArrayList<>());
+		}
+		BossInfo info = new BossInfo(bossID, mapIcon, mapIconOutline);
+		customBosses.get(dungeon).add(info);
+	}
+
+	public static List<String> getBossIDs(String dungeonID) {
+		if (customBosses.containsKey(dungeonID)) {
+			return customBosses.get(dungeonID).stream()
+					.map(info -> info.id)
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
+	}
+
+	public static BossInfo getBossInfo(String bossID) {
+		if (bossID == null) {
+			return null;
+		}
+
+		for (List<BossInfo> infos : customBosses.values()) {
+			for (BossInfo info : infos) {
+				if (bossID.equals(info.id)) {
+					return info;
+				}
+			}
+		}
+		return null;
+	}
+
 	//
 	// Keywords
 	//
