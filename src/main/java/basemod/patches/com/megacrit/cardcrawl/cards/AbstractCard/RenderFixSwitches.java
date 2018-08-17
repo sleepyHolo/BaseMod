@@ -215,7 +215,7 @@ public class RenderFixSwitches {
 				break;
 			}
 			
-			if(!(card.textureBackgroundSmallImg == null) && !(card.textureBackgroundSmallImg == "")) {
+			if(!(card.textureBackgroundSmallImg == null) && !card.textureBackgroundSmallImg.isEmpty()) {
 				texture = card.getBackgroundSmallTexture();
 			}
 			
