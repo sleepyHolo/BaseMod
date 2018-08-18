@@ -13,8 +13,11 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import basemod.helpers.BaseModTags;
+import basemod.helpers.CardTags;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
+import com.evacipated.cardcrawl.modthespire.Patcher;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.dungeons.TheBeyond;
@@ -103,6 +106,7 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.screens.ModalChoiceScreen;
+import org.scannotation.AnnotationDB;
 
 @SpireInitializer
 public class BaseMod {
@@ -181,6 +185,7 @@ public class BaseMod {
 	public static HashMap<PlayerClass, String> playerSelectTextMap;
 	public static HashMap<PlayerClass, String> playerSelectButtonMap;
 	public static HashMap<PlayerClass, String> playerPortraitMap;
+	public static HashMap<PlayerClass, String> playerGremlinMatchCardIDMap;
 
 	public static HashMap<PlayerClass, CharStat> playerStatsMap;
 
@@ -339,6 +344,7 @@ public class BaseMod {
 
 		modBadges = new ArrayList<>();
 
+		initializeCardTags();
 		initializeGson();
 		initializeTypeMaps();
 		initializeSubscriptions();
@@ -374,6 +380,31 @@ public class BaseMod {
 		animationEnvironment = new Environment();
 		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
 		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+	}
+
+	// initializeCardTags -
+	private static void initializeCardTags() {
+		logger.info("initializeCardTags");
+		for (AnnotationDB db : Patcher.annotationDBMap.values()) {
+			Set<String> tagNames = db.getAnnotationIndex().get(CardTags.AutoTag.class.getName());
+			if (tagNames != null) {
+				for (String tagClassName : tagNames) {
+					try {
+						Class<?> tagClass = BaseMod.class.getClassLoader().loadClass(tagClassName);
+						for (Field field : tagClass.getDeclaredFields()) {
+							if (Modifier.isStatic(field.getModifiers()) &&
+									field.getDeclaredAnnotation(CardTags.AutoTag.class) != null) {
+								field.setAccessible(true);
+								logger.info("Making AutoTag: " + tagClassName + "." + field.getName());
+								field.set(null, new CardTags.BasicTag(tagClass.getSimpleName(), field.getName()));
+							}
+						}
+					} catch (ClassNotFoundException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	// initializeGson -
@@ -487,6 +518,7 @@ public class BaseMod {
 		playerSelectButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
 		playerStatsMap = new HashMap<>();
+		playerGremlinMatchCardIDMap = new HashMap<>();
 	}
 
 	// initializeColorMap -
@@ -831,6 +863,17 @@ public class BaseMod {
 		return customToRemoveColors;
 	}
 
+	private static void checkGremlinMatchCard(AbstractCard card) {
+		if (CardTags.hasTag(card, BaseModTags.GREMLIN_MATCH)) {
+			for (Map.Entry<PlayerClass, String> kv : playerGremlinMatchCardIDMap.entrySet()) {
+				if (getColor(kv.getKey()) == card.color) {
+					playerGremlinMatchCardIDMap.put(kv.getKey(), card.cardID);
+					break;
+				}
+			}
+		}
+	}
+
 	// add card
 	public static void addCard(AbstractCard card) {
 		switch (card.color) {
@@ -848,6 +891,7 @@ public class BaseMod {
 			break;
 		default:
 			customToAdd.add(card);
+			checkGremlinMatchCard(card);
 			break;
 		}
 	}

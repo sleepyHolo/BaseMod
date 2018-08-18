@@ -6,6 +6,6 @@
   "credits": "t-larson: Original creator of BaseMod.\nContributors: test447, Haashi, kiooeht, Blank The Evil, robojumper, FlipskiZ, DemoXinMC, Skrelpoid, kobting, twanvl, Moocowsgomoo",
   "version": "${project.version}",
   "sts_version": "08-09-2018",
-  "mts_version": "2.6.0",
+  "mts_version": "2.9.1",
   "update_json": "https://api.github.com/repos/daviscook477/BaseMod/releases/latest"
 }
