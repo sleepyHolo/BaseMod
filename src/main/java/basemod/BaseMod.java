@@ -12,11 +12,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import basemod.abstracts.CustomBottleRelic;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.dungeons.TheBeyond;
 import com.megacrit.cardcrawl.dungeons.TheCity;
@@ -25,6 +28,7 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.clapper.util.classutil.AbstractClassFilter;
@@ -172,6 +176,7 @@ public class BaseMod {
 
 	private static HashMap<String, HashMap<String, AbstractRelic>> customRelicPools;
 	private static HashMap<String, ArrayList<AbstractRelic>> customRelicLists;
+	private static HashMap<String, Pair<Predicate<AbstractCard>, AbstractRelic>> customBottleRelics;
 
 	private static ArrayList<String> potionsToRemove;
 
@@ -537,6 +542,7 @@ public class BaseMod {
 	private static void initializeRelicPool() {
 		customRelicPools = new HashMap<>();
 		customRelicLists = new HashMap<>();
+		customBottleRelics = new HashMap<>();
 	}
 
 	// initializeUnlocks
@@ -951,6 +957,11 @@ public class BaseMod {
 			break;
 		default:
 			logger.info("tried to add relic of unsupported type: " + relic + " " + type);
+			return;
+		}
+
+		if (relic instanceof CustomBottleRelic) {
+			registerBottleRelic(((CustomBottleRelic) relic).isOnCard, relic);
 		}
 	}
 
@@ -1007,6 +1018,16 @@ public class BaseMod {
 		}
 	}
 
+	public static void registerBottleRelic(Predicate<AbstractCard> isOnCard, AbstractRelic relic)
+	{
+		customBottleRelics.put(relic.relicId, new Pair<>(isOnCard, relic));
+	}
+
+	public static void registerBottleRelic(SpireField<Boolean> isOnCard, AbstractRelic relic)
+	{
+		customBottleRelics.put(relic.relicId, new Pair<>(isOnCard::get, relic));
+	}
+
 	// addRelicToCustomPool -
 	public static void addRelicToCustomPool(AbstractRelic relic, String color) {
 		if (customRelicPools.containsKey(color)) {
@@ -1040,6 +1061,11 @@ public class BaseMod {
 			}
 		}
 		return new Circlet();
+	}
+
+	public static Collection<Pair<Predicate<AbstractCard>, AbstractRelic>> getBottledRelicList()
+	{
+		return customBottleRelics.values();
 	}
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
