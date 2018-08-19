@@ -52,7 +52,16 @@ public abstract class CustomCard extends AbstractCard {
 		loadTextureFromString(textureString);
 		return imgMap.get(textureString);
 	}
-	
+
+	@Override
+	public AbstractCard makeCopy() {
+		try{
+			return this.getClass().newInstance();
+		}catch(InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("BaseMod failed to auto-generate makeCopy for card: " + cardID);
+		}
+	}
+
 	static {
 		imgMap = new HashMap<>();
 	}

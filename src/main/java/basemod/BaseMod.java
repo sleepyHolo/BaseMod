@@ -141,6 +141,10 @@ public class BaseMod {
 	private static ArrayList<StartGameSubscriber> startGameSubscribers;
 	private static ArrayList<PreUpdateSubscriber> preUpdateSubscribers;
 	private static ArrayList<PostUpdateSubscriber> postUpdateSubscribers;
+	private static ArrayList<PostDungeonUpdateSubscriber> postDungeonUpdateSubscribers;
+	private static ArrayList<PreDungeonUpdateSubscriber> preDungeonUpdateSubscribers;
+	private static ArrayList<PostPlayerUpdateSubscriber> postPlayerUpdateSubscribers;
+	private static ArrayList<PrePlayerUpdateSubscriber> prePlayerUpdateSubscribers;
 	private static ArrayList<PostCreateStartingDeckSubscriber> postCreateStartingDeckSubscribers;
 	private static ArrayList<PostCreateStartingRelicsSubscriber> postCreateStartingRelicsSubscribers;
 	private static ArrayList<PostCreateShopRelicSubscriber> postCreateShopRelicSubscribers;
@@ -471,6 +475,10 @@ public class BaseMod {
 		startGameSubscribers = new ArrayList<>();
 		preUpdateSubscribers = new ArrayList<>();
 		postUpdateSubscribers = new ArrayList<>();
+		postDungeonUpdateSubscribers = new ArrayList<>();
+		preDungeonUpdateSubscribers = new ArrayList<>();
+		postPlayerUpdateSubscribers = new ArrayList<>();
+		prePlayerUpdateSubscribers = new ArrayList<>();
 		postCreateStartingDeckSubscribers = new ArrayList<>();
 		postCreateStartingRelicsSubscribers = new ArrayList<>();
 		postCreateShopRelicSubscribers = new ArrayList<>();
@@ -2182,6 +2190,38 @@ public class BaseMod {
 		unsubscribeLaterHelper(PostUpdateSubscriber.class);
 	}
 
+	// publishPostDungeonUpdate -
+	public static void publishPostDungeonUpdate() {
+		for(PostDungeonUpdateSubscriber sub : postDungeonUpdateSubscribers) {
+			sub.receivePostDungeonUpdate();
+		}
+		unsubscribeLaterHelper(PostDungeonUpdateSubscriber.class);
+	}
+
+	// publishPreDungeonUpdate -
+	public static void publishPreDungeonUpdate() {
+		for(PreDungeonUpdateSubscriber sub : preDungeonUpdateSubscribers) {
+			sub.receivePreDungeonUpdate();
+		}
+		unsubscribeLaterHelper(PreDungeonUpdateSubscriber.class);
+	}
+
+	// publishPostPlayerUpdate -
+	public static void publishPostPlayerUpdate() {
+		for(PostPlayerUpdateSubscriber sub : postPlayerUpdateSubscribers) {
+			sub.receivePostPlayerUpdate();
+		}
+		unsubscribeLaterHelper(PostPlayerUpdateSubscriber.class);
+	}
+
+	// publishPrePlayerUpdate -
+	public static void publishPrePlayerUpdate() {
+		for(PrePlayerUpdateSubscriber sub : prePlayerUpdateSubscribers) {
+			sub.receivePrePlayerUpdate();
+		}
+		unsubscribeLaterHelper(PrePlayerUpdateSubscriber.class);
+	}
+
 	// publishPostCreateStartingDeck -
 	public static void publishPostCreateStartingDeck(PlayerClass chosenClass, ArrayList<String> cards) {
 		logger.info("postCreateStartingDeck for: " + chosenClass);
@@ -2458,6 +2498,10 @@ public class BaseMod {
 		subscribeIfInstance(startGameSubscribers, sub, StartGameSubscriber.class);
 		subscribeIfInstance(preUpdateSubscribers, sub, PreUpdateSubscriber.class);
 		subscribeIfInstance(postUpdateSubscribers, sub, PostUpdateSubscriber.class);
+		subscribeIfInstance(postDungeonUpdateSubscribers, sub, PostDungeonUpdateSubscriber.class);
+		subscribeIfInstance(preDungeonUpdateSubscribers, sub, PreDungeonUpdateSubscriber.class);
+		subscribeIfInstance(postPlayerUpdateSubscribers, sub, PostPlayerUpdateSubscriber.class);
+		subscribeIfInstance(prePlayerUpdateSubscribers, sub, PrePlayerUpdateSubscriber.class);
 		subscribeIfInstance(postCreateStartingDeckSubscribers, sub, PostCreateStartingDeckSubscriber.class);
 		subscribeIfInstance(postCreateStartingRelicsSubscribers, sub, PostCreateStartingRelicsSubscriber.class);
 		subscribeIfInstance(postCreateShopRelicSubscribers, sub, PostCreateShopRelicSubscriber.class);
@@ -2516,6 +2560,14 @@ public class BaseMod {
 			preUpdateSubscribers.add((PreUpdateSubscriber) sub);
 		} else if (additionClass.equals(PostUpdateSubscriber.class)) {
 			postUpdateSubscribers.add((PostUpdateSubscriber) sub);
+		} else if (additionClass.equals(PostDungeonUpdateSubscriber.class)) {
+			postDungeonUpdateSubscribers.add((PostDungeonUpdateSubscriber) sub);
+		} else if (additionClass.equals(PreDungeonUpdateSubscriber.class)) {
+			preDungeonUpdateSubscribers.add((PreDungeonUpdateSubscriber) sub);
+		} else if (additionClass.equals(PostPlayerUpdateSubscriber.class)) {
+			postPlayerUpdateSubscribers.add((PostPlayerUpdateSubscriber) sub);
+		} else if (additionClass.equals(PrePlayerUpdateSubscriber.class)) {
+			prePlayerUpdateSubscribers.add((PrePlayerUpdateSubscriber) sub);
 		} else if (additionClass.equals(PostCreateStartingDeckSubscriber.class)) {
 			postCreateStartingDeckSubscribers.add((PostCreateStartingDeckSubscriber) sub);
 		} else if (additionClass.equals(PostCreateStartingRelicsSubscriber.class)) {
@@ -2577,6 +2629,10 @@ public class BaseMod {
 		unsubscribeIfInstance(startGameSubscribers, sub, StartGameSubscriber.class);
 		unsubscribeIfInstance(preUpdateSubscribers, sub, PreUpdateSubscriber.class);
 		unsubscribeIfInstance(postUpdateSubscribers, sub, PostUpdateSubscriber.class);
+		unsubscribeIfInstance(postDungeonUpdateSubscribers, sub, PostDungeonUpdateSubscriber.class);
+		unsubscribeIfInstance(preDungeonUpdateSubscribers, sub, PreDungeonUpdateSubscriber.class);
+		unsubscribeIfInstance(postPlayerUpdateSubscribers, sub, PostPlayerUpdateSubscriber.class);
+		unsubscribeIfInstance(prePlayerUpdateSubscribers, sub, PrePlayerUpdateSubscriber.class);
 		unsubscribeIfInstance(postCreateStartingDeckSubscribers, sub, PostCreateStartingDeckSubscriber.class);
 		unsubscribeIfInstance(postCreateStartingRelicsSubscribers, sub, PostCreateStartingRelicsSubscriber.class);
 		unsubscribeIfInstance(postCreateShopRelicSubscribers, sub, PostCreateShopRelicSubscriber.class);
@@ -2635,6 +2691,14 @@ public class BaseMod {
 			preUpdateSubscribers.remove(sub);
 		} else if (removalClass.equals(PostUpdateSubscriber.class)) {
 			postUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PostDungeonUpdateSubscriber.class)) {
+			postDungeonUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PreDungeonUpdateSubscriber.class)) {
+			preDungeonUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PostPlayerUpdateSubscriber.class)) {
+			postPlayerUpdateSubscribers.remove(sub);
+		} else if (removalClass.equals(PrePlayerUpdateSubscriber.class)) {
+			prePlayerUpdateSubscribers.remove(sub);
 		} else if (removalClass.equals(PostCreateStartingDeckSubscriber.class)) {
 			postCreateStartingDeckSubscribers.remove(sub);
 		} else if (removalClass.equals(PostCreateStartingRelicsSubscriber.class)) {

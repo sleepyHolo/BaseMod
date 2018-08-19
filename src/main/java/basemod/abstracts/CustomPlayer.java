@@ -27,10 +27,10 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 
 	AbstractAnimation animation;
 	
-	private ArrayList<Texture> energyLayers = new ArrayList<Texture>();
-	private float[] energyLayerSpeeds = null;
-	private float[] angles = null;
-	private Texture orbVfx;
+	public ArrayList<Texture> energyLayers = new ArrayList<Texture>();
+	public float[] energyLayerSpeeds = null;
+	public float[] angles = null;
+	public Texture orbVfx;
 
 	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath,
 			String model, String animation) {
@@ -126,7 +126,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		orbVfx = ImageMaster.loadImage(DEFAULT_ORB_VFX);
 	}
 	
-	private void buildCustomOrb(String[] orbTextures, String orbVfxPath) {
+	public void buildCustomOrb(String[] orbTextures, String orbVfxPath) {
 		for(String texPath : orbTextures) {
 			energyLayers.add(ImageMaster.loadImage(texPath));
 		}
