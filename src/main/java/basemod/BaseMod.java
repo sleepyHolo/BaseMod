@@ -1,44 +1,18 @@
 package basemod;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import basemod.abstracts.CustomBottleRelic;
+import basemod.abstracts.CustomCard;
+import basemod.abstracts.CustomUnlockBundle;
+import basemod.abstracts.DynamicVariable;
 import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
+import basemod.helpers.RelicType;
+import basemod.helpers.dynamicvariables.BlockVariable;
+import basemod.helpers.dynamicvariables.DamageVariable;
+import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.*;
 import basemod.patches.whatmod.WhatMod;
-import com.evacipated.cardcrawl.modthespire.Patcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-import com.megacrit.cardcrawl.dungeons.Exordium;
-import com.megacrit.cardcrawl.dungeons.TheBeyond;
-import com.megacrit.cardcrawl.dungeons.TheCity;
-import com.megacrit.cardcrawl.helpers.*;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.monsters.MonsterInfo;
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
-import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.clapper.util.classutil.AbstractClassFilter;
-import org.clapper.util.classutil.AndClassFilter;
-import org.clapper.util.classutil.ClassFilter;
-import org.clapper.util.classutil.ClassFinder;
-import org.clapper.util.classutil.ClassInfo;
-import org.clapper.util.classutil.FieldInfo;
-import org.clapper.util.classutil.InterfaceOnlyClassFilter;
-import org.clapper.util.classutil.NotClassFilter;
-import org.clapper.util.classutil.RegexClassFilter;
-
+import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Version;
@@ -56,6 +30,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
+import com.evacipated.cardcrawl.modthespire.Patcher;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -68,45 +45,43 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.dungeons.Exordium;
+import com.megacrit.cardcrawl.dungeons.TheBeyond;
+import com.megacrit.cardcrawl.dungeons.TheCity;
 import com.megacrit.cardcrawl.events.AbstractEvent;
-import com.megacrit.cardcrawl.localization.AchievementStrings;
-import com.megacrit.cardcrawl.localization.CardStrings;
-import com.megacrit.cardcrawl.localization.CharacterStrings;
-import com.megacrit.cardcrawl.localization.CreditStrings;
-import com.megacrit.cardcrawl.localization.EventStrings;
-import com.megacrit.cardcrawl.localization.KeywordStrings;
-import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import com.megacrit.cardcrawl.localization.MonsterStrings;
-import com.megacrit.cardcrawl.localization.OrbStrings;
-import com.megacrit.cardcrawl.localization.PotionStrings;
-import com.megacrit.cardcrawl.localization.PowerStrings;
-import com.megacrit.cardcrawl.localization.RelicStrings;
-import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
-import com.megacrit.cardcrawl.localization.TutorialStrings;
-import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
+import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-
-import basemod.abstracts.CustomCard;
-import basemod.abstracts.CustomUnlockBundle;
-import basemod.abstracts.DynamicVariable;
-import basemod.helpers.RelicType;
-import basemod.helpers.dynamicvariables.BlockVariable;
-import basemod.helpers.dynamicvariables.DamageVariable;
-import basemod.helpers.dynamicvariables.MagicNumberVariable;
-import basemod.screens.ModalChoiceScreen;
+import javafx.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.clapper.util.classutil.*;
 import org.scannotation.AnnotationDB;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @SpireInitializer
 public class BaseMod {
@@ -179,6 +154,7 @@ public class BaseMod {
 
 	private static HashMap<AbstractCard.CardColor, HashMap<String, AbstractRelic>> customRelicPools;
 	private static HashMap<AbstractCard.CardColor, ArrayList<AbstractRelic>> customRelicLists;
+	private static HashMap<String, Pair<Predicate<AbstractCard>, AbstractRelic>> customBottleRelics;
 
 	private static ArrayList<String> potionsToRemove;
 
@@ -563,6 +539,7 @@ public class BaseMod {
 	private static void initializeRelicPool() {
 		customRelicPools = new HashMap<>();
 		customRelicLists = new HashMap<>();
+		customBottleRelics = new HashMap<>();
 	}
 
 	// initializeUnlocks
@@ -990,6 +967,11 @@ public class BaseMod {
 			break;
 		default:
 			logger.info("tried to add relic of unsupported type: " + relic + " " + type);
+			return;
+		}
+
+		if (relic instanceof CustomBottleRelic) {
+			registerBottleRelic(((CustomBottleRelic) relic).isOnCard, relic);
 		}
 	}
 
@@ -1046,6 +1028,16 @@ public class BaseMod {
 		}
 	}
 
+	public static void registerBottleRelic(Predicate<AbstractCard> isOnCard, AbstractRelic relic)
+	{
+		customBottleRelics.put(relic.relicId, new Pair<>(isOnCard, relic));
+	}
+
+	public static void registerBottleRelic(SpireField<Boolean> isOnCard, AbstractRelic relic)
+	{
+		customBottleRelics.put(relic.relicId, new Pair<>(isOnCard::get, relic));
+	}
+
 	// addRelicToCustomPool -
 	public static void addRelicToCustomPool(AbstractRelic relic, AbstractCard.CardColor color) {
 		if (customRelicPools.containsKey(color)) {
@@ -1079,6 +1071,11 @@ public class BaseMod {
 			}
 		}
 		return new Circlet();
+	}
+
+	public static Collection<Pair<Predicate<AbstractCard>, AbstractRelic>> getBottledRelicList()
+	{
+		return customBottleRelics.values();
 	}
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
