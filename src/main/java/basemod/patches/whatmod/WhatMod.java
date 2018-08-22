@@ -58,7 +58,7 @@ public class WhatMod
 
 		if (locationURL == null) {
 			try {
-				ClassPool pool = ClassPool.getDefault();
+				ClassPool pool = Loader.getClassPool();
 				CtClass ctCls = pool.get(cls.getName());
 				String url = ctCls.getURL().getFile();
 				int i = url.lastIndexOf('!');
