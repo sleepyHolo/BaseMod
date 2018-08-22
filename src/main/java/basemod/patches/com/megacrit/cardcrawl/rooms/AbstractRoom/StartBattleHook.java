@@ -12,12 +12,14 @@ import javassist.CtBehavior;
 )
 public class StartBattleHook {
 
-    @SpireInsertPatch()
+    @SpireInsertPatch(
+            locator=Locator.class
+    )
     public static void Insert(AbstractRoom __instance) {
         BaseMod.publishStartBattle((MonsterRoom) __instance);
     }
 
-    public static class Locator extends SpireInsertLocator {
+    private static class Locator extends SpireInsertLocator {
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception {
             Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.characters.AbstractPlayer", "applyStartOfCombatPreDrawLogic");

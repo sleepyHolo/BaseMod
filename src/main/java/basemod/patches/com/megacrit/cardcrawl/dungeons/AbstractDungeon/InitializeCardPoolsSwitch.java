@@ -18,7 +18,10 @@ import javassist.CtBehavior;
 @SpirePatch(cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon", method="initializeCardPools")
 public class InitializeCardPoolsSwitch {
 
-	@SpireInsertPatch(localvars={"tmpPool"})
+	@SpireInsertPatch(
+			locator=Locator.class,
+			localvars={"tmpPool"}
+	)
 	public static void Insert(Object __obj_instance, Object tmpPoolObj) {
 		AbstractPlayer player = AbstractDungeon.player;
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;
@@ -46,7 +49,7 @@ public class InitializeCardPoolsSwitch {
 		}
 	}
 
-	public static class Locator extends SpireInsertLocator {
+	private static class Locator extends SpireInsertLocator {
 		@Override
 		public int[] Locate(CtBehavior ctBehavior) throws Exception
 		{

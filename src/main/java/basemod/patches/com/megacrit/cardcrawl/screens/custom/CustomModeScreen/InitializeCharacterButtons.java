@@ -13,13 +13,15 @@ import java.util.ArrayList;
 )
 public class InitializeCharacterButtons
 {
-	@SpireInsertPatch
+	@SpireInsertPatch(
+			locator=Locator.class
+	)
 	public static void Insert(CustomModeScreen __instance)
 	{
 		__instance.options.addAll(BaseMod.generateCustomCharacterOptions());
 	}
 
-	public static class Locator extends SpireInsertLocator
+	private static class Locator extends SpireInsertLocator
 	{
 		@Override
 		public int[] Locate(CtBehavior ctBehavior) throws Exception {

@@ -12,7 +12,9 @@ public class UpdateHooks {
 
 	@SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="update")
 	public static class PreUpdateHook {
-	    @SpireInsertPatch
+	    @SpireInsertPatch(
+	    		locator=Locator.class
+		)
 	    public static void Insert(Object __obj_instance) {
 	        BaseMod.publishPreUpdate();
 	    }
@@ -25,7 +27,7 @@ public class UpdateHooks {
 	    	return resultArr;
 	    }
 
-	    public static class Locator extends SpireInsertLocator
+	    private static class Locator extends SpireInsertLocator
 		{
 			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 			{
@@ -43,12 +45,14 @@ public class UpdateHooks {
 	@SpirePatch(cls="com.megacrit.cardcrawl.core.CardCrawlGame", method="update")
 	public static class PostUpdateHook {
 		
-	    @SpireInsertPatch
+	    @SpireInsertPatch(
+	    		locator=Locator.class
+		)
 	    public static void Insert(Object __obj_instance) {
 	        BaseMod.publishPostUpdate();
 	    }
 
-	    public static class Locator extends SpireInsertLocator
+	    private static class Locator extends SpireInsertLocator
 	    {
 	        public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 	        {

@@ -18,7 +18,10 @@ import javassist.CtBehavior;
 public class CreateCharacterSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpireInsertPatch(localvars={"p"})
+	@SpireInsertPatch(
+			locator=Locator.class,
+			localvars={"p"}
+	)
 	public static void Insert(Object selectionObj, @ByRef(type="com.megacrit.cardcrawl.characters.AbstractPlayer") Object[] pObj) {
 		logger.info("hooking into character creation");
 		
@@ -32,7 +35,7 @@ public class CreateCharacterSwitch {
 		}
 	}
 
-	public static class Locator extends SpireInsertLocator
+	private static class Locator extends SpireInsertLocator
 	{
 		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{

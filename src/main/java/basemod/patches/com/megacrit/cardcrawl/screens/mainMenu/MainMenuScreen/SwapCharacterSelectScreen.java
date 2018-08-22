@@ -15,7 +15,9 @@ import java.util.ArrayList;
 )
 public class SwapCharacterSelectScreen
 {
-    @SpireInsertPatch
+    @SpireInsertPatch(
+            locator=Locator.class
+    )
     public static void Insert(MainMenuScreen __instance, boolean playBgm)
     {
         if (!BaseMod.playerClassMap.isEmpty()) {
@@ -23,7 +25,7 @@ public class SwapCharacterSelectScreen
         }
     }
 
-    public static class Locator extends SpireInsertLocator
+    private static class Locator extends SpireInsertLocator
     {
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception

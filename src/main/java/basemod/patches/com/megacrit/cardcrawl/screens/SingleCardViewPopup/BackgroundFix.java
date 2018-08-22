@@ -113,7 +113,9 @@ public class BackgroundFix {
 			method="renderCost")
 	public static class EnergyOrbTexture {
 		
-		@SpireInsertPatch
+		@SpireInsertPatch(
+				locator=Locator.class
+		)
 		public static void Insert(Object __obj_instance, Object sbObject) {
 			try {
 				SingleCardViewPopup popup = (SingleCardViewPopup) __obj_instance;
@@ -147,7 +149,7 @@ public class BackgroundFix {
 			}
 		}
 		
-		public static class Locator extends SpireInsertLocator {
+		private static class Locator extends SpireInsertLocator {
 			public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{
 			Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.cards.AbstractCard", "color");

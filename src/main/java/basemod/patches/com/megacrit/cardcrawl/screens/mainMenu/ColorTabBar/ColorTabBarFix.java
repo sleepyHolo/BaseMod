@@ -97,6 +97,7 @@ public class ColorTabBarFix
         private static final float SPACING = 64.0f;
 
         @SpireInsertPatch(
+                locator=Locator.class,
                 localvars={"curTab"}
         )
         public static void Insert(ColorTabBar __instance, SpriteBatch sb, float y, ColorTabBar.CurrentTab curTab)
@@ -127,7 +128,7 @@ public class ColorTabBarFix
             }
         }
 
-        public static class Locator extends SpireInsertLocator
+        private static class Locator extends SpireInsertLocator
         {
             @Override
             public int[] Locate(CtBehavior ctMethodToPatch) throws Exception

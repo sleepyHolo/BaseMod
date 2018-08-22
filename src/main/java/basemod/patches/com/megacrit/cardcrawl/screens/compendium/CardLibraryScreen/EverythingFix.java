@@ -36,7 +36,9 @@ public class EverythingFix
     )
     public static class Initialize
     {
-        @SpireInsertPatch
+        @SpireInsertPatch(
+                locator=Locator.class
+        )
         public static void Insert(Object __obj_instance)
         {
             try {
@@ -51,7 +53,7 @@ public class EverythingFix
             }
         }
 
-        public static class Locator extends SpireInsertLocator
+        private static class Locator extends SpireInsertLocator
         {
             @Override
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException

@@ -13,7 +13,9 @@ import javassist.CtBehavior;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="initialize")
 public class CustomCardsPatch {
-	@SpireInsertPatch()
+	@SpireInsertPatch(
+			locator=Locator.class
+	)
 	public static void Insert() {
 		// add new cards
 		for (AbstractCard card : BaseMod.getCustomCardsToAdd()) {
@@ -31,7 +33,7 @@ public class CustomCardsPatch {
 		}
 	}
 
-	public static class Locator extends SpireInsertLocator
+	private static class Locator extends SpireInsertLocator
 	{
 		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{

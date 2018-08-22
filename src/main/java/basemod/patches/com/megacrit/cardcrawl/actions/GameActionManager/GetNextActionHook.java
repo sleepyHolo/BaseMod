@@ -19,13 +19,15 @@ import javassist.CtBehavior;
 public class GetNextActionHook {
 	
 	
-	@SpireInsertPatch()
+	@SpireInsertPatch(
+			locator=Locator.class
+	)
 	public static void Insert(Object __obj_instance) {
 		GameActionManager actionManager = (GameActionManager) __obj_instance;
 		BaseMod.publishOnCardUse(((CardQueueItem)actionManager.cardQueue.get(0)).card);
 	}
 	
-	public static class Locator extends SpireInsertLocator
+	private static class Locator extends SpireInsertLocator
 	{
 		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{
