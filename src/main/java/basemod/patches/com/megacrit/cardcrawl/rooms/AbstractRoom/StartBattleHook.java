@@ -6,6 +6,8 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import javassist.CtBehavior;
 
+import java.util.ArrayList;
+
 @SpirePatch(
         cls = "com.megacrit.cardcrawl.rooms.AbstractRoom",
         method = "update"
@@ -21,7 +23,7 @@ public class StartBattleHook {
         @Override
         public int[] Locate(CtBehavior ctBehavior) throws Exception {
             Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.characters.AbstractPlayer", "applyStartOfCombatPreDrawLogic");
-            return LineFinder.findInOrder(ctBehavior, finalMatcher);
+            return LineFinder.findInOrder(ctBehavior, new ArrayList<>(), finalMatcher);
         }
     }
 }
