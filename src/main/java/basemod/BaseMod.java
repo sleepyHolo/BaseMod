@@ -227,8 +227,7 @@ public class BaseMod {
 	public static final String CONFIG_FILE = "basemod-config";
 	private static SpireConfig config;
 
-	/* should be final but the compiler doesn't like me */
-	public static String save_path = "saves" + File.separator;
+	public static final String save_path = "saves" + File.separator;
 
 	public static DevConsole console;
 	public static Gson gson;
