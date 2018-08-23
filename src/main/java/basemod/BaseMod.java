@@ -145,6 +145,8 @@ public class BaseMod {
 	private static ArrayList<String> redToRemove;
 	private static ArrayList<AbstractCard> greenToAdd;
 	private static ArrayList<String> greenToRemove;
+	private static ArrayList<AbstractCard> blueToAdd;
+	private static ArrayList<String> blueToRemove;
 	private static ArrayList<AbstractCard> colorlessToAdd;
 	private static ArrayList<String> colorlessToRemove;
 	private static ArrayList<AbstractCard> curseToAdd;
@@ -472,6 +474,8 @@ public class BaseMod {
 		redToRemove = new ArrayList<>();
 		greenToAdd = new ArrayList<>();
 		greenToRemove = new ArrayList<>();
+		blueToAdd = new ArrayList<>();
+		blueToRemove = new ArrayList<>();
 		colorlessToAdd = new ArrayList<>();
 		colorlessToRemove = new ArrayList<>();
 		curseToAdd = new ArrayList<>();
@@ -806,6 +810,16 @@ public class BaseMod {
 		return greenToRemove;
 	}
 
+	// blue add -
+	public static ArrayList<AbstractCard> getBlueCardsToAdd() {
+		return blueToAdd;
+	}
+
+	// blue remove -
+	public static ArrayList<String> getBlueCardsToRemove() {
+		return blueToRemove;
+	}
+
 	// colorless add -
 	public static ArrayList<AbstractCard> getColorlessCardsToAdd() {
 		return colorlessToAdd;
@@ -855,44 +869,50 @@ public class BaseMod {
 	// add card
 	public static void addCard(AbstractCard card) {
 		switch (card.color) {
-		case RED:
-			redToAdd.add(card);
-			break;
-		case GREEN:
-			greenToAdd.add(card);
-			break;
-		case COLORLESS:
-			colorlessToAdd.add(card);
-			break;
-		case CURSE:
-			curseToAdd.add(card);
-			break;
-		default:
-			customToAdd.add(card);
-			checkGremlinMatchCard(card);
-			break;
+			case RED:
+				redToAdd.add(card);
+				break;
+			case GREEN:
+				greenToAdd.add(card);
+				break;
+			case BLUE:
+				blueToAdd.add(card);
+				break;
+			case COLORLESS:
+				colorlessToAdd.add(card);
+				break;
+			case CURSE:
+				curseToAdd.add(card);
+				break;
+			default:
+				customToAdd.add(card);
+				checkGremlinMatchCard(card);
+				break;
 		}
 	}
 
 	// remove card
 	public static void removeCard(String card, AbstractCard.CardColor color) {
 		switch (color) {
-		case RED:
-			redToRemove.add(card);
-			break;
-		case GREEN:
-			greenToRemove.add(card);
-			break;
-		case COLORLESS:
-			colorlessToRemove.add(card);
-			break;
-		case CURSE:
-			curseToRemove.add(card);
-			break;
-		default:
-			customToRemove.add(card);
-			customToRemoveColors.add(color);
-			break;
+			case RED:
+				redToRemove.add(card);
+				break;
+			case GREEN:
+				greenToRemove.add(card);
+				break;
+			case BLUE:
+				blueToRemove.add(card);
+				break;
+			case COLORLESS:
+				colorlessToRemove.add(card);
+				break;
+			case CURSE:
+				curseToRemove.add(card);
+				break;
+			default:
+				customToRemove.add(card);
+				customToRemoveColors.add(color);
+				break;
 		}
 	}
 
