@@ -398,7 +398,7 @@ public class BaseMod {
 		logger.info("initializeTypeMaps");
 
 		typeMaps = new HashMap<>();
-		typeMaps.put(AchievementStrings.class, "acheivements");
+		typeMaps.put(AchievementStrings.class, "achievements");
 		typeMaps.put(CardStrings.class, "cards");
 		typeMaps.put(CharacterStrings.class, "characters");
 		typeMaps.put(CreditStrings.class, "credits");
@@ -412,6 +412,8 @@ public class BaseMod {
 		typeMaps.put(TutorialStrings.class, "tutorials");
 		typeMaps.put(UIStrings.class, "ui");
 		typeMaps.put(OrbStrings.class, "orb");
+		typeMaps.put(RunModStrings.class, "mod");
+		typeMaps.put(BlightStrings.class, "blights");
 
 		typeTokens = new HashMap<>();
 		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {}.getType());
@@ -428,6 +430,8 @@ public class BaseMod {
 		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {}.getType());
 		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {}.getType());
 		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {}.getType());
+		typeTokens.put(RunModStrings.class, new TypeToken<Map<String, RunModStrings>>() {}.getType());
+		typeTokens.put(BlightStrings.class, new TypeToken<Map<String, BlightStrings>>() {}.getType());
 	}
 
 	// initializeSubscriptions -
