@@ -358,3 +358,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Custom bottle-style relics (kiooeht)
 * Make StartBattleHook work when loading a save (gogo81745)
 * Automatically give player an orb slot when channeling on a character without orb slots (kiooeht)
+* Render colored outline for custom character relics (kiooeht)
