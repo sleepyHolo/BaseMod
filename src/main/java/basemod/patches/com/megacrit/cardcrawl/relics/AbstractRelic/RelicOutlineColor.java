@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class RelicOutlineColor
 	{
 		public static void Prefix(AbstractRelic __instance, SpriteBatch sb, boolean renderAmount, @ByRef Color[] outlineColor)
 		{
-			for (Map.Entry<String, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
+			for (Map.Entry<AbstractCard.CardColor, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
 				if (map.getValue().containsKey(__instance.relicId)) {
 					outlineColor[0] = BaseMod.getFrameOutlineColor(map.getKey());
 				}
@@ -46,7 +47,7 @@ public class RelicOutlineColor
 	{
 		public static void Prefix(AbstractRelic __instance, SpriteBatch sb, @ByRef Color[] outlineColor)
 		{
-			for (Map.Entry<String, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
+			for (Map.Entry<AbstractCard.CardColor, HashMap<String, AbstractRelic>> map : BaseMod.getAllCustomRelics().entrySet()) {
 				if (map.getValue().containsKey(__instance.relicId)) {
 					outlineColor[0] = BaseMod.getFrameOutlineColor(map.getKey());
 				}
