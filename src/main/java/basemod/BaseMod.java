@@ -79,6 +79,7 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -775,6 +776,10 @@ public class BaseMod {
 	// EditStringsSubscriber
 	public static void loadCustomStrings(Class<?> stringType, String jsonString) {
 		loadJsonStrings(stringType, jsonString);
+	}
+
+	public static void loadCustomStringsFile(Class<?> stringType, String filepath) {
+		loadJsonStrings(stringType, Gdx.files.internal(filepath).readString(String.valueOf(StandardCharsets.UTF_8)));
 	}
 
 	//
