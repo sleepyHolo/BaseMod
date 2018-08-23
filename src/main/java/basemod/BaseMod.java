@@ -398,40 +398,25 @@ public class BaseMod {
 		logger.info("initializeTypeMaps");
 
 		typeMaps = new HashMap<>();
-		typeMaps.put(AchievementStrings.class, "achievements");
-		typeMaps.put(CardStrings.class, "cards");
-		typeMaps.put(CharacterStrings.class, "characters");
-		typeMaps.put(CreditStrings.class, "credits");
-		typeMaps.put(EventStrings.class, "events");
-		typeMaps.put(KeywordStrings.class, "keywords");
-		typeMaps.put(MonsterStrings.class, "monsters");
-		typeMaps.put(PotionStrings.class, "potions");
-		typeMaps.put(PowerStrings.class, "powers");
-		typeMaps.put(RelicStrings.class, "relics");
-		typeMaps.put(ScoreBonusStrings.class, "scoreBonuses");
-		typeMaps.put(TutorialStrings.class, "tutorials");
-		typeMaps.put(UIStrings.class, "ui");
-		typeMaps.put(OrbStrings.class, "orb");
-		typeMaps.put(RunModStrings.class, "mod");
-		typeMaps.put(BlightStrings.class, "blights");
-
 		typeTokens = new HashMap<>();
-		typeTokens.put(AchievementStrings.class, new TypeToken<Map<String, AchievementStrings>>() {}.getType());
-		typeTokens.put(CardStrings.class, new TypeToken<Map<String, CardStrings>>() {}.getType());
-		typeTokens.put(CharacterStrings.class, new TypeToken<Map<String, CharacterStrings>>() {}.getType());
-		typeTokens.put(CreditStrings.class, new TypeToken<Map<String, CreditStrings>>() {}.getType());
-		typeTokens.put(EventStrings.class, new TypeToken<Map<String, EventStrings>>() {}.getType());
-		typeTokens.put(KeywordStrings.class, new TypeToken<Map<String, KeywordStrings>>() {}.getType());
-		typeTokens.put(MonsterStrings.class, new TypeToken<Map<String, MonsterStrings>>() {}.getType());
-		typeTokens.put(PotionStrings.class, new TypeToken<Map<String, PotionStrings>>() {}.getType());
-		typeTokens.put(PowerStrings.class, new TypeToken<Map<String, PowerStrings>>() {}.getType());
-		typeTokens.put(RelicStrings.class, new TypeToken<Map<String, RelicStrings>>() {}.getType());
-		typeTokens.put(ScoreBonusStrings.class, new TypeToken<Map<String, ScoreBonusStrings>>() {}.getType());
-		typeTokens.put(TutorialStrings.class, new TypeToken<Map<String, TutorialStrings>>() {}.getType());
-		typeTokens.put(UIStrings.class, new TypeToken<Map<String, UIStrings>>() {}.getType());
-		typeTokens.put(OrbStrings.class, new TypeToken<Map<String, OrbStrings>>() {}.getType());
-		typeTokens.put(RunModStrings.class, new TypeToken<Map<String, RunModStrings>>() {}.getType());
-		typeTokens.put(BlightStrings.class, new TypeToken<Map<String, BlightStrings>>() {}.getType());
+
+		for (Field f : LocalizedStrings.class.getDeclaredFields()) {
+			Type type = f.getGenericType();
+			if (type instanceof ParameterizedType) {
+				ParameterizedType pType = (ParameterizedType) type;
+				Type[] typeArgs = pType.getActualTypeArguments();
+				if (typeArgs.length == 2
+						&& typeArgs[0].equals(String.class)
+						&& typeArgs[1].getTypeName().startsWith("com.megacrit.cardcrawl.localization.")
+						&& typeArgs[1].getTypeName().endsWith("Strings")) {
+
+					logger.info("Registered " + typeArgs[1].getTypeName().replace("com.megacrit.cardcrawl.localization.", ""));
+					typeMaps.put(typeArgs[1], f.getName());
+					ParameterizedType p = com.google.gson.internal.$Gson$Types.newParameterizedTypeWithOwner(null, Map.class, String.class, typeArgs[1]);
+					typeTokens.put(typeArgs[1], p);
+				}
+			}
+		}
 	}
 
 	// initializeSubscriptions -
