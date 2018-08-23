@@ -35,7 +35,7 @@ public class ColorTabBarFix
 
     @SpirePatch(
             cls="com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar",
-            method="ctor"
+            method=SpirePatch.CONSTRUCTOR
     )
     public static class Ctor
     {

@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.EnergyPanel", method="ctor")
+@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.EnergyPanel", method=SpirePatch.CONSTRUCTOR)
 public class CtorSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	

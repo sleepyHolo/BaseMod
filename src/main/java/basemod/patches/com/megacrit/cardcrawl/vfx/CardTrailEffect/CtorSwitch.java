@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.vfx.CardTrailEffect", method="ctor")
+@SpirePatch(cls="com.megacrit.cardcrawl.vfx.CardTrailEffect", method=SpirePatch.CONSTRUCTOR)
 public class CtorSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	

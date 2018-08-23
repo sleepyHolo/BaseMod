@@ -16,7 +16,7 @@ import basemod.BaseMod;
 public class StatFixes {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());
 	
-	@SpirePatch(cls="com.megacrit.cardcrawl.screens.stats.CharStat", method="ctor",
+	@SpirePatch(cls="com.megacrit.cardcrawl.screens.stats.CharStat", method=SpirePatch.CONSTRUCTOR,
 			paramtypes={"com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass"})
 	public static class ConstructorFix {
 		
@@ -33,7 +33,7 @@ public class StatFixes {
 		
 	}
 	
-	@SpirePatch(cls="com.megacrit.cardcrawl.screens.stats.CharStat", method="ctor",
+	@SpirePatch(cls="com.megacrit.cardcrawl.screens.stats.CharStat", method=SpirePatch.CONSTRUCTOR,
 			paramtypes={"com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass"})
 	public static class CardCountFixes {
 		

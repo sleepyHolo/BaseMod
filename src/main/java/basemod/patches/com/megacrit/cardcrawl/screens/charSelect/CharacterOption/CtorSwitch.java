@@ -16,7 +16,7 @@ import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 
 import basemod.BaseMod;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.screens.charSelect.CharacterOption", method="ctor",
+@SpirePatch(cls="com.megacrit.cardcrawl.screens.charSelect.CharacterOption", method=SpirePatch.CONSTRUCTOR,
 		paramtypes={"java.lang.String", "com.megacrit.cardcrawl.characters.AbstractPlayer$PlayerClass",
 				"java.lang.String", "java.lang.String"})
 public class CtorSwitch {
