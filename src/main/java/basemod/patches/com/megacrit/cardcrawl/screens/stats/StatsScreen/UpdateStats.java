@@ -73,8 +73,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "updateFurthestAscent")
 	public static class FurthestAscent {
 		public static void Postfix(int floor) {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).furthestAscent(floor);
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).furthestAscent(floor);
 			}
 		}
 	}
@@ -82,8 +82,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "updateHighestScore")
 	public static class HighestScore {
 		public static void Postfix(int score) {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).highestScore(score);
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).highestScore(score);
 			}
 		}
 	}
@@ -91,8 +91,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "updateHighestDailyScore")
 	public static class HighestDailyScore {
 		public static void Postfix(int score) {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).highestDaily(score);
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).highestDaily(score);
 			}
 		}
 	}
@@ -100,8 +100,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "updateVictoryTime")
 	public static class VictoryTime {
 		public static void Postfix(long time) {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).updateFastestVictory(time);
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).updateFastestVictory(time);
 			}
 		}
 	}
@@ -109,8 +109,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "incrementFloorClimbed")
 	public static class FloorClimbed {
 		public static void Postfix() {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).incrementFloorClimbed();
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).incrementFloorClimbed();
 			}
 		}
 	}
@@ -119,8 +119,8 @@ public class UpdateStats {
 	public static class Victory {
 		public static void Postfix(Object cObj) {
 			AbstractPlayer.PlayerClass c = (AbstractPlayer.PlayerClass) cObj;
-			if (BaseMod.playerStatsMap.get(c.toString()) != null) {
-				BaseMod.playerStatsMap.get(c.toString()).incrementVictory();
+			if (BaseMod.playerStatsMap.get(c) != null) {
+				BaseMod.playerStatsMap.get(c).incrementVictory();
 			}
 		}
 	}
@@ -129,8 +129,8 @@ public class UpdateStats {
 	public static class Death {
 		public static void Postfix(Object cObj) {
 			AbstractPlayer.PlayerClass c = (AbstractPlayer.PlayerClass) cObj;
-			if (BaseMod.playerStatsMap.get(c.toString()) != null) {
-				BaseMod.playerStatsMap.get(c.toString()).incrementDeath();
+			if (BaseMod.playerStatsMap.get(c) != null) {
+				BaseMod.playerStatsMap.get(c).incrementDeath();
 			}
 		}
 	}
@@ -138,8 +138,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "incrementEnemySlain")
 	public static class EnemySlain {
 		public static void Postfix() {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).incrementEnemySlain();
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).incrementEnemySlain();
 			}
 		}
 	}
@@ -147,8 +147,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "incrementBossSlain")
 	public static class BossSlain {
 		public static void Postfix() {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).incrementBossSlain();
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).incrementBossSlain();
 			}
 		}
 	}
@@ -156,8 +156,8 @@ public class UpdateStats {
 	@SpirePatch(cls = "com.megacrit.cardcrawl.screens.stats.StatsScreen", method = "incrementPlayTime")
 	public static class PlayTime {
 		public static void Postfix(long time) {
-			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()) != null) {
-				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass.toString()).incrementPlayTime(time);
+			if (BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass) != null) {
+				BaseMod.playerStatsMap.get(AbstractDungeon.player.chosenClass).incrementPlayTime(time);
 			}
 		}
 	}
@@ -166,7 +166,7 @@ public class UpdateStats {
 	public static class UnlockAscension {
 		public static void Postfix(AbstractPlayer.PlayerClass c) {
 			if (c.toString() != null) {
-				BaseMod.playerStatsMap.get(c.toString()).unlockAscension();
+				BaseMod.playerStatsMap.get(c).unlockAscension();
 			}
 		}
 	}

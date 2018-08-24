@@ -16,7 +16,7 @@ public class GetVictory {
 			return __result;
 		}
 
-		CharStat stat = BaseMod.playerStatsMap.get(c.toString());
+		CharStat stat = BaseMod.playerStatsMap.get(c);
 		if (stat != null) {
 			return stat.getVictoryCount();
 		}
