@@ -1,7 +1,7 @@
 package basemod.interfaces;
 
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 
 public interface OnStartBattleSubscriber extends ISubscriber {
-    void receiveOnBattleStart(MonsterRoom monsterRoom);
+    void receiveOnBattleStart(AbstractRoom room);
 }

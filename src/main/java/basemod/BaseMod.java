@@ -2356,11 +2356,11 @@ public class BaseMod {
 		unsubscribeLaterHelper(PostBattleSubscriber.class);
 	}
 
-	public static void publishStartBattle(MonsterRoom monsterRoom){
+	public static void publishStartBattle(AbstractRoom room){
 		logger.info("publish start battle");
 
 		for (OnStartBattleSubscriber sub : startBattleSubscribers) {
-			sub.receiveOnBattleStart(monsterRoom);
+			sub.receiveOnBattleStart(room);
 		}
 		unsubscribeLaterHelper(OnStartBattleSubscriber.class);
 	}

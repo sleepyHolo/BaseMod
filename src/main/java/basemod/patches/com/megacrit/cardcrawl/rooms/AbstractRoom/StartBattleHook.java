@@ -18,7 +18,7 @@ public class StartBattleHook {
             locator=Locator.class
     )
     public static void Insert(AbstractRoom __instance) {
-        BaseMod.publishStartBattle((MonsterRoom) __instance);
+        BaseMod.publishStartBattle(__instance);
     }
 
     private static class Locator extends SpireInsertLocator {

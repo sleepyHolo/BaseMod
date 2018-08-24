@@ -350,7 +350,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Insanity modifier for modded characters (kiooeht)
 * Anti-alias modded art assets automatically (kiooeht)
 
-#### dev ####
+#### v3.0.0 ####
 * Custom monsters (kiooeht)
 * Custom monster fights (kiooeht)
 * Custom bosses (kiooeht)
@@ -360,3 +360,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make StartBattleHook work when loading a save (gogo81745)
 * Automatically give player an orb slot when channeling on a character without orb slots (kiooeht)
 * Render colored outline for custom character relics (kiooeht)
+
+#### dev ####
+* Fix OnStartBattle hook (kiooeht)
