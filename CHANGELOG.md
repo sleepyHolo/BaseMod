@@ -361,5 +361,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Automatically give player an orb slot when channeling on a character without orb slots (kiooeht)
 * Render colored outline for custom character relics (kiooeht)
 
-#### dev ####
+#### v3.0.1 ####
 * Fix OnStartBattle hook (kiooeht)
+
+#### dev ####
