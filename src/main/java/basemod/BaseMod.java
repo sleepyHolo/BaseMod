@@ -855,11 +855,11 @@ public class BaseMod {
 		return customToRemoveColors;
 	}
 
-	private static void checkGremlinMatchCard(AbstractCard card) {
-		if (CardTags.hasTag(card, BaseModTags.GREMLIN_MATCH)) {
-			for (Map.Entry<PlayerClass, String> kv : playerGremlinMatchCardIDMap.entrySet()) {
-				if (getColor(kv.getKey()) == card.color) {
-					playerGremlinMatchCardIDMap.put(kv.getKey(), card.cardID);
+	private static void checkGremlinMatchCard(PlayerClass playerClass) {
+		for (AbstractCard card : CardLibrary.getAllCards()) {
+			if (CardTags.hasTag(card, BaseModTags.GREMLIN_MATCH)) {
+				if (getColor(playerClass) == card.color) {
+					playerGremlinMatchCardIDMap.put(playerClass, card.cardID);
 					break;
 				}
 			}
@@ -886,7 +886,6 @@ public class BaseMod {
 				break;
 			default:
 				customToAdd.add(card);
-				checkGremlinMatchCard(card);
 				break;
 		}
 	}
@@ -1465,6 +1464,8 @@ public class BaseMod {
 		playerSelectTextMap.put(characterID, selectText);
 		playerSelectButtonMap.put(characterID, selectButton);
 		playerPortraitMap.put(characterID, portrait);
+
+		checkGremlinMatchCard(characterID);
 	}
 
 	// I have no idea if this implementation comes even remotely close to
