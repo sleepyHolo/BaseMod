@@ -364,6 +364,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v3.0.1 ####
 * Fix OnStartBattle hook (kiooeht)
 
-#### dev ####
+#### v3.0.2 ####
 * Fix Ascension mode for modded characters after v3.0 (kiooeht)
 * Fix Gremlin Match tag for modded characters (kiooeht)
+
+#### dev ####
