@@ -6,11 +6,15 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.city.BackToBasics;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
 
 import basemod.abstracts.CustomCard;
 
-@SpirePatch(cls = "com.megacrit.cardcrawl.events.thecity.BackToBasics", method = "upgradeStrikeAndDefends")
+@SpirePatch(
+		clz=BackToBasics.class,
+		method="upgradeStrikeAndDefends"
+)
 public class UpgradeStrikeAndDefends {
 	@SpireInsertPatch(rloc = 30)
 	public static void Insert(Object __obj_instance) {

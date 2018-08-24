@@ -8,8 +8,12 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import basemod.abstracts.CustomCard;
+import com.megacrit.cardcrawl.events.city.Vampires;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.events.thecity.Vampires", method="replaceAttacks")
+@SpirePatch(
+		clz=Vampires.class,
+		method="replaceAttacks"
+)
 public class ReplaceAttacks {
 	@SpireInsertPatch(rloc=8)
 	public static void Insert(Object __obj_instance) {
