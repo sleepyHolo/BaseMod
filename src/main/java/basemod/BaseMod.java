@@ -1662,6 +1662,12 @@ public class BaseMod {
 	//
 
 	// add a color -
+	public static void addColor(AbstractCard.CardColor color, Color everythingColor,
+								String attackBg, String skillBg, String powerBg, String energyOrb,
+								String attackBgPortrait, String skillBgPortrait, String powerBgPortrait, String energyOrbPortrait,
+								String cardEnergyOrb) {
+		addColor(color, everythingColor, everythingColor, everythingColor, everythingColor, everythingColor, everythingColor, everythingColor, attackBg, skillBg, powerBg, energyOrb, attackBgPortrait, skillBgPortrait, powerBgPortrait, energyOrbPortrait, cardEnergyOrb);
+	}
 	public static void addColor(AbstractCard.CardColor color, com.badlogic.gdx.graphics.Color bgColor,
 								com.badlogic.gdx.graphics.Color backColor, com.badlogic.gdx.graphics.Color frameColor,
 								com.badlogic.gdx.graphics.Color frameOutlineColor, com.badlogic.gdx.graphics.Color descBoxColor,
