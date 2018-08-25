@@ -62,6 +62,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
+import com.megacrit.cardcrawl.screens.custom.CustomMod;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
@@ -140,6 +141,7 @@ public class BaseMod {
 	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
 	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
 	private static ArrayList<OnStartBattleSubscriber> startBattleSubscribers;
+	private static ArrayList<EditCustomModeModsSubscriber> editCustomModeModsSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -465,6 +467,7 @@ public class BaseMod {
 		onPowersModifiedSubscribers = new ArrayList<>();
 		postDeathSubscribers = new ArrayList<>();
 		startBattleSubscribers = new ArrayList<>();
+		editCustomModeModsSubscribers = new ArrayList<>();
 
 	}
 
@@ -2466,6 +2469,15 @@ public class BaseMod {
 		unsubscribeLaterHelper(PostDeathSubscriber.class);
 	}
 
+	public static void publishEditCustomModeMods(List<CustomMod> modList) {
+		logger.info("publishEditCustomModeMods");
+
+		for (EditCustomModeModsSubscriber sub : editCustomModeModsSubscribers) {
+			sub.receiveCustomModeMods(modList);
+		}
+		unsubscribeLaterHelper(EditCustomModeModsSubscriber.class);
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2538,6 +2550,7 @@ public class BaseMod {
 		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		subscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
+		subscribeIfInstance(editCustomModeModsSubscribers, sub, EditCustomModeModsSubscriber.class);
 	}
 
 	// subscribe -
@@ -2623,6 +2636,8 @@ public class BaseMod {
 			postDeathSubscribers.add((PostDeathSubscriber) sub);
 		} else if (additionClass.equals(OnStartBattleSubscriber.class)) {
 			startBattleSubscribers.add((OnStartBattleSubscriber) sub);
+		} else if (additionClass.equals(EditCustomModeModsSubscriber.class)) {
+			editCustomModeModsSubscribers.add((EditCustomModeModsSubscriber) sub);
 		}
 	}
 
@@ -2669,6 +2684,7 @@ public class BaseMod {
 		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		unsubscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
+		unsubscribeIfInstance(editCustomModeModsSubscribers, sub, EditCustomModeModsSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2754,6 +2770,8 @@ public class BaseMod {
 			postDeathSubscribers.remove(sub);
 		} else if (removalClass.equals(OnStartBattleSubscriber.class)) {
 			startBattleSubscribers.remove(sub);
+		} else if (removalClass.equals(EditCustomModeModsSubscriber.class)) {
+			editCustomModeModsSubscribers.remove(sub);
 		}
 	}
 
