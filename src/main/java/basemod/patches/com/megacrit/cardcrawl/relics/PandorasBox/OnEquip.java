@@ -3,6 +3,8 @@ package basemod.patches.com.megacrit.cardcrawl.relics.PandorasBox;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
+import basemod.helpers.BaseModTags;
+import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -11,20 +13,29 @@ import com.megacrit.cardcrawl.relics.PandorasBox;
 
 import basemod.abstracts.CustomCard;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.relics.PandorasBox", method="onEquip")
+@SpirePatch(
+		clz=PandorasBox.class,
+		method="onEquip"
+)
 public class OnEquip {
 	@SpireInsertPatch(rloc=12)
-	public static void Insert(Object __obj_instance) {
+	public static void Insert(PandorasBox __instance) {
 		Field count;
 		try {
-			PandorasBox box = (PandorasBox) __obj_instance;
-			count = box.getClass().getDeclaredField("count");
+			count = __instance.getClass().getDeclaredField("count");
 			count.setAccessible(true);
 			for (Iterator<AbstractCard> i = AbstractDungeon.player.masterDeck.group.iterator(); i.hasNext();) {
 				AbstractCard c = i.next();
+				boolean doRemove = false;
 				if (c instanceof CustomCard && (((CustomCard)c).isStrike() || ((CustomCard)c).isDefend())) {
+					doRemove = true;
+				} else if (CardTags.hasTag(c, BaseModTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModTags.BASIC_DEFEND)) {
+					doRemove = true;
+				}
+
+				if (doRemove) {
 					i.remove();
-					count.set(box, ((Integer) count.get(box)) + 1);
+					count.set(__instance, ((Integer) count.get(__instance)) + 1);
 				}
 			}
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

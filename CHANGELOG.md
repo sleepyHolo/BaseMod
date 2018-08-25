@@ -369,3 +369,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Gremlin Match tag for modded characters (kiooeht)
 
 #### dev ####
+* Let basic Strike/Defend events work with not CustomCards (kiooeht)

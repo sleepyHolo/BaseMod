@@ -1,5 +1,7 @@
 package basemod.patches.com.megacrit.cardcrawl.events.BackToBasics;
 
+import basemod.helpers.BaseModTags;
+import basemod.helpers.CardTags;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -17,14 +19,23 @@ import basemod.abstracts.CustomCard;
 )
 public class UpgradeStrikeAndDefends {
 	@SpireInsertPatch(rloc = 30)
-	public static void Insert(Object __obj_instance) {
+	public static void Insert(BackToBasics __instance) {
 		for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
-			if (c instanceof CustomCard && (((CustomCard)c).isStrike() || ((CustomCard)c).isDefend()) && c.canUpgrade()) {
-				c.upgrade();
-				AbstractDungeon.player.bottledCardUpgradeCheck(c);
-				AbstractDungeon.effectList.add(
-					new ShowCardBrieflyEffect(c.makeStatEquivalentCopy(), MathUtils.random(0.1F, 0.9F) * Settings.WIDTH,
-					MathUtils.random(0.2F, 0.8F) * Settings.HEIGHT));
+			if (c.canUpgrade()) {
+				boolean doUpgrade = false;
+				if (c instanceof CustomCard && (((CustomCard) c).isStrike() || ((CustomCard) c).isDefend())) {
+					doUpgrade = true;
+				} else if (CardTags.hasTag(c, BaseModTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModTags.BASIC_DEFEND)) {
+					doUpgrade = true;
+				}
+
+				if (doUpgrade) {
+					c.upgrade();
+					AbstractDungeon.player.bottledCardUpgradeCheck(c);
+					AbstractDungeon.effectList.add(
+							new ShowCardBrieflyEffect(c.makeStatEquivalentCopy(), MathUtils.random(0.1F, 0.9F) * Settings.WIDTH,
+									MathUtils.random(0.2F, 0.8F) * Settings.HEIGHT));
+				}
 			}
 		}
 	}
