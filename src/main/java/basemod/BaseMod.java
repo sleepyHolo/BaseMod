@@ -983,7 +983,7 @@ public class BaseMod {
 		}
 
 		if (relic instanceof CustomBottleRelic) {
-			registerBottleRelic(((CustomBottleRelic) relic).isOnCard, relic);
+			registerBottleRelic(((CustomBottleRelic) relic).isOnCard(), relic);
 		}
 	}
 

@@ -372,3 +372,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Let basic Strike/Defend events work with not CustomCards (kiooeht)
 * Make "deck add" command mark cards as seen (kiooeht)
 * Fix small orb icons followed by a period in tooltips (kiooeht)
+* Refactor CustomBottleRelic to be an interface (kiooeht)
