@@ -141,6 +141,7 @@ public class BaseMod {
 	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
 	private static ArrayList<OnStartBattleSubscriber> startBattleSubscribers;
 	private static ArrayList<AddCustomModeModsSubscriber> addCustomModeModsSubscribers;
+	private static ArrayList<MaxHPChangeSubscriber> maxHPChangeSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -467,7 +468,7 @@ public class BaseMod {
 		postDeathSubscribers = new ArrayList<>();
 		startBattleSubscribers = new ArrayList<>();
 		addCustomModeModsSubscribers = new ArrayList<>();
-
+		maxHPChangeSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -2507,6 +2508,17 @@ public class BaseMod {
 		modList.add(lastIndex, mod);
 	}
 
+	public static int publishMaxHPChange(int amount) {
+		logger.info("publishMaxHPChange");
+
+		for (MaxHPChangeSubscriber sub : maxHPChangeSubscribers) {
+			amount = sub.receiveMapHPChange(amount);
+		}
+		unsubscribeLaterHelper(PostDeathSubscriber.class);
+
+		return amount;
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2580,6 +2592,7 @@ public class BaseMod {
 		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		subscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
 		subscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
+		subscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 	}
 
 	// subscribe -
@@ -2667,6 +2680,8 @@ public class BaseMod {
 			startBattleSubscribers.add((OnStartBattleSubscriber) sub);
 		} else if (additionClass.equals(AddCustomModeModsSubscriber.class)) {
 			addCustomModeModsSubscribers.add((AddCustomModeModsSubscriber) sub);
+		} else if (additionClass.equals(MaxHPChangeSubscriber.class)) {
+			maxHPChangeSubscribers.add((MaxHPChangeSubscriber) sub);
 		}
 	}
 
@@ -2714,6 +2729,7 @@ public class BaseMod {
 		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		unsubscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
 		unsubscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
+		unsubscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2801,6 +2817,8 @@ public class BaseMod {
 			startBattleSubscribers.remove(sub);
 		} else if (removalClass.equals(AddCustomModeModsSubscriber.class)) {
 			addCustomModeModsSubscribers.remove(sub);
+		} else if (removalClass.equals(MaxHPChangeSubscriber.class)) {
+			maxHPChangeSubscribers.remove(sub);
 		}
 	}
 
