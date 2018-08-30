@@ -36,7 +36,6 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
@@ -44,6 +43,7 @@ import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.daily.mods.RedCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.dungeons.TheBeyond;
@@ -59,7 +59,6 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
@@ -141,7 +140,7 @@ public class BaseMod {
 	private static ArrayList<OnPowersModifiedSubscriber> onPowersModifiedSubscribers;
 	private static ArrayList<PostDeathSubscriber> postDeathSubscribers;
 	private static ArrayList<OnStartBattleSubscriber> startBattleSubscribers;
-	private static ArrayList<EditCustomModeModsSubscriber> editCustomModeModsSubscribers;
+	private static ArrayList<AddCustomModeModsSubscriber> addCustomModeModsSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -467,7 +466,7 @@ public class BaseMod {
 		onPowersModifiedSubscribers = new ArrayList<>();
 		postDeathSubscribers = new ArrayList<>();
 		startBattleSubscribers = new ArrayList<>();
-		editCustomModeModsSubscribers = new ArrayList<>();
+		addCustomModeModsSubscribers = new ArrayList<>();
 
 	}
 
@@ -2344,6 +2343,8 @@ public class BaseMod {
 	public static void publishEditStrings() {
 		logger.info("begin editing localization strings");
 
+		BaseMod.loadCustomStringsFile(RunModStrings.class, "localization/basemod/customMods.json");
+
 		for (EditStringsSubscriber sub : editStringsSubscribers) {
 			sub.receiveEditStrings();
 		}
@@ -2469,13 +2470,41 @@ public class BaseMod {
 		unsubscribeLaterHelper(PostDeathSubscriber.class);
 	}
 
-	public static void publishEditCustomModeMods(List<CustomMod> modList) {
-		logger.info("publishEditCustomModeMods");
+	public static void publishAddCustomModeMods(List<CustomMod> modList) {
+		logger.info("publishAddCustomModeMods");
 
-		for (EditCustomModeModsSubscriber sub : editCustomModeModsSubscribers) {
-			sub.receiveCustomModeMods(modList);
+		CustomMod charMod = new CustomMod("Modded Character Cards", "p", false);
+		for (PlayerClass pc : playerClassMap.keySet()) {
+			CustomMod mod = new CustomMod(RedCards.ID, "g", true);
+			mod.ID = pc.name() + charMod.name;
+			mod.name = getTitle(pc) + charMod.name;
+			mod.description = getTitle(pc) + charMod.description;
+			String label = FontHelper.colorString("[" + mod.name + "]", mod.color) + " " + mod.description;
+			ReflectionHacks.setPrivate(mod, CustomMod.class, "label", label);
+			float height = -FontHelper.getSmartHeight(FontHelper.charDescFont, label, 1050.0F * Settings.scale, 32.0F * Settings.scale) + 70.0F * Settings.scale;
+			ReflectionHacks.setPrivate(mod, CustomMod.class, "height", height);
+
+			insertCustomMod(modList, mod);
 		}
-		unsubscribeLaterHelper(EditCustomModeModsSubscriber.class);
+
+		for (AddCustomModeModsSubscriber sub : addCustomModeModsSubscribers) {
+			List<CustomMod> tmpModList = new ArrayList<>();
+			sub.receiveCustomModeMods(tmpModList);
+
+			tmpModList.forEach(m -> insertCustomMod(modList, m));
+		}
+		unsubscribeLaterHelper(AddCustomModeModsSubscriber.class);
+	}
+
+	private static void insertCustomMod(List<CustomMod> modList, CustomMod mod)
+	{
+		int lastIndex = modList.size();
+		for (int i=0; i<modList.size(); ++i) {
+			if (modList.get(i).color.equals(mod.color)) {
+				lastIndex = i + 1;
+			}
+		}
+		modList.add(lastIndex, mod);
 	}
 
 	//
@@ -2550,7 +2579,7 @@ public class BaseMod {
 		subscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		subscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		subscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
-		subscribeIfInstance(editCustomModeModsSubscribers, sub, EditCustomModeModsSubscriber.class);
+		subscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
 	}
 
 	// subscribe -
@@ -2636,8 +2665,8 @@ public class BaseMod {
 			postDeathSubscribers.add((PostDeathSubscriber) sub);
 		} else if (additionClass.equals(OnStartBattleSubscriber.class)) {
 			startBattleSubscribers.add((OnStartBattleSubscriber) sub);
-		} else if (additionClass.equals(EditCustomModeModsSubscriber.class)) {
-			editCustomModeModsSubscribers.add((EditCustomModeModsSubscriber) sub);
+		} else if (additionClass.equals(AddCustomModeModsSubscriber.class)) {
+			addCustomModeModsSubscribers.add((AddCustomModeModsSubscriber) sub);
 		}
 	}
 
@@ -2684,7 +2713,7 @@ public class BaseMod {
 		unsubscribeIfInstance(onPowersModifiedSubscribers, sub, OnPowersModifiedSubscriber.class);
 		unsubscribeIfInstance(postDeathSubscribers, sub, PostDeathSubscriber.class);
 		unsubscribeIfInstance(startBattleSubscribers, sub, OnStartBattleSubscriber.class);
-		unsubscribeIfInstance(editCustomModeModsSubscribers, sub, EditCustomModeModsSubscriber.class);
+		unsubscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2770,8 +2799,8 @@ public class BaseMod {
 			postDeathSubscribers.remove(sub);
 		} else if (removalClass.equals(OnStartBattleSubscriber.class)) {
 			startBattleSubscribers.remove(sub);
-		} else if (removalClass.equals(EditCustomModeModsSubscriber.class)) {
-			editCustomModeModsSubscribers.remove(sub);
+		} else if (removalClass.equals(AddCustomModeModsSubscriber.class)) {
+			addCustomModeModsSubscribers.remove(sub);
 		}
 	}
 

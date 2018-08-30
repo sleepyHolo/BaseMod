@@ -375,3 +375,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Refactor CustomBottleRelic to be an interface (kiooeht)
 * Render custom card tooltips in SingleCardViewPopup (kiooeht)
 * Fix Red/Green/Blue/Colorless Cards modifiers to work with modded characters (kiooeht)
+* Add custom mode modifiers (alexdriedger)
+* Automatically add custom mode modifiers for modded character cards (kiooeht)
