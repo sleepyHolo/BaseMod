@@ -379,4 +379,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Automatically add custom mode modifiers for modded character cards (kiooeht)
 * Max HP change hook (kiooeht)
 
+#### v3.1.1 ####
+* Hotfix crash when starting modded character runs (kiooeht)
+
 #### dev ####
