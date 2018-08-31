@@ -368,7 +368,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Ascension mode for modded characters after v3.0 (kiooeht)
 * Fix Gremlin Match tag for modded characters (kiooeht)
 
-#### dev ####
+#### v3.1.0 ####
 * Let basic Strike/Defend events work with not CustomCards (kiooeht)
 * Make "deck add" command mark cards as seen (kiooeht)
 * Fix small orb icons followed by a period in tooltips (kiooeht)
@@ -378,3 +378,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add custom mode modifiers hook (alexdriedger)
 * Automatically add custom mode modifiers for modded character cards (kiooeht)
 * Max HP change hook (kiooeht)
+
+#### dev ####
