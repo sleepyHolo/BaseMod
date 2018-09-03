@@ -1288,6 +1288,7 @@ public class BaseMod {
 
 	public static void addMonster(String encounterID, GetMonster monster) {
 		customMonsters.put(encounterID, () -> new MonsterGroup(monster.get()));
+		encounterList.add(encounterID);
 	}
 
 	public static void addMonster(String encounterID, GetMonsterGroup group) {

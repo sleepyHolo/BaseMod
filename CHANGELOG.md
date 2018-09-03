@@ -383,3 +383,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Hotfix crash when starting modded character runs (kiooeht)
 
 #### dev ####
+* Add custom monsters to console suggestions (kiooeht)
