@@ -67,11 +67,10 @@ public class FixCharacterFilter {
 		
 		public static String Postfix(String __result, Object __obj_instance, String chosenCharacter) {
 			String[] text = RunHistoryScreen.TEXT;
-			
-			if (!__result.equals(text[IRONCLAD_NAME])
-					&& !__result.equals(text[SILENT_NAME])
-					&& !__result.equals(text[DEFECT_NAME])) {
-				String possibleReturn = BaseMod.playerSelectTextMap.get(__result);
+
+			AbstractPlayer.PlayerClass playerClass = AbstractPlayer.PlayerClass.valueOf(chosenCharacter);
+			if (!BaseMod.isBaseGameCharacter(playerClass)) {
+				String possibleReturn = BaseMod.playerSelectTextMap.get(playerClass);
 				if (possibleReturn != null) {
 					return possibleReturn;
 				}

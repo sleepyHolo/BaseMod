@@ -387,3 +387,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make card compendium only use added colors (kiooeht)
   * Fixes FruityMod breaking compendium with incomplete character
 * Use character name for tabs in card compendium (kiooeht)
+* Use character name on run history screen (kiooeht)
