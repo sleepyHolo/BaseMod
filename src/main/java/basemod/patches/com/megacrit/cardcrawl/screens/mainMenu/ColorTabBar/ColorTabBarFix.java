@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -17,6 +18,7 @@ import javassist.CtBehavior;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ColorTabBarFix
 {
@@ -141,7 +143,15 @@ public class ColorTabBarFix
                 } else {
                     sb.setColor(Color.WHITE);
                 }
-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, capitalizeWord(Fields.modTabs.get(i).color.toString()), 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
+                AbstractPlayer.PlayerClass playerClass = null;
+                for (Map.Entry<AbstractPlayer.PlayerClass, AbstractCard.CardColor> entry : BaseMod.playerColorMap.entrySet()) {
+                    if (entry.getValue() == Fields.modTabs.get(i).color) {
+                        playerClass = entry.getKey();
+                        break;
+                    }
+                }
+                String tabName = playerClass != null ? BaseMod.getTitle(playerClass) : capitalizeWord(Fields.modTabs.get(i).color.toString());
+                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, tabName, 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
             }
 
             for (int i = 0; i<Fields.modTabs.size(); ++i) {
