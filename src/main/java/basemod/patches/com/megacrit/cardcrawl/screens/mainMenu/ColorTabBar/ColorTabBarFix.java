@@ -26,31 +26,55 @@ public class ColorTabBarFix
         public static ColorTabBar.CurrentTab MOD;
     }
 
+    public static class ModColorTab
+    {
+        public AbstractCard.CardColor color;
+        private Hitbox hb;
+
+        private ModColorTab(AbstractCard.CardColor color, Hitbox hb)
+        {
+            this.color = color;
+            this.hb = hb;
+        }
+    }
+
     public static class Fields
     {
-        public static int modTabIndex = 0;
+        static int modTabIndex = 0;
 
-        static ArrayList<Hitbox> hitboxes;
+        static ArrayList<ModColorTab> modTabs;
+
+        public static ModColorTab getModTab()
+        {
+            return modTabs.get(modTabIndex);
+        }
+    }
+
+    private static boolean colorExists(AbstractCard.CardColor color)
+    {
+        return BaseMod.playerColorMap.containsValue(color);
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar",
+            clz=ColorTabBar.class,
             method=SpirePatch.CONSTRUCTOR
     )
     public static class Ctor
     {
         public static void Postfix(ColorTabBar __instance, TabBarListener delegate)
         {
-            Fields.hitboxes = new ArrayList<>();
-            AbstractCard.CardColor[] colors = AbstractCard.CardColor.values();
-            for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {
-                Fields.hitboxes.add(new Hitbox(235.0f * Settings.scale, 51.0f * Settings.scale));
+            Fields.modTabs = new ArrayList<>();
+            for (AbstractCard.CardColor color : BaseMod.playerColorMap.values()) {
+                Fields.modTabs.add(new ModColorTab(
+                        color,
+                        new Hitbox(235.0f * Settings.scale, 51.0f * Settings.scale)
+                ));
             }
         }
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar",
+            clz=ColorTabBar.class,
             method="update"
     )
     public static class Update
@@ -58,15 +82,15 @@ public class ColorTabBarFix
         public static void Postfix(ColorTabBar __instance, float y)
         {
             boolean anyHovered = false;
-            for (int i=0; i<Fields.hitboxes.size(); ++i) {
-                Fields.hitboxes.get(i).move(157.0f * Settings.scale, y - Render.SPACING * i * Settings.scale - 14.0f * Settings.scale);
-                Fields.hitboxes.get(i).update();
-                if (!anyHovered && Fields.hitboxes.get(i).justHovered) {
+            for (int i = 0; i<Fields.modTabs.size(); ++i) {
+                Fields.modTabs.get(i).hb.move(157.0f * Settings.scale, y - Render.SPACING * i * Settings.scale - 14.0f * Settings.scale);
+                Fields.modTabs.get(i).hb.update();
+                if (!anyHovered && Fields.modTabs.get(i).hb.justHovered) {
                     anyHovered = true;
                     CardCrawlGame.sound.playA("UI_HOVER", -0.4f);
                 }
                 if (InputHelper.justClickedLeft) {
-                    if (Fields.hitboxes.get(i).hovered) {
+                    if (Fields.modTabs.get(i).hb.hovered) {
                         try {
                             Field curTab = ColorTabBar.class.getDeclaredField("curTab");
                             curTab.setAccessible(true);
@@ -89,7 +113,7 @@ public class ColorTabBarFix
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar",
+            clz=ColorTabBar.class,
             method="render"
     )
     public static class Render
@@ -102,29 +126,26 @@ public class ColorTabBarFix
         )
         public static void Insert(ColorTabBar __instance, SpriteBatch sb, float y, ColorTabBar.CurrentTab curTab)
         {
-            AbstractCard.CardColor[] colors = AbstractCard.CardColor.values();
-            for (int icolor = AbstractCard.CardColor.CURSE.ordinal() + 1; icolor < colors.length; ++icolor) {
-                int i = icolor - AbstractCard.CardColor.CURSE.ordinal();
-
-                Color color = BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[icolor]).cpy();
-                if (curTab != Enums.MOD || Fields.modTabIndex != i-1) {
+            for (int i = 0; i<Fields.modTabs.size(); ++i) {
+                Color color = BaseMod.getTrailVfxColor(Fields.modTabs.get(i).color).cpy();
+                if (curTab != Enums.MOD || Fields.modTabIndex != i) {
                     color = color.lerp(Color.GRAY, 0.5f);
                 }
                 sb.setColor(color);
-                sb.draw(ImageMaster.COLOR_TAB_BAR, 40.0f * Settings.scale, y - SPACING * i * Settings.scale, 0, 0, 235.0F, 102.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+                sb.draw(ImageMaster.COLOR_TAB_BAR, 40.0f * Settings.scale, y - SPACING * (i+1) * Settings.scale, 0, 0, 235.0F, 102.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
 
                 Color textcolor = Settings.GOLD_COLOR;
-                if (curTab != Enums.MOD || Fields.modTabIndex != i-1) {
+                if (curTab != Enums.MOD || Fields.modTabIndex != i) {
                     textcolor = Color.GRAY;
                     sb.setColor(Color.GRAY);
                 } else {
                     sb.setColor(Color.WHITE);
                 }
-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, capitalizeWord(AbstractCard.CardColor.values()[icolor].name()), 157.0f * Settings.scale, y - (SPACING * i * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
+                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, capitalizeWord(Fields.modTabs.get(i).color.toString()), 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
             }
 
-            for (int i=0; i<Fields.hitboxes.size(); ++i) {
-                Fields.hitboxes.get(i).render(sb);
+            for (int i = 0; i<Fields.modTabs.size(); ++i) {
+                Fields.modTabs.get(i).hb.render(sb);
             }
         }
 
@@ -133,14 +154,14 @@ public class ColorTabBarFix
             @Override
             public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
             {
-                Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar", "getBarColor");
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(ColorTabBar.class, "getBarColor");
                 return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher);
             }
         }
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar",
+            clz=ColorTabBar.class,
             method="getBarColor"
     )
     public static class GetBarColor
@@ -152,7 +173,7 @@ public class ColorTabBarFix
                     Field f = ColorTabBar.class.getDeclaredField("curTab");
                     f.setAccessible(true);
                     if (f.get(__instance) == Enums.MOD) {
-                        return BaseMod.getTrailVfxColor(AbstractCard.CardColor.values()[AbstractCard.CardColor.CURSE.ordinal() + 1 + Fields.modTabIndex]);
+                        return BaseMod.getTrailVfxColor(Fields.getModTab().color);
                     }
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     e.printStackTrace();

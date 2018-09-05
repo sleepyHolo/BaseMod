@@ -31,7 +31,7 @@ public class EverythingFix
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen",
+            clz=CardLibraryScreen.class,
             method="initialize"
     )
     public static class Initialize
@@ -66,7 +66,7 @@ public class EverythingFix
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen",
+            clz=CardLibraryScreen.class,
             method="setLockStatus"
     )
     public static class setLockStatus
@@ -95,7 +95,7 @@ public class EverythingFix
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen",
+            clz=CardLibraryScreen.class,
             method="didChangeTab"
     )
     public static class DidChangeTab
@@ -107,7 +107,7 @@ public class EverythingFix
         public static void Insert(CardLibraryScreen __instance, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection, @ByRef CardGroup[] visibleCards)
         {
             if (newSelection == ColorTabBarFix.Enums.MOD) {
-                visibleCards[0] = Fields.cardGroupMap.get(AbstractCard.CardColor.values()[AbstractCard.CardColor.CURSE.ordinal() + 1 + ColorTabBarFix.Fields.modTabIndex]);
+                visibleCards[0] = Fields.cardGroupMap.get(ColorTabBarFix.Fields.getModTab().color);
             }
         }
     }

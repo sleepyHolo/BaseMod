@@ -384,3 +384,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Add custom monsters to console suggestions (kiooeht)
+* Make card compendium only use added colors (kiooeht)
+  * Fixes FruityMod breaking compendium with incomplete character
