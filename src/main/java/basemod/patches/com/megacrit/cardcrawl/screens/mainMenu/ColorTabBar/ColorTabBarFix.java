@@ -54,7 +54,7 @@ public class ColorTabBarFix
 
     private static boolean colorExists(AbstractCard.CardColor color)
     {
-        return BaseMod.playerColorMap.containsValue(color);
+        return BaseMod.getCardColors().contains(color);
     }
 
     @SpirePatch(
@@ -66,7 +66,7 @@ public class ColorTabBarFix
         public static void Postfix(ColorTabBar __instance, TabBarListener delegate)
         {
             Fields.modTabs = new ArrayList<>();
-            for (AbstractCard.CardColor color : BaseMod.playerColorMap.values()) {
+            for (AbstractCard.CardColor color : BaseMod.getCardColors()) {
                 Fields.modTabs.add(new ModColorTab(
                         color,
                         new Hitbox(235.0f * Settings.scale, 51.0f * Settings.scale)
@@ -143,6 +143,7 @@ public class ColorTabBarFix
                 } else {
                     sb.setColor(Color.WHITE);
                 }
+                // Find character name
                 AbstractPlayer.PlayerClass playerClass = null;
                 for (Map.Entry<AbstractPlayer.PlayerClass, AbstractCard.CardColor> entry : BaseMod.playerColorMap.entrySet()) {
                     if (entry.getValue() == Fields.modTabs.get(i).color) {

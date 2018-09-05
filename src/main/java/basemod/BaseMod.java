@@ -1737,6 +1737,10 @@ public class BaseMod {
 		customRelicLists.remove(color, new ArrayList<AbstractRelic>());
 	}
 
+	public static List<AbstractCard.CardColor> getCardColors() {
+		return new ArrayList<>(colorTrailVfxMap.keySet());
+	}
+
 	// convert a color into a background color
 	public static com.badlogic.gdx.graphics.Color getBgColor(AbstractCard.CardColor color) {
 		return colorBgColorMap.get(color);
