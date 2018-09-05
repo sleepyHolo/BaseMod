@@ -11,6 +11,7 @@ import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.*;
+import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
@@ -1418,6 +1419,14 @@ public class BaseMod {
 			GameDictionary.keywords.put(name, description);
 			GameDictionary.parentWord.put(name, parent);
 		}
+	}
+
+	public static void addTopPanelItem(TopPanelItem item) {
+		TopPanelHelper.topPanelGroup.addPanelItem(item);
+	}
+
+	public static void removeTopPanelItem(TopPanelItem item) {
+		TopPanelHelper.topPanelGroup.removePanelItem(item);
 	}
 
 	//
