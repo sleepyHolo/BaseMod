@@ -110,6 +110,7 @@ public class BaseModInit implements PostInitializeSubscriber {
 		BaseMod.initializeUnderscorePotionIDs();
 		BaseMod.initializeUnderscoreEventIDs();
 		BaseMod.initializeUnderscoreRelicIDs();
+		BaseMod.initializeEncounters();
 	}
 
 }

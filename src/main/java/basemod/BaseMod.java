@@ -341,7 +341,6 @@ public class BaseMod {
 		initializePotionList();
 		initializePowerMap();
 		initializeUnderscorePowerIDs();
-		initializeEncounters();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribe(baseModInit);
 
@@ -595,7 +594,7 @@ public class BaseMod {
 		}
 	}
 
-	private static void initializeEncounters() {
+	static void initializeEncounters() {
 		// maybe change this to use LocalizedStrings instead (like
 		// initializeUnderScorePotionIDs)
 		logger.info("initializeEncounters");
