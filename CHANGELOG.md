@@ -393,6 +393,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### v3.2.1 ####
 * Fix ascension level select for modded characters (kiooeht)
-* Updare README
+* Update README
 
 #### dev ####
