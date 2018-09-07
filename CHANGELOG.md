@@ -391,4 +391,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Use character name on run history screen (kiooeht)
 * Support nice monster names on run history screen (kiooeht)
 
+#### v3.2.1 ####
+* Fix ascension level select for modded characters (kiooeht)
+* Updare README
+
 #### dev ####
