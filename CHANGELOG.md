@@ -396,3 +396,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Update README
 
 #### dev ####
+* Fix crash when unlocking ascension as base game character (kiooeht)
