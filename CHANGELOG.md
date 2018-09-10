@@ -382,9 +382,20 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v3.1.1 ####
 * Hotfix crash when starting modded character runs (kiooeht)
 
-#### dev ####
+#### v3.2.0 ####
+* Support for week 41 (kiooeht)
 * Add custom monsters to console suggestions (kiooeht)
 * Make card compendium only use added colors (kiooeht)
   * Fixes FruityMod breaking compendium with incomplete character
 * Use character name for tabs in card compendium (kiooeht)
 * Use character name on run history screen (kiooeht)
+* Support nice monster names on run history screen (kiooeht)
+
+#### v3.2.1 ####
+* Fix ascension level select for modded characters (kiooeht)
+* Update README
+
+#### v3.2.2 ####
+* Fix crash when unlocking ascension as base game character (kiooeht)
+
+#### dev ####

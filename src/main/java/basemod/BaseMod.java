@@ -342,7 +342,6 @@ public class BaseMod {
 		initializePotionList();
 		initializePowerMap();
 		initializeUnderscorePowerIDs();
-		initializeEncounters();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribe(baseModInit);
 
@@ -596,7 +595,7 @@ public class BaseMod {
 		}
 	}
 
-	private static void initializeEncounters() {
+	static void initializeEncounters() {
 		// maybe change this to use LocalizedStrings instead (like
 		// initializeUnderScorePotionIDs)
 		logger.info("initializeEncounters");
@@ -1268,6 +1267,9 @@ public class BaseMod {
 	//
 
 	// Key: Encounter ID
+	// Value: Encounter nice name
+	private static HashMap<String, String> customMonsterNames = new HashMap<>();
+	// Key: Encounter ID
 	private static HashMap<String, GetMonsterGroup> customMonsters = new HashMap<>();
 	// Key: Dungeon ID
 	// Value: Encounter ID
@@ -1287,13 +1289,39 @@ public class BaseMod {
 		AbstractMonster get();
 	}
 
+	private static String autoCalculateMonsterName(GetMonsterGroup group)
+	{
+		StringBuilder ret = new StringBuilder();
+
+		MonsterGroup monsters = group.get();
+		boolean first = true;
+		for (AbstractMonster monster : monsters.monsters) {
+			if (!first) {
+				ret.append(", ");
+			}
+			first = false;
+			ret.append(monster.name);
+		}
+
+		return ret.toString();
+	}
+
 	public static void addMonster(String encounterID, GetMonster monster) {
-		customMonsters.put(encounterID, () -> new MonsterGroup(monster.get()));
-		encounterList.add(encounterID);
+		addMonster(encounterID, () -> new MonsterGroup(monster.get()));
+	}
+
+	public static void addMonster(String encounterID, String name, GetMonster monster) {
+		addMonster(encounterID, name, () -> new MonsterGroup(monster.get()));
 	}
 
 	public static void addMonster(String encounterID, GetMonsterGroup group) {
+		addMonster(encounterID, autoCalculateMonsterName(group), group);
+	}
+
+	public static void addMonster(String encounterID, String name, GetMonsterGroup group) {
 		customMonsters.put(encounterID, group);
+		customMonsterNames.put(encounterID, name);
+		encounterList.add(encounterID);
 	}
 
 	public static MonsterGroup getMonster(String encounterID) {
@@ -1302,6 +1330,10 @@ public class BaseMod {
 			return null;
 		}
 		return getter.get();
+	}
+
+	public static String getMonsterName(String encounterID) {
+		return customMonsterNames.getOrDefault(encounterID, "");
 	}
 
 	public static boolean customMonsterExists(String encounterID) {
