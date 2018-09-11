@@ -70,6 +70,9 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import javafx.util.Pair;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.clapper.util.classutil.*;
@@ -78,6 +81,7 @@ import org.scannotation.AnnotationDB;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.*;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -658,9 +662,14 @@ public class BaseMod {
 		powerMap = new HashMap<>();
 
 		ClassFinder finder = new ClassFinder();
-		URL url = AbstractPower.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
-			finder.add(new File(url.toURI()));
+			ClassPool pool = Loader.getClassPool();
+			CtClass ctCls = pool.get(AbstractPower.class.getName());
+			String url = ctCls.getURL().getFile();
+			int i = url.lastIndexOf('!');
+			url = url.substring(0, i);
+			URL locationURL = new URL(url);
+			finder.add(new File(locationURL.toURI()));
 
 			ClassFilter filter = new AndClassFilter(
 					new NotClassFilter(new InterfaceOnlyClassFilter()),
@@ -686,7 +695,7 @@ public class BaseMod {
 					System.out.println("ERROR: Failed to load power class: " + classInfo.getClassName());
 				}
 			}
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException | MalformedURLException | NotFoundException e) {
 			e.printStackTrace();
 		}
 	}
