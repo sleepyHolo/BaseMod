@@ -842,7 +842,13 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (BaseMod.underScoreEncounterIDs.containsKey(encounterName)) {
 			encounterName = BaseMod.underScoreEncounterIDs.get(encounterName);
 		}
-		AbstractDungeon.monsterList.add(0, encounterName);
+		if (AbstractDungeon.getCurrRoom() instanceof MonsterRoom) {
+			// Note: AbstractDungeon.nextRoomTransition() will remove the encounter of the current room from the monster list
+			// so if we want the new encounter to be in the front afterwards for our new MonsterRoom, we should insert the encounter at position 1, not 0
+			AbstractDungeon.monsterList.add(1, encounterName);
+		} else {
+			AbstractDungeon.monsterList.add(0, encounterName);
+		}
 
 		MapRoomNode cur = AbstractDungeon.currMapNode;
 		MapRoomNode node = new MapRoomNode(cur.x, cur.y);
