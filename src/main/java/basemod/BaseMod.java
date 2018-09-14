@@ -1321,6 +1321,7 @@ public class BaseMod {
 		customMonsters.put(encounterID, group);
 		customMonsterNames.put(encounterID, name);
 		encounterList.add(encounterID);
+		underScoreEncounterIDs.put(encounterID.replace(' ', '_'), encounterID);
 	}
 
 	public static MonsterGroup getMonster(String encounterID) {
