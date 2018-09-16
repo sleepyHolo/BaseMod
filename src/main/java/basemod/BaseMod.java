@@ -248,9 +248,9 @@ public class BaseMod {
 
 	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
 
-	
-	
-	
+
+
+
 	//
 	// Initialization
 	//
@@ -568,8 +568,8 @@ public class BaseMod {
 		// Not actually unchecked
 		@SuppressWarnings("unchecked")
 		// This has to be LocalizedStrings and not PotionHelper.potions, because
-		// PotionHelper.potions is empty on the games startup
-		Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
+				// PotionHelper.potions is empty on the games startup
+				Map<String, PotionStrings> potions = (Map<String, PotionStrings>) (ReflectionHacks
 				.getPrivateStatic(LocalizedStrings.class, "potions"));
 		if (potions != null) {
 			for (String key : potions.keySet()) {
@@ -935,7 +935,7 @@ public class BaseMod {
 	 * Modifies the damage done by a card by seeing if the card is a CustomCard and
 	 * if so, going ahead and calling the damage modification method default
 	 * implementation leaves the damage the same
-	 * 
+	 *
 	 * @param player
 	 *            the player casting this card
 	 * @param mo
@@ -977,21 +977,21 @@ public class BaseMod {
 	// add relic -
 	public static void addRelic(AbstractRelic relic, RelicType type) {
 		switch (type) {
-		case SHARED:
-			RelicLibrary.add(relic);
-			break;
-		case RED:
-			RelicLibrary.addRed(relic);
-			break;
-		case GREEN:
-			RelicLibrary.addGreen(relic);
-			break;
-		case BLUE:
-			RelicLibrary.addBlue(relic);
-			break;
-		default:
-			logger.info("tried to add relic of unsupported type: " + relic + " " + type);
-			return;
+			case SHARED:
+				RelicLibrary.add(relic);
+				break;
+			case RED:
+				RelicLibrary.addRed(relic);
+				break;
+			case GREEN:
+				RelicLibrary.addGreen(relic);
+				break;
+			case BLUE:
+				RelicLibrary.addBlue(relic);
+				break;
+			default:
+				logger.info("tried to add relic of unsupported type: " + relic + " " + type);
+				return;
 		}
 
 		if (relic instanceof CustomBottleRelic) {
@@ -1011,44 +1011,44 @@ public class BaseMod {
 		// as of right now I'm not sure which method is preferable
 		// removeCard is using the @SpirePatch method
 		switch (type) {
-		case SHARED:
-			HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-					.getPrivateStatic(RelicLibrary.class, "sharedRelics");
-			if (sharedRelics.containsKey(relic.relicId)) {
-				sharedRelics.remove(relic.relicId);
-				RelicLibrary.totalRelicCount--;
-				removeRelicFromTierList(relic);
-			}
-			break;
-		case RED:
-			HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-					.getPrivateStatic(RelicLibrary.class, "redRelics");
-			if (redRelics.containsKey(relic.relicId)) {
-				redRelics.remove(relic.relicId);
-				RelicLibrary.totalRelicCount--;
-				removeRelicFromTierList(relic);
-			}
-			break;
-		case GREEN:
-			HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-					.getPrivateStatic(RelicLibrary.class, "greenRelics");
-			if (greenRelics.containsKey(relic.relicId)) {
-				greenRelics.remove(relic.relicId);
-				RelicLibrary.totalRelicCount--;
-				removeRelicFromTierList(relic);
-			}
-			break;
-		case BLUE:
-			HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
-					.getPrivateStatic(RelicLibrary.class, "blueRelics");
-			if (blueRelics.containsKey(relic.relicId)) {
-				blueRelics.remove(relic.relicId);
-				RelicLibrary.totalRelicCount--;
-				removeRelicFromTierList(relic);
-			}
-			break;
-		default:
-			logger.info("tried to remove relic of unsupported type: " + relic + " " + type);
+			case SHARED:
+				HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "sharedRelics");
+				if (sharedRelics.containsKey(relic.relicId)) {
+					sharedRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			case RED:
+				HashMap<String, AbstractRelic> redRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "redRelics");
+				if (redRelics.containsKey(relic.relicId)) {
+					redRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			case GREEN:
+				HashMap<String, AbstractRelic> greenRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "greenRelics");
+				if (greenRelics.containsKey(relic.relicId)) {
+					greenRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			case BLUE:
+				HashMap<String, AbstractRelic> blueRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "blueRelics");
+				if (blueRelics.containsKey(relic.relicId)) {
+					blueRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			default:
+				logger.info("tried to remove relic of unsupported type: " + relic + " " + type);
 		}
 	}
 
@@ -1104,32 +1104,32 @@ public class BaseMod {
 
 	private static void removeRelicFromTierList(AbstractRelic relic) {
 		switch (relic.tier) {
-		case STARTER:
-			RelicLibrary.starterList.remove(relic);
-			break;
-		case COMMON:
-			RelicLibrary.commonList.remove(relic);
-			break;
-		case UNCOMMON:
-			RelicLibrary.uncommonList.remove(relic);
-			break;
-		case RARE:
-			RelicLibrary.rareList.remove(relic);
-			break;
-		case SHOP:
-			RelicLibrary.shopList.remove(relic);
-			break;
-		case SPECIAL:
-			RelicLibrary.specialList.remove(relic);
-			break;
-		case BOSS:
-			RelicLibrary.bossList.remove(relic);
-			break;
-		case DEPRECATED:
-			logger.info(relic.relicId + " is deprecated.");
-			break;
-		default:
-			logger.info(relic.relicId + "is undefined tier.");
+			case STARTER:
+				RelicLibrary.starterList.remove(relic);
+				break;
+			case COMMON:
+				RelicLibrary.commonList.remove(relic);
+				break;
+			case UNCOMMON:
+				RelicLibrary.uncommonList.remove(relic);
+				break;
+			case RARE:
+				RelicLibrary.rareList.remove(relic);
+				break;
+			case SHOP:
+				RelicLibrary.shopList.remove(relic);
+				break;
+			case SPECIAL:
+				RelicLibrary.specialList.remove(relic);
+				break;
+			case BOSS:
+				RelicLibrary.bossList.remove(relic);
+				break;
+			case DEPRECATED:
+				logger.info(relic.relicId + " is deprecated.");
+				break;
+			default:
+				logger.info(relic.relicId + "is undefined tier.");
 		}
 	}
 
@@ -1176,11 +1176,11 @@ public class BaseMod {
 		}
 		return relicIDs;
 	}
-	
+
 	//
 	// Events
 	//
-	
+
 	//Event hashmaps
 	// Key: Event ID
 	private static HashMap<String, Class<? extends AbstractEvent>> allCustomEvents = new HashMap<>();
@@ -1205,20 +1205,20 @@ public class BaseMod {
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, EventPool pool) {
 		String dungeonID = null;
 		switch(pool) {
-		case ANY:
-			dungeonID = null;
-			break;
-		case THE_BEYOND:
-			dungeonID = TheBeyond.ID;
-			break;
-		case THE_CITY:
-			dungeonID = TheCity.ID;
-			break;
-		case THE_EXORDIUM:
-			dungeonID = Exordium.ID;
-			break;
-		default:
-			break;
+			case ANY:
+				dungeonID = null;
+				break;
+			case THE_BEYOND:
+				dungeonID = TheBeyond.ID;
+				break;
+			case THE_CITY:
+				dungeonID = TheCity.ID;
+				break;
+			case THE_EXORDIUM:
+				dungeonID = Exordium.ID;
+				break;
+			default:
+				break;
 		}
 
 		addEvent(eventID, eventClass, dungeonID);
@@ -1269,6 +1269,18 @@ public class BaseMod {
 
 	public static Class<? extends AbstractEvent> getEvent(String eventID) {
 		return allCustomEvents.get(eventID);
+	}
+
+	//
+	// Top Panel
+	//
+
+	public static void addTopPanelItem(TopPanelItem topPanelItem) {
+		TopPanelHelper.topPanelGroup.addPanelItem(topPanelItem);
+	}
+
+	public static void removeTopPanelItem(TopPanelItem topPanelItem){
+		TopPanelHelper.topPanelGroup.removePanelItem(topPanelItem);
 	}
 
 	//
@@ -1462,14 +1474,6 @@ public class BaseMod {
 		}
 	}
 
-	public static void addTopPanelItem(TopPanelItem item) {
-		TopPanelHelper.topPanelGroup.addPanelItem(item);
-	}
-
-	public static void removeTopPanelItem(TopPanelItem item) {
-		TopPanelHelper.topPanelGroup.removePanelItem(item);
-	}
-
 	//
 	// Unlocks
 	//
@@ -1620,29 +1624,29 @@ public class BaseMod {
 			return AbstractCard.orb_red;
 		}
 		switch (AbstractDungeon.player.chosenClass) {
-		case IRONCLAD:
-			return AbstractCard.orb_red;
-		case THE_SILENT:
-			return AbstractCard.orb_green;
-		case DEFECT:
-			return AbstractCard.orb_blue;
-		default:
-			return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass));
+			case IRONCLAD:
+				return AbstractCard.orb_red;
+			case THE_SILENT:
+				return AbstractCard.orb_green;
+			case DEFECT:
+				return AbstractCard.orb_blue;
+			default:
+				return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass));
 		}
 	}
 
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy(AbstractCard card) {
 		switch (card.color) {
-		case RED:
-			return AbstractCard.orb_red;
-		case GREEN:
-			return AbstractCard.orb_green;
-		case BLUE:
-			return AbstractCard.orb_blue;
-		case COLORLESS:
-			return getCardSmallEnergy(); // for colorless cards, use the player color
-		default:
-			return getCardEnergyOrbAtlasRegion(card.color);
+			case RED:
+				return AbstractCard.orb_red;
+			case GREEN:
+				return AbstractCard.orb_green;
+			case BLUE:
+				return AbstractCard.orb_blue;
+			case COLORLESS:
+				return getCardSmallEnergy(); // for colorless cards, use the player color
+			default:
+				return getCardEnergyOrbAtlasRegion(card.color);
 		}
 	}
 
@@ -2312,7 +2316,7 @@ public class BaseMod {
 		}
 		logString.append("]");
 		logger.info(logString.toString());
-		
+
 		unsubscribeLaterHelper(PostCreateStartingDeckSubscriber.class);
 	}
 

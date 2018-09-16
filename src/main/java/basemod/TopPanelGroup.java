@@ -51,11 +51,10 @@ public class TopPanelGroup {
     }
 
     private void updateItems(){
-        //System.out.println(activePanelItems.size());
         for (int i = 0; i < activePanelItems.size(); i++) {
             TopPanelItem temp = activePanelItems.get(i);
-            temp.x = (1300f + (i * temp.hb_w)) * Settings.scale;
-            temp.y = 1016f * Settings.scale;
+            temp.setX((1175f * Settings.scale) + (i * temp.hb_w));
+            temp.setY(1016f * Settings.scale);
             temp.update();
         }
     }
@@ -63,9 +62,10 @@ public class TopPanelGroup {
     private void renderItems(SpriteBatch sb) {
         for (int i = 0; i < activePanelItems.size(); i++) {
             TopPanelItem temp = activePanelItems.get(i);
-            temp.x = (1300f + (i * temp.hb_w)) * Settings.scale;
-            temp.y = 1016f * Settings.scale;
+            temp.setX((1175f * Settings.scale) + (i * temp.hb_w));
+            temp.setY(1016f * Settings.scale);
             temp.render(sb);
+
         }
     }
 
@@ -89,9 +89,9 @@ public class TopPanelGroup {
 
     private void initArrows(){
 
-        float lX = 1250f * Settings.scale;
-        float rX = 1470.f * Settings.scale;
-        float y = 1026f * Settings.scale;
+        float lX = 1135f;
+        float rX = 1355f;
+        float y = 1026f;
 
         leftArrow = new ClickableUIElement(new Texture("img/tinyLeftArrow.png"), lX, y, 32f, 32f) {
             @Override
