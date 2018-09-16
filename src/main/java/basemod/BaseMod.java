@@ -1314,6 +1314,11 @@ public class BaseMod {
 	{
 		StringBuilder ret = new StringBuilder();
 
+		if (AbstractDungeon.monsterRng == null) {
+			Settings.seed = 0L;
+			AbstractDungeon.generateSeeds();
+		}
+
 		MonsterGroup monsters = group.get();
 		boolean first = true;
 		for (AbstractMonster monster : monsters.monsters) {
