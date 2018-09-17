@@ -3,6 +3,7 @@ package basemod;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 
 import java.util.ArrayList;
 
@@ -93,7 +94,7 @@ public class TopPanelGroup {
         float rX = 1360f;
         float y = 1026f;
 
-        leftArrow = new TopPanelArrow(new Texture("img/tinyLeftArrow.png"), lX, y, 32f, 32f) {
+        leftArrow = new TopPanelArrow(ImageMaster.loadImage("img/tinyLeftArrow.png"), lX, y, 32f, 32f) {
             @Override
             protected void onClick() {
                 if(currentPage != 1) {
@@ -102,7 +103,7 @@ public class TopPanelGroup {
             }
         };
 
-        rightArrow = new TopPanelArrow(new Texture("img/tinyRightArrow.png"), rX, y, 32f, 32f) {
+        rightArrow = new TopPanelArrow(ImageMaster.loadImage("img/tinyRightArrow.png"), rX, y, 32f, 32f) {
             @Override
             protected void onClick() {
                 if(currentPage < (int)Math.ceil((float)topPanelItems.size() / pageItemCount)) {
