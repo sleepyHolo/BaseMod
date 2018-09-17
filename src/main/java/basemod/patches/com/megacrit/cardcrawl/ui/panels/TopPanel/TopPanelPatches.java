@@ -22,39 +22,49 @@ import javassist.CtBehavior;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class TopPanelPatches {
-
+public class TopPanelPatches
+{
     public static boolean renderDailyModsAsDropdown = true;
     public static String ascensionString;
     private static DailyModsDropdown dailyModsDropdown;
-    private static TextureAtlas.AtlasRegion ascensionImage;
     private static ClickableUIElement ascensionIcon;
     private static float floorX;
     private static float titleY = Settings.HEIGHT - 28.0F * Settings.scale;
     private static float TIP_Y = Settings.HEIGHT - 120.0F * Settings.scale;
     private static String[] UI_TEXT = CardCrawlGame.languagePack.getUIString("TopPanel").TEXT;
-    @SpirePatch(clz = TopPanel.class, method = "render", paramtypez = {SpriteBatch.class})
-    public static class RenderPatch{
+
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "render",
+            paramtypez = {SpriteBatch.class}
+    )
+    public static class RenderPatch
+    {
         @SpirePostfixPatch
-        public static void Postfix(TopPanel __instance, SpriteBatch sb) {
-            if(!Settings.hideTopBar) {
-                if(TopPanelHelper.topPanelGroup.size() > 0) {
+        public static void Postfix(TopPanel __instance, SpriteBatch sb)
+        {
+            if (!Settings.hideTopBar) {
+                if (TopPanelHelper.topPanelGroup.size() > 0) {
                     TopPanelHelper.topPanelGroup.render(sb);
                 }
             }
         }
     }
 
-    @SpirePatch(clz = TopPanel.class, method = "renderDungeonInfo", paramtypez = {SpriteBatch.class})
-    public static class RenderDungeonInfo{
-
-        public static SpireReturn Prefix(TopPanel __instance, SpriteBatch sb){
-
-            if(AbstractDungeon.floorNum > 0){
-                if(Settings.usesOrdinal){
-                    if(!AbstractDungeon.isAscensionMode) {
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "renderDungeonInfo",
+            paramtypez = {SpriteBatch.class}
+    )
+    public static class RenderDungeonInfo
+    {
+        public static SpireReturn<Void> Prefix(TopPanel __instance, SpriteBatch sb)
+        {
+            if (AbstractDungeon.floorNum > 0) {
+                if (Settings.usesOrdinal){
+                    if (!AbstractDungeon.isAscensionMode) {
                         return SpireReturn.Continue();
-                    } else if(AbstractDungeon.ascensionLevel == 20){
+                    } else if (AbstractDungeon.ascensionLevel == 20) {
                         String message = AbstractDungeon.floorNum + TopPanel.getOrdinalNaming(AbstractDungeon.floorNum) + UI_TEXT[0];
                         float ascensionIconX = floorX + FontHelper.getWidth(FontHelper.panelNameTitleFont, message, Settings.scale) + 25.0F * Settings.scale;
                         ascensionIcon.setX(ascensionIconX);
@@ -74,44 +84,54 @@ public class TopPanelPatches {
                 }
             }
 
-
-
             return SpireReturn.Return(null);
         }
     }
 
-    @SpirePatch(clz = TopPanel.class, method = "updateAscensionHover")
-    public static class UpdateAscensionHoverPatch{
-
-        public static SpireReturn Prefix(TopPanel __instance) {
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "updateAscensionHover"
+    )
+    public static class UpdateAscensionHoverPatch
+    {
+        public static SpireReturn<Void> Prefix(TopPanel __instance)
+        {
             return SpireReturn.Return(null);
         }
     }
 
-    @SpirePatch(clz = TopPanel.class, method = "update")
-    public static class UpdatePatch{
-
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "update"
+    )
+    public static class UpdatePatch
+    {
         @SpirePrefixPatch
-        public static void Prefix(TopPanel __instance) {
+        public static void Prefix(TopPanel __instance)
+        {
             if (AbstractDungeon.screen != null && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.UNLOCK) {
-                if(TopPanelHelper.topPanelGroup.size() > 0) {
+                if (TopPanelHelper.topPanelGroup.size() > 0) {
                     TopPanelHelper.topPanelGroup.update();
                 }
-                if(dailyModsDropdown != null) {
+                if (dailyModsDropdown != null) {
                     dailyModsDropdown.update();
                 }
                 ascensionIcon.update();
-
             }
         }
     }
 
-    @SpirePatch(clz = TopPanel.class, method = "setPlayerName")
-    public static class SetPlayerNamePatch{
-
-
-        @SpireInsertPatch(locator = Locator.class)
-        public static void Insert(TopPanel __instance) {
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "setPlayerName"
+    )
+    public static class SetPlayerNamePatch
+    {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static void Insert(TopPanel __instance)
+        {
             try {
                 Field gl = TopPanel.class.getDeclaredField("gl");
                 gl.setAccessible(true);
@@ -131,38 +151,27 @@ public class TopPanelPatches {
 
                 gl.set(__instance, layout);
                 name_f.set(__instance, name);
-
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
 
-        private static class Locator extends SpireInsertLocator{
-
+        private static class Locator extends SpireInsertLocator
+        {
             @Override
-            public int[] Locate(CtBehavior ctBehavior) throws Exception {
-                Matcher matcher = new Matcher.FieldAccessMatcher("com.badlogic.gdx.graphics.g2d.GlyphLayout", "width");
-                return LineFinder.findInOrder(ctBehavior, new ArrayList<Matcher>(), matcher);
+            public int[] Locate(CtBehavior ctBehavior) throws Exception
+            {
+                Matcher matcher = new Matcher.FieldAccessMatcher(GlyphLayout.class, "width");
+                return LineFinder.findInOrder(ctBehavior, new ArrayList<>(), matcher);
             }
         }
 
-        public static void Postfix(TopPanel __instance) {
-            if (DailyMods.enabledMods == null || DailyMods.enabledMods.size() < 1) {
-            } else {
+        public static void Postfix(TopPanel __instance)
+        {
+            if (DailyMods.enabledMods != null && !DailyMods.enabledMods.isEmpty()) {
                 if (renderDailyModsAsDropdown) {
                     __instance.modHbs = new Hitbox[0];
-                    ArrayList<String> modNames = new ArrayList<>();
-                    ArrayList<String> modIDs = new ArrayList<>();
-                    modNames.add("Daily Mods");
-                    DailyMods.enabledMods.forEach(mod -> {
-                        modNames.add(mod.name);
-                        modIDs.add(mod.modID);
-                    });
-
                     dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1410f, 1032f);
-                    //dailyModsDropdown.isOpen = true;
                 }
             }
 
@@ -175,27 +184,25 @@ public class TopPanelPatches {
                 ascensionString_f.setAccessible(true);
                 ascensionString = (String) ascensionString_f.get(__instance);
                 TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("powers/powers.atlas"));
-                ascensionImage = atlas.findRegion("48/minion");
-                ascensionIcon = new ClickableUIElement(ascensionImage, 0, 0, ascensionImage.packedWidth, ascensionImage.packedHeight) {
-
+                TextureAtlas.AtlasRegion ascensionImage = atlas.findRegion("48/minion");
+                ascensionIcon = new ClickableUIElement(ascensionImage, 0, 0, ascensionImage.packedWidth, ascensionImage.packedHeight)
+                {
                     @Override
-                    protected void onHover() {
+                    protected void onHover()
+                    {
                         TipHelper.renderGenericTip(InputHelper.mX + 50.0F * Settings.scale, TIP_Y, CharacterSelectScreen.TEXT[8], ascensionString);
                     }
 
                     @Override
-                    protected void onUnhover() {
-
-                    }
+                    protected void onUnhover() {}
 
                     @Override
-                    protected void onClick() {
-
-                    }
+                    protected void onClick() {}
 
                     @Override
-                    public void render(SpriteBatch sb) {
-                        if(AbstractDungeon.ascensionLevel == 20) {
+                    public void render(SpriteBatch sb)
+                    {
+                        if (AbstractDungeon.ascensionLevel == 20) {
                             sb.setColor(Color.RED);
                         } else {
                             sb.setColor(Color.WHITE);
@@ -205,30 +212,29 @@ public class TopPanelPatches {
                     }
                 };
                 ascensionIcon.setY(titleY - 20.0F * Settings.scale);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-
         }
 
     }
 
-    @SpirePatch(clz = TopPanel.class, method = "renderDailyMods", paramtypez = {SpriteBatch.class})
-    public static class RenderDailyModsPatch{
-
-        public static SpireReturn Prefix(TopPanel __instance, SpriteBatch sb) {
-
-            if(renderDailyModsAsDropdown) {
+    @SpirePatch(
+            clz = TopPanel.class,
+            method = "renderDailyMods",
+            paramtypez = {SpriteBatch.class}
+    )
+    public static class RenderDailyModsPatch
+    {
+        public static SpireReturn<Void> Prefix(TopPanel __instance, SpriteBatch sb)
+        {
+            if (renderDailyModsAsDropdown) {
                 dailyModsDropdown.render(sb);
                 return SpireReturn.Return(null);
             } else {
                 return SpireReturn.Continue();
             }
-
         }
 
     }
-
 }
