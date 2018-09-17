@@ -88,7 +88,11 @@ public abstract class ClickableUIElement {
     }
 
     public void render(SpriteBatch sb) {
-        sb.setColor(Color.WHITE);
+        render(sb, Color.WHITE);
+    }
+
+    public void render(SpriteBatch sb, Color color) {
+        sb.setColor(color);
         if (image != null) {
             float halfWidth = image.getWidth() / 2.0f;
             float halfHeight = image.getHeight() / 2.0f;

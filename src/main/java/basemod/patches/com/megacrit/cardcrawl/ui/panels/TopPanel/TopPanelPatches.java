@@ -31,7 +31,6 @@ public class TopPanelPatches
     private static float floorX;
     private static float titleY = Settings.HEIGHT - 28.0F * Settings.scale;
     private static float TIP_Y = Settings.HEIGHT - 120.0F * Settings.scale;
-    private static String[] UI_TEXT = CardCrawlGame.languagePack.getUIString("TopPanel").TEXT;
 
     @SpirePatch(
             clz = TopPanel.class,
@@ -60,28 +59,27 @@ public class TopPanelPatches
     {
         public static SpireReturn<Void> Prefix(TopPanel __instance, SpriteBatch sb)
         {
+            float ascensionIconX = floorX + 25.0F * Settings.scale;
+
             if (AbstractDungeon.floorNum > 0) {
-                if (Settings.usesOrdinal){
-                    if (!AbstractDungeon.isAscensionMode) {
-                        return SpireReturn.Continue();
-                    } else if (AbstractDungeon.ascensionLevel == 20) {
-                        String message = AbstractDungeon.floorNum + TopPanel.getOrdinalNaming(AbstractDungeon.floorNum) + UI_TEXT[0];
-                        float ascensionIconX = floorX + FontHelper.getWidth(FontHelper.panelNameTitleFont, message, Settings.scale) + 25.0F * Settings.scale;
-                        ascensionIcon.setX(ascensionIconX);
-                        FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, message, floorX, titleY + 3.0F * Settings.scale, Settings.GOLD_COLOR);
-                        sb.setColor(Color.RED.cpy());
-                        ascensionIcon.render(sb);
-                        FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, String.valueOf(AbstractDungeon.ascensionLevel), ascensionIconX + 25.0F * Settings.scale, titleY + 3.0F * Settings.scale, Settings.RED_TEXT_COLOR);
-                    } else {
-                        String message = AbstractDungeon.floorNum + TopPanel.getOrdinalNaming(AbstractDungeon.floorNum) + UI_TEXT[0];
-                        float ascensionIconX = floorX + FontHelper.getWidth(FontHelper.panelNameTitleFont, message, Settings.scale) + 25.0F * Settings.scale;
-                        ascensionIcon.setX(ascensionIconX);
-                        FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, message, floorX, titleY + 3.0F * Settings.scale, Settings.GOLD_COLOR);
-                        sb.setColor(Color.WHITE.cpy());
-                        ascensionIcon.render(sb);
-                        FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, String.valueOf(AbstractDungeon.ascensionLevel), ascensionIconX + 25.0F * Settings.scale, titleY + 3.0F * Settings.scale, Settings.RED_TEXT_COLOR);
-                    }
+                String message;
+                if (Settings.usesOrdinal) {
+                    message = AbstractDungeon.floorNum + TopPanel.getOrdinalNaming(AbstractDungeon.floorNum) + TopPanel.TEXT[0];
+                } else {
+                    message = AbstractDungeon.floorNum + TopPanel.TEXT[0];
                 }
+                ascensionIconX += FontHelper.getWidth(FontHelper.panelNameTitleFont, message, Settings.scale);
+                FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, message, floorX, titleY + 3.0F * Settings.scale, Settings.GOLD_COLOR);
+            }
+
+            if (AbstractDungeon.isAscensionMode) {
+                ascensionIcon.setX(ascensionIconX);
+                Color color = Color.WHITE;
+                if (AbstractDungeon.ascensionLevel >= 20) {
+                    color = Settings.RED_TEXT_COLOR;
+                }
+                ascensionIcon.render(sb, color);
+                FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont, String.valueOf(AbstractDungeon.ascensionLevel), ascensionIconX + 35.0F * Settings.scale, titleY + 3.0F * Settings.scale, Settings.RED_TEXT_COLOR);
             }
 
             return SpireReturn.Return(null);
@@ -189,7 +187,7 @@ public class TopPanelPatches
                 ascensionString = (String) ascensionString_f.get(__instance);
                 TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("powers/powers.atlas"));
                 TextureAtlas.AtlasRegion ascensionImage = atlas.findRegion("48/minion");
-                ascensionIcon = new ClickableUIElement(ascensionImage, 0, 0, ascensionImage.packedWidth, ascensionImage.packedHeight)
+                ascensionIcon = new ClickableUIElement(ascensionImage, 0, 0, ascensionImage.packedWidth + 40.0f, ascensionImage.packedHeight)
                 {
                     @Override
                     protected void onHover()
