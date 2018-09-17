@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 
 public abstract class ClickableUIElement {
@@ -23,11 +24,11 @@ public abstract class ClickableUIElement {
     private boolean clickable;
 
     public ClickableUIElement(Texture image) {
-        this(image, 0,0, 64.0f, 64.0f);
+        this(image, 0,0, image.getWidth(), image.getHeight());
     }
 
     public ClickableUIElement(TextureAtlas.AtlasRegion region) {
-        this(region, 0, 0, 64.0f, 64.0f);
+        this(region, 0, 0, region.packedWidth, region.packedHeight);
     }
 
     public ClickableUIElement(TextureAtlas.AtlasRegion region, float x, float y, float hb_w, float hb_h) {
@@ -41,9 +42,7 @@ public abstract class ClickableUIElement {
         this.y = y * Settings.scale;
         this.hb_w = hb_w * Settings.scale;
         this.hb_h = hb_h * Settings.scale;
-        this.hitbox = new Hitbox(this.hb_w, this.hb_h);
-        this.hitbox.x = this.x;
-        this.hitbox.y = this.y;
+        this.hitbox = new Hitbox(this.x, this.y, this.hb_w, this.hb_h);
         angle = 0;
         tint = new Color(1, 1, 1, 0);
         clickable = true;
@@ -91,9 +90,11 @@ public abstract class ClickableUIElement {
     public void render(SpriteBatch sb) {
         sb.setColor(Color.WHITE);
         if (image != null) {
+            float halfWidth = image.getWidth() / 2.0f;
+            float halfHeight = image.getHeight() / 2.0f;
             sb.draw(image,
-                    x - 32.0f + 32.0f * Settings.scale, y - 32.0f + 32.0f * Settings.scale,
-                    image.getWidth() / 2.0f, image.getHeight() / 2.0f,
+                    x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                    halfWidth, halfHeight,
                     image.getWidth(), image.getHeight(),
                     Settings.scale, Settings.scale,
                     angle,
@@ -104,8 +105,8 @@ public abstract class ClickableUIElement {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
                 sb.setColor(tint);
                 sb.draw(image,
-                        x - 32.0f + 32.0f * Settings.scale, y - 32.0f + 32.0f * Settings.scale,
-                        image.getWidth() / 2.0f, image.getHeight() / 2.0f,
+                        x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                        halfWidth, halfHeight,
                         image.getWidth(), image.getHeight(),
                         Settings.scale, Settings.scale,
                         angle,
@@ -115,9 +116,11 @@ public abstract class ClickableUIElement {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             }
         } else if (region != null) {
+            float halfWidth = region.packedWidth / 2.0f;
+            float halfHeight = region.packedHeight / 2.0f;
             sb.draw(region,
-                    x, y,
-                    region.packedWidth / 2.0f, region.packedHeight / 2.0f,
+                    x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                    halfWidth, halfHeight,
                     region.packedWidth, region.packedHeight,
                     Settings.scale, Settings.scale,
                     angle);
@@ -125,8 +128,8 @@ public abstract class ClickableUIElement {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
                 sb.setColor(tint);
                 sb.draw(region,
-                        x, y,
-                        region.packedWidth / 2.0f, region.packedHeight / 2.0f,
+                        x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                        halfWidth, halfHeight,
                         region.packedWidth, region.packedHeight,
                         Settings.scale, Settings.scale,
                         angle);
