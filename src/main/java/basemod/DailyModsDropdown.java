@@ -65,6 +65,9 @@ public class DailyModsDropdown extends ClickableUIElement{
     protected void onHover() {}
 
     @Override
+    protected void onUnhover() {}
+
+    @Override
     protected void onClick() {
         System.out.println("Clicked ModTitle");
         showModList = !showModList;
@@ -115,9 +118,10 @@ public class DailyModsDropdown extends ClickableUIElement{
         }
 
         @Override
-        protected void onClick() {
+        protected void onUnhover() {}
 
-        }
+        @Override
+        protected void onClick() {}
     }
 
 

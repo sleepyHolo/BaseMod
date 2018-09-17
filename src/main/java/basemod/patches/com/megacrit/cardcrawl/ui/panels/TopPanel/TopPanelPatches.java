@@ -184,6 +184,11 @@ public class TopPanelPatches {
                     }
 
                     @Override
+                    protected void onUnhover() {
+
+                    }
+
+                    @Override
                     protected void onClick() {
 
                     }

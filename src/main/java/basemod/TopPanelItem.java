@@ -1,8 +1,8 @@
 package basemod;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.MathHelper;
 
 public abstract class TopPanelItem extends ClickableUIElement{
 
@@ -25,5 +25,19 @@ public abstract class TopPanelItem extends ClickableUIElement{
 
     public String getID() {
         return this.ID;
+    }
+
+    @Override
+    protected void onHover()
+    {
+        angle = MathHelper.angleLerpSnap(angle, 15.0f);
+        tint.a = 0.25f;
+    }
+
+    @Override
+    protected void onUnhover()
+    {
+        angle = MathHelper.angleLerpSnap(angle, 0.0f);
+        tint.a = 0;
     }
 }

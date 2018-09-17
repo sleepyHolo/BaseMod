@@ -96,7 +96,12 @@ public class TopPanelGroup {
         leftArrow = new ClickableUIElement(new Texture("img/tinyLeftArrow.png"), lX, y, 32f, 32f) {
             @Override
             protected void onHover() {
+                tint.a = 0.25f;
+            }
 
+            @Override
+            protected void onUnhover() {
+                tint.a = 0;
             }
 
             @Override
@@ -110,7 +115,12 @@ public class TopPanelGroup {
         rightArrow = new ClickableUIElement(new Texture("img/tinyRightArrow.png"), rX, y, 32f, 32f) {
             @Override
             protected void onHover() {
+                tint.a = 0.25f;
+            }
 
+            @Override
+            protected void onUnhover() {
+                tint.a = 0;
             }
 
             @Override
