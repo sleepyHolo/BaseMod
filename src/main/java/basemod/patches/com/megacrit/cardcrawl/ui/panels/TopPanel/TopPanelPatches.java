@@ -141,11 +141,15 @@ public class TopPanelPatches
                 String name = (String) name_f.get(__instance);
 
                 float nameWidth = FontHelper.getWidth(FontHelper.panelNameFont, name, Settings.scale);
-                while (nameWidth > 125f) {
+                boolean tooLong = false;
+                while (nameWidth > 125f * Settings.scale) {
+                    tooLong = true;
                     name = name.substring(0, name.length() - 1);
                     nameWidth = FontHelper.getWidth(FontHelper.panelNameFont, name, Settings.scale);
                 }
-                name = name + "...";
+                if (tooLong) {
+                    name = name + "...";
+                }
                 GlyphLayout layout = (GlyphLayout) gl.get(__instance);
                 layout.setText(FontHelper.panelNameFont, name);
 
