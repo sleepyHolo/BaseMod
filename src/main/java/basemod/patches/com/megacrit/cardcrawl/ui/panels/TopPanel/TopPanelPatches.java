@@ -211,7 +211,7 @@ public class TopPanelPatches
             if (DailyMods.enabledMods != null && !DailyMods.enabledMods.isEmpty()) {
                 if (renderDailyModsAsDropdown) {
                     __instance.modHbs = new Hitbox[0];
-                    dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1110f, 1016f);
+                    dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1180f, 1016f);
                 }
             }
 

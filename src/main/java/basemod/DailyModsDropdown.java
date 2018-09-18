@@ -26,7 +26,7 @@ public class DailyModsDropdown extends ClickableUIElement {
     private final float TOP_OFFSET_Y = 12.0F * Settings.scale;
 
     public DailyModsDropdown(ArrayList<AbstractDailyMod> dailyMods, float x, float y) {
-        super((Texture) null, x, y,150, 64);
+        super((Texture) null, x, y,110, 64);
         this.dailyMods = dailyMods;
         dailyModIcons = new ArrayList<>();
         this.setX(x * Settings.scale);
@@ -53,9 +53,9 @@ public class DailyModsDropdown extends ClickableUIElement {
         sb.setColor(Color.WHITE);
         // TODO that unicode character
         if (hitbox.hovered) {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.topPanelInfoFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
         } else {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.topPanelInfoFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
         }
         if (showModList) {
             renderBox(sb, y - 60f * Settings.scale);
