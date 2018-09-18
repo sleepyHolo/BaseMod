@@ -8,9 +8,11 @@ import com.megacrit.cardcrawl.daily.mods.*;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
+
 import java.util.ArrayList;
 
-public class DailyModsDropdown extends ClickableUIElement{
+public class DailyModsDropdown extends ClickableUIElement {
 
     private ArrayList<AbstractDailyMod> dailyMods;
     private ArrayList<DailyModIcon> dailyModIcons;
@@ -36,7 +38,11 @@ public class DailyModsDropdown extends ClickableUIElement{
     public void update() {
         super.update();
 
-        if(showModList) {
+        if (!hitbox.hovered && InputHelper.justClickedLeft) {
+            showModList = false;
+        }
+
+        if (showModList) {
             dailyModIcons.forEach(ClickableUIElement::update);
         }
     }
