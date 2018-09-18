@@ -1,6 +1,5 @@
 package basemod;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -9,13 +8,14 @@ import java.util.ArrayList;
 
 public class TopPanelGroup {
 
+    private static final int pageItemCount = 3;
+    private static final float X_POS = 1475.0f + (pageItemCount * 64.0f);
+    private static final float Y_POS = 1016.0f;
     private ArrayList<TopPanelItem> topPanelItems;
     private ArrayList<TopPanelItem> activePanelItems;
     private ClickableUIElement leftArrow;
     private ClickableUIElement rightArrow;
-    private final int pageItemCount = 3;
     private int currentPage = 1;
-
 
     public TopPanelGroup(ArrayList<TopPanelItem> topPanelItems) {
         this.topPanelItems = topPanelItems;
@@ -35,13 +35,9 @@ public class TopPanelGroup {
     }
 
     public void render(SpriteBatch sb) {
-        int endIndex = currentPage * pageItemCount;
-        int startIndex = endIndex - pageItemCount;
-        activePanelItems = new ArrayList<>(topPanelItems.subList(startIndex, endIndex > topPanelItems.size() ? topPanelItems.size() : endIndex));
         renderArrows(sb);
         renderItems(sb);
     }
-
 
     public void update() {
         int endIndex = (currentPage * pageItemCount);
@@ -51,22 +47,23 @@ public class TopPanelGroup {
         updateItems();
     }
 
-    private void updateItems(){
-        for (int i = 0; i < activePanelItems.size(); i++) {
+    private void updateItems() {
+        float xpos = X_POS * Settings.scale;
+        for (int i = activePanelItems.size()-1; i >= 0; i--) {
             TopPanelItem temp = activePanelItems.get(i);
-            temp.setX((1175f * Settings.scale) + (i * temp.hb_w));
-            temp.setY(1016f * Settings.scale);
+            xpos -= temp.hb_w;
+            temp.setX(xpos);
+            temp.setY(Y_POS * Settings.scale);
             temp.update();
         }
     }
 
     private void renderItems(SpriteBatch sb) {
+        if (activePanelItems == null) {
+            return;
+        }
         for (int i = 0; i < activePanelItems.size(); i++) {
-            TopPanelItem temp = activePanelItems.get(i);
-            temp.setX((1175f * Settings.scale) + (i * temp.hb_w));
-            temp.setY(1016f * Settings.scale);
-            temp.render(sb);
-
+            activePanelItems.get(i).render(sb);
         }
     }
 
@@ -90,9 +87,9 @@ public class TopPanelGroup {
 
     private void initArrows(){
 
-        float lX = 1135f;
-        float rX = 1360f;
-        float y = 1026f;
+        float lX = X_POS - 40.0f - (pageItemCount * 64.0f);
+        float rX = X_POS - 7.0f;
+        float y = Y_POS + 10.0f;
 
         leftArrow = new TopPanelArrow(ImageMaster.loadImage("img/tinyLeftArrow.png"), lX, y, 32f, 32f) {
             @Override

@@ -5,7 +5,9 @@ import basemod.DailyModsDropdown;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -13,9 +15,11 @@ import com.megacrit.cardcrawl.daily.DailyMods;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
+import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import javassist.CtBehavior;
 
@@ -31,6 +35,8 @@ public class TopPanelPatches
     private static float floorX;
     private static float titleY = Settings.HEIGHT - 28.0F * Settings.scale;
     private static float TIP_Y = Settings.HEIGHT - 120.0F * Settings.scale;
+    private static float TIME_TIP_X = 1550.0f * Settings.scale - (192.0f + 45.0f) * Settings.scale;
+    private static float TIME_X_POS = Settings.WIDTH - (380.0f + 192.0f + 45.0f) * Settings.scale;
 
     @SpirePatch(
             clz = TopPanel.class,
@@ -39,10 +45,41 @@ public class TopPanelPatches
     )
     public static class RenderPatch
     {
+        private static AbstractDungeon.CurrentScreen saveScreen;
+        private static boolean saveStopClock;
+
+        @SpirePrefixPatch
+        public static void Prefix(TopPanel __instance, SpriteBatch sb)
+        {
+            saveScreen = AbstractDungeon.screen;
+            saveStopClock = CardCrawlGame.stopClock;
+            AbstractDungeon.screen = AbstractDungeon.CurrentScreen.COMBAT_REWARD;
+            CardCrawlGame.stopClock = false;
+        }
+
         @SpirePostfixPatch
         public static void Postfix(TopPanel __instance, SpriteBatch sb)
         {
+            AbstractDungeon.screen = saveScreen;
+            CardCrawlGame.stopClock = saveStopClock;
+
             if (!Settings.hideTopBar) {
+                // Run timer
+                if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP || CardCrawlGame.stopClock) {
+                    __instance.timerHb.update();
+                    sb.setColor(Color.WHITE);
+                    sb.draw(ImageMaster.TIMER_ICON, TIME_X_POS, Settings.HEIGHT - 64.0f * Settings.scale, 64.0f * Settings.scale, 64.0f * Settings.scale);
+                    Color clockColor = CardCrawlGame.stopClock ? Settings.GREEN_TEXT_COLOR : Settings.GOLD_COLOR;
+                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont,
+                            CharStat.formatHMSM(CardCrawlGame.playtime), TIME_X_POS + 60.0f * Settings.scale, titleY, clockColor);
+
+                    if (__instance.timerHb.hovered) {
+                        TipHelper.renderGenericTip(TIME_TIP_X, TIP_Y, TopPanel.LABEL[5], TopPanel.MSG[7]);
+                    }
+                    __instance.timerHb.render(sb);
+                }
+
+                // Mod panel items
                 if (TopPanelHelper.topPanelGroup.size() > 0) {
                     TopPanelHelper.topPanelGroup.render(sb);
                 }
@@ -130,6 +167,7 @@ public class TopPanelPatches
         )
         public static void Insert(TopPanel __instance)
         {
+            __instance.timerHb.move(TIME_X_POS + 70.0f * Settings.scale, Settings.HEIGHT - 32.0f * Settings.scale);
             try {
                 Field gl = TopPanel.class.getDeclaredField("gl");
                 gl.setAccessible(true);
@@ -173,7 +211,7 @@ public class TopPanelPatches
             if (DailyMods.enabledMods != null && !DailyMods.enabledMods.isEmpty()) {
                 if (renderDailyModsAsDropdown) {
                     __instance.modHbs = new Hitbox[0];
-                    dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1410f, 1032f);
+                    dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1110f, 1016f);
                 }
             }
 

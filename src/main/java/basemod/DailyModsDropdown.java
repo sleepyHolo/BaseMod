@@ -24,7 +24,7 @@ public class DailyModsDropdown extends ClickableUIElement{
     private final float TOP_OFFSET_Y = 12.0F * Settings.scale;
 
     public DailyModsDropdown(ArrayList<AbstractDailyMod> dailyMods, float x, float y) {
-        super((Texture) null, x, y,150, 50);
+        super((Texture) null, x, y,150, 64);
         this.dailyMods = dailyMods;
         dailyModIcons = new ArrayList<>();
         this.setX(x * Settings.scale);
@@ -37,28 +37,25 @@ public class DailyModsDropdown extends ClickableUIElement{
         super.update();
 
         if(showModList) {
-            dailyModIcons.forEach(mod -> {
-                mod.update();
-            });
+            dailyModIcons.forEach(ClickableUIElement::update);
         }
-
-
-
     }
 
     @Override
     public void render(SpriteBatch sb) {
         super.render(sb);
-        sb.setColor(Color.WHITE.cpy());
-        FontHelper.renderFontLeftTopAligned(sb,FontHelper.topPanelInfoFont, "Daily Mods \u25BC", this.x, this.y + this.hb_h / 2.0F, Color.GOLD);
-        if(showModList) {
-            renderBox(sb, y - 100f * Settings.scale);
-            dailyModIcons.forEach(mod -> {
-                mod.render(sb);
-            });
+        sb.setColor(Color.WHITE);
+        // TODO that unicode character
+        if (hitbox.hovered) {
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.topPanelInfoFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
+        } else {
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.topPanelInfoFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
+        }
+        if (showModList) {
+            renderBox(sb, y - 60f * Settings.scale);
+            dailyModIcons.forEach(mod -> mod.render(sb));
         }
         renderHitbox(sb);
-
     }
 
     @Override
@@ -69,14 +66,13 @@ public class DailyModsDropdown extends ClickableUIElement{
 
     @Override
     protected void onClick() {
-        System.out.println("Clicked ModTitle");
         showModList = !showModList;
     }
 
     private void initDailyModIcons(){
         int count = 0;
-        for(AbstractDailyMod dailyMod: dailyMods) {
-            float yPos = y - TOP_OFFSET_Y - (count * 64F * Settings.scale) - 71F * Settings.scale;
+        for (AbstractDailyMod dailyMod: dailyMods) {
+            float yPos = y - TOP_OFFSET_Y - (count * 64F * Settings.scale) - 31F * Settings.scale;
             DailyModIcon icon = new DailyModIcon(dailyMod.img, x + TEXT_OFFSET_X, yPos, 64F, 64F, dailyMod);
             dailyModIcons.add(icon);
             count++;

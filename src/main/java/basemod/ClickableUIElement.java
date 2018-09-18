@@ -48,8 +48,7 @@ public abstract class ClickableUIElement {
         clickable = true;
     }
 
-    public void update(){
-
+    public void update() {
         updateHitbox();
 
         if (this.hitbox.hovered) {
@@ -58,11 +57,10 @@ public abstract class ClickableUIElement {
             onUnhover();
         }
         if (this.hitbox.hovered && InputHelper.justClickedLeft) {
-            if(clickable){
+            if (clickable) {
                 onClick();
             }
         }
-
     }
 
     public void setX(float x) {
@@ -143,8 +141,7 @@ public abstract class ClickableUIElement {
         renderHitbox(sb);
     }
 
-    protected void renderHitbox(SpriteBatch sb){
-        sb.setColor(Color.RED.cpy());
+    protected void renderHitbox(SpriteBatch sb) {
         hitbox.render(sb);
     }
 
