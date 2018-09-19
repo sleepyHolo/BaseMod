@@ -125,7 +125,11 @@ public class TopPanelPatches {
                     name = name.substring(0, name.length() - 1);
                     nameWidth = FontHelper.getWidth(FontHelper.panelNameFont, name, Settings.scale);
                 }
-                name = name + "...";
+
+                if(!name.equals((String)name_f.get(__instance))) {
+                    name = name + "...";
+                }
+                
                 GlyphLayout layout = (GlyphLayout) gl.get(__instance);
                 layout.setText(FontHelper.panelNameFont, name);
 
@@ -162,7 +166,6 @@ public class TopPanelPatches {
                     });
 
                     dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1410f, 1032f);
-                    //dailyModsDropdown.isOpen = true;
                 }
             }
 
