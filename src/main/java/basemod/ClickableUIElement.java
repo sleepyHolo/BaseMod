@@ -40,6 +40,9 @@ public abstract class ClickableUIElement {
         this.image = image;
         this.x = x * Settings.scale;
         this.y = y * Settings.scale;
+        if (y < 0) {
+            this.y += Settings.HEIGHT;
+        }
         this.hb_w = hb_w * Settings.scale;
         this.hb_h = hb_h * Settings.scale;
         this.hitbox = new Hitbox(this.x, this.y, this.hb_w, this.hb_h);
@@ -69,6 +72,9 @@ public abstract class ClickableUIElement {
     }
 
     public void setY(float y) {
+        if (y < 0) {
+            y += Settings.HEIGHT;
+        }
         this.y = y;
         this.hitbox.y = y;
     }

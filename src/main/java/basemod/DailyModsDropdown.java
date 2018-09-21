@@ -30,7 +30,11 @@ public class DailyModsDropdown extends ClickableUIElement {
         this.dailyMods = dailyMods;
         dailyModIcons = new ArrayList<>();
         this.setX(x * Settings.scale);
-        this.setY(y * Settings.scale);
+        if (y < 0) {
+            this.setY(Settings.HEIGHT + y * Settings.scale);
+        } else {
+            this.setY(y * Settings.scale);
+        }
         initDailyModIcons();
     }
 

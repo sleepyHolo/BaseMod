@@ -10,7 +10,7 @@ public class TopPanelGroup {
 
     private static final int pageItemCount = 3;
     private static final float X_POS = 1475.0f + (pageItemCount * 64.0f);
-    private static final float Y_POS = 1016.0f;
+    private static final float Y_POS = -64.0f;
     private ArrayList<TopPanelItem> topPanelItems;
     private ArrayList<TopPanelItem> activePanelItems;
     private ClickableUIElement leftArrow;

@@ -405,3 +405,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Mod items in top panel (kobting)
 
 #### dev ####
+* Fix TopPanel positions on not 16:9 aspect ratios (kiooeht)
