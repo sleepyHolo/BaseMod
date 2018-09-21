@@ -398,7 +398,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v3.2.2 ####
 * Fix crash when unlocking ascension as base game character (kiooeht)
 
-#### dev ####
+#### v3.3.0 ####
 * Fix crash if any mod patches AbstactPower (kiooeht)
 * Fix crash when adding custom monster that uses setHp (kiooeht)
 * Fix fight command after a monster room (twanvl)
+
+#### dev ####
