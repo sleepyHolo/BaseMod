@@ -10,8 +10,8 @@ public class ModLabeledToggleButton implements IUIElement {
 	private static final float TEXT_X_OFFSET = 40.0f;
 	private static final float TEXT_Y_OFFSET = 8.0f;
 	
-	private ModToggleButton toggle;
-	private ModLabel text;
+	public ModToggleButton toggle;
+	public ModLabel text;
 	
 	public ModLabeledToggleButton(String labelText, float xPos, float yPos,
 			Color color, BitmapFont font, boolean enabled, ModPanel p,
