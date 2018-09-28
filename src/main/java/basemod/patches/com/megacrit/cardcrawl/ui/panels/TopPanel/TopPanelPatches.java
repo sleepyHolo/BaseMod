@@ -11,12 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.daily.DailyMods;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
 import com.megacrit.cardcrawl.screens.stats.CharStat;
@@ -208,10 +204,10 @@ public class TopPanelPatches
 
         public static void Postfix(TopPanel __instance)
         {
-            if (DailyMods.enabledMods != null && !DailyMods.enabledMods.isEmpty()) {
+            if (ModHelper.enabledMods != null && !ModHelper.enabledMods.isEmpty()) {
                 if (renderDailyModsAsDropdown) {
                     __instance.modHbs = new Hitbox[0];
-                    dailyModsDropdown = new DailyModsDropdown(DailyMods.enabledMods, 1180f, -64f);
+                    dailyModsDropdown = new DailyModsDropdown(ModHelper.enabledMods, 1180f, -64f);
                 }
             }
 

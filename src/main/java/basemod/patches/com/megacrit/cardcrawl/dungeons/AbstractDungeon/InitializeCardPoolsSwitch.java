@@ -12,9 +12,9 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.daily.mods.*;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import com.megacrit.cardcrawl.daily.DailyMods;
 
 import basemod.BaseMod;
 import javassist.CtBehavior;
@@ -39,7 +39,7 @@ public class InitializeCardPoolsSwitch {
 		}
 
 		// Diverse
-		if (DailyMods.cardMods.get(Diverse.ID)) {
+		if (ModHelper.isModEnabled(Diverse.ID)) {
 			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
 				card = c.getValue();
 				if ((BaseMod.playerColorMap.containsValue(card.color)) && (card.rarity != AbstractCard.CardRarity.BASIC) &&
@@ -85,7 +85,7 @@ public class InitializeCardPoolsSwitch {
 			}
 		}
 
-		if (!DailyMods.cardMods.get(Diverse.ID)) {
+		if (!ModHelper.isModEnabled(Diverse.ID)) {
 			// Modded character cards modifiers
 			CustomMod charMod = new CustomMod("Modded Character Cards", "p", false);
 			for (AbstractPlayer.PlayerClass pc : BaseMod.playerClassMap.keySet()) {
