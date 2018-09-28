@@ -404,8 +404,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix fight command after a monster room (twanvl)
 * Mod items in top panel (kobting)
 
-#### dev ####
+#### v3.4.0 ####
 * Support for week 43 (kiooeht)
 * Fix TopPanel positions on not 16:9 aspect ratios (kiooeht)
 * Fix modified card costs not rendering when not in hand (Moocowsgomoo)
 * Fix ModLabeledToggleButton privacy (Blank The Evil)
+
+#### dev ####
