@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
 import basemod.BaseMod;
@@ -11,20 +13,20 @@ import basemod.BaseMod;
 public class ActChangeHooks {
 
 	@SpirePatch(
-			cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon",
+			clz=AbstractDungeon.class,
 			method=SpirePatch.CONSTRUCTOR,
-			paramtypes={
-					"java.lang.String",
-					"java.lang.String",
-					"com.megacrit.cardcrawl.characters.AbstractPlayer",
-					"java.util.ArrayList"
+			paramtypez={
+					String.class,
+					String.class,
+					AbstractPlayer.class,
+					ArrayList.class
 			}
 	)
 	public static class InGameConstructor {
 		
-		public static void Postfix(Object __obj_instance,
-				String name, String levelId, AbstractPlayer p, ArrayList<String> newSpecialOneTimeEventList) {
-			if (levelId.equals("Exordium")) {
+		public static void Postfix(AbstractDungeon __instance,
+								   String name, String levelId, AbstractPlayer p, ArrayList<String> newSpecialOneTimeEventList) {
+			if (levelId.equals(Exordium.ID) && AbstractDungeon.floorNum == 0) {
 				BaseMod.publishStartGame();
 			}
 			BaseMod.publishStartAct();
@@ -33,12 +35,12 @@ public class ActChangeHooks {
 	}
 	
 	@SpirePatch(
-			cls="com.megacrit.cardcrawl.dungeons.AbstractDungeon",
+			clz=AbstractDungeon.class,
 			method=SpirePatch.CONSTRUCTOR,
-			paramtypes={
-					"java.lang.String",
-					"com.megacrit.cardcrawl.characters.AbstractPlayer",
-					"com.megacrit.cardcrawl.saveAndContinue.SaveFile"
+			paramtypez={
+					String.class,
+					AbstractPlayer.class,
+					SaveFile.class
 			}
 	)
 	public static class SavedGameConstructor {

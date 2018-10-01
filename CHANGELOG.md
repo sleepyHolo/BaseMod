@@ -411,3 +411,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix ModLabeledToggleButton privacy (Blank The Evil)
 
 #### dev ####
+* Fix Start Game hook triggering when looping in Endless mode (kiooeht)
