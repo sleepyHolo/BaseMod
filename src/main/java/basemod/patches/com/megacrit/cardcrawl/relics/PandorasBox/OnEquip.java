@@ -3,7 +3,7 @@ package basemod.patches.com.megacrit.cardcrawl.relics.PandorasBox;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import basemod.helpers.BaseModTags;
+import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -29,7 +29,7 @@ public class OnEquip {
 				boolean doRemove = false;
 				if (c instanceof CustomCard && (((CustomCard)c).isStrike() || ((CustomCard)c).isDefend())) {
 					doRemove = true;
-				} else if (CardTags.hasTag(c, BaseModTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModTags.BASIC_DEFEND)) {
+				} else if (CardTags.hasTag(c, BaseModCardTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModCardTags.BASIC_DEFEND)) {
 					doRemove = true;
 				}
 

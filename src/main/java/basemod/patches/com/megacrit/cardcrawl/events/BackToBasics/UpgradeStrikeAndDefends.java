@@ -1,6 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.events.BackToBasics;
 
-import basemod.helpers.BaseModTags;
+import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -25,7 +25,7 @@ public class UpgradeStrikeAndDefends {
 				boolean doUpgrade = false;
 				if (c instanceof CustomCard && (((CustomCard) c).isStrike() || ((CustomCard) c).isDefend())) {
 					doUpgrade = true;
-				} else if (CardTags.hasTag(c, BaseModTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModTags.BASIC_DEFEND)) {
+				} else if (CardTags.hasTag(c, BaseModCardTags.BASIC_STRIKE) || CardTags.hasTag(c, BaseModCardTags.BASIC_DEFEND)) {
 					doUpgrade = true;
 				}
 

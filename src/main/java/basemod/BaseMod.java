@@ -4,6 +4,7 @@ import basemod.abstracts.CustomBottleRelic;
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.abstracts.DynamicVariable;
+import basemod.helpers.BaseModCardTags;
 import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
 import basemod.helpers.RelicType;
@@ -371,6 +372,7 @@ public class BaseMod {
 	}
 
 	// initializeCardTags -
+	@Deprecated
 	private static void initializeCardTags() {
 		logger.info("initializeCardTags");
 		for (AnnotationDB db : Patcher.annotationDBMap.values()) {
@@ -869,7 +871,7 @@ public class BaseMod {
 
 	private static void checkGremlinMatchCard(PlayerClass playerClass) {
 		for (AbstractCard card : CardLibrary.getAllCards()) {
-			if (CardTags.hasTag(card, BaseModTags.GREMLIN_MATCH)) {
+			if (CardTags.hasTag(card, BaseModCardTags.GREMLIN_MATCH)) {
 				if (getColor(playerClass) == card.color) {
 					playerGremlinMatchCardIDMap.put(playerClass, card.cardID);
 					break;

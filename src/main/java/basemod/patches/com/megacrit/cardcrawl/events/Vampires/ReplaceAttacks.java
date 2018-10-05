@@ -2,7 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.events.Vampires;
 
 import java.util.Iterator;
 
-import basemod.helpers.BaseModTags;
+import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -23,7 +23,7 @@ public class ReplaceAttacks {
 			AbstractCard e = i.next();
 			if (e instanceof CustomCard && ((CustomCard)e).isStrike()) {
 				i.remove();
-			} else if (CardTags.hasTag(e, BaseModTags.BASIC_STRIKE)) {
+			} else if (CardTags.hasTag(e, BaseModCardTags.BASIC_STRIKE)) {
 				i.remove();
 			}
 		}
