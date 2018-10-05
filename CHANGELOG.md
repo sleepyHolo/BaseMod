@@ -417,3 +417,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow custom characters to add relic unlocks (kiooeht)
 
 #### dev ####
+* Fix PostPotionUse hook (kiooeht)
