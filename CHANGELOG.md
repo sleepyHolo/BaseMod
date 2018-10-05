@@ -410,8 +410,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix modified card costs not rendering when not in hand (Moocowsgomoo)
 * Fix ModLabeledToggleButton privacy (Blank The Evil)
 
-#### dev ####
+#### v3.5.0 ####
 * Support for week 44 (kiooeht)
 * Fix Start Game hook triggering when looping in Endless mode (kiooeht)
 * Fix Ascension 20 double boss when custom bosses have been added (kiooeht)
 * Allow custom characters to add relic unlocks (kiooeht)
+
+#### dev ####
