@@ -418,3 +418,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix PostPotionUse hook (kiooeht)
+* Fix drawn cards entering modal choice options (kiooeht)
