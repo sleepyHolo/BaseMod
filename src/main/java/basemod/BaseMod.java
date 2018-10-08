@@ -1698,6 +1698,8 @@ public class BaseMod {
 					playerSelectButtonMap.get(character), playerPortraitMap.get(character));
 			options.add(option);
 		}
+		// Sort alphabetically by character name
+		options.sort(Comparator.comparing(o -> o.name));
 		return options;
 	}
 
