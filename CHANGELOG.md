@@ -420,3 +420,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix PostPotionUse hook (kiooeht)
 * Fix drawn cards entering modal choice options (kiooeht)
 * Sort modded characters alphabetically by name (kiooeht)
+* Shrink card description font for cards with lots of text (kiooeht)
