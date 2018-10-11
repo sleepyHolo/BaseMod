@@ -5,7 +5,6 @@ import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.abstracts.DynamicVariable;
 import basemod.helpers.BaseModCardTags;
-import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
@@ -99,6 +98,10 @@ public class BaseMod {
 	private static final float BADGES_Y = 250.0f;
 	public static final float BADGE_W = 40.0f;
 	public static final float BADGE_H = 40.0f;
+
+	public static final int DEFAULT_MAX_HAND_SIZE = 15;
+	@SuppressWarnings("unused")
+	public static int MAX_HAND_SIZE = DEFAULT_MAX_HAND_SIZE;
 
 	private static HashMap<Type, String> typeMaps;
 	private static HashMap<Type, Type> typeTokens;
@@ -2244,6 +2247,7 @@ public class BaseMod {
 	public static void publishPreStartGame() {
 		logger.info("publishPreStartGame");
 
+		MAX_HAND_SIZE = DEFAULT_MAX_HAND_SIZE;
 		// Publish
 		for (PreStartGameSubscriber sub : preStartGameSubscribers) {
 			sub.receivePreStartGame();
