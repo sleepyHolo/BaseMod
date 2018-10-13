@@ -416,7 +416,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Ascension 20 double boss when custom bosses have been added (kiooeht)
 * Allow custom characters to add relic unlocks (kiooeht)
 
-#### dev ####
+#### v4.0.0 ####
+* Support for week 45 (kiooeht)
 * Fix PostPotionUse hook (kiooeht)
 * Fix drawn cards entering modal choice options (kiooeht)
 * Sort modded characters alphabetically by name (kiooeht)
@@ -424,3 +425,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow max hand size to be changed (kiooeht)
 * Fix ModSlider not allowing x position to be set (kiooeht)
 * Fix custom character card and seen count (kiooeht)
+
+#### dev ####
