@@ -1604,7 +1604,7 @@ public class BaseMod {
 	// increment the card count for a color
 	public static void incrementCardCount(AbstractCard.CardColor color) {
 		Integer count = colorCardCountMap.get(color);
-		System.out.println("incrementing card count for " + color + " to " + colorCardCountMap.get(color));
+		//System.out.println("incrementing card count for " + color + " to " + colorCardCountMap.get(color));
 		if (count != null) {
 			colorCardCountMap.put(color, count + 1);
 		} else {
