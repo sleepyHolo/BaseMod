@@ -189,15 +189,13 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public int getSeenCardCount()
 	{
-		// TODO
-		return 0;
+		return BaseMod.getSeenCardCount(BaseMod.getColor(chosenClass));
 	}
 
 	@Override
 	public int getCardCount()
 	{
-		// TODO
-		return 0;
+		return BaseMod.getCardCount(BaseMod.getColor(chosenClass));
 	}
 
 	@Override

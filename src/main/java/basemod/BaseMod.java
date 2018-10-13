@@ -1624,8 +1624,12 @@ public class BaseMod {
 	}
 
 	// get card count for a color
-	public static Integer getCardCount(AbstractCard.CardColor color) {
-		return colorCardCountMap.get(color);
+	public static int getCardCount(AbstractCard.CardColor color) {
+		Integer count = colorCardCountMap.get(color);
+		if (count == null) {
+			return -1;
+		}
+		return count;
 	}
 
 	// increment the seen card count for a color
@@ -1639,8 +1643,12 @@ public class BaseMod {
 	}
 
 	// get seen card count for a color
-	public static Integer getSeenCardCount(AbstractCard.CardColor color) {
-		return colorCardSeenCountMap.get(color);
+	public static int getSeenCardCount(AbstractCard.CardColor color) {
+		Integer count = colorCardSeenCountMap.get(color);
+		if (count == null) {
+			return -1;
+		}
+		return count;
 	}
 
 	// convert a color into a glow color
