@@ -103,8 +103,8 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public String getAchievementKey()
 	{
-		// TODO
-		return null;
+		// Returning null crashes the game, hopefully returning a fake key won't
+		return "MODDING";
 	}
 
 	@Override
