@@ -1,12 +1,9 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
+import basemod.abstracts.CustomCard;
+import basemod.helpers.SuperclassFinder;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,11 +18,12 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import basemod.BaseMod;
-import basemod.ReflectionHacks;
-import basemod.abstracts.CustomCard;
-import basemod.helpers.SuperclassFinder;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class RenderFixSwitches {
 

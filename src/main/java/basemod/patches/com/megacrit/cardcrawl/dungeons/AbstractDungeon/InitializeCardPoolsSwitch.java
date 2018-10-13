@@ -1,23 +1,21 @@
 package basemod.patches.com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
-
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.daily.mods.*;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.daily.mods.BlueCards;
+import com.megacrit.cardcrawl.daily.mods.Diverse;
+import com.megacrit.cardcrawl.daily.mods.GreenCards;
+import com.megacrit.cardcrawl.daily.mods.RedCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
-
-import basemod.BaseMod;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 @SpirePatch(
 		clz=AbstractDungeon.class,
@@ -32,7 +30,6 @@ public class InitializeCardPoolsSwitch {
 	public static void Insert(AbstractDungeon __instance, ArrayList<AbstractCard> tmpPool) {
 		AbstractPlayer player = AbstractDungeon.player;
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;
-		AbstractCard card;
 
 		if (AbstractPlayer.customMods == null) {
 			AbstractPlayer.customMods = new ArrayList<>();
@@ -40,68 +37,33 @@ public class InitializeCardPoolsSwitch {
 
 		// Diverse
 		if (ModHelper.isModEnabled(Diverse.ID)) {
-			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
-				card = c.getValue();
-				if ((BaseMod.playerColorMap.containsValue(card.color)) && (card.rarity != AbstractCard.CardRarity.BASIC) &&
-						((!UnlockTracker.isCardLocked(c.getKey())) || (Settings.isDailyRun))) {
-					tmpPool.add(card);
-				}
+			for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
+				character.getCardPool(tmpPool);
 			}
 		} else if (!BaseMod.isBaseGameCharacter(chosenClass)) {
-			// Normal modded character
-			AbstractCard.CardColor color = BaseMod.getColor(chosenClass);
-			for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
-				card = c.getValue();
-				if ((card.color.equals(color)) && (card.rarity != AbstractCard.CardRarity.BASIC) && (
-						(!UnlockTracker.isCardLocked(c.getKey())) || (Settings.isDailyRun))) {
-					tmpPool.add(card);
-				}
-			}
-
 			// Red/Green/Blue Cards modifiers for modded characters
-			try {
-				if (AbstractPlayer.customMods.contains(RedCards.ID)) {
-					Method addRedCards = AbstractDungeon.class.getDeclaredMethod("addRedCards", ArrayList.class);
-					addRedCards.setAccessible(true);
-					addRedCards.invoke(__instance, tmpPool);
-				}
-				if (AbstractPlayer.customMods.contains(GreenCards.ID)) {
-					Method addGreenCards = AbstractDungeon.class.getDeclaredMethod("addGreenCards", ArrayList.class);
-					addGreenCards.setAccessible(true);
-					addGreenCards.invoke(__instance, tmpPool);
-				}
-				if (AbstractPlayer.customMods.contains(BlueCards.ID)) {
-					Method addBlueCards = AbstractDungeon.class.getDeclaredMethod("addBlueCards", ArrayList.class);
-					addBlueCards.setAccessible(true);
-					addBlueCards.invoke(__instance, tmpPool);
-				}
-				if (AbstractPlayer.customMods.contains(ColorlessCards.ID)) {
-					Method addColorlessCards = AbstractDungeon.class.getDeclaredMethod("addColorlessCards", ArrayList.class);
-					addColorlessCards.setAccessible(true);
-					addColorlessCards.invoke(__instance, tmpPool);
-				}
-			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
+			if (AbstractPlayer.customMods.contains(RedCards.ID)) {
+				CardLibrary.addRedCards(tmpPool);
+			}
+			if (AbstractPlayer.customMods.contains(GreenCards.ID)) {
+				CardLibrary.addGreenCards(tmpPool);
+			}
+			if (AbstractPlayer.customMods.contains(BlueCards.ID)) {
+				CardLibrary.addBlueCards(tmpPool);
 			}
 		}
 
 		if (!ModHelper.isModEnabled(Diverse.ID)) {
 			// Modded character cards modifiers
 			CustomMod charMod = new CustomMod("Modded Character Cards", "p", false);
-			for (AbstractPlayer.PlayerClass pc : BaseMod.playerClassMap.keySet()) {
-				if (pc == chosenClass) {
+			for (AbstractPlayer character : BaseMod.getModdedCharacters()) {
+				if (character.chosenClass == chosenClass) {
 					continue;
 				}
-				 String ID = pc.name() + charMod.name;
+				 String ID = character.chosenClass.name() + charMod.name;
 				 if (AbstractPlayer.customMods.contains(ID)) {
-				 	BaseMod.logger.info("[INFO] Adding " + BaseMod.getTitle(pc) + " cards into card pool.");
-				 	AbstractCard.CardColor color = BaseMod.getColor(pc);
-				 	for (AbstractCard c : CardLibrary.cards.values()) {
-				 		if (c.color == color && c.rarity != AbstractCard.CardRarity.BASIC &&
-								(!UnlockTracker.isCardLocked(c.cardID) || Settings.treatEverythingAsUnlocked())) {
-				 			tmpPool.add(c);
-						}
-					}
+				 	BaseMod.logger.info("[INFO] Adding " + character.getLocalizedCharacterName() + " cards into card pool.");
+
 				 }
 			}
 		}

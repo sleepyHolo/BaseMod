@@ -1,8 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.relics.PandorasBox;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
-
+import basemod.abstracts.CustomCard;
 import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -11,7 +9,8 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.PandorasBox;
 
-import basemod.abstracts.CustomCard;
+import java.lang.reflect.Field;
+import java.util.Iterator;
 
 @SpirePatch(
 		clz=PandorasBox.class,

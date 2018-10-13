@@ -1,25 +1,18 @@
 package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import basemod.BaseMod;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.LineFinder;
-import com.evacipated.cardcrawl.modthespire.lib.Matcher;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertLocator;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
-
-import basemod.BaseMod;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.Field;
 
 public class RenderHooks {
 

@@ -1,12 +1,9 @@
 package basemod.abstracts;
 
-import java.util.HashMap;
-import java.util.List;
-
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.helpers.BaseModCardTags;
-import basemod.helpers.BaseModTags;
 import basemod.helpers.TooltipInfo;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -15,8 +12,8 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
-import basemod.BaseMod;
-import basemod.ReflectionHacks;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class CustomCard extends AbstractCard {
 	

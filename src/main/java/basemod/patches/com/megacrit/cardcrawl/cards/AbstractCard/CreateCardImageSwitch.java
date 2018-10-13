@@ -1,14 +1,13 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import basemod.BaseMod;
-import basemod.ReflectionHacks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CreateCardImageSwitch {
 	public static final Logger logger = LogManager.getLogger(BaseMod.class.getName());

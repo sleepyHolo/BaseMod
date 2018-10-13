@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.events.BackToBasics;
 
+import basemod.abstracts.CustomCard;
 import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.badlogic.gdx.math.MathUtils;
@@ -10,8 +11,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.city.BackToBasics;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardBrieflyEffect;
-
-import basemod.abstracts.CustomCard;
 
 @SpirePatch(
 		clz=BackToBasics.class,

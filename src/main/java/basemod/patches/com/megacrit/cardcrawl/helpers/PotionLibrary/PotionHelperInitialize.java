@@ -1,11 +1,9 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.PotionLibrary;
 
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
-
-import basemod.BaseMod;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

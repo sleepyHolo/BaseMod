@@ -1,14 +1,13 @@
 package basemod.patches.com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
-import java.util.ArrayList;
-
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
-import basemod.BaseMod;
+import java.util.ArrayList;
 
 public class ActChangeHooks {
 

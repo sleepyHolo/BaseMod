@@ -1,9 +1,8 @@
 package basemod.patches.com.megacrit.cardcrawl.potions.Color;
 
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-
-import basemod.BaseMod;
 
 @SpirePatch(
 		cls = "com.megacrit.cardcrawl.potions.AbstractPotion",

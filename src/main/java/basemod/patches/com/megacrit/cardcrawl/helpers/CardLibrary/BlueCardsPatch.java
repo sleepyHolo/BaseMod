@@ -5,9 +5,15 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="addBlueCards")
-public class BlueCardsPatch {
-	public static void Postfix() {
+@SpirePatch(
+		clz=CardLibrary.class,
+		method="addBlueCards",
+		paramtypez={}
+)
+public class BlueCardsPatch
+{
+	public static void Postfix()
+	{
 		// add new cards
 		for (AbstractCard card : BaseMod.getBlueCardsToAdd()) {
 			CardLibrary.add(card);

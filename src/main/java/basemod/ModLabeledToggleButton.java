@@ -1,10 +1,10 @@
 package basemod;
 
-import java.util.function.Consumer;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.function.Consumer;
 
 public class ModLabeledToggleButton implements IUIElement {
 	private static final float TEXT_X_OFFSET = 40.0f;

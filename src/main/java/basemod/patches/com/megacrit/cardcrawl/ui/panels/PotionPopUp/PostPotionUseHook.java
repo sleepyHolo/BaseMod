@@ -1,10 +1,9 @@
 package basemod.patches.com.megacrit.cardcrawl.ui.panels.PotionPopUp;
 
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.audio.SoundMaster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-
-import basemod.BaseMod;
 import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
 import javassist.CtBehavior;
 

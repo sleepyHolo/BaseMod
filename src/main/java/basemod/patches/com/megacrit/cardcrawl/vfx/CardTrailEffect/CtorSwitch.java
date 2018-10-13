@@ -1,16 +1,14 @@
 package basemod.patches.com.megacrit.cardcrawl.vfx.CardTrailEffect;
 
-import java.lang.reflect.Field;
-
+import basemod.BaseMod;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.vfx.CardTrailEffect;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.vfx.CardTrailEffect;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-
-import basemod.BaseMod;
+import java.lang.reflect.Field;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.vfx.CardTrailEffect", method=SpirePatch.CONSTRUCTOR)
 public class CtorSwitch {

@@ -1,11 +1,10 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
+import basemod.BaseMod;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-
-import basemod.BaseMod;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;

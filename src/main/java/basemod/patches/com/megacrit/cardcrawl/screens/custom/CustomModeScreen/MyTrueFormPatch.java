@@ -1,7 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.custom.CustomModeScreen;
 
 import basemod.helpers.BaseModCardTags;
-import basemod.helpers.BaseModTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;

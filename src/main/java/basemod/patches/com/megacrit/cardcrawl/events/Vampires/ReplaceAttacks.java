@@ -1,16 +1,15 @@
 package basemod.patches.com.megacrit.cardcrawl.events.Vampires;
 
-import java.util.Iterator;
-
+import basemod.abstracts.CustomCard;
 import basemod.helpers.BaseModCardTags;
 import basemod.helpers.CardTags;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-
-import basemod.abstracts.CustomCard;
 import com.megacrit.cardcrawl.events.city.Vampires;
+
+import java.util.Iterator;
 
 @SpirePatch(
 		clz=Vampires.class,

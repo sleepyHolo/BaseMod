@@ -1,15 +1,14 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.CardLibrary;
 
-import java.util.ArrayList;
-
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
-
-import basemod.BaseMod;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.CardLibrary", method="initialize")
 public class CustomCardsPatch {

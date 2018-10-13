@@ -1,10 +1,10 @@
 package basemod;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class ReflectionHacks {
     public static final Logger logger = LogManager.getLogger(ReflectionHacks.class.getName());

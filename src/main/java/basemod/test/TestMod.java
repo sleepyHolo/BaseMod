@@ -1,27 +1,22 @@
 package basemod.test;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
+import basemod.BaseMod;
 import basemod.ModLabel;
+import basemod.ModPanel;
 import basemod.interfaces.*;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardHelper;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
@@ -30,9 +25,15 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import basemod.BaseMod;
-import basemod.ModPanel;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 @SpireInitializer
 public class TestMod implements
@@ -192,18 +193,18 @@ public class TestMod implements
 	private static final String CARD_2 = "Panacea";
 	private static final String CARD_3 = "Panache";
 
-	private static void addCardToStartingDeck(ArrayList<String> addCardsToMe, String card) {
+	private static void addCardToStartingDeck(CardGroup cards, String card) {
 		loudWrite(writer, "Adding card " + card + " to deck: 1/1");
-		addCardsToMe.add(card);
+		cards.addToTop(CardLibrary.getCard(card).makeCopy());
 	}
 	
 	@Override
-	public void receivePostCreateStartingDeck(AbstractPlayer.PlayerClass chosenClass, ArrayList<String> addCardsToMe) {
+	public void receivePostCreateStartingDeck(AbstractPlayer.PlayerClass chosenClass, CardGroup cards) {
 		// add one copy of Transmutation, Panacea, and Panache
 		// to the starting deck
-		addCardToStartingDeck(addCardsToMe, CARD_1);
-		addCardToStartingDeck(addCardsToMe, CARD_2);
-		addCardToStartingDeck(addCardsToMe, CARD_3);
+		addCardToStartingDeck(cards, CARD_1);
+		addCardToStartingDeck(cards, CARD_2);
+		addCardToStartingDeck(cards, CARD_3);
 	}
 	
 	private static void addRelicToStartingSet(ArrayList<String> addRelicsToMe, String relic) {
@@ -246,7 +247,7 @@ public class TestMod implements
 	@Override
 	public void receiveStartGame() {
 		if (receivedStartGame) {
-			unexpectedCrash("RECEIVED START GAME HOOK MORE THAN ONCE");
+			//unexpectedCrash("RECEIVED START GAME HOOK MORE THAN ONCE");
 		}
 		receivedStartGame = true;
 		
@@ -404,9 +405,9 @@ public class TestMod implements
 	@Override
 	public void receiveEditCharacters() {
 		loudWrite(writer, "begin editting characters");
-		
-		BaseMod.addCharacter(Purpleclad.class, "The Purpleclad", "Purpleclad class string",
-				ColorEnumPatch.PURPLE, "The Purpleclad",
+
+		BaseMod.addCharacter(new Purpleclad(CardCrawlGame.playerName),
+				ColorEnumPatch.PURPLE,
 				makePath(ASSET_FOLDER, PURPLECLAD_BUTTON),
 				makePath(ASSET_FOLDER, PURPLECLAD_PORTRAIT),
 				CharacterEnumPatch.THE_PURPLECLAD);

@@ -1,7 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.input.InputAction;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;

@@ -1,14 +1,13 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
-import java.lang.reflect.Field;
-
+import basemod.abstracts.CustomCard;
+import basemod.patches.com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen.EverythingFix;
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
-import basemod.abstracts.CustomCard;
-import basemod.patches.com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen.EverythingFix;
+import java.lang.reflect.Field;
 
 /**
  * 

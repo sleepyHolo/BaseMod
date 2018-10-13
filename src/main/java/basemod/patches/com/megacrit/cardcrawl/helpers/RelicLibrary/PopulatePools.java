@@ -1,15 +1,14 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.RelicLibrary;
 
-import java.util.ArrayList;
-import java.util.Map;
-
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
-import basemod.BaseMod;
+import java.util.ArrayList;
+import java.util.Map;
 
 @SpirePatch(cls="com.megacrit.cardcrawl.helpers.RelicLibrary", method="populateRelicPool")
 public class PopulatePools {

@@ -4,8 +4,6 @@ import basemod.abstracts.CustomBottleRelic;
 import basemod.abstracts.CustomCard;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.abstracts.DynamicVariable;
-import basemod.helpers.BaseModCardTags;
-import basemod.helpers.CardTags;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -31,24 +29,20 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.evacipated.cardcrawl.modthespire.Patcher;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
-import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.daily.mods.RedCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.dungeons.Exordium;
-import com.megacrit.cardcrawl.dungeons.TheBeyond;
-import com.megacrit.cardcrawl.dungeons.TheCity;
 import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.localization.*;
@@ -60,11 +54,9 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.saveAndContinue.SaveAndContinue;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
 import com.megacrit.cardcrawl.screens.custom.CustomModeCharacterButton;
-import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.shop.ShopScreen;
 import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
@@ -76,11 +68,13 @@ import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.clapper.util.classutil.*;
-import org.scannotation.AnnotationDB;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -172,16 +166,11 @@ public class BaseMod {
 
 	private static ArrayList<String> potionsToRemove;
 
-	public static HashMap<PlayerClass, Class<? extends AbstractPlayer>> playerClassMap;
-	public static HashMap<PlayerClass, String> playerTitleStringMap;
-	public static HashMap<PlayerClass, String> playerClassStringMap;
+	private static int lastBaseCharacterIndex = -1;
+
 	public static HashMap<PlayerClass, AbstractCard.CardColor> playerColorMap;
-	public static HashMap<PlayerClass, String> playerSelectTextMap;
 	public static HashMap<PlayerClass, String> playerSelectButtonMap;
 	public static HashMap<PlayerClass, String> playerPortraitMap;
-	public static HashMap<PlayerClass, String> playerGremlinMatchCardIDMap;
-
-	public static HashMap<PlayerClass, CharStat> playerStatsMap;
 
 	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
 
@@ -251,9 +240,6 @@ public class BaseMod {
 	public static float mapPathDensityMultiplier = 1.0f;
 
 	public static ModalChoiceScreen modalChoiceScreen = new ModalChoiceScreen();
-
-
-
 
 	//
 	// Initialization
@@ -325,10 +311,19 @@ public class BaseMod {
 		}
 	}
 
+	public static boolean isBaseGameCharacter(AbstractPlayer c) {
+		return isBaseGameCharacter(c.chosenClass);
+	}
+
 	public static boolean isBaseGameCharacter(AbstractPlayer.PlayerClass chosenClass) {
-		return (chosenClass == AbstractPlayer.PlayerClass.IRONCLAD
-				|| chosenClass == AbstractPlayer.PlayerClass.THE_SILENT
-				|| chosenClass == AbstractPlayer.PlayerClass.DEFECT);
+		int index = -1;
+		for (AbstractPlayer player : CardCrawlGame.characterManager.getAllCharacters()) {
+			++index;
+			if (player.chosenClass == chosenClass) {
+				break;
+			}
+		}
+		return index <= lastBaseCharacterIndex;
 	}
 
 	// initialize -
@@ -337,7 +332,6 @@ public class BaseMod {
 
 		modBadges = new ArrayList<>();
 
-		initializeCardTags();
 		initializeGson();
 		initializeTypeMaps();
 		initializeSubscriptions();
@@ -352,9 +346,6 @@ public class BaseMod {
 		initializeUnderscorePowerIDs();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribe(baseModInit);
-
-		EditCharactersInit editCharactersInit = new EditCharactersInit();
-		BaseMod.subscribe(editCharactersInit);
 
 		config = makeConfig();
 		setProperties();
@@ -372,32 +363,6 @@ public class BaseMod {
 		animationEnvironment = new Environment();
 		animationEnvironment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
 		animationBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-	}
-
-	// initializeCardTags -
-	@Deprecated
-	private static void initializeCardTags() {
-		logger.info("initializeCardTags");
-		for (AnnotationDB db : Patcher.annotationDBMap.values()) {
-			Set<String> tagNames = db.getAnnotationIndex().get(CardTags.AutoTag.class.getName());
-			if (tagNames != null) {
-				for (String tagClassName : tagNames) {
-					try {
-						Class<?> tagClass = BaseMod.class.getClassLoader().loadClass(tagClassName);
-						for (Field field : tagClass.getDeclaredFields()) {
-							if (Modifier.isStatic(field.getModifiers()) &&
-									field.getDeclaredAnnotation(CardTags.AutoTag.class) != null) {
-								field.setAccessible(true);
-								logger.info("Making AutoTag: " + tagClassName + "." + field.getName());
-								field.set(null, new CardTags.BasicTag(tagClass.getSimpleName(), field.getName()));
-							}
-						}
-					} catch (ClassNotFoundException | IllegalAccessException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
 	}
 
 	// initializeGson -
@@ -499,15 +464,9 @@ public class BaseMod {
 
 	// initializeCharacterMap -
 	private static void initializeCharacterMap() {
-		playerClassMap = new HashMap<>();
-		playerTitleStringMap = new HashMap<>();
-		playerClassStringMap = new HashMap<>();
 		playerColorMap = new HashMap<>();
-		playerSelectTextMap = new HashMap<>();
 		playerSelectButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
-		playerStatsMap = new HashMap<>();
-		playerGremlinMatchCardIDMap = new HashMap<>();
 	}
 
 	// initializeColorMap -
@@ -732,37 +691,15 @@ public class BaseMod {
 		modBadges.add(badge);
 	}
 
-	public static boolean baseGameSaveExists() {
-		return (SaveAndContinue.ironcladSaveExists) || (SaveAndContinue.silentSaveExists)
-				|| (SaveAndContinue.crowbotSaveExists) || (SaveAndContinue.defectSaveExists);
-	}
-
-	public static boolean moddedSaveExists() {
-		System.out.println("checking if save exists");
-		for (PlayerClass playerClass : playerClassMap.keySet()) {
-			String filepath = save_path + playerClass.name() + ".autosave";
-			System.out.println("looking for " + filepath);
-			boolean fileExists = Gdx.files.local(filepath).exists();
-			// delete corrupted saves
-			if ((fileExists)
-					&& (SaveAndContinue.loadSaveFile(playerClass) == null)) {
-				SaveAndContinue.deleteSave(playerClass);
-			}
-			if (fileExists) {
-				return true;
-			}
+	public static String colorString(String input, String colorValue) {
+		StringBuilder retVal = new StringBuilder();
+		Scanner s = new Scanner(input);
+		while (s.hasNext()) {
+			retVal.append("[").append(colorValue).append("]").append(s.next());
+			retVal.append(" ");
 		}
-		return false;
-	}
-
-	public static AbstractPlayer.PlayerClass getSaveClass() {
-		for (PlayerClass playerClass : playerClassMap.keySet()) {
-			String filepath = save_path + playerClass + ".autosave";
-			if (Gdx.files.local(filepath).exists()) {
-				return playerClass;
-			}
-		}
-		return null;
+		s.close();
+		return retVal.toString().trim();
 	}
 
 	//
@@ -870,17 +807,6 @@ public class BaseMod {
 	// custom remove colors -
 	public static ArrayList<AbstractCard.CardColor> getCustomCardsToRemoveColors() {
 		return customToRemoveColors;
-	}
-
-	private static void checkGremlinMatchCard(PlayerClass playerClass) {
-		for (AbstractCard card : CardLibrary.getAllCards()) {
-			if (CardTags.hasTag(card, BaseModCardTags.GREMLIN_MATCH)) {
-				if (getColor(playerClass) == card.color) {
-					playerGremlinMatchCardIDMap.put(playerClass, card.cardID);
-					break;
-				}
-			}
-		}
 	}
 
 	// add card
@@ -1193,44 +1119,10 @@ public class BaseMod {
 	// Inner Key: Event ID
 	private static HashMap<String, HashMap<String, Class<? extends AbstractEvent>>> customEvents = new HashMap<>();
 
-	//Event type enum
-	@Deprecated
-	public enum EventPool{
-		@Deprecated
-		THE_EXORDIUM,
-		@Deprecated
-		THE_CITY,
-		@Deprecated
-		THE_BEYOND,
-		@Deprecated
-		ANY
-	}
-
-	@Deprecated
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, EventPool pool) {
-		String dungeonID = null;
-		switch(pool) {
-			case ANY:
-				dungeonID = null;
-				break;
-			case THE_BEYOND:
-				dungeonID = TheBeyond.ID;
-				break;
-			case THE_CITY:
-				dungeonID = TheCity.ID;
-				break;
-			case THE_EXORDIUM:
-				dungeonID = Exordium.ID;
-				break;
-			default:
-				break;
-		}
-
-		addEvent(eventID, eventClass, dungeonID);
-	}
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
 		addEvent(eventID, eventClass, (String)null);
 	}
+
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
 		if (!customEvents.containsKey(dungeonID)) {
 			customEvents.put(dungeonID, new HashMap<>());
@@ -1243,28 +1135,6 @@ public class BaseMod {
 		underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
 	}
 
-	@Deprecated
-	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(EventPool pool) {
-		String dungeonID = null;
-		switch(pool) {
-			case ANY:
-				dungeonID = null;
-				break;
-			case THE_BEYOND:
-				dungeonID = TheBeyond.ID;
-				break;
-			case THE_CITY:
-				dungeonID = TheCity.ID;
-				break;
-			case THE_EXORDIUM:
-				dungeonID = Exordium.ID;
-				break;
-			default:
-				break;
-		}
-
-		return getEventList(dungeonID);
-	}
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(String dungeonID) {
 		if (customEvents.containsKey(dungeonID)) {
 			return customEvents.get(dungeonID);
@@ -1521,113 +1391,31 @@ public class BaseMod {
 	// Characters
 	//
 
+	public static AbstractPlayer findCharacter(AbstractPlayer.PlayerClass playerClass) {
+		for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
+			if (character.chosenClass == playerClass) {
+				return character;
+			}
+		}
+		return null;
+	}
+
+	public static List<AbstractPlayer> getModdedCharacters() {
+		return CardCrawlGame.characterManager.getAllCharacters().subList(lastBaseCharacterIndex+1, CardCrawlGame.characterManager.getAllCharacters().size());
+	}
+
 	// add character - the String characterID *must* be the exact same as what
 	// you put in the PlayerClass enum
-	public static void addCharacter(Class<? extends AbstractPlayer> characterClass, String titleString,
-									String classString, AbstractCard.CardColor color, String selectText, String selectButton, String portrait,
+	public static void addCharacter(AbstractPlayer character,
+									AbstractCard.CardColor color,
+									String selectButtonPath,
+									String portraitPath,
 									PlayerClass characterID) {
-		playerClassMap.put(characterID, characterClass);
-		playerTitleStringMap.put(characterID, titleString);
-		playerClassStringMap.put(characterID, classString);
+		CardCrawlGame.characterManager.getAllCharacters().add(character);
+
 		playerColorMap.put(characterID, color);
-		playerSelectTextMap.put(characterID, selectText);
-		playerSelectButtonMap.put(characterID, selectButton);
-		playerPortraitMap.put(characterID, portrait);
-
-		checkGremlinMatchCard(characterID);
-	}
-
-	// I have no idea if this implementation comes even remotely close to
-	// working
-	public static void removeCharacter(PlayerClass characterID) {
-		playerClassMap.remove(characterID);
-	}
-
-	// convert a playerClass into the actual player class used by CardCrawlGame when creating the player for the game
-	public static AbstractPlayer createCharacter(PlayerClass playerClass, String playerName) {
-		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
-		Constructor<?> ctor;
-		try {
-			ctor = playerClassAsClass.getConstructor(String.class, AbstractPlayer.PlayerClass.class);
-		} catch (NoSuchMethodException | SecurityException e) {
-			// if we fail to get the constructor using java reflections just
-			// start the run as the Ironclad
-			logger.error("could not get constructor for " + playerClassAsClass.getName());
-			logger.info("running as the Ironclad instead");
-			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
-			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
-		}
-		AbstractPlayer thePlayer;
-		try {
-			thePlayer = (AbstractPlayer) ctor
-					.newInstance(new Object[] { playerName, playerClass });
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			// if we fail to instantiate using java reflections just start the
-			// run as the Ironclad
-			logger.error("could not instantiate " + playerClassAsClass.getName() + " with the constructor "
-					+ ctor.getName());
-			logger.info("running as the Ironclad instead");
-			logger.error("error was: " + e.getMessage());
-			e.printStackTrace();
-			CardCrawlGame.chosenCharacter = AbstractPlayer.PlayerClass.IRONCLAD;
-			return new Ironclad(playerName, AbstractPlayer.PlayerClass.IRONCLAD);
-		}
-		return thePlayer;
-	}
-
-	// convert a playerClass into the actual title string for that class
-	// used by AbstractPlayer when getting the title string for the player
-	public static String getTitle(PlayerClass playerClass) {
-		return playerTitleStringMap.get(playerClass);
-	}
-
-	// convert a playerClass into the actual starting deck for that class
-	public static ArrayList<String> getStartingDeck(PlayerClass playerClass) {
-		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
-		Method getStartingDeck;
-		try {
-			getStartingDeck = playerClassAsClass.getMethod("getStartingDeck");
-		} catch (NoSuchMethodException | SecurityException e1) {
-			// if we fail to get the getStartingDeck method using java
-			// reflections just start with the Ironclad deck
-			logger.error("could not get starting deck method for " + playerClassAsClass.getName());
-			return Ironclad.getStartingDeck();
-		}
-		Object startingDeckObj;
-		try {
-			startingDeckObj = getStartingDeck.invoke(null);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// if we fail to get the starting deck using java reflections just
-			// start with the Ironclad deck
-			logger.error("could not get starting deck for " + playerClassAsClass.getName());
-			return Ironclad.getStartingDeck();
-		}
-		return (ArrayList<String>) startingDeckObj;
-	}
-
-	// convert a playerClass into the actual starting relics for that class
-	public static ArrayList<String> getStartingRelics(PlayerClass playerClass) {
-		Class<?> playerClassAsClass = playerClassMap.get(playerClass);
-		Method getStartingRelics;
-		try {
-			getStartingRelics = playerClassAsClass.getMethod("getStartingRelics");
-		} catch (NoSuchMethodException | SecurityException e1) {
-			// if we fail to get the getStartingRelics method using java
-			// reflections just start with the Ironclad relics
-			logger.error("could not get starting relic method for " + playerClassAsClass.getName());
-			return Ironclad.getStartingRelics();
-		}
-		Object startingRelicsObj;
-		try {
-			startingRelicsObj = getStartingRelics.invoke(null);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// if we fail to get the starting relics using java reflections just
-			// start with the Ironclad relics
-			logger.error("could not get starting deck for " + playerClassAsClass.getName());
-			return Ironclad.getStartingRelics();
-		}
-		return (ArrayList<String>) startingRelicsObj;
+		playerSelectButtonMap.put(characterID, selectButtonPath);
+		playerPortraitMap.put(characterID, portraitPath);
 	}
 
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
@@ -1661,19 +1449,9 @@ public class BaseMod {
 		}
 	}
 
-	// convert a playerClass into the actual class ID for that class
-	public static String getClass(PlayerClass playerClass) {
-		return playerClassStringMap.get(playerClass);
-	}
-
 	// convert a playerClass into the actual color for that class
 	public static AbstractCard.CardColor getColor(PlayerClass playerClass) {
 		return playerColorMap.get(playerClass);
-	}
-
-	// convert a playerClass into the actual player class
-	public static Class<?> getPlayerClass(PlayerClass playerClass) {
-		return playerClassMap.get(playerClass);
 	}
 
 	// convert a playerClass into the player select button
@@ -1690,15 +1468,14 @@ public class BaseMod {
 	// players
 	public static ArrayList<CharacterOption> generateCharacterOptions() {
 		ArrayList<CharacterOption> options = new ArrayList<>();
-		for (PlayerClass character : playerClassMap.keySet()) {
-			// the game by default prepends "images/ui/charSelect" to the image
-			// load request
-			// so we override that with "../../.."
-			CharacterOption option = new CharacterOption(playerSelectTextMap.get(character),
-					character,
+		for (AbstractPlayer character : getModdedCharacters()) {
+			CharacterOption option = new CharacterOption(
+					character.getLocalizedCharacterName(),
+					CardCrawlGame.characterManager.recreateCharacter(character.chosenClass),
 					// note that these will fail so we patch this in
 					// basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
-					playerSelectButtonMap.get(character), playerPortraitMap.get(character));
+					playerSelectButtonMap.get(character.chosenClass), playerPortraitMap.get(character.chosenClass)
+			);
 			options.add(option);
 		}
 		// Sort alphabetically by character name
@@ -1709,24 +1486,10 @@ public class BaseMod {
 	// generate character options for CustomModeScreen based on added players
 	public static ArrayList<CustomModeCharacterButton> generateCustomCharacterOptions() {
 		ArrayList<CustomModeCharacterButton> options = new ArrayList<>();
-		for (PlayerClass character : playerClassMap.keySet()) {
-			options.add(new CustomModeCharacterButton(character, false));
+		for (AbstractPlayer character : getModdedCharacters()) {
+			options.add(new CustomModeCharacterButton(CardCrawlGame.characterManager.setChoosenCharacter(character.chosenClass), false));
 		}
 		return options;
-	}
-
-	// generate stats for StatsScreen based on added players
-	public static ArrayList<CharStat> generateCharacterStats() {
-		ArrayList<CharStat> stats = new ArrayList<>();
-		for (PlayerClass character : playerClassMap.keySet()) {
-			CharStat stat = playerStatsMap.get(character);
-			if (stat == null) {
-				stat = new CharStat(character);
-				playerStatsMap.put(character, stat);
-			}
-			stats.add(stat);
-		}
-		return stats;
 	}
 
 	//
@@ -2316,7 +2079,7 @@ public class BaseMod {
 	}
 
 	// publishPostCreateStartingDeck -
-	public static void publishPostCreateStartingDeck(PlayerClass chosenClass, ArrayList<String> cards) {
+	public static void publishPostCreateStartingDeck(PlayerClass chosenClass, CardGroup cards) {
 		logger.info("postCreateStartingDeck for: " + chosenClass);
 
 		for (PostCreateStartingDeckSubscriber sub : postCreateStartingDeckSubscribers) {
@@ -2325,8 +2088,8 @@ public class BaseMod {
 		}
 
 		StringBuilder logString = new StringBuilder("postCreateStartingDeck adding [ ");
-		for (String card : cards) {
-			logString.append(card).append(" ");
+		for (AbstractCard card : cards.group) {
+			logString.append(card.cardID).append(" ");
 		}
 		logString.append("]");
 		logger.info(logString.toString());
@@ -2406,6 +2169,8 @@ public class BaseMod {
 	// publishEditCharacters -
 	public static void publishEditCharacters() {
 		logger.info("begin editing characters");
+
+		lastBaseCharacterIndex = CardCrawlGame.characterManager.getAllCharacters().size() - 1;
 
 		for (EditCharactersSubscriber sub : editCharactersSubscribers) {
 			sub.receiveEditCharacters();
@@ -2548,11 +2313,11 @@ public class BaseMod {
 		logger.info("publishAddCustomModeMods");
 
 		CustomMod charMod = new CustomMod("Modded Character Cards", "p", false);
-		for (PlayerClass pc : playerClassMap.keySet()) {
+		for (AbstractPlayer character : getModdedCharacters()) {
 			CustomMod mod = new CustomMod(RedCards.ID, "g", true);
-			mod.ID = pc.name() + charMod.name;
-			mod.name = getTitle(pc) + charMod.name;
-			mod.description = getTitle(pc) + charMod.description;
+			mod.ID = character.chosenClass.name() + charMod.name;
+			mod.name = character.getLocalizedCharacterName() + charMod.name;
+			mod.description = character.getLocalizedCharacterName() + charMod.description;
 			String label = FontHelper.colorString("[" + mod.name + "]", mod.color) + " " + mod.description;
 			ReflectionHacks.setPrivate(mod, CustomMod.class, "label", label);
 			float height = -FontHelper.getSmartHeight(FontHelper.charDescFont, label, 1050.0F * Settings.scale, 32.0F * Settings.scale) + 70.0F * Settings.scale;
@@ -2605,19 +2370,15 @@ public class BaseMod {
 		}
 	}
 
-	// not actually unchecked because we do an isInstance check at runtime
-	@SuppressWarnings("unchecked")
 	private static <T> void subscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
 		if (clazz.isInstance(sub)) {
-			list.add((T) sub);
+			list.add(clazz.cast(sub));
 		}
 	}
 
-	// not actually unchecked because we do an isInstance check at runtime
-	@SuppressWarnings("unchecked")
 	private static <T> void unsubscribeIfInstance(ArrayList<T> list, ISubscriber sub, Class<T> clazz) {
 		if (clazz.isInstance(sub)) {
-			list.remove(sub);
+			list.remove(clazz.cast(sub));
 		}
 	}
 

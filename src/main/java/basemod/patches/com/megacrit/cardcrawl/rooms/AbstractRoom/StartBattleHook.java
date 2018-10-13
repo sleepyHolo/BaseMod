@@ -3,7 +3,6 @@ package basemod.patches.com.megacrit.cardcrawl.rooms.AbstractRoom;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
