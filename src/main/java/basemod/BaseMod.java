@@ -93,7 +93,7 @@ public class BaseMod {
 	public static final float BADGE_W = 40.0f;
 	public static final float BADGE_H = 40.0f;
 
-	public static final int DEFAULT_MAX_HAND_SIZE = 15;
+	public static final int DEFAULT_MAX_HAND_SIZE = 10;
 	@SuppressWarnings("unused")
 	public static int MAX_HAND_SIZE = DEFAULT_MAX_HAND_SIZE;
 
