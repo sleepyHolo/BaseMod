@@ -141,7 +141,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public void renderOrb(SpriteBatch sb, boolean enabled, float current_x, float current_y)
 	{
-		energyOrb.renderOrb(sb, enabled, current_x, current_x);
+		energyOrb.renderOrb(sb, enabled, current_x, current_y);
 	}
 
 	@Override
