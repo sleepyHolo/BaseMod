@@ -422,3 +422,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Sort modded characters alphabetically by name (kiooeht)
 * Shrink card description font for cards with lots of text (kiooeht)
 * Allow max hand size to be changed (kiooeht)
+* Fix ModSlider not allowing x position to be set (kiooeht)
