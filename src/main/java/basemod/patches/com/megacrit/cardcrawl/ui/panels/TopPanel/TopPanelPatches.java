@@ -173,6 +173,8 @@ public class TopPanelPatches
                 String name = (String) name_f.get(__instance);
 
                 float nameWidth = FontHelper.getWidth(FontHelper.panelNameFont, name, Settings.scale);
+                float origNameWidth = nameWidth;
+                String origName = name;
                 boolean tooLong = false;
                 while (nameWidth > 125f * Settings.scale) {
                     tooLong = true;
@@ -181,6 +183,10 @@ public class TopPanelPatches
                 }
                 if (tooLong) {
                     name = name + "...";
+                    // Remove the "..." if adding it makes the name longer than before
+                    if (FontHelper.getWidth(FontHelper.panelNameFont, name, Settings.scale) > origNameWidth) {
+                        name = origName;
+                    }
                 }
                 GlyphLayout layout = (GlyphLayout) gl.get(__instance);
                 layout.setText(FontHelper.panelNameFont, name);
