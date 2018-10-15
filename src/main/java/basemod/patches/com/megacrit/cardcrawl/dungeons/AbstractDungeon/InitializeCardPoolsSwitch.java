@@ -5,6 +5,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.daily.mods.BlueCards;
 import com.megacrit.cardcrawl.daily.mods.Diverse;
 import com.megacrit.cardcrawl.daily.mods.GreenCards;
@@ -13,6 +14,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
@@ -63,7 +65,13 @@ public class InitializeCardPoolsSwitch {
 				 String ID = character.chosenClass.name() + charMod.name;
 				 if (AbstractPlayer.customMods.contains(ID)) {
 				 	BaseMod.logger.info("[INFO] Adding " + character.getLocalizedCharacterName() + " cards into card pool.");
-
+				 	AbstractCard.CardColor color = BaseMod.getColor(character.chosenClass);
+				 	for (AbstractCard c : CardLibrary.cards.values()) {
+				 		if (c.color == color && c.rarity != AbstractCard.CardRarity.BASIC &&
+								(!UnlockTracker.isCardLocked(c.cardID) || Settings.treatEverythingAsUnlocked())) {
+				 			tmpPool.add(c);
+						}
+					}
 				 }
 			}
 		}
