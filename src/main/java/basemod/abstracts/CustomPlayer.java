@@ -45,6 +45,11 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 			String model, String animation) {
 		this(name, playerClass, orbTextures, orbVfxPath, null, model, animation);
 	}
+
+	public CustomPlayer(String name, PlayerClass playerClass, EnergyOrbInterface energyOrbInterface,
+						String model, String animation) {
+		this(name, playerClass, energyOrbInterface, new G3DJAnimation(model, animation));
+	}
 	
 	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds,
 			String model, String animation) {
@@ -57,9 +62,13 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 
 	public CustomPlayer(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds,
 						AbstractAnimation animation) {
+		this(name, playerClass, new CustomEnergyOrb(orbTextures, orbVfxPath, layerSpeeds), animation);
+	}
+
+	public CustomPlayer(String name, PlayerClass playerClass, EnergyOrbInterface energyOrbInterface, AbstractAnimation animation) {
 		super(name, playerClass);
 
-		energyOrb = new CustomEnergyOrb(orbTextures, orbVfxPath, layerSpeeds);
+		energyOrb = energyOrbInterface;
 		charStat = new CharStat(this);
 		
 		this.dialogX = (this.drawX + 0.0F * Settings.scale);
