@@ -431,3 +431,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Don't shorten name if adding "..." makes it longer than it was (kiooeht)
 * Fix custom character card modifiers (kiooeht)
 * Allow passing EnergyOrbInterface to CustomPlayer (kiooeht)
+* Slow energy orb spin when out of energy (kiooeht)

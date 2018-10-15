@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.ui.panels.energyorb.EnergyOrbInterface;
 
 public class CustomEnergyOrb implements EnergyOrbInterface
@@ -85,12 +86,19 @@ public class CustomEnergyOrb implements EnergyOrbInterface
 	@Override
 	public void updateOrb()
 	{
-		// TODO: EnergyPanel.totalCount check
-		angles[4] += Gdx.graphics.getDeltaTime() * layerSpeeds[0];
-		angles[3] += Gdx.graphics.getDeltaTime() * layerSpeeds[1];
-		angles[2] += Gdx.graphics.getDeltaTime() * layerSpeeds[2];
-		angles[1] += Gdx.graphics.getDeltaTime() * layerSpeeds[3];
-		angles[0] += Gdx.graphics.getDeltaTime() * layerSpeeds[4];
+		if (EnergyPanel.totalCount == 0) {
+			angles[4] += Gdx.graphics.getDeltaTime() * layerSpeeds[0] / 4.0f;
+			angles[3] += Gdx.graphics.getDeltaTime() * layerSpeeds[1] / 4.0f;
+			angles[2] += Gdx.graphics.getDeltaTime() * layerSpeeds[2] / 4.0f;
+			angles[1] += Gdx.graphics.getDeltaTime() * layerSpeeds[3] / 4.0f;
+			angles[0] += Gdx.graphics.getDeltaTime() * layerSpeeds[4] / 4.0f;
+		} else {
+			angles[4] += Gdx.graphics.getDeltaTime() * layerSpeeds[0];
+			angles[3] += Gdx.graphics.getDeltaTime() * layerSpeeds[1];
+			angles[2] += Gdx.graphics.getDeltaTime() * layerSpeeds[2];
+			angles[1] += Gdx.graphics.getDeltaTime() * layerSpeeds[3];
+			angles[0] += Gdx.graphics.getDeltaTime() * layerSpeeds[4];
+		}
 	}
 
 	@Override
