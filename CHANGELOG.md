@@ -434,3 +434,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Slow energy orb spin when out of energy (kiooeht)
 
 #### dev ####
+* Fix Discovery not obeying new max hand size (kiooeht)

@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.actions.defect.ScrapeAction;
 import com.megacrit.cardcrawl.actions.defect.SeekAction;
 import com.megacrit.cardcrawl.actions.unique.AttackFromDeckToHandAction;
+import com.megacrit.cardcrawl.actions.unique.DiscoveryAction;
 import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
 import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
@@ -66,6 +67,10 @@ import java.util.HashMap;
 )
 @SpirePatch(
 		clz=DrawPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DiscoveryAction.class,
 		method="update"
 )
 public class MaxHandSizePatch
