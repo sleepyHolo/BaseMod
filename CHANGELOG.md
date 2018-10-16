@@ -433,6 +433,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow passing EnergyOrbInterface to CustomPlayer (kiooeht)
 * Slow energy orb spin when out of energy (kiooeht)
 
-#### dev ####
+#### v4.0.2 ####
 * Fix Discovery not obeying new max hand size (kiooeht)
 * Fix ModSlider using y position as x position (kiooeht)
+
+#### dev ####
