@@ -38,10 +38,11 @@ public class ModSlider implements IUIElement {
         change = changeAction;
 
         if (posX == -1) {
-            x = L_X + (SLIDE_W * value);
+            posX = L_X;
         } else {
-            x = posY * Settings.scale;
+            posX *= Settings.scale;
         }
+        x = posX + (SLIDE_W * value);
         y = posY * Settings.scale;
         
         hb = new Hitbox(42.0f * Settings.scale, 38.0f * Settings.scale);
