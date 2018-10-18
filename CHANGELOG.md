@@ -438,3 +438,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix ModSlider using y position as x position (kiooeht)
 
 #### dev ####
+* Fix custom monsters being more weighted (kiooeht)
+* Fix custom monsters not being used for the first strong enemy (kiooeht)
