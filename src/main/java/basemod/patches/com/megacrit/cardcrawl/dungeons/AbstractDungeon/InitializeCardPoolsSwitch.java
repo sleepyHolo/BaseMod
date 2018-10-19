@@ -65,7 +65,7 @@ public class InitializeCardPoolsSwitch {
 				 String ID = character.chosenClass.name() + charMod.name;
 				 if (AbstractPlayer.customMods.contains(ID)) {
 				 	BaseMod.logger.info("[INFO] Adding " + character.getLocalizedCharacterName() + " cards into card pool.");
-				 	AbstractCard.CardColor color = BaseMod.getColor(character.chosenClass);
+				 	AbstractCard.CardColor color = character.getCardColor();
 				 	for (AbstractCard c : CardLibrary.cards.values()) {
 				 		if (c.color == color && c.rarity != AbstractCard.CardRarity.BASIC &&
 								(!UnlockTracker.isCardLocked(c.cardID) || Settings.treatEverythingAsUnlocked())) {

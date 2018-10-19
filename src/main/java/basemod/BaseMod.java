@@ -168,7 +168,6 @@ public class BaseMod {
 
 	private static int lastBaseCharacterIndex = -1;
 
-	public static HashMap<PlayerClass, AbstractCard.CardColor> playerColorMap;
 	public static HashMap<PlayerClass, String> playerSelectButtonMap;
 	public static HashMap<PlayerClass, String> playerPortraitMap;
 
@@ -464,7 +463,6 @@ public class BaseMod {
 
 	// initializeCharacterMap -
 	private static void initializeCharacterMap() {
-		playerColorMap = new HashMap<>();
 		playerSelectButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
 	}
@@ -1407,13 +1405,11 @@ public class BaseMod {
 	// add character - the String characterID *must* be the exact same as what
 	// you put in the PlayerClass enum
 	public static void addCharacter(AbstractPlayer character,
-									AbstractCard.CardColor color,
 									String selectButtonPath,
 									String portraitPath,
 									PlayerClass characterID) {
 		CardCrawlGame.characterManager.getAllCharacters().add(character);
 
-		playerColorMap.put(characterID, color);
 		playerSelectButtonMap.put(characterID, selectButtonPath);
 		playerPortraitMap.put(characterID, portraitPath);
 	}
@@ -1422,16 +1418,7 @@ public class BaseMod {
 		if (AbstractDungeon.player == null) {
 			return AbstractCard.orb_red;
 		}
-		switch (AbstractDungeon.player.chosenClass) {
-			case IRONCLAD:
-				return AbstractCard.orb_red;
-			case THE_SILENT:
-				return AbstractCard.orb_green;
-			case DEFECT:
-				return AbstractCard.orb_blue;
-			default:
-				return getCardEnergyOrbAtlasRegion(playerColorMap.get(AbstractDungeon.player.chosenClass));
-		}
+		return AbstractDungeon.player.getOrb();
 	}
 
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy(AbstractCard card) {
@@ -1447,11 +1434,6 @@ public class BaseMod {
 			default:
 				return getCardEnergyOrbAtlasRegion(card.color);
 		}
-	}
-
-	// convert a playerClass into the actual color for that class
-	public static AbstractCard.CardColor getColor(PlayerClass playerClass) {
-		return playerColorMap.get(playerClass);
 	}
 
 	// convert a playerClass into the player select button
@@ -1487,7 +1469,7 @@ public class BaseMod {
 	public static ArrayList<CustomModeCharacterButton> generateCustomCharacterOptions() {
 		ArrayList<CustomModeCharacterButton> options = new ArrayList<>();
 		for (AbstractPlayer character : getModdedCharacters()) {
-			options.add(new CustomModeCharacterButton(CardCrawlGame.characterManager.setChoosenCharacter(character.chosenClass), false));
+			options.add(new CustomModeCharacterButton(CardCrawlGame.characterManager.setChosenCharacter(character.chosenClass), false));
 		}
 		return options;
 	}

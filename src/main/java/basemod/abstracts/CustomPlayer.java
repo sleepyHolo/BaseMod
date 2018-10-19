@@ -119,7 +119,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public ArrayList<AbstractCard> getCardPool(ArrayList<AbstractCard> tmpPool)
 	{
-		AbstractCard.CardColor color = BaseMod.getColor(chosenClass);
+		AbstractCard.CardColor color = getCardColor();
 		for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
 			AbstractCard card = c.getValue();
 			if (card.color.equals(color) && card.rarity != AbstractCard.CardRarity.BASIC &&
@@ -148,15 +148,21 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	}
 
 	@Override
+	public TextureAtlas.AtlasRegion getOrb()
+	{
+		return BaseMod.getCardEnergyOrbAtlasRegion(getCardColor());
+	}
+
+	@Override
 	public void renderOrb(SpriteBatch sb, boolean enabled, float current_x, float current_y)
 	{
 		energyOrb.renderOrb(sb, enabled, current_x, current_y);
 	}
 
 	@Override
-	public void updateOrb()
+	public void updateOrb(int energyCount)
 	{
-		energyOrb.updateOrb();
+		energyOrb.updateOrb(energyCount);
 	}
 
 	@Override
@@ -198,19 +204,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public int getSeenCardCount()
 	{
-		return BaseMod.getSeenCardCount(BaseMod.getColor(chosenClass));
+		return BaseMod.getSeenCardCount(getCardColor());
 	}
 
 	@Override
 	public int getCardCount()
 	{
-		return BaseMod.getCardCount(BaseMod.getColor(chosenClass));
+		return BaseMod.getCardCount(getCardColor());
 	}
 
 	@Override
 	public boolean saveFileExists()
 	{
-		return SaveAndContinue.saveExistsAndNotCorrupted(chosenClass);
+		return SaveAndContinue.saveExistsAndNotCorrupted(this);
 	}
 
 	@Override

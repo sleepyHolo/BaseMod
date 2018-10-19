@@ -145,9 +145,9 @@ public class ColorTabBarFix
                 }
                 // Find character name
                 AbstractPlayer.PlayerClass playerClass = null;
-                for (Map.Entry<AbstractPlayer.PlayerClass, AbstractCard.CardColor> entry : BaseMod.playerColorMap.entrySet()) {
-                    if (entry.getValue() == Fields.modTabs.get(i).color) {
-                        playerClass = entry.getKey();
+                for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
+                    if (character.getCardColor() == Fields.modTabs.get(i).color) {
+                        playerClass = character.chosenClass;
                         break;
                     }
                 }

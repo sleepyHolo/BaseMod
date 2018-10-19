@@ -407,7 +407,6 @@ public class TestMod implements
 		loudWrite(writer, "begin editting characters");
 
 		BaseMod.addCharacter(new Purpleclad(CardCrawlGame.playerName),
-				ColorEnumPatch.PURPLE,
 				makePath(ASSET_FOLDER, PURPLECLAD_BUTTON),
 				makePath(ASSET_FOLDER, PURPLECLAD_PORTRAIT),
 				CharacterEnumPatch.THE_PURPLECLAD);

@@ -3,8 +3,10 @@ package basemod.test;
 import basemod.abstracts.CustomPlayer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.esotericsoftware.spine.AnimationState;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.Claw;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -99,6 +101,36 @@ public class Purpleclad extends CustomPlayer {
 	}
 
 	@Override
+	public TextureAtlas.AtlasRegion getOrb()
+	{
+		return null;
+	}
+
+	@Override
+	public String getSpireHeartText()
+	{
+		return null;
+	}
+
+	@Override
+	public Color getSlashAttackColor()
+	{
+		return null;
+	}
+
+	@Override
+	public AbstractGameAction.AttackEffect[] getSpireHeartSlashEffect()
+	{
+		return new AbstractGameAction.AttackEffect[0];
+	}
+
+	@Override
+	public String getVampireText()
+	{
+		return null;
+	}
+
+	@Override
 	public ArrayList<String> getStartingRelics() {
 		ArrayList<String> retVal = new ArrayList<>();
 		retVal.add(Arcanosphere.ID);
@@ -120,7 +152,13 @@ public class Purpleclad extends CustomPlayer {
 	}
 
 	@Override
-	public Color getCardColor()
+	public AbstractCard.CardColor getCardColor()
+	{
+		return ColorEnumPatch.PURPLE;
+	}
+
+	@Override
+	public Color getCardRenderColor()
 	{
 		return Color.PURPLE;
 	}

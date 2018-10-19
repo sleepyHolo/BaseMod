@@ -84,9 +84,9 @@ public class CustomEnergyOrb implements EnergyOrbInterface
 	}
 
 	@Override
-	public void updateOrb()
+	public void updateOrb(int energyCount)
 	{
-		if (EnergyPanel.totalCount == 0) {
+		if (energyCount == 0) {
 			angles[4] += Gdx.graphics.getDeltaTime() * layerSpeeds[0] / 4.0f;
 			angles[3] += Gdx.graphics.getDeltaTime() * layerSpeeds[1] / 4.0f;
 			angles[2] += Gdx.graphics.getDeltaTime() * layerSpeeds[2] / 4.0f;
