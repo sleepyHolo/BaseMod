@@ -443,5 +443,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom monsters not being used for the first strong enemy (kiooeht)
 * More fixing ModSlider position (kiooeht)
 
-#### dev ####
+#### v5.0.1 ####
 * Fix NPE in base game GetAllInBattleInstances (kiooeht)
+
+#### dev ####
