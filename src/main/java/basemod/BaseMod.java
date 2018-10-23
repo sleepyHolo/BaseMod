@@ -2,6 +2,8 @@ package basemod;
 
 import basemod.abstracts.CustomBottleRelic;
 import basemod.abstracts.CustomCard;
+import basemod.abstracts.CustomSaveable;
+import basemod.abstracts.CustomSaveableRaw;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.abstracts.DynamicVariable;
 import basemod.helpers.RelicType;
@@ -218,6 +220,8 @@ public class BaseMod {
 	private static HashMap<AbstractCard.CardColor, TextureAtlas.AtlasRegion> colorCardEnergyOrbAtlasRegionMap;
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
+
+	private static HashMap<String,CustomSaveableRaw> customSaveFields = new HashMap<>();
 
 	private static OrthographicCamera animationCamera;
 	private static ModelBatch batch;
@@ -1840,6 +1844,18 @@ public class BaseMod {
 
 	public static Set<String> getPowerKeys() {
 		return powerMap.keySet();
+	}
+
+	//
+	// Save files
+	//
+
+	public static <T> void addSaveField(String key, CustomSaveableRaw saveField) {
+		customSaveFields.put(key, saveField);
+	}
+
+	public static Map<String,CustomSaveableRaw> getSaveFields() {
+		return customSaveFields;
 	}
 
 	//
