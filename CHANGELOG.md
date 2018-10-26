@@ -446,7 +446,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.0.1 ####
 * Fix NPE in base game GetAllInBattleInstances (kiooeht)
 
-#### dev ####
+#### v5.1.0 ####
 * Support for week 47 (kiooeht)
 * Add PreRoomRender hook (Blank The Evil)
 * Custom save fields for cards and relics (twanvl)
+
+#### dev ####
