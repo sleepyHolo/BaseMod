@@ -1,18 +1,15 @@
 package basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.google.gson.JsonElement;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomSaveableRaw;
+import basemod.abstracts.CustomSavableRaw;
 
 @SpirePatch(clz=SaveFile.class, method=SpirePatch.CONSTRUCTOR, paramtypez={SaveFile.SaveType.class})
 public class ConstructSaveFilePatch
@@ -21,8 +18,8 @@ public class ConstructSaveFilePatch
         // Card saves
         ModSaves.ArrayListOfJsonElement modCardSaves = new ModSaves.ArrayListOfJsonElement();
         for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
-            if (card instanceof CustomSaveableRaw) {
-                modCardSaves.add(((CustomSaveableRaw)card).onSaveRaw());
+            if (card instanceof CustomSavableRaw) {
+                modCardSaves.add(((CustomSavableRaw)card).onSaveRaw());
             } else {
                 modCardSaves.add(null);
             }
@@ -32,8 +29,8 @@ public class ConstructSaveFilePatch
         // Relic saves
         ModSaves.ArrayListOfJsonElement modRelicSaves = new ModSaves.ArrayListOfJsonElement();
         for (AbstractRelic relic : AbstractDungeon.player.relics) {
-            if (relic instanceof CustomSaveableRaw) {
-                modRelicSaves.add(((CustomSaveableRaw)relic).onSaveRaw());
+            if (relic instanceof CustomSavableRaw) {
+                modRelicSaves.add(((CustomSavableRaw)relic).onSaveRaw());
             } else {
                 modRelicSaves.add(null);
             }
@@ -42,7 +39,7 @@ public class ConstructSaveFilePatch
 
         // Mod saves
         ModSaves.HashMapOfJsonElement modSaves = new ModSaves.HashMapOfJsonElement();
-        for (Map.Entry<String,CustomSaveableRaw> field : BaseMod.getSaveFields().entrySet()) {
+        for (Map.Entry<String, CustomSavableRaw> field : BaseMod.getSaveFields().entrySet()) {
             modSaves.put(field.getKey(), field.getValue().onSaveRaw());
         }
         ModSaves.modSaves.set(__instance, modSaves);

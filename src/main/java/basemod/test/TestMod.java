@@ -3,7 +3,7 @@ package basemod.test;
 import basemod.BaseMod;
 import basemod.ModLabel;
 import basemod.ModPanel;
-import basemod.abstracts.CustomSaveable;
+import basemod.abstracts.CustomSavable;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -428,7 +428,7 @@ public class TestMod implements
 	}
 
 	public void saveFieldTest() {
-		BaseMod.addSaveField("testmod:savetest", new CustomSaveable<String>() {
+		BaseMod.addSaveField("testmod:savetest", new CustomSavable<String>() {
 			public Class<String> savedType() {
 				return String.class;
 			}

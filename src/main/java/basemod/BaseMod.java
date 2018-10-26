@@ -2,8 +2,7 @@ package basemod;
 
 import basemod.abstracts.CustomBottleRelic;
 import basemod.abstracts.CustomCard;
-import basemod.abstracts.CustomSaveable;
-import basemod.abstracts.CustomSaveableRaw;
+import basemod.abstracts.CustomSavableRaw;
 import basemod.abstracts.CustomUnlockBundle;
 import basemod.abstracts.DynamicVariable;
 import basemod.helpers.RelicType;
@@ -222,7 +221,7 @@ public class BaseMod {
 
 	private static HashMap<AbstractPlayer.PlayerClass, HashMap<Integer, CustomUnlockBundle>> unlockBundles;
 
-	private static HashMap<String,CustomSaveableRaw> customSaveFields = new HashMap<>();
+	private static HashMap<String, CustomSavableRaw> customSaveFields = new HashMap<>();
 
 	private static OrthographicCamera animationCamera;
 	private static ModelBatch batch;
@@ -1852,11 +1851,11 @@ public class BaseMod {
 	// Save files
 	//
 
-	public static <T> void addSaveField(String key, CustomSaveableRaw saveField) {
+	public static <T> void addSaveField(String key, CustomSavableRaw saveField) {
 		customSaveFields.put(key, saveField);
 	}
 
-	public static Map<String,CustomSaveableRaw> getSaveFields() {
+	public static Map<String, CustomSavableRaw> getSaveFields() {
 		return customSaveFields;
 	}
 
