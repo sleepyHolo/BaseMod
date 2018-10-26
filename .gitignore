@@ -24,7 +24,9 @@ hs_err_pid*
 # Custom
 .classpath
 .project
+.factorypath
 .idea/
+.settings/
 *.iml
 src/main/java/com/megacrit/**/*.java
 target/

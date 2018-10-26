@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
@@ -897,7 +898,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		AbstractDungeon.setCurrMapNode(node);
 		AbstractDungeon.getCurrRoom().onPlayerEntry();
 		AbstractDungeon.scene.nextRoom(node.room);
-		AbstractDungeon.rs = AbstractDungeon.RenderScene.EVENT;
+		AbstractDungeon.rs = node.room.event instanceof AbstractImageEvent ? AbstractDungeon.RenderScene.EVENT : AbstractDungeon.RenderScene.NORMAL;
 	}
 
 	private static void cmdPotion(String[] tokens) {
