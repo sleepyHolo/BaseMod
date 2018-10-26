@@ -3,6 +3,7 @@ package basemod.test;
 import basemod.BaseMod;
 import basemod.ModLabel;
 import basemod.ModPanel;
+import basemod.abstracts.CustomSavable;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -164,6 +165,8 @@ public class TestMod implements
         		makePath(ASSET_FOLDER, POWER_PURPLE),
         		makePath(ASSET_FOLDER, ENERGY_ORB_PURPLE));
 		loudWrite(writer, "End setting up new colors");
+
+		saveFieldTest();
 	}
 	
 	public static void initialize() {
@@ -422,5 +425,23 @@ public class TestMod implements
 		BaseMod.addCard(new Defend_Purple());
 		
 		loudWrite(writer, "End editting cards");
+	}
+
+	public void saveFieldTest() {
+		BaseMod.addSaveField("testmod:savetest", new CustomSavable<String>() {
+			public Class<String> savedType() {
+				return String.class;
+			}
+			public String onSave() {
+				return "Saved";
+			}
+			public void onLoad(String x) {
+				if (x == null) {
+					loudWrite(writer, "loaded savefile, but no custom field");
+				} else {
+					loudWrite(writer, "loaded savefile, found custom field: " + x);
+				}
+			}
+		});
 	}
 }
