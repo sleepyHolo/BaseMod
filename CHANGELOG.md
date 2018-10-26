@@ -447,3 +447,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix NPE in base game GetAllInBattleInstances (kiooeht)
 
 #### dev ####
+* Support for week 47 (kiooeht)

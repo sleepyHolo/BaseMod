@@ -22,7 +22,7 @@ public class RenderDescriptionEnergy
     private static Pattern r = Pattern.compile("\\[([RGBE])\\](\\.?) ");
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.cards.AbstractCard",
+            clz=AbstractCard.class,
             method="renderDescription"
     )
     public static class AlterTmp
@@ -41,7 +41,7 @@ public class RenderDescriptionEnergy
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.cards.AbstractCard",
+            clz=AbstractCard.class,
             method="renderDescription"
     )
     public static class RenderSmallEnergyOrb
@@ -49,7 +49,7 @@ public class RenderDescriptionEnergy
         private static final float CARD_ENERGY_IMG_WIDTH = 24.0f * Settings.scale;
 
         @SpireInsertPatch(
-                rloc=185,
+                locator=Locator.class,
                 localvars={"spacing", "i", "start_x", "draw_y", "font", "textColor", "tmp", "gl"}
         )
         public static void Insert(AbstractCard __instance, SpriteBatch sb, float spacing, int i, @ByRef float[] start_x, float draw_y,
@@ -61,7 +61,7 @@ public class RenderDescriptionEnergy
                 float tmp2 = (__instance.description.size() - 4) * spacing;
                 __instance.renderSmallEnergy(sb, BaseMod.getCardSmallEnergy(__instance),
                         (start_x[0] - __instance.current_x) / Settings.scale / __instance.drawScale,
-                        -tmp2 - 172.0f + CARD_ENERGY_IMG_WIDTH * __instance.drawScale + i * spacing * 2.0f);
+                        -100.0f - ((__instance.description.size() - 4.0f) / 2.0f - i + 1.0f) * spacing);
                 if (m.group(2).equals(".")) {
                     FontHelper.renderRotatedText(sb, font, ".",
                             __instance.current_x, __instance.current_y,
@@ -73,10 +73,21 @@ public class RenderDescriptionEnergy
                 tmp[0] = "";
             }
         }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception
+            {
+                com.evacipated.cardcrawl.modthespire.lib.Matcher matcher = new com.evacipated.cardcrawl.modthespire.lib.Matcher.MethodCallMatcher(GlyphLayout.class, "setText");
+                int[] lines = LineFinder.findAllInOrder(ctBehavior, new ArrayList<>(), matcher);
+                return new int[]{lines[lines.length-1]}; // Only last occurrence
+            }
+        }
     }
 
     @SpirePatch(
-            cls="com.megacrit.cardcrawl.cards.AbstractCard",
+            clz=AbstractCard.class,
             method="initializeDescription"
     )
     public static class AlterEnergyKeyword
