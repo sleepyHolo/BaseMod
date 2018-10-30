@@ -4,12 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.brashmonkey.spriter.Data;
+import com.brashmonkey.spriter.*;
 import com.brashmonkey.spriter.LibGdx.LibGdxDrawer;
 import com.brashmonkey.spriter.LibGdx.LibGdxLoader;
-import com.brashmonkey.spriter.Player;
-import com.brashmonkey.spriter.Point;
-import com.brashmonkey.spriter.SCMLReader;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -20,8 +17,8 @@ public class SpriterAnimation extends AbstractAnimation
 
     LibGdxLoader loader;
     LibGdxDrawer drawer;
-    Player myPlayer;
     ShapeRenderer renderer;
+    public PlayerTweener myPlayer;
 
     public SpriterAnimation(String filepath)
     {
@@ -35,7 +32,7 @@ public class SpriterAnimation extends AbstractAnimation
 
         drawer = new LibGdxDrawer(loader, renderer);
 
-        myPlayer = new Player(data.getEntity(0));
+        myPlayer = new PlayerTweener(data.getEntity(0));
 
         myPlayer.setScale(Settings.scale);
     }
