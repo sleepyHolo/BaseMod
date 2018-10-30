@@ -44,7 +44,7 @@ public class SpriterAnimation extends AbstractAnimation
     }
 
     @Override
-    public void renderSprite(SpriteBatch batch)
+    public void renderSprite(SpriteBatch batch, float x, float y)
     {
         drawer.batch = batch;
         // Update animation
@@ -53,10 +53,7 @@ public class SpriterAnimation extends AbstractAnimation
         // Move to correct location on screen
         AbstractPlayer player = AbstractDungeon.player;
         if (player != null) {
-            Point pos = new Point();
-            pos.x = player.drawX + player.animX;
-            pos.y = player.drawY + player.animY + AbstractDungeon.sceneOffsetY;
-            myPlayer.setPosition(pos);
+            myPlayer.setPosition(new Point(x, y));
 
             drawer.draw(myPlayer);
 

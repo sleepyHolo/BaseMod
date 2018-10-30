@@ -104,7 +104,7 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 				BaseMod.publishAnimationRender(sb);
 				break;
 			case SPRITE:
-				animation.renderSprite(sb);
+				animation.renderSprite(sb, drawX + animX, drawY + animY + AbstractDungeon.sceneOffsetY);
 				break;
 		}
 	}
