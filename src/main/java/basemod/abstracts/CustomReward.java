@@ -11,16 +11,22 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.rewards.RewardItem;
+import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+import com.megacrit.cardcrawl.vfx.RewardGlowEffect;
+
+import java.util.ArrayList;
 
 public abstract class CustomReward extends RewardItem {
 
 	public Texture icon;
+	public ArrayList<AbstractGameEffect> effects;
 
 	public CustomReward(Texture icon, String text, RewardItem.RewardType type) {
 		super();
 		this.icon = icon;
 		this.text = text;
 		this.type = type;
+		this.effects = new ArrayList<>();
 	}
 
 	public abstract boolean claimReward();
@@ -35,6 +41,16 @@ public abstract class CustomReward extends RewardItem {
 		}
 
 		this.hb.update();
+
+		if(this.effects.size() == 0) {
+			this.effects.add(new RewardGlowEffect(this.hb.cX, this.hb.cY));
+		}
+
+		for(AbstractGameEffect effect : effects){
+			effect.update();
+		}
+
+		effects.removeIf((effect) -> effect.isDone);
 
 		if(this.hb.justHovered){
 			CardCrawlGame.sound.play("UI_HOVER");
@@ -87,5 +103,13 @@ public abstract class CustomReward extends RewardItem {
 		}
 
 		FontHelper.renderSmartText(sb, FontHelper.rewardTipFont, this.text, 833.0f * Settings.scale, this.y + 5.0f * Settings.scale, 1000.0f * Settings.scale, 0.0f, c);
+
+		if(!this.hb.hovered) {
+			for(AbstractGameEffect e : this.effects) {
+				e.render(sb);
+			}
+		}
+
+		this.hb.render(sb);
 	}
 }
