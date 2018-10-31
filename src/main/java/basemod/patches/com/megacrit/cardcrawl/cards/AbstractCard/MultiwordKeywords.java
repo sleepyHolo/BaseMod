@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -56,6 +57,11 @@ public class MultiwordKeywords
 	{
 		public static String Replace(String input)
 		{
+			String tmp = BaseMod.getKeywordProper(input);
+			if (tmp != null) {
+				return tmp;
+			}
+
 			// Capitalize each word
 			StringBuilder builder = new StringBuilder();
 			for (String w : input.split(" ")) {

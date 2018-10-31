@@ -183,6 +183,8 @@ public class BaseMod {
 
 	private static HashMap<String, Class<? extends AbstractPower>> powerMap;
 
+	private static HashMap<String, String> keywordProperNames;
+
 	public static ArrayList<String> encounterList;
 	public static HashMap<String, String> underScoreEncounterIDs;
 	public static HashMap<String, String> underScoreCardIDs;
@@ -347,6 +349,7 @@ public class BaseMod {
 		initializePotionList();
 		initializePowerMap();
 		initializeUnderscorePowerIDs();
+		keywordProperNames = new HashMap<>();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribe(baseModInit);
 
@@ -1350,12 +1353,24 @@ public class BaseMod {
 	//
 
 	public static void addKeyword(String[] names, String description) {
+		addKeyword(null, names, description);
+	}
+
+	public static void addKeyword(String proper, String[] names, String description) {
 		String parent = names[0];
+		if (proper != null) {
+			keywordProperNames.put(parent, proper);
+		}
 
 		for (String name : names) {
 			GameDictionary.keywords.put(name, description);
 			GameDictionary.parentWord.put(name, parent);
 		}
+	}
+
+	public static String getKeywordProper(String keyword)
+	{
+		return keywordProperNames.get(keyword);
 	}
 
 	//
