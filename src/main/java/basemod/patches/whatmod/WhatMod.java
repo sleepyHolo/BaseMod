@@ -26,9 +26,11 @@ public class WhatMod
 
 	static void renderModTooltip(SpriteBatch sb, Class<?> cls)
 	{
-		float x = 1300.0f * Settings.scale;
-		float y = 700.0f * Settings.scale;
+		renderModTooltip(sb, cls, 1300.0f * Settings.scale, 700.0f * Settings.scale);
+	}
 
+	static void renderModTooltip(SpriteBatch sb, Class<?> cls, float x, float y)
+	{
 		String title = "What mod is this from?";
 		String body;
 
