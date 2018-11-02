@@ -451,8 +451,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add PreRoomRender hook (Blank The Evil)
 * Custom save fields for cards and relics (twanvl)
 
-#### dev ####
+#### v5.2.0 ####
 * Make Spriter animation public (kiooeht)
 * Spriter animations for monsters (kiooeht)
 * Multi-word keywords (kiooeht)
 * What mod is this from? for events (kiooeht)
+
+#### dev ####
