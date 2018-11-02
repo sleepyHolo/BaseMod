@@ -39,7 +39,7 @@ public class InitializeCardPoolsSwitch {
 
 		// Diverse
 		if (ModHelper.isModEnabled(Diverse.ID)) {
-			for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
+			for (AbstractPlayer character : BaseMod.getModdedCharacters()) {
 				character.getCardPool(tmpPool);
 			}
 		} else if (!BaseMod.isBaseGameCharacter(chosenClass)) {

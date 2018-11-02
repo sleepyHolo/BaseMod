@@ -462,3 +462,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Easier SpineAnimation option for custom characters (kiooeht)
+* Fix Diverse adding base character cards twice (kiooeht)
