@@ -3,6 +3,7 @@ package basemod.abstracts;
 import basemod.BaseMod;
 import basemod.animations.AbstractAnimation;
 import basemod.animations.G3DJAnimation;
+import basemod.animations.SpineAnimation;
 import basemod.interfaces.ModelRenderSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -75,6 +76,11 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		this.dialogY = (this.drawY + 220.0F * Settings.scale);
 
 		this.animation = animation;
+
+		if (animation instanceof SpineAnimation) {
+			SpineAnimation spine = (SpineAnimation) animation;
+			loadAnimation(spine.atlasUrl, spine.skeletonUrl, spine.scale);
+		}
 
 		if (animation.type() != AbstractAnimation.Type.NONE) {
 			this.atlas = new TextureAtlas();

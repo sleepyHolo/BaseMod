@@ -1,6 +1,7 @@
 package basemod.test;
 
 import basemod.abstracts.CustomPlayer;
+import basemod.animations.SpineAnimation;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -23,18 +24,18 @@ import java.util.ArrayList;
 public class Purpleclad extends CustomPlayer {
 
 	public Purpleclad(String name) {
-		super(name, CharacterEnumPatch.THE_PURPLECLAD, null, null, (String)null, (String)null);
+		super(name, CharacterEnumPatch.THE_PURPLECLAD, null, null,
+				new SpineAnimation("images/characters/ironclad/idle/skeleton.atlas", "images/characters/ironclad/idle/skeleton.json", 1.0F));
 		
 		this.dialogX = (this.drawX + 0.0F * Settings.scale);
 		this.dialogY = (this.drawY + 220.0F * Settings.scale);
 		
 		initializeClass(null, "images/characters/ironclad/shoulder2.png", "images/characters/ironclad/shoulder.png", "images/characters/ironclad/corpse.png", 
 				getLoadout(), 20.0F, -10.0F, 220.0F, 290.0F, new EnergyManager(3));
-		
-		loadAnimation("images/characters/ironclad/idle/skeleton.atlas", "images/characters/ironclad/idle/skeleton.json", 1.0F);
-		
-		AnimationState.TrackEntry e = this.state.setAnimation(0, "animation", true);
-		e.setTime(e.getEndTime() * MathUtils.random());
+
+		AnimationState.TrackEntry e = this.state.setAnimation(0, "Idle", true);
+		stateData.setMix("Hit", "Idle", 0.1f);
+		e.setTimeScale(0.6f);
 	}
 
 	@Override
