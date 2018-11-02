@@ -460,6 +460,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.2.1 ####
 * Fix crash from multi-word keywords on some relics (kiooeht)
 
-#### dev ####
+#### v5.2.2 ####
 * Easier SpineAnimation option for custom characters (kiooeht)
 * Fix Diverse adding base character cards twice (kiooeht)
+
+#### dev ####
