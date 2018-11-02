@@ -24,7 +24,7 @@ public class MultiwordKeywords
 		for (String word : input.split(" ")) {
 			String keyword = word;
 			String color = null;
-			if (word.charAt(0) == '#') {
+			if (!word.isEmpty() && word.charAt(0) == '#') {
 				color = word.substring(1, 2);
 				keyword = word.substring(2);
 			}

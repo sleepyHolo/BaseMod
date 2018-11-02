@@ -457,4 +457,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Multi-word keywords (kiooeht)
 * What mod is this from? for events (kiooeht)
 
+#### v5.2.1 ####
+* Fix crash from multi-word keywords on some relics (kiooeht)
+
 #### dev ####
