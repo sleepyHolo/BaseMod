@@ -29,8 +29,10 @@ public class MultiwordKeywords
 				keyword = word.substring(2);
 			}
 			if (GameDictionary.keywords.containsKey(keyword.replace(',', ' ').replace('.', ' ').trim().toLowerCase())) {
-				builder.append(' ').append(FontHelper.colorString(keyword.replace('_', ' '), color));
-				continue;
+				if (color != null) {
+					builder.append(' ').append(FontHelper.colorString(keyword.replace('_', ' '), color));
+					continue;
+				}
 			}
 			builder.append(' ').append(word);
 		}
