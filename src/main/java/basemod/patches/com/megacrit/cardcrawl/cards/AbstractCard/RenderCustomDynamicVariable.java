@@ -87,12 +87,12 @@ public class RenderCustomDynamicVariable
                 if (dv.isModified(__instance)) {
                     num = dv.value(__instance);
                     if (num >= dv.baseValue(__instance)) {
-                        c = Settings.GREEN_TEXT_COLOR;
+                        c = dv.getIncreasedValueColor();
                     } else {
-                        c = Settings.RED_TEXT_COLOR;
+                        c = dv.getDecreasedValueColor();
                     }
                 } else {
-                    c = textColor;
+                    c = dv.getNormalColor();
                     num = dv.baseValue(__instance);
                 }
             } else {
