@@ -465,3 +465,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Diverse adding base character cards twice (kiooeht)
 
 #### dev ####
+* DevConsole AutoComplete: The active suggestion is now highlighted. Suggestions are 
+  now filled up to ":" (Skrelpoid)
