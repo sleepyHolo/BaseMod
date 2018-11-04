@@ -42,6 +42,7 @@ public class AutoComplete {
 
 	private static final int MAX_SUGGESTIONS = 5;
 	private static final Color TEXT_COLOR = Color.GRAY.cpy();
+	private static final Color HIGHLIGHT_COLOR = Color.LIGHT_GRAY.cpy();
 
 	public static boolean enabled = true;
 	public static int selectKey = Keys.SHIFT_LEFT;
@@ -964,7 +965,7 @@ public class AutoComplete {
 	}
 
 	public static void render(SpriteBatch sb) {
-		DevConsole.consoleFont.setColor(TEXT_COLOR);
+		DevConsole.consoleFont.setColor(HIGHLIGHT_COLOR);
 		if (shouldRenderInfo()) {
 			sb.draw(DevConsole.consoleBackground, getBGX(), DevConsole.CONSOLE_Y * Settings.scale, getWidth(),
 					-getHeight());
@@ -1011,6 +1012,7 @@ public class AutoComplete {
 				}
 				y -= (float) Math.floor(DevConsole.CONSOLE_TEXT_SIZE * Settings.scale);
 				DevConsole.consoleFont.draw(sb, suggestions.get(item), drawX, y);
+				DevConsole.consoleFont.setColor(TEXT_COLOR);
 			}
 		}
 		DevConsole.consoleFont.setColor(Color.WHITE);
