@@ -1086,7 +1086,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 		// if the key to delete the last token is pressed, delete the rightmost token
 		if (Gdx.input.isKeyJustPressed(AutoComplete.deleteTokenKey)) {
-			currentText = AutoComplete.getTextWithoutRightmostToken(true);
+			AutoComplete.removeOneTokenUsingSpaceAndIdDelimiter();
 			if (AutoComplete.enabled) {
 				AutoComplete.suggest(false);
 			}

@@ -65,6 +65,9 @@ public class AutoComplete {
 	private static float drawX;
 	private static float promptWidth = 0;
 	private static GlyphLayout glyphs;
+	
+	private static final char ID_DELIMITER = ':';
+	private static final String SPACE_AND_ID_DELIMITER = "[ :]";
 
 	public static void init() {
 		reset();
@@ -122,22 +125,59 @@ public class AutoComplete {
 
 	public static void fillInSuggestion() {
 		if (!noMatch && !suggestions.isEmpty() && !suggestionPairs.isEmpty()) {
-			DevConsole.currentText = getTextWithoutRightmostToken(false)
-					+ suggestions.get(selected + suggestionPairs.peek().start) + " ";
-			reset();
+			String textToInsert = suggestions.get(selected + suggestionPairs.peek().start);
+			// if the text to complete contains a : (ID_DELIMITER) that the user has not typed yet
+			if (textToInsert.lastIndexOf(ID_DELIMITER) > DevConsole.currentText.lastIndexOf(ID_DELIMITER)) {
+				// complete up to that :
+				DevConsole.currentText = getTextWithoutRightmostSpaceToken()
+						+ textToInsert.substring(0, textToInsert.lastIndexOf(ID_DELIMITER)) + ID_DELIMITER;
+			} else {
+				// otherwise complete the whole token
+				DevConsole.currentText = getTextWithoutRightmostSpaceToken() + textToInsert + " ";
+				reset();
+			}
 			suggest(false);
 		}
 	}
 
 	// returns the text without the rightmost token
-	public static String getTextWithoutRightmostToken(boolean removeSingleSpace) {
+	private static String getTextWithoutRightmostSpaceToken() {
 		int lastSpace = DevConsole.currentText.lastIndexOf(' ');
 		String text = "";
-		int offset = (removeSingleSpace && lastSpace == DevConsole.currentText.length() - 1) ? 0 : 1;
 		if (lastSpace != -1) {
-			text = DevConsole.currentText.substring(0, lastSpace + offset);
+			text = DevConsole.currentText.substring(0, lastSpace + 1);
 		}
 		return text;
+	}
+	
+	private static int lastIndexOfRegex(String currentText, String tokenDelimiter) {
+		int index = -1;
+		Matcher matcher = Pattern.compile(tokenDelimiter).matcher(currentText);
+		while (matcher.find()) {
+			index = matcher.start();
+		}
+		return index;
+	}
+
+	public static void removeOneTokenUsingSpaceAndIdDelimiter() {
+		String text = "";
+		int lastChar = lastIndexOfRegex(DevConsole.currentText, SPACE_AND_ID_DELIMITER);
+		int curTextLength = DevConsole.currentText.length();
+		if (lastChar != -1) {
+			if (!DevConsole.currentText.isEmpty()) {
+				// remove single space
+				if (DevConsole.currentText.charAt(curTextLength - 1) == ' ') {
+					text = DevConsole.currentText.substring(0, curTextLength - 1);
+				} else if (DevConsole.currentText.charAt(curTextLength - 1) == ID_DELIMITER) {
+					// remove token that has : at the end
+					text = getTextWithoutRightmostSpaceToken();
+				} else {
+					// remove last : or space delimited token
+					text = DevConsole.currentText.substring(0, lastChar + 1);
+				}
+			}
+		}
+		DevConsole.currentText = text;
 	}
 
 	private static int countSpaces() {
@@ -914,7 +954,7 @@ public class AutoComplete {
 		if (glyphs == null || DevConsole.currentText.isEmpty()) {
 			return 0;
 		} else {
-			glyphs.setText(DevConsole.consoleFont, getTextWithoutRightmostToken(false));
+			glyphs.setText(DevConsole.consoleFont, getTextWithoutRightmostSpaceToken());
 			return glyphs.width;
 		}
 	}
