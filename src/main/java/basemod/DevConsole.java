@@ -946,6 +946,12 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			log("use potion list to see valid ids");
 			return;
 		}
+		
+		if (AbstractDungeon.player != null && (i >= AbstractDungeon.player.potionSlots || i < 0)) {
+			log("cannot obtain potion in invalid slot " + i);
+			log("use values between 0 and " + (AbstractDungeon.player.potionSlots - 1));
+			return;
+		}
 
 		AbstractDungeon.player.obtainPotion(i, p);
 	}
