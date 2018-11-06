@@ -99,7 +99,9 @@ public class RenderCustomDynamicVariable
             if (dv != null) {
                 num = dv.baseValue(card);
                 if (dv.upgraded(card)) {
-                    c = Settings.GREEN_TEXT_COLOR;
+                    c = dv.getUpgradedColor();
+                } else {
+                    c = dv.getNormalColor();
                 }
             } else {
                 logger.error("No dynamic card variable found for key \"" + key + "\"!");
