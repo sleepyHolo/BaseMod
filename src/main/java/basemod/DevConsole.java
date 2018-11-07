@@ -825,6 +825,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (tokens.length < 2) {
 			return;
 		}
+		MapRoomNode cur = AbstractDungeon.currMapNode;
+		if (cur == null) {
+			log("cannot fight when there is no map");
+			return;
+		}
 
 		String[] encounterArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String encounterName = String.join(" ", encounterArray);
@@ -839,8 +844,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		} else {
 			AbstractDungeon.monsterList.add(0, encounterName);
 		}
-
-		MapRoomNode cur = AbstractDungeon.currMapNode;
+		
 		MapRoomNode node = new MapRoomNode(cur.x, cur.y);
 		node.room = new MonsterRoom();
 
