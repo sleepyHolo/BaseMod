@@ -861,6 +861,16 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (tokens.length < 2) {
 			return;
 		}
+		
+		if (AbstractDungeon.currMapNode == null) {
+			log("cannot execute event when there is no map");
+			return;
+		}
+		
+		if (AbstractDungeon.player == null) {
+			log("cannot execute event when player doesn't exist");
+			return;
+		}
 
 		String[] eventArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String eventName = String.join(" ", eventArray);
