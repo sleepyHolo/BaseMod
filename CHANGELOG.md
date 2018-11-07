@@ -467,3 +467,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * DevConsole AutoComplete: The active suggestion is now highlighted. Suggestions are now filled up to ":" (Skrelpoid)
 * Customizable Colors for CustomDynamicVariable (Skrelpoid)
+* Fix softlock with Modal cards (kiooeht)
