@@ -902,6 +902,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 	}
 
 	private static void cmdPotion(String[] tokens) {
+		if (PotionHelper.potions == null || PotionHelper.potions.isEmpty()) {
+			log("cannot use potion command when potions are not initialized");
+			log("start a run and try again");
+			return;
+		}
 		if (tokens.length < 2) {
 			cmdPotionHelp();
 			return;
@@ -918,6 +923,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			} else {
 				cmdPotionHelp();
 			}
+			return;
+		}
+		
+		if (AbstractDungeon.player == null) {
+			log("cannot obtain potion when player doesn't exist");
 			return;
 		}
 
@@ -947,7 +957,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			return;
 		}
 		
-		if (AbstractDungeon.player != null && (i >= AbstractDungeon.player.potionSlots || i < 0)) {
+		if (i >= AbstractDungeon.player.potionSlots || i < 0) {
 			log("cannot obtain potion in invalid slot " + i);
 			log("use values between 0 and " + (AbstractDungeon.player.potionSlots - 1));
 			return;
