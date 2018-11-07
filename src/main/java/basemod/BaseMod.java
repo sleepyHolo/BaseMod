@@ -1081,8 +1081,8 @@ public class BaseMod {
 	// lists the IDs of all Relics from all pools. The casts are actually not
 	// unchecked
 	@SuppressWarnings("unchecked")
-	public static ArrayList<String> listAllRelicIDs() {
-		ArrayList<String> relicIDs = new ArrayList<>();
+	public static Set<String> listAllRelicIDs() {
+		HashSet<String> relicIDs = new HashSet<>();
 
 		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
 				.getPrivateStatic(RelicLibrary.class, "sharedRelics");
