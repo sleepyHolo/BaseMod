@@ -1081,7 +1081,8 @@ public class BaseMod {
 	// lists the IDs of all Relics from all pools. The casts are actually not
 	// unchecked
 	@SuppressWarnings("unchecked")
-	public static Set<String> listAllRelicIDs() {
+	public static ArrayList<String> listAllRelicIDs() {
+		// Set to prevent duplicates
 		HashSet<String> relicIDs = new HashSet<>();
 
 		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
@@ -1111,7 +1112,8 @@ public class BaseMod {
 				}
 			}
 		}
-		return relicIDs;
+		// But return ArrayList to maintain backwards compatibility
+		return new ArrayList<>(relicIDs);
 	}
 
 	//
