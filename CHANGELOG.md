@@ -469,3 +469,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Customizable Colors for CustomDynamicVariable (Skrelpoid)
 * Fix softlock with Modal cards (kiooeht)
 * Many bug fixes for the console (Skrelpoid)
+* Blight command (kiooeht)

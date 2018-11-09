@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.common.*;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.Settings;
@@ -25,6 +26,7 @@ import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -173,10 +175,13 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			cmdMaxHP(tokens);
 			break;
 		}
-		case "debug":{
+		case "debug": {
 			cmdDebugMode(tokens);
 			break;
-		}	
+		}
+		case "blight":
+			cmdBlight(tokens);
+			break;
 		default: {
 			log("invalid command");
 			break;
@@ -401,6 +406,47 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 	private static void cmdRelicListHelp() {
 		log("options are: starter common uncommon rare boss special shop");
+	}
+
+	private static void cmdBlight(String[] tokens) {
+		if (AbstractDungeon.player != null) {
+			if (tokens.length < 2) {
+				cmdBlightHelp();
+				return;
+			}
+
+			if ((tokens[1].toLowerCase().equals("remove") || tokens[1].toLowerCase().equals("r")) && tokens.length > 2) {
+				String[] blightNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+				String blightName = String.join(" ", blightNameArray);
+				AbstractDungeon.player.blights.removeIf(b -> b.blightID.equals(blightName));
+				// Reorganize Blights
+				for (int i=0; i<AbstractDungeon.player.blights.size(); ++i) {
+					AbstractBlight tmp = AbstractDungeon.player.blights.get(i);
+					tmp.currentX = tmp.targetX = 64.0f * Settings.scale + i * AbstractRelic.PAD_X;
+					tmp.hb.move(tmp.currentX, tmp.currentY);
+				}
+			} else if ((tokens[1].toLowerCase().equals("add")  || tokens[1].toLowerCase().equals("a")) && tokens.length > 2) {
+				String[] blightNameArray = Arrays.copyOfRange(tokens, 2, tokens.length);
+				String blightName = String.join(" ", blightNameArray);
+				AbstractBlight blight = AbstractDungeon.player.getBlight(blightName);
+				if (blight != null) {
+					 blight.incrementUp();
+					 blight.stack();
+				} else {
+					AbstractDungeon.getCurrRoom().spawnBlightAndObtain(Settings.WIDTH / 2.0f, Settings.HEIGHT / 2.0f,
+							BlightHelper.getBlight(blightName));
+				}
+			} else {
+				cmdBlightHelp();
+			}
+		}
+	}
+
+	private static void cmdBlightHelp() {
+		couldNotParse();
+		log("options are:");
+		log("* add [id]");
+		log("* remove [id]");
 	}
 
 	private static void cmdHand(String[] tokens) {
