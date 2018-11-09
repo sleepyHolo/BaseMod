@@ -550,7 +550,7 @@ public class BaseMod {
 		}
 	}
 
-	// Finds potions that have IDs with spaces in them and maps those IDs with
+	// Finds events that have IDs with spaces in them and maps those IDs with
 	// underscores instead of spaces to the original id
 	public static void initializeUnderscoreEventIDs() {
 		logger.info("initializeUnderscoreEventIDs");
@@ -1082,7 +1082,8 @@ public class BaseMod {
 	// unchecked
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> listAllRelicIDs() {
-		ArrayList<String> relicIDs = new ArrayList<>();
+		// Set to prevent duplicates
+		HashSet<String> relicIDs = new HashSet<>();
 
 		HashMap<String, AbstractRelic> sharedRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
 				.getPrivateStatic(RelicLibrary.class, "sharedRelics");
@@ -1111,7 +1112,8 @@ public class BaseMod {
 				}
 			}
 		}
-		return relicIDs;
+		// But return ArrayList to maintain backwards compatibility
+		return new ArrayList<>(relicIDs);
 	}
 
 	//
@@ -1137,8 +1139,9 @@ public class BaseMod {
 
 		customEvents.get(dungeonID).put(eventID, eventClass);
 		allCustomEvents.put(eventID, eventClass);
-
-		underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
+		if (eventID.contains(" ")) {
+			underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
+		}
 	}
 
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(String dungeonID) {
@@ -1229,7 +1232,9 @@ public class BaseMod {
 		customMonsters.put(encounterID, group);
 		customMonsterNames.put(encounterID, name);
 		encounterList.add(encounterID);
-		underScoreEncounterIDs.put(encounterID.replace(' ', '_'), encounterID);
+		if (encounterID.contains(" ")) {
+			underScoreEncounterIDs.put(encounterID.replace(' ', '_'), encounterID);
+		}
 	}
 
 	public static MonsterGroup getMonster(String encounterID) {
@@ -1852,6 +1857,9 @@ public class BaseMod {
 
 	public static void addPower(Class<? extends AbstractPower> powerClass, String powerID) {
 		powerMap.put(powerID, powerClass);
+		if (powerID.contains(" ")) {
+			underScorePowerIDs.put(powerID.replace(' ', '_'), powerID);
+		}
 	}
 
 	public static Class<? extends AbstractPower> getPowerClass(String powerID) {

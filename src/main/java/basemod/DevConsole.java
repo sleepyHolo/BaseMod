@@ -825,6 +825,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (tokens.length < 2) {
 			return;
 		}
+		MapRoomNode cur = AbstractDungeon.currMapNode;
+		if (cur == null) {
+			log("cannot fight when there is no map");
+			return;
+		}
 
 		String[] encounterArray = Arrays.copyOfRange(tokens, 1, tokens.length);
 		String encounterName = String.join(" ", encounterArray);
@@ -839,8 +844,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		} else {
 			AbstractDungeon.monsterList.add(0, encounterName);
 		}
-
-		MapRoomNode cur = AbstractDungeon.currMapNode;
+		
 		MapRoomNode node = new MapRoomNode(cur.x, cur.y);
 		node.room = new MonsterRoom();
 
@@ -855,6 +859,16 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 	private static void cmdEvent(String[] tokens) {
 		if (tokens.length < 2) {
+			return;
+		}
+		
+		if (AbstractDungeon.currMapNode == null) {
+			log("cannot execute event when there is no map");
+			return;
+		}
+		
+		if (AbstractDungeon.player == null) {
+			log("cannot execute event when player doesn't exist");
 			return;
 		}
 
@@ -902,6 +916,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 	}
 
 	private static void cmdPotion(String[] tokens) {
+		if (PotionHelper.potions == null || PotionHelper.potions.isEmpty()) {
+			log("cannot use potion command when potions are not initialized");
+			log("start a run and try again");
+			return;
+		}
 		if (tokens.length < 2) {
 			cmdPotionHelp();
 			return;
@@ -918,6 +937,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 			} else {
 				cmdPotionHelp();
 			}
+			return;
+		}
+		
+		if (AbstractDungeon.player == null) {
+			log("cannot obtain potion when player doesn't exist");
 			return;
 		}
 
@@ -944,6 +968,12 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		if (p == null) {
 			log("invalid potion id");
 			log("use potion list to see valid ids");
+			return;
+		}
+		
+		if (i >= AbstractDungeon.player.potionSlots || i < 0) {
+			log("cannot obtain potion in invalid slot " + i);
+			log("use values between 0 and " + (AbstractDungeon.player.potionSlots - 1));
 			return;
 		}
 
