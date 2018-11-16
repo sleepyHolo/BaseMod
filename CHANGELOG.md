@@ -472,3 +472,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Blight command (kiooeht)
 
 #### dev ####
+* Fix for week 50 drawing colorless icon over custom character cards in single card view (kiooeht)
