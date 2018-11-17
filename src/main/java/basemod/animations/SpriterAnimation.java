@@ -44,6 +44,18 @@ public class SpriterAnimation extends AbstractAnimation
     }
 
     @Override
+    public void setFlip(boolean horizontal, boolean vertical)
+    {
+        if ((horizontal && myPlayer.flippedX() > 0) || (!horizontal && myPlayer.flippedX() < 0)) {
+            myPlayer.flipX();
+        }
+
+        if ((vertical && myPlayer.flippedY() > 0) || (!vertical && myPlayer.flippedY() < 0)) {
+            myPlayer.flipY();
+        }
+    }
+
+    @Override
     public void renderSprite(SpriteBatch batch, float x, float y)
     {
         drawer.batch = batch;

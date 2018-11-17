@@ -15,6 +15,8 @@ public abstract class AbstractAnimation
 
     public abstract Type type();
 
+    public void setFlip(boolean horizontal, boolean vertical) {}
+
     @Deprecated
     public void renderSprite(SpriteBatch batch)
     {
