@@ -1,16 +1,34 @@
 package basemod.patches.com.megacrit.cardcrawl.ui.panels.PotionPopUp;
 
 import basemod.BaseMod;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.ui.panels.PotionPopUp", method="updateInput")
-public class PrePotionUseHook {
-	@SpireInsertPatch(rloc=18,localvars= {"potion"})
-	public static void Insert(Object __obj_instance, Object potion) {
-		AbstractPotion p = (AbstractPotion)potion;
-		BaseMod.publishPrePotionUse(p);;
+@SpirePatch(
+		clz=PotionPopUp.class,
+		method="updateInput"
+)
+public class PrePotionUseHook
+{
+	@SpireInsertPatch(
+			locator=Locator.class,
+			localvars={"potion"}
+	)
+	public static void Insert(PotionPopUp __instance, AbstractPotion potion)
+	{
+		BaseMod.publishPrePotionUse(potion);
 	}
-	
+
+	private static class Locator extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractPotion.class, "use");
+			return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+		}
+	}
 }
