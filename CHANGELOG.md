@@ -477,3 +477,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Fix custom character name color in stats screen (kiooeht)
 * Allow Spriter animations to flip (support Spear & Shield fight) (kiooeht)
+* Fix dialog position being reset on custom characters when entering a room (kiooeht)

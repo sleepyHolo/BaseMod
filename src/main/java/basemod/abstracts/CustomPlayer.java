@@ -278,4 +278,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	{
 		charStat = new CharStat(this);
 	}
+
+	@Override
+	public void movePosition(float x, float y)
+	{
+		float dialogOffsetX = dialogX - drawX;
+		float dialogOffsetY = dialogY - drawY;
+
+		drawX = x;
+		drawY = y;
+		dialogX = drawX + dialogOffsetX;
+		dialogY = drawY + dialogOffsetY;
+		animX = 0;
+		animY = 0;
+		refreshHitboxLocation();
+	}
 }
