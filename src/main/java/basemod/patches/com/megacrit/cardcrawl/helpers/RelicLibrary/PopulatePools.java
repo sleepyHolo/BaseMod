@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @SpirePatch(
@@ -19,12 +20,14 @@ public class PopulatePools {
 
 	public static void Postfix(ArrayList<String> pool, AbstractRelic.RelicTier tier, AbstractPlayer.PlayerClass chosenClass) {
 		if (!BaseMod.isBaseGameCharacter(chosenClass)) {
-			for (Map.Entry<String, AbstractRelic> r : BaseMod.getRelicsInCustomPool(
-					BaseMod.findCharacter(chosenClass).getCardColor()).entrySet()) {
-				if (r.getValue().tier  == tier && (
-						!UnlockTracker.isRelicLocked(r.getKey()) ||
-						Settings.isDailyRun)) {
-					pool.add(r.getKey());
+			HashMap<String, AbstractRelic> relics = BaseMod.getRelicsInCustomPool(BaseMod.findCharacter(chosenClass).getCardColor());
+			if (relics != null) {
+				for (Map.Entry<String, AbstractRelic> r : relics.entrySet()) {
+					if (r.getValue().tier == tier && (
+							!UnlockTracker.isRelicLocked(r.getKey()) ||
+									Settings.isDailyRun)) {
+						pool.add(r.getKey());
+					}
 				}
 			}
 		}
