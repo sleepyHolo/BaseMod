@@ -480,3 +480,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix dialog position being reset on custom characters when entering a room (kiooeht)
 * Fix PrePotionUse hook being called without targeting a monster (kiooeht)
 * Fix crash if custom character has no character specific relics (kiooeht)
+* Fix hand rendering craziness when the hand size gets out of control (kiooeht)
+* Fix custom card tooltips going off the bottom of the screen (kiooeht)
