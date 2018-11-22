@@ -482,3 +482,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash if custom character has no character specific relics (kiooeht)
 * Fix hand rendering craziness when the hand size gets out of control (kiooeht)
 * Fix custom card tooltips going off the bottom of the screen (kiooeht)
+* Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)

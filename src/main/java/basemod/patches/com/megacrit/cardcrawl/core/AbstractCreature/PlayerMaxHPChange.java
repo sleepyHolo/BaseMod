@@ -21,7 +21,7 @@ public class PlayerMaxHPChange
 		)
 		public static SpireReturn<Void> Insert(AbstractCreature __instance, int amountParam, boolean showEffect, @ByRef int[] amount)
 		{
-			if (recursive) {
+			if (recursive || !__instance.isPlayer) {
 				return SpireReturn.Continue();
 			}
 
@@ -60,7 +60,7 @@ public class PlayerMaxHPChange
 		)
 		public static SpireReturn<Void> Insert(AbstractCreature __instance, int amountParam, @ByRef int[] amount)
 		{
-			if (recursive) {
+			if (recursive || !__instance.isPlayer) {
 				return SpireReturn.Continue();
 			}
 
