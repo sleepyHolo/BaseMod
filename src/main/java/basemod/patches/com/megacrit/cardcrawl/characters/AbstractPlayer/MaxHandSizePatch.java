@@ -161,14 +161,15 @@ public class MaxHandSizePatch
 
 			float index = 0;
 			for (AbstractCard card : hand.group) {
-				card.target_x = Settings.WIDTH / 2.0f + (AbstractCard.IMG_WIDTH_S * 0.5f * (index - middle));
+				card.targetDrawScale = (1500 * Settings.scale) / (AbstractCard.IMG_WIDTH_S * hand.size());
+
+				card.target_x = Settings.WIDTH / 2.0f + (AbstractCard.IMG_WIDTH_S * card.targetDrawScale * (index - middle));
 				if (card.target_y < 0.0f * Settings.scale) {
 					card.target_y = 0.0f * Settings.scale;
 				}
 				if (Math.abs(card.targetAngle) > 20) {
 					card.targetAngle = Math.signum(card.targetAngle) * 20.0f;
 				}
-				card.targetDrawScale = 0.6375f - (hand.size() - 10) * 0.05f;
 				index += 1;
 			}
 		}
