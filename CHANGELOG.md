@@ -474,7 +474,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.3.1 ####
 * Fix for week 50 drawing colorless icon over custom character cards in single card view (kiooeht)
 
-#### dev ####
+#### v5.3.2 ####
 * Fix custom character name color in stats screen (kiooeht)
 * Allow Spriter animations to flip (support Spear & Shield fight) (kiooeht)
 * Fix dialog position being reset on custom characters when entering a room (kiooeht)
@@ -483,3 +483,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix hand rendering craziness when the hand size gets out of control (kiooeht)
 * Fix custom card tooltips going off the bottom of the screen (kiooeht)
 * Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
+
+#### dev ####
