@@ -485,3 +485,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
 
 #### dev ####
+* Fix Whatmod appearing on heart screen and in event combats (kiooeht)
