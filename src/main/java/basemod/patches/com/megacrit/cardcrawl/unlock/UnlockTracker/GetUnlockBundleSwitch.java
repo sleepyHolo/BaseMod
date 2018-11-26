@@ -6,23 +6,26 @@ import basemod.abstracts.CustomUnlockBundle;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.unlock.AbstractUnlock;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import java.util.ArrayList;
 
-@SpirePatch(cls="com.megacrit.cardcrawl.unlock.UnlockTracker", method="getUnlockBundle")
-public class GetUnlockBundleSwitch {
-
-	public static ArrayList<AbstractUnlock> Postfix(ArrayList<AbstractUnlock> tmpBundle, Object cObj, int unlockLevel) {
-		AbstractPlayer.PlayerClass chosenClass = (AbstractPlayer.PlayerClass) cObj;
-		CustomUnlockBundle bundle = BaseMod.getUnlockBundleFor(chosenClass, unlockLevel);
+@SpirePatch(
+		clz=UnlockTracker.class,
+		method="getUnlockBundle"
+)
+public class GetUnlockBundleSwitch
+{
+	public static ArrayList<AbstractUnlock> Postfix(ArrayList<AbstractUnlock> __result, AbstractPlayer.PlayerClass c, int unlockLevel)
+	{
+		CustomUnlockBundle bundle = BaseMod.getUnlockBundleFor(c, unlockLevel);
 		if (bundle != null) {
 			ArrayList<CustomUnlock> unlocks = bundle.getUnlocks();
-			for (CustomUnlock unlock : unlocks) {
-				tmpBundle.add(unlock);
-			}
+			__result.addAll(unlocks);
 		}
-		return tmpBundle;
+		if (__result.isEmpty()) {
+			return null;
+		}
+		return __result;
 	}
-	
-	
 }
