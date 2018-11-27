@@ -22,9 +22,11 @@ public class GetUnlockBundleSwitch
 		if (bundle != null) {
 			ArrayList<CustomUnlock> unlocks = bundle.getUnlocks();
 			__result.addAll(unlocks);
-		}
-		if (__result.isEmpty()) {
-			return null;
+
+			// Avoid crash after victory and unlock
+			if (__result.isEmpty()) {
+				return null;
+			}
 		}
 		return __result;
 	}
