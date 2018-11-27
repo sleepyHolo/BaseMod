@@ -484,6 +484,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom card tooltips going off the bottom of the screen (kiooeht)
 * Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
 
-#### dev ####
+#### v5.3.3 ####
 * Fix Whatmod appearing on heart screen and in event combats (kiooeht)
 * Maybe fix unlock crash on victory with custom characters (kiooeht)
+
+#### dev ####
