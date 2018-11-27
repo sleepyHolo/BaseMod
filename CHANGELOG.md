@@ -488,5 +488,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Whatmod appearing on heart screen and in event combats (kiooeht)
 * Maybe fix unlock crash on victory with custom characters (kiooeht)
 
-#### dev ####
+#### v5.3.4 ####
 * Fix startup crash if base character is fully (level 6) unlocked (kiooeht)
+
+#### dev ####
