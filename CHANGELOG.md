@@ -491,7 +491,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.3.4 ####
 * Fix startup crash if base character is fully (level 6) unlocked (kiooeht)
 
-#### dev ####
+#### v5.3.5 ####
 * Fix PostEnergyRecharge hook (kiooeht)
 * Fix crash when toggling beta art on modded cards (kiooeht)
 * Fix crash if modded card is missing _p texture (kiooeht)
+
+#### dev ####
