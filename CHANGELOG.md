@@ -494,3 +494,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Fix PostEnergyRecharge hook (kiooeht)
 * Fix crash when toggling beta art on modded cards (kiooeht)
+* Fix crash if modded card is missing _p texture (kiooeht)
