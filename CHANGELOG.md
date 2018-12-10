@@ -497,3 +497,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash if modded card is missing _p texture (kiooeht)
 
 #### dev ####
+* Fix unlock crash on victory with custom characters (kiooeht)
