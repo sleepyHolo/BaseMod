@@ -501,3 +501,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix PostDeath hook not triggering on killing Heart (kiooeht)
 * Tag the basegame basic cards with BASIC_STRIKE, BASIC_DEFEND, and FORM (kiooeht)
 * Custom victory cutscenes for custom characters (kiooeht)
+* Custom victory effects for custom characters (kiooeht)

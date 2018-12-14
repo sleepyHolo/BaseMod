@@ -28,6 +28,7 @@ import com.megacrit.cardcrawl.screens.stats.CharStat;
 import com.megacrit.cardcrawl.screens.stats.StatsScreen;
 import com.megacrit.cardcrawl.ui.panels.energyorb.EnergyOrbInterface;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -309,5 +310,10 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		panels.add(new CutscenePanel("images/scenes/ironclad2.png"));
 		panels.add(new CutscenePanel("images/scenes/ironclad3.png"));
 		return panels;
+	}
+
+	public void updateVictoryVfx(ArrayList<AbstractGameEffect> effects)
+	{
+
 	}
 }
