@@ -147,6 +147,7 @@ public class BaseMod {
 	private static ArrayList<AddCustomModeModsSubscriber> addCustomModeModsSubscribers;
 	private static ArrayList<MaxHPChangeSubscriber> maxHPChangeSubscribers;
 	private static ArrayList<PreRoomRenderSubscriber> preRoomRenderSubscribers;
+	private static ArrayList<OnPlayerLoseBlockSubscriber> onPlayerLoseBlockSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -450,6 +451,7 @@ public class BaseMod {
 		addCustomModeModsSubscribers = new ArrayList<>();
 		maxHPChangeSubscribers = new ArrayList<>();
 		preRoomRenderSubscribers = new ArrayList<>();
+		onPlayerLoseBlockSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -2393,6 +2395,18 @@ public class BaseMod {
 		}
 	}
 
+	// publishOnPlayerLoseBlock
+	public static int publishOnPlayerLoseBlock(int amount) {
+		logger.info("publish on Player Lose Block");
+
+		for (OnPlayerLoseBlockSubscriber sub : onPlayerLoseBlockSubscribers) {
+			amount = sub.receiveOnPlayerLoseBlock(amount);
+		}
+
+		unsubscribeLaterHelper(OnPlayerLoseBlockSubscriber.class);
+		return amount;
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2464,6 +2478,7 @@ public class BaseMod {
 		subscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
 		subscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		subscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
+		subscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 	}
 
 	// subscribe -
@@ -2555,6 +2570,8 @@ public class BaseMod {
 			maxHPChangeSubscribers.add((MaxHPChangeSubscriber) sub);
 		} else if (additionClass.equals(PreRoomRenderSubscriber.class)) {
 			preRoomRenderSubscribers.add((PreRoomRenderSubscriber) sub);
+		} else if (additionClass.equals(OnPlayerLoseBlockSubscriber.class)) {
+			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
 		}
 	}
 
@@ -2604,6 +2621,7 @@ public class BaseMod {
 		unsubscribeIfInstance(addCustomModeModsSubscribers, sub, AddCustomModeModsSubscriber.class);
 		unsubscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		unsubscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
+		unsubscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2695,6 +2713,8 @@ public class BaseMod {
 			maxHPChangeSubscribers.remove(sub);
 		} else if (removalClass.equals(PreRoomRenderSubscriber.class)) {
 			preRoomRenderSubscribers.remove(sub);
+		} else if (removalClass.equals(OnPlayerLoseBlockSubscriber.class)) {
+			onPlayerLoseBlockSubscribers.remove(sub);
 		}
 	}
 
