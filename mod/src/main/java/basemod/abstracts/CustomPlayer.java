@@ -15,8 +15,10 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.cutscenes.CutscenePanel;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.Prefs;
 import com.megacrit.cardcrawl.helpers.SaveHelper;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class CustomPlayer extends AbstractPlayer implements ModelRenderSubscriber
@@ -292,5 +295,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		animX = 0;
 		animY = 0;
 		refreshHitboxLocation();
+	}
+
+	public Texture getCutsceneBg()
+	{
+		return ImageMaster.loadImage("images/scenes/redBg.jpg");
+	}
+
+	public List<CutscenePanel> getCutscenePanels()
+	{
+		List<CutscenePanel> panels = new ArrayList<>();
+		panels.add(new CutscenePanel("images/scenes/ironclad1.png", "ATTACK_HEAVY"));
+		panels.add(new CutscenePanel("images/scenes/ironclad2.png"));
+		panels.add(new CutscenePanel("images/scenes/ironclad3.png"));
+		return panels;
 	}
 }
