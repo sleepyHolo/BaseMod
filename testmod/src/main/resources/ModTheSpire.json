@@ -1,0 +1,10 @@
+{
+  "modid": "testmod",
+  "name": "${artifactId}",
+  "author_list": ["kiooeht", "test447"],
+  "description": "Slay the Spire mod which tests BaseMod.",
+  "version": "${project.version}",
+  "sts_version": "${SlayTheSpire.version}",
+  "mts_version": "${ModTheSpire.version}",
+  "dependencies": ["basemod"]
+}

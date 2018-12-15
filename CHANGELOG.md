@@ -404,5 +404,101 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix fight command after a monster room (twanvl)
 * Mod items in top panel (kobting)
 
-#### dev ####
+#### v3.4.0 ####
+* Support for week 43 (kiooeht)
 * Fix TopPanel positions on not 16:9 aspect ratios (kiooeht)
+* Fix modified card costs not rendering when not in hand (Moocowsgomoo)
+* Fix ModLabeledToggleButton privacy (Blank The Evil)
+
+#### v3.5.0 ####
+* Support for week 44 (kiooeht)
+* Fix Start Game hook triggering when looping in Endless mode (kiooeht)
+* Fix Ascension 20 double boss when custom bosses have been added (kiooeht)
+* Allow custom characters to add relic unlocks (kiooeht)
+
+#### v4.0.0 ####
+* Support for week 45 (kiooeht)
+* Fix PostPotionUse hook (kiooeht)
+* Fix drawn cards entering modal choice options (kiooeht)
+* Sort modded characters alphabetically by name (kiooeht)
+* Shrink card description font for cards with lots of text (kiooeht)
+* Allow max hand size to be changed (kiooeht)
+* Fix ModSlider not allowing x position to be set (kiooeht)
+* Fix custom character card and seen count (kiooeht)
+
+#### v4.0.1 ####
+* Fix Modal Choice Cards when double-played (kiooeht)
+* Don't shorten name if adding "..." makes it longer than it was (kiooeht)
+* Fix custom character card modifiers (kiooeht)
+* Allow passing EnergyOrbInterface to CustomPlayer (kiooeht)
+* Slow energy orb spin when out of energy (kiooeht)
+
+#### v4.0.2 ####
+* Fix Discovery not obeying new max hand size (kiooeht)
+* Fix ModSlider using y position as x position (kiooeht)
+
+#### v5.0.0 ####
+* Support for week 46 (kiooeht)
+* Fix custom monsters being more weighted (kiooeht)
+* Fix custom monsters not being used for the first strong enemy (kiooeht)
+* More fixing ModSlider position (kiooeht)
+
+#### v5.0.1 ####
+* Fix NPE in base game GetAllInBattleInstances (kiooeht)
+
+#### v5.1.0 ####
+* Support for week 47 (kiooeht)
+* Add PreRoomRender hook (Blank The Evil)
+* Custom save fields for cards and relics (twanvl)
+
+#### v5.2.0 ####
+* Make Spriter animation public (kiooeht)
+* Spriter animations for monsters (kiooeht)
+* Multi-word keywords (kiooeht)
+* What mod is this from? for events (kiooeht)
+
+#### v5.2.1 ####
+* Fix crash from multi-word keywords on some relics (kiooeht)
+
+#### v5.2.2 ####
+* Easier SpineAnimation option for custom characters (kiooeht)
+* Fix Diverse adding base character cards twice (kiooeht)
+
+#### v5.3.0 ####
+* DevConsole AutoComplete: The active suggestion is now highlighted. Suggestions are now filled up to ":" (Skrelpoid)
+* Customizable Colors for CustomDynamicVariable (Skrelpoid)
+* Fix softlock with Modal cards (kiooeht)
+* Many bug fixes for the console (Skrelpoid)
+* Blight command (kiooeht)
+
+#### v5.3.1 ####
+* Fix for week 50 drawing colorless icon over custom character cards in single card view (kiooeht)
+
+#### v5.3.2 ####
+* Fix custom character name color in stats screen (kiooeht)
+* Allow Spriter animations to flip (support Spear & Shield fight) (kiooeht)
+* Fix dialog position being reset on custom characters when entering a room (kiooeht)
+* Fix PrePotionUse hook being called without targeting a monster (kiooeht)
+* Fix crash if custom character has no character specific relics (kiooeht)
+* Fix hand rendering craziness when the hand size gets out of control (kiooeht)
+* Fix custom card tooltips going off the bottom of the screen (kiooeht)
+* Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
+
+#### v5.3.3 ####
+* Fix Whatmod appearing on heart screen and in event combats (kiooeht)
+* Maybe fix unlock crash on victory with custom characters (kiooeht)
+
+#### v5.3.4 ####
+* Fix startup crash if base character is fully (level 6) unlocked (kiooeht)
+
+#### v5.3.5 ####
+* Fix PostEnergyRecharge hook (kiooeht)
+* Fix crash when toggling beta art on modded cards (kiooeht)
+* Fix crash if modded card is missing _p texture (kiooeht)
+
+#### dev ####
+* Fix unlock crash on victory with custom characters (kiooeht)
+* Fix PostDeath hook not triggering on killing Heart (kiooeht)
+* Tag the basegame basic cards with BASIC_STRIKE, BASIC_DEFEND, and FORM (kiooeht)
+* Custom victory cutscenes for custom characters (kiooeht)
+* Custom victory effects for custom characters (kiooeht)
