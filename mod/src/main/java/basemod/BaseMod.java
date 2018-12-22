@@ -991,6 +991,24 @@ public class BaseMod {
 		}
 	}
 
+	// remove custom relic -
+	@SuppressWarnings("unchecked")
+	public static void removeRelicFromCustomPool(AbstractRelic relic, AbstractCard.CardColor color) {
+		if (relic == null) return;
+		if (customRelicPools.containsKey(color)){
+			if (customRelicPools.get(color).containsKey(relic.relicId)) {
+				customRelicPools.get(color).remove(relic.relicId);
+				--RelicLibrary.totalRelicCount;
+				removeRelicFromTierList(relic);
+			}
+		}
+		if (customRelicLists.containsKey(color)){
+			if (customRelicLists.get(color).contains(relic)){
+				customRelicLists.get(color).remove(relic);
+			}
+		}
+	}
+
 	public static void registerBottleRelic(Predicate<AbstractCard> isOnCard, AbstractRelic relic)
 	{
 		customBottleRelics.put(relic.relicId, new Pair<>(isOnCard, relic));
