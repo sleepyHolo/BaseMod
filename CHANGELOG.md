@@ -503,6 +503,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Custom victory cutscenes for custom characters (kiooeht)
 * Custom victory effects for custom characters (kiooeht)
 
-#### dev ####
+#### v5.5.0 ####
 * Add OnPlayerLoseBlockSubscriber hook (JohnnyDevo)
 * Added function to remove relics from custom characters' pools (Moocowsgomoo)
+
+#### dev ####
