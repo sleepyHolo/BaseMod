@@ -451,4 +451,60 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add PreRoomRender hook (Blank The Evil)
 * Custom save fields for cards and relics (twanvl)
 
+#### v5.2.0 ####
+* Make Spriter animation public (kiooeht)
+* Spriter animations for monsters (kiooeht)
+* Multi-word keywords (kiooeht)
+* What mod is this from? for events (kiooeht)
+
+#### v5.2.1 ####
+* Fix crash from multi-word keywords on some relics (kiooeht)
+
+#### v5.2.2 ####
+* Easier SpineAnimation option for custom characters (kiooeht)
+* Fix Diverse adding base character cards twice (kiooeht)
+
+#### v5.3.0 ####
+* DevConsole AutoComplete: The active suggestion is now highlighted. Suggestions are now filled up to ":" (Skrelpoid)
+* Customizable Colors for CustomDynamicVariable (Skrelpoid)
+* Fix softlock with Modal cards (kiooeht)
+* Many bug fixes for the console (Skrelpoid)
+* Blight command (kiooeht)
+
+#### v5.3.1 ####
+* Fix for week 50 drawing colorless icon over custom character cards in single card view (kiooeht)
+
+#### v5.3.2 ####
+* Fix custom character name color in stats screen (kiooeht)
+* Allow Spriter animations to flip (support Spear & Shield fight) (kiooeht)
+* Fix dialog position being reset on custom characters when entering a room (kiooeht)
+* Fix PrePotionUse hook being called without targeting a monster (kiooeht)
+* Fix crash if custom character has no character specific relics (kiooeht)
+* Fix hand rendering craziness when the hand size gets out of control (kiooeht)
+* Fix custom card tooltips going off the bottom of the screen (kiooeht)
+* Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
+
+#### v5.3.3 ####
+* Fix Whatmod appearing on heart screen and in event combats (kiooeht)
+* Maybe fix unlock crash on victory with custom characters (kiooeht)
+
+#### v5.3.4 ####
+* Fix startup crash if base character is fully (level 6) unlocked (kiooeht)
+
+#### v5.3.5 ####
+* Fix PostEnergyRecharge hook (kiooeht)
+* Fix crash when toggling beta art on modded cards (kiooeht)
+* Fix crash if modded card is missing _p texture (kiooeht)
+
+#### v5.4.0 ####
+* Fix unlock crash on victory with custom characters (kiooeht)
+* Fix PostDeath hook not triggering on killing Heart (kiooeht)
+* Tag the basegame basic cards with BASIC_STRIKE, BASIC_DEFEND, and FORM (kiooeht)
+* Custom victory cutscenes for custom characters (kiooeht)
+* Custom victory effects for custom characters (kiooeht)
+
+#### v5.5.0 ####
+* Add OnPlayerLoseBlockSubscriber hook (JohnnyDevo)
+* Added function to remove relics from custom characters' pools (Moocowsgomoo)
+
 #### dev ####
