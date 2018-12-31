@@ -1,5 +1,6 @@
 package basemod.abstracts;
 
+import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,6 +28,7 @@ public abstract class CustomReward extends RewardItem {
 		this.text = text;
 		this.type = type;
 		this.effects = new ArrayList<>();
+		if(!BaseMod.customRewardTypeExists(type)) BaseMod.logger.info("CUSTOM REWARD WILL NOT BE SAVED PROPERLY WITHOUT BEING REGISTERED");
 	}
 
 	public abstract boolean claimReward();

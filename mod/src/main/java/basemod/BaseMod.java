@@ -1,10 +1,6 @@
 package basemod;
 
-import basemod.abstracts.CustomBottleRelic;
-import basemod.abstracts.CustomCard;
-import basemod.abstracts.CustomSavableRaw;
-import basemod.abstracts.CustomUnlockBundle;
-import basemod.abstracts.DynamicVariable;
+import basemod.abstracts.*;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -54,6 +50,8 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
+import com.megacrit.cardcrawl.rewards.RewardItem;
+import com.megacrit.cardcrawl.rewards.RewardSave;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
@@ -81,6 +79,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -1134,6 +1133,36 @@ public class BaseMod {
 		}
 		// But return ArrayList to maintain backwards compatibility
 		return new ArrayList<>(relicIDs);
+	}
+
+
+	private static HashMap<RewardItem.RewardType, LoadCustomReward> customRewardOnLoadConsumers = new HashMap<>();
+	private static HashMap<RewardItem.RewardType, SaveCustomReward> customRewardOnSaveConsumers = new HashMap<>();
+
+	public static void registerCustomReward(CustomReward.RewardType type, LoadCustomReward onLoad, SaveCustomReward onSave){
+		customRewardOnLoadConsumers.put(type, onLoad);
+		customRewardOnSaveConsumers.put(type, onSave);
+	}
+
+	public static CustomReward loadCustomRewardFromSave(RewardSave rewardSave) {
+		return customRewardOnLoadConsumers.get(RewardItem.RewardType.valueOf(rewardSave.type)).onLoad(rewardSave);
+	}
+
+	public static RewardSave saveCustomReward(CustomReward reward) {
+		return customRewardOnSaveConsumers.get(reward.type.toString()).onSave(reward);
+	}
+
+	public static boolean customRewardTypeExists(RewardItem.RewardType type){
+		return customRewardOnSaveConsumers.containsKey(type) && customRewardOnLoadConsumers.containsKey(type);
+	}
+
+
+	public interface LoadCustomReward {
+		CustomReward onLoad(RewardSave rewardSave);
+	}
+
+	public interface SaveCustomReward {
+		RewardSave onSave(CustomReward reward);
 	}
 
 	//
