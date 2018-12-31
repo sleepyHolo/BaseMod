@@ -1149,7 +1149,7 @@ public class BaseMod {
 	}
 
 	public static RewardSave saveCustomReward(CustomReward reward) {
-		return customRewardOnSaveConsumers.get(reward.type.toString()).onSave(reward);
+		return customRewardOnSaveConsumers.get(reward.type).onSave(reward);
 	}
 
 	public static boolean customRewardTypeExists(RewardItem.RewardType type){
