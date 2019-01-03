@@ -507,5 +507,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add OnPlayerLoseBlockSubscriber hook (JohnnyDevo)
 * Added function to remove relics from custom characters' pools (Moocowsgomoo)
 
-#### dev ####
+#### v5.6.0 ####
 * Custom Rewards (Blank The Evil)
