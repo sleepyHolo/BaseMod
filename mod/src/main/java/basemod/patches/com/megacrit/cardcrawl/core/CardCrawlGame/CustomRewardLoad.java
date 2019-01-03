@@ -11,24 +11,32 @@ import javassist.CtBehavior;
 import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("unused")
-@SpirePatch(clz = CardCrawlGame.class, method = "loadPostCombat", paramtypez = {SaveFile.class})
-public class CustomRewardLoad {
-
+@SpirePatch(
+		clz = CardCrawlGame.class,
+		method = "loadPostCombat",
+		paramtypez = {
+				SaveFile.class
+		}
+)
+public class CustomRewardLoad
+{
 	@SuppressWarnings("unused")
 	@SpireInsertPatch(
 		locator = Locator.class,
 		localvars = {"i"}
 	)
-	public static void Insert(CardCrawlGame __instance, SaveFile saveFile, RewardSave rewardSave) {
-		if(BaseMod.customRewardTypeExists(RewardItem.RewardType.valueOf(rewardSave.type))) {
+	public static void Insert(CardCrawlGame __instance, SaveFile saveFile, RewardSave rewardSave)
+	{
+		if (BaseMod.customRewardTypeExists(RewardItem.RewardType.valueOf(rewardSave.type))) {
 			AbstractDungeon.getCurrRoom().rewards.add(BaseMod.loadCustomRewardFromSave(rewardSave));
 		}
 	}
 
-
-	public static class Locator extends SpireInsertLocator {
+	public static class Locator extends SpireInsertLocator
+	{
 		@Override
-		public int[] Locate(CtBehavior ctBehavior) throws Exception {
+		public int[] Locate(CtBehavior ctBehavior) throws Exception
+		{
 			Matcher matcher = new Matcher.MethodCallMatcher(Logger.class, "info");
 			return LineFinder.findInOrder(ctBehavior, matcher);
 		}

@@ -12,25 +12,33 @@ import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import javassist.CtBehavior;
 
 @SuppressWarnings("unused")
-@SpirePatch(clz = SaveFile.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {SaveFile.SaveType.class})
-public class CustomRewardSave {
-
-	@SpireInsertPatch(locator = Locator.class)
-	public static void Insert(SaveFile __instance, SaveFile.SaveType saveType) {
-		for(RewardItem item : AbstractDungeon.getCurrRoom().rewards) {
-			if(item instanceof CustomReward){
-				CustomReward customReward = (CustomReward)item;
-				if(BaseMod.customRewardTypeExists(customReward.type)){
+@SpirePatch(
+		clz = SaveFile.class,
+		method = SpirePatch.CONSTRUCTOR,
+		paramtypez = {SaveFile.SaveType.class}
+)
+public class CustomRewardSave
+{
+	@SpireInsertPatch(
+			locator = Locator.class
+	)
+	public static void Insert(SaveFile __instance, SaveFile.SaveType saveType)
+	{
+		for (RewardItem item : AbstractDungeon.getCurrRoom().rewards) {
+			if (item instanceof CustomReward) {
+				CustomReward customReward = (CustomReward) item;
+				if (BaseMod.customRewardTypeExists(customReward.type)) {
 					__instance.combat_rewards.add(BaseMod.saveCustomReward(customReward));
 				}
 			}
 		}
-
 	}
 
-	public static class Locator extends SpireInsertLocator {
+	public static class Locator extends SpireInsertLocator
+	{
 		@Override
-		public int[] Locate(CtBehavior ctBehavior) throws Exception {
+		public int[] Locate(CtBehavior ctBehavior) throws Exception
+		{
 			Matcher matcher = new Matcher.FieldAccessMatcher(AbstractRoom.class, "rewards");
 			return LineFinder.findInOrder(ctBehavior, matcher);
 		}

@@ -1139,7 +1139,7 @@ public class BaseMod {
 	private static HashMap<RewardItem.RewardType, LoadCustomReward> customRewardOnLoadConsumers = new HashMap<>();
 	private static HashMap<RewardItem.RewardType, SaveCustomReward> customRewardOnSaveConsumers = new HashMap<>();
 
-	public static void registerCustomReward(CustomReward.RewardType type, LoadCustomReward onLoad, SaveCustomReward onSave){
+	public static void registerCustomReward(CustomReward.RewardType type, LoadCustomReward onLoad, SaveCustomReward onSave) {
 		customRewardOnLoadConsumers.put(type, onLoad);
 		customRewardOnSaveConsumers.put(type, onSave);
 	}
