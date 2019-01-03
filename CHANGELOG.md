@@ -508,3 +508,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Added function to remove relics from custom characters' pools (Moocowsgomoo)
 
 #### dev ####
+* Custom Rewards (Blank The Evil)
