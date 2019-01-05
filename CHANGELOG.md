@@ -509,3 +509,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### v5.6.0 ####
 * Custom Rewards (Blank The Evil)
+
+#### dev ####
+* Allow Dynamic Variables to show in smith view upgraded (kiooeht)
