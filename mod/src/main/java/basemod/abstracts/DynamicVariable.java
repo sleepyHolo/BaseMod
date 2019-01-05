@@ -10,25 +10,34 @@ public abstract class DynamicVariable
 
     public abstract boolean isModified(AbstractCard card);
 
+    public void setIsModified(AbstractCard card, boolean v)
+    {
+
+    }
+
     public abstract int value(AbstractCard card);
 
     public abstract int baseValue(AbstractCard card);
 
     public abstract boolean upgraded(AbstractCard card);
 
-    public Color getNormalColor() {
+    public Color getNormalColor()
+    {
         return Settings.CREAM_COLOR;
     }
 
-    public Color getUpgradedColor() {
+    public Color getUpgradedColor()
+    {
         return Settings.GREEN_TEXT_COLOR;
     }
 
-    public Color getIncreasedValueColor() {
+    public Color getIncreasedValueColor()
+    {
         return Settings.GREEN_TEXT_COLOR;
     }
 
-    public Color getDecreasedValueColor() {
+    public Color getDecreasedValueColor()
+    {
         return Settings.RED_TEXT_COLOR;
     }
 }
