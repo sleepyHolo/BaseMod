@@ -46,6 +46,10 @@ public class ShrinkLongDescription
 			clz=AbstractCard.class,
 			method="initializeDescription"
 	)
+	@SpirePatch(
+			clz=AbstractCard.class,
+			method="initializeDescriptionCN"
+	)
 	public static class ShrinkInitializeDescription
 	{
 		private static final float TARGET_HEIGHT = 95.0f * Settings.scale;
@@ -81,6 +85,10 @@ public class ShrinkLongDescription
 	@SpirePatch(
 			clz=AbstractCard.class,
 			method="renderDescription"
+	)
+	@SpirePatch(
+			clz=AbstractCard.class,
+			method="renderDescriptionCN"
 	)
 	public static class ShiftSizeLineDescription
 	{
