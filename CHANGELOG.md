@@ -517,6 +517,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * [E] in small card descriptions (kiooeht)
   * [E] in SingleCardViewPopup (kiooeht)
   * Custom Dynamic variables (kiooeht)
-  
-#### dev ####
+
+#### v5.7.1 ####
 * Fix Dynamic Variables showing in smith view breaking things (kiooeht)
+
+#### dev ####
