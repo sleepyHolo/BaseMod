@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpirePatch(
-        cls="com.megacrit.cardcrawl.cards.AbstractCard",
+        clz=AbstractCard.class,
         method="renderDescription"
 )
 public class RenderCustomDynamicVariable
@@ -38,7 +38,7 @@ public class RenderCustomDynamicVariable
                     if (insertLine[0] == -1) {
                         insertLine[0] = m.getLineNumber();
                     }
-                    m.replace("$_ = basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.RenderCustomDynamicVariable.Inner.myRenderDynamicVariable(this, tmp, $$);");
+                    m.replace("$_ = " + Inner.class.getName() + ".myRenderDynamicVariable(this, tmp, $$);");
                 }
             }
         });
@@ -46,7 +46,7 @@ public class RenderCustomDynamicVariable
         if (insertLine[0] > 0) {
             ctMethodToPatch.insertAt(insertLine[0]-1,
                     "if (tmp.length() != 4 && tmp.length() != 5) {" +
-                            "start_x += basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.RenderCustomDynamicVariable.Inner.myRenderDynamicVariable(this, tmp, tmp.charAt(1), start_x, draw_y, i, font, sb, null);" +
+                            "start_x += " + Inner.class.getName() + ".myRenderDynamicVariable(this, tmp, tmp.charAt(1), start_x, draw_y, i, font, sb, null);" +
                             "}");
         }
     }

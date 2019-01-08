@@ -18,6 +18,12 @@ public class DamageVariable extends DynamicVariable
     }
 
     @Override
+    public void setIsModified(AbstractCard card, boolean v)
+    {
+        card.isDamageModified = v;
+    }
+
+    @Override
     public int value(AbstractCard card)
     {
         return card.damage;

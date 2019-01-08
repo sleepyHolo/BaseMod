@@ -9,7 +9,7 @@ import javassist.CtBehavior;
 import java.util.ArrayList;
 
 @SpirePatch(
-        cls="com.megacrit.cardcrawl.cards.AbstractCard",
+        clz=AbstractCard.class,
         method="initializeDescription"
 )
 public class FixDescriptionWidthCustomDynamicVariable
@@ -30,8 +30,8 @@ public class FixDescriptionWidthCustomDynamicVariable
         @Override
         public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
         {
-            Matcher finalMatcher = new Matcher.FieldAccessMatcher("com.megacrit.cardcrawl.cards.AbstractCard", "DESC_BOX_WIDTH");
-            return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher);
+            Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "DESC_BOX_WIDTH");
+            return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }
 }

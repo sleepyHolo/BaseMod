@@ -18,6 +18,12 @@ public class BlockVariable extends DynamicVariable
     }
 
     @Override
+    public void setIsModified(AbstractCard card, boolean v)
+    {
+        card.isBlockModified = v;
+    }
+
+    @Override
     public int value(AbstractCard card)
     {
         return card.block;

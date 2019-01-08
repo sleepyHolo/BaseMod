@@ -18,6 +18,12 @@ public class MagicNumberVariable extends DynamicVariable
     }
 
     @Override
+    public void setIsModified(AbstractCard card, boolean v)
+    {
+        card.isMagicNumberModified = v;
+    }
+
+    @Override
     public int value(AbstractCard card)
     {
         return card.magicNumber;
