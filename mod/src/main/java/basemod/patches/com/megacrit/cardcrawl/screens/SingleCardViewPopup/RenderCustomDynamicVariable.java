@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpirePatch(
-        cls="com.megacrit.cardcrawl.screens.SingleCardViewPopup",
+        clz=SingleCardViewPopup.class,
         method="renderDescription"
 )
 public class RenderCustomDynamicVariable
