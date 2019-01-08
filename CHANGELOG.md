@@ -510,10 +510,12 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.6.0 ####
 * Custom Rewards (Blank The Evil)
 
-#### dev ####
+#### v5.7.0 ####
 * Allow Dynamic Variables to show in smith view upgraded (kiooeht)
-* Maybe make card description patches work for Chinese:
+* Make card description patches work for Chinese:
   * Shrink long descriptions (kiooeht)
   * [E] in small card descriptions (kiooeht)
   * [E] in SingleCardViewPopup (kiooeht)
   * Custom Dynamic variables (kiooeht)
+  
+#### dev ####
