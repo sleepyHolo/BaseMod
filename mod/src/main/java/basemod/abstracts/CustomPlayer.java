@@ -256,15 +256,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	@Override
 	public Texture getCustomModeCharacterButtonImage()
 	{
-		Pixmap pixmap = new Pixmap(Gdx.files.internal(BaseMod.getPlayerButton(chosenClass)));
-		Pixmap small = new Pixmap(128, 128, pixmap.getFormat());
-		small.drawPixmap(pixmap,
-				0, 0, pixmap.getWidth(), pixmap.getHeight(),
-				20, 20, small.getWidth()-40, small.getHeight()-40);
-		Texture texture = new Texture(small);
-		pixmap.dispose();
-		small.dispose();
-		return texture;
+		if (BaseMod.getCustomModePlayerButton(chosenClass) != null) {
+			return ImageMaster.loadImage(BaseMod.getCustomModePlayerButton(chosenClass));
+		} else {
+			Pixmap pixmap = new Pixmap(Gdx.files.internal(BaseMod.getPlayerButton(chosenClass)));
+			Pixmap small = new Pixmap(128, 128, pixmap.getFormat());
+			small.drawPixmap(pixmap,
+					0, 0, pixmap.getWidth(), pixmap.getHeight(),
+					20, 20, small.getWidth() - 40, small.getHeight() - 40);
+			Texture texture = new Texture(small);
+			pixmap.dispose();
+			small.dispose();
+			return texture;
+		}
 	}
 
 	@Override
