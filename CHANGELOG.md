@@ -521,5 +521,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.7.1 ####
 * Fix Dynamic Variables showing in smith view breaking things (kiooeht)
 
-#### dev ####
+#### v5.7.2 ####
 * Fix too many characters going offscreen on the custom mode screen (kiooeht)
+
+#### dev ####
