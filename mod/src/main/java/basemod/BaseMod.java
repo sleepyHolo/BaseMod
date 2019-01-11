@@ -42,6 +42,7 @@ import com.megacrit.cardcrawl.daily.mods.RedCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.integrations.steam.SteamIntegration;
 import com.megacrit.cardcrawl.localization.*;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -70,10 +71,7 @@ import org.clapper.util.classutil.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -1929,6 +1927,29 @@ public class BaseMod {
 
 	public static Map<String, CustomSavableRaw> getSaveFields() {
 		return customSaveFields;
+	}
+
+	//
+	// Rich Presence
+	//
+
+	public static void setRichPresence(String msg) {
+		if (CardCrawlGame.publisherIntegration == null) {
+			return;
+		}
+		if (!(CardCrawlGame.publisherIntegration instanceof SteamIntegration)) {
+			return;
+		}
+
+		try {
+			Method m = SteamIntegration.class.getDeclaredMethod("setRichPresenceData", String.class, String.class);
+			m.setAccessible(true);
+
+			m.invoke(CardCrawlGame.publisherIntegration, "status", msg);
+			m.invoke(CardCrawlGame.publisherIntegration, "steam_display", "#Status");
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 
 	//
