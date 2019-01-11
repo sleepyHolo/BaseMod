@@ -65,6 +65,7 @@
                         <configuration>
                             <target>
                                 <copy file="target/${artifactId}.jar" tofile="../../_ModTheSpire/mods/${artifactId}.jar"/>
+                                <copy file="target/${artifactId}.jar" tofile="../../lib/${artifactId}.jar"/>
                             </target>
                         </configuration>
                         <goals>
