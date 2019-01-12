@@ -1,6 +1,7 @@
 package basemod.abstracts;
 
 import com.megacrit.cardcrawl.unlock.AbstractUnlock;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,17 @@ public class CustomUnlockBundle {
 		unlocks.add(unlock1);
 		unlocks.add(unlock2);
 		unlocks.add(unlock3);
+
+		if (type == AbstractUnlock.UnlockType.CARD) {
+			UnlockTracker.addCard(unlock1);
+			UnlockTracker.addCard(unlock2);
+			UnlockTracker.addCard(unlock3);
+		} else {
+
+			UnlockTracker.addRelic(unlock1);
+			UnlockTracker.addRelic(unlock2);
+			UnlockTracker.addRelic(unlock3);
+		}
 	}
 	
 	public ArrayList<CustomUnlock> getUnlocks() {

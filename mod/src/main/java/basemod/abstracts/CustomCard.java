@@ -232,4 +232,8 @@ public abstract class CustomCard extends AbstractCard {
 	public boolean isDefend() {
 		return hasTag(BaseModCardTags.BASIC_DEFEND);
 	}
+
+	public void unlock() {
+		this.isLocked = false;
+	}
 }
