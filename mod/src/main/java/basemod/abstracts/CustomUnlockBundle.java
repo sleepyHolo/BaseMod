@@ -28,7 +28,6 @@ public class CustomUnlockBundle {
 			UnlockTracker.addCard(unlock2);
 			UnlockTracker.addCard(unlock3);
 		} else {
-
 			UnlockTracker.addRelic(unlock1);
 			UnlockTracker.addRelic(unlock2);
 			UnlockTracker.addRelic(unlock3);

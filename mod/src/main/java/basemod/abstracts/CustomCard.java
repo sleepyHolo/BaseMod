@@ -233,6 +233,7 @@ public abstract class CustomCard extends AbstractCard {
 		return hasTag(BaseModCardTags.BASIC_DEFEND);
 	}
 
+	@Override
 	public void unlock() {
 		this.isLocked = false;
 	}
