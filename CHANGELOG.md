@@ -525,3 +525,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix too many characters going offscreen on the custom mode screen (kiooeht)
 
 #### dev ####
+* Fix custom character unlocks (MichaelMayhem)
