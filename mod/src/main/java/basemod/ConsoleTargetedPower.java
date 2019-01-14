@@ -5,6 +5,7 @@ import basemod.interfaces.RenderSubscriber;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -57,28 +58,32 @@ public class ConsoleTargetedPower implements RenderSubscriber, PostUpdateSubscri
      */
     private AbstractPower instantiatePower()
     {
-      // Adds support for DoubleDamagePower(), FrailPower(), NoBlockPower(),
-      // VulnerablePower(), and WeakPower().
-      try {
-        return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, int.class, boolean.class).newInstance(this.hoveredCreature, this.amount, /*isSourceMonster=*/false);
-      } catch (Exception e) {}
+        // Adds support for DoubleDamagePower(), FrailPower(), NoBlockPower(),
+        // VulnerablePower(), and WeakPower().
+        try {
+            return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, int.class, boolean.class).newInstance(this.hoveredCreature, this.amount, /*isSourceMonster=*/false);
+        } catch (Exception e) {
+        }
 
-      // Adds support for ConstrictedPower() and PoisonPower().
-      try {
-        return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, AbstractCreature.class, int.class).newInstance(hoveredCreature, /*source=*/AbstractDungeon.player, this.amount);
-      } catch (Exception e) {}
+        // Adds support for ConstrictedPower() and PoisonPower().
+        try {
+            return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, AbstractCreature.class, int.class).newInstance(hoveredCreature, /*source=*/AbstractDungeon.player, this.amount);
+        } catch (Exception e) {
+        }
 
-      // Covers a majority of the powers.
-      try {
-        return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, int.class).newInstance(hoveredCreature, amount);
-      } catch (Exception e) {}
+        // Covers a majority of the powers.
+        try {
+            return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class, int.class).newInstance(hoveredCreature, amount);
+        } catch (Exception e) {
+        }
 
-      try {
-        return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class).newInstance(hoveredCreature);
-      } catch (Exception e) {}
+        try {
+            return (AbstractPower) powerToApply.getConstructor(AbstractCreature.class).newInstance(hoveredCreature);
+        } catch (Exception e) {
+        }
 
-      logger.info("Failed to instantiate " + this.powerToApply);
-      return null;
+        logger.info("Failed to instantiate " + this.powerToApply);
+        return null;
     }
 
     private void updateTargetMode()
@@ -105,7 +110,7 @@ public class ConsoleTargetedPower implements RenderSubscriber, PostUpdateSubscri
             if (this.hoveredCreature != null) {
                 AbstractPower power = instantiatePower();
                 if (power != null) {
-                    AbstractDungeon.actionManager.addToBottom(new com.megacrit.cardcrawl.actions.common.ApplyPowerAction(hoveredCreature, AbstractDungeon.player, power, amount));
+                    AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(hoveredCreature, AbstractDungeon.player, power, amount));
                 }
             }
             com.megacrit.cardcrawl.core.GameCursor.hidden = false;
