@@ -169,6 +169,7 @@ public class BaseMod {
 	private static int lastBaseCharacterIndex = -1;
 
 	public static HashMap<PlayerClass, String> playerSelectButtonMap;
+	public static HashMap<PlayerClass, String> customModeCharacterButtonMap;
 	public static HashMap<PlayerClass, String> playerPortraitMap;
 
 	public static HashMap<String, DynamicVariable> cardDynamicVariableMap = new HashMap<>();
@@ -471,6 +472,7 @@ public class BaseMod {
 	// initializeCharacterMap -
 	private static void initializeCharacterMap() {
 		playerSelectButtonMap = new HashMap<>();
+		customModeCharacterButtonMap = new HashMap<>();
 		playerPortraitMap = new HashMap<>();
 	}
 
@@ -1479,11 +1481,20 @@ public class BaseMod {
 	public static void addCharacter(AbstractPlayer character,
 									String selectButtonPath,
 									String portraitPath,
-									PlayerClass characterID) {
+									PlayerClass characterID,
+									String customModeButtonPath) {
 		CardCrawlGame.characterManager.getAllCharacters().add(character);
 
 		playerSelectButtonMap.put(characterID, selectButtonPath);
+		customModeCharacterButtonMap.put(characterID, customModeButtonPath);
 		playerPortraitMap.put(characterID, portraitPath);
+	}
+
+	public static void addCharacter(AbstractPlayer character,
+									String selectButtonPath,
+									String portraitPath,
+									PlayerClass characterID) {
+		addCharacter(character, selectButtonPath, portraitPath, characterID, null);
 	}
 
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
@@ -1511,6 +1522,11 @@ public class BaseMod {
 	// convert a playerClass into the player select button
 	public static String getPlayerButton(PlayerClass playerClass) {
 		return playerSelectButtonMap.get(playerClass);
+	}
+
+	// convert a playerClass into the custom mode player select button
+	public static String getCustomModePlayerButton(PlayerClass playerClass) {
+		return customModeCharacterButtonMap.get(playerClass);
 	}
 
 	// convert a playerClass into the player portrait
