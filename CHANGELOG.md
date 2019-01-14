@@ -529,3 +529,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix whatmod purple color code not working in Chinese (kiooeht)
 * Fix whatmod not working on linked relics (kiooeht)
 * Add option for Custom Mode button (JohnnyDevo)
+* Fix custom character unlocks (MichaelMayhem)
