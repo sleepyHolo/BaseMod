@@ -532,3 +532,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom character unlocks (MichaelMayhem)
 * Fix power console command for some powers (admiralbolt)
 * Fix power console command not stacking powers correctly (admiralbolt)
+* Fix Twitch integration position in Top Panel (kiooeht)

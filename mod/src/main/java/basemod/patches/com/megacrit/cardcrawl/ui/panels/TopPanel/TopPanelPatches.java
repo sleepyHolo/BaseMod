@@ -210,6 +210,9 @@ public class TopPanelPatches
 
         public static void Postfix(TopPanel __instance)
         {
+            // Move Twitch button
+            __instance.twitch.ifPresent(twitchPanel -> twitchPanel.setPosition(TIME_X_POS - 80.0f * Settings.scale, Settings.HEIGHT));
+
             if (ModHelper.enabledMods != null && !ModHelper.enabledMods.isEmpty()) {
                 if (renderDailyModsAsDropdown) {
                     __instance.modHbs = new Hitbox[0];
