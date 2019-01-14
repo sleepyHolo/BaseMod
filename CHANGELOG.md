@@ -524,7 +524,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.7.2 ####
 * Fix too many characters going offscreen on the custom mode screen (kiooeht)
 
-#### dev ####
+#### v5.8.0 ####
 * Steam Rich Presence (kiooeht)
 * Fix whatmod purple color code not working in Chinese (kiooeht)
 * Fix whatmod not working on linked relics (kiooeht)
@@ -533,3 +533,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix power console command for some powers (admiralbolt)
 * Fix power console command not stacking powers correctly (admiralbolt)
 * Fix Twitch integration position in Top Panel (kiooeht)
+
+#### dev ####
