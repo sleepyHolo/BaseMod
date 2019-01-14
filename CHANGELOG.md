@@ -527,3 +527,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Steam Rich Presence (kiooeht)
 * Fix whatmod purple color code not working in Chinese (kiooeht)
+* Fix whatmod not working on linked relics (kiooeht)
