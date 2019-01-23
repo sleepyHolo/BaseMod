@@ -17,6 +17,10 @@ public class ModColorDisplay implements IUIElement {
     public float g = 1.0f;
     public float b = 1.0f;
     public float a = 1.0f;
+
+    public float rOutline = 0.0f;
+    public float gOutline = 0.0f;
+    public float bOutline = 0.0f;
     public float aOutline = 1.0f;
     
     public float x;
@@ -63,7 +67,7 @@ public class ModColorDisplay implements IUIElement {
 
     public void render(SpriteBatch sb) {
         if (outline != null) {
-            sb.setColor(new Color(0.0f, 0.0f, 0.0f, aOutline));
+            sb.setColor(new Color(rOutline, gOutline, bOutline, aOutline));
             sb.draw(outline, x * Settings.scale, y * Settings.scale, w * Settings.scale, h * Settings.scale);
         }
         
