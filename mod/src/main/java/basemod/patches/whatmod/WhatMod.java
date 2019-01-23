@@ -61,13 +61,14 @@ public class WhatMod
 		if (locationURL == null) {
 			try {
 				ClassPool pool = Loader.getClassPool();
+				pool.childFirstLookup = true;
 				CtClass ctCls = pool.get(cls.getName());
+				pool.childFirstLookup = false;
 				String url = ctCls.getURL().getFile();
 				int i = url.lastIndexOf('!');
 				url = url.substring(0, i);
 				locationURL = new URL(url);
-			} catch (NotFoundException | MalformedURLException e) {
-				e.printStackTrace();
+			} catch (NotFoundException | MalformedURLException ignored) {
 			}
 		}
 
