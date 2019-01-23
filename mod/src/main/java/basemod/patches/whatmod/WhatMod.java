@@ -54,7 +54,7 @@ public class WhatMod
 		}
 	}
 
-	static String findModName(Class<?> cls)
+	static URL findModURL(Class<?> cls)
 	{
 		URL locationURL = cls.getProtectionDomain().getCodeSource().getLocation();
 
@@ -69,8 +69,16 @@ public class WhatMod
 				url = url.substring(0, i);
 				locationURL = new URL(url);
 			} catch (NotFoundException | MalformedURLException ignored) {
+				return null;
 			}
 		}
+
+		return locationURL;
+	}
+
+	public static String findModName(Class<?> cls)
+	{
+		URL locationURL = findModURL(cls);
 
 		if (locationURL == null) {
 			return "Unknown";
@@ -92,5 +100,31 @@ public class WhatMod
 		}
 
 		return "Unknown";
+	}
+
+	public static String findModID(Class<?> cls)
+	{
+		URL locationURL = findModURL(cls);
+
+		if (locationURL == null) {
+			return "<unknown>";
+		}
+
+		try {
+			if (locationURL.equals(new File(Loader.STS_JAR).toURI().toURL())) {
+				return null;
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return "<unknown>";
+		}
+
+		for (ModInfo modInfo : Loader.MODINFOS) {
+			if (locationURL.equals(modInfo.jarURL)) {
+				return modInfo.ID;
+			}
+		}
+
+		return "<unknown>";
 	}
 }
