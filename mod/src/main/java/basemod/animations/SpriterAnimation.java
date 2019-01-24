@@ -15,6 +15,10 @@ public class SpriterAnimation extends AbstractAnimation
 {
     public static boolean drawBones = false;
 
+    private static final float animFps = 1f / 60f;
+
+    private float frameRegulator = 0;
+
     LibGdxLoader loader;
     LibGdxDrawer drawer;
     ShapeRenderer renderer;
@@ -60,7 +64,11 @@ public class SpriterAnimation extends AbstractAnimation
     {
         drawer.batch = batch;
         // Update animation
-        myPlayer.update();
+        frameRegulator += Gdx.graphics.getDeltaTime();
+        while (frameRegulator - animFps >= 0) {
+            myPlayer.update();
+            frameRegulator -= animFps;
+        }
 
         // Move to correct location on screen
         AbstractPlayer player = AbstractDungeon.player;

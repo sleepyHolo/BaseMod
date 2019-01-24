@@ -539,3 +539,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * `WhatMod.findModName`
   * `WhatMod.findModID`
 * Add outline color to ModColorDisplay
+* Fix Spriter animations being tied to framerate
