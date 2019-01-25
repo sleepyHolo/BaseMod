@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>basemod</groupId>
   <artifactId>BaseMod-root</artifactId>
-  <version>5.8.0</version>
+  <version>5.9.0</version>
     <modules>
         <module>mod</module>
         <module>testmod</module>
@@ -18,8 +18,8 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <SlayTheSpire.version>01-10-2019</SlayTheSpire.version>
-    <ModTheSpire.version>3.6.0</ModTheSpire.version>
+    <SlayTheSpire.version>01-23-2019</SlayTheSpire.version>
+    <ModTheSpire.version>3.8.0</ModTheSpire.version>
   </properties>
   
 </project>

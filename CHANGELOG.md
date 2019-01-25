@@ -534,9 +534,11 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix power console command not stacking powers correctly (admiralbolt)
 * Fix Twitch integration position in Top Panel (kiooeht)
 
-#### dev ####
+#### v5.9.0 ####
 * Make whatmod API public
   * `WhatMod.findModName`
   * `WhatMod.findModID`
 * Add outline color to ModColorDisplay
 * Fix Spriter animations being tied to framerate
+
+#### dev ####
