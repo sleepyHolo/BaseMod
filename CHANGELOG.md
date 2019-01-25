@@ -535,10 +535,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Twitch integration position in Top Panel (kiooeht)
 
 #### v5.9.0 ####
-* Make whatmod API public
+* Make whatmod API public (kiooeht)
   * `WhatMod.findModName`
   * `WhatMod.findModID`
-* Add outline color to ModColorDisplay
-* Fix Spriter animations being tied to framerate
+* Add outline color to ModColorDisplay (kiooeht)
+* Fix Spriter animations being tied to framerate (JohnnyDevo)
 
 #### dev ####
