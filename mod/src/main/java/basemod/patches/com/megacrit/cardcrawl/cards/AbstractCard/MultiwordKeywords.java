@@ -1,8 +1,10 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import javassist.CtBehavior;
 
@@ -19,10 +21,15 @@ public class MultiwordKeywords
 	{
 		@SpireInsertPatch(
 				locator=Locator.class,
-				localvars={"word", "keywordTmp"}
+				localvars={"word", "keywordTmp", "currentWidth"}
 		)
-		public static void Insert(AbstractCard __instance, @ByRef String[] word, String keywordTmp)
+		public static void Insert(AbstractCard __instance, @ByRef String[] word, String keywordTmp, @ByRef float[] currentWidth)
 		{
+			if (BaseMod.keywordIsUnique(word[0].toLowerCase())) {
+				String prefix = BaseMod.getKeywordPrefix(word[0].toLowerCase());
+				word[0] = word[0].replaceFirst(prefix, "");
+				currentWidth[0] -= (new GlyphLayout(FontHelper.cardDescFont_N, prefix)).width;
+			}
 			if (word[0].contains("_") && !keywordTmp.contains("_")) {
 				String tmp = word[0].replace('_', ' ');
 				StringBuilder builder = new StringBuilder();
@@ -60,6 +67,10 @@ public class MultiwordKeywords
 			String tmp = BaseMod.getKeywordProper(input);
 			if (tmp != null) {
 				return tmp;
+			}
+
+			if (BaseMod.keywordIsUnique(input)) {
+				input = BaseMod.getKeywordUnique(input);
 			}
 
 			// Capitalize each word

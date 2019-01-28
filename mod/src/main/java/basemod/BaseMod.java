@@ -183,6 +183,8 @@ public class BaseMod {
 	private static HashMap<String, Class<? extends AbstractPower>> powerMap;
 
 	private static HashMap<String, String> keywordProperNames;
+	private static HashMap<String, String> keywordUniqueNames;
+	private static HashMap<String, String> keywordUniquePrefixes;
 
 	public static ArrayList<String> encounterList;
 	public static HashMap<String, String> underScoreEncounterIDs;
@@ -349,6 +351,8 @@ public class BaseMod {
 		initializePowerMap();
 		initializeUnderscorePowerIDs();
 		keywordProperNames = new HashMap<>();
+		keywordUniqueNames = new HashMap<>();
+		keywordUniquePrefixes = new HashMap<>();
 		BaseModInit baseModInit = new BaseModInit();
 		BaseMod.subscribe(baseModInit);
 
@@ -1407,11 +1411,33 @@ public class BaseMod {
 	//
 
 	public static void addKeyword(String[] names, String description) {
-		addKeyword(null, names, description);
+		addKeyword(null, names, description, false);
+	}
+
+	public static void addKeyword(String[] names, String description, boolean isUnique) {
+		addKeyword(null, names, description, isUnique);
 	}
 
 	public static void addKeyword(String proper, String[] names, String description) {
+		addKeyword(proper, names, description, false);
+	}
+
+	public static void addKeyword(String proper, String[] names, String description, boolean isUnique) {
+		if (isUnique) {
+			String uniqueParent = names[1];
+			String prefix = names[0];
+			String[] tmp = new String[names.length - 1];
+			for (int i = 1; i < names.length; ++i) {
+				tmp[i-1] = prefix + names[i];
+			}
+			names = tmp;
+			for (String name : names) {
+				keywordUniqueNames.put(name, uniqueParent);
+				keywordUniquePrefixes.put(name, prefix);
+			}
+		}
 		String parent = names[0];
+
 		if (proper != null) {
 			keywordProperNames.put(parent, proper);
 		}
@@ -1425,6 +1451,18 @@ public class BaseMod {
 	public static String getKeywordProper(String keyword)
 	{
 		return keywordProperNames.get(keyword);
+	}
+
+	public static String getKeywordUnique(String keyword) {
+		return keywordUniqueNames.get(keyword);
+	}
+
+	public static boolean keywordIsUnique(String keyword) {
+		return keywordUniqueNames.containsKey(keyword);
+	}
+
+	public static String getKeywordPrefix(String keyword) {
+		return keywordUniquePrefixes.get(keyword);
 	}
 
 	//
