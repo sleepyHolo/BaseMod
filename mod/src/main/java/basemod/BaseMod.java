@@ -1411,29 +1411,25 @@ public class BaseMod {
 	//
 
 	public static void addKeyword(String[] names, String description) {
-		addKeyword(null, names, description, false);
-	}
-
-	public static void addKeyword(String[] names, String description, boolean isUnique) {
-		addKeyword(null, names, description, isUnique);
+		addKeyword(null, names, description);
 	}
 
 	public static void addKeyword(String proper, String[] names, String description) {
-		addKeyword(proper, names, description, false);
+		addKeyword(null, proper, names, description);
 	}
 
-	public static void addKeyword(String proper, String[] names, String description, boolean isUnique) {
-		if (isUnique) {
-			String uniqueParent = names[1];
-			String prefix = names[0];
-			String[] tmp = new String[names.length - 1];
-			for (int i = 1; i < names.length; ++i) {
-				tmp[i-1] = prefix + names[i];
+	public static void addKeyword(String modID, String proper, String[] names, String description) {
+		if (modID != null && !modID.isEmpty()) {
+			if (!modID.endsWith(":")) {
+				modID = modID + ":";
 			}
-			names = tmp;
+			String uniqueParent = names[0];
+			for (int i=0; i<names.length; ++i) {
+				names[i] = modID + names[i];
+			}
 			for (String name : names) {
 				keywordUniqueNames.put(name, uniqueParent);
-				keywordUniquePrefixes.put(name, prefix);
+				keywordUniquePrefixes.put(name, modID);
 			}
 		}
 		String parent = names[0];
