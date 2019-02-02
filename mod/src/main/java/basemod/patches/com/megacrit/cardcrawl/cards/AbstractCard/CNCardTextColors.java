@@ -34,7 +34,7 @@ public class CNCardTextColors {
                     e.printStackTrace();
                 }
             }
-            String wordTrim = word[0].substring(10, word[0].length() - 2);
+            String wordTrim = word[0].substring(9, word[0].length() - 2);
             float wordWidth = new GlyphLayout(FontHelper.cardDescFont_N, wordTrim).width;
             if (currentWidth[0] + wordWidth > widthLimit) {
                 ++numLines[0];
