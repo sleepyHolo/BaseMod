@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.BaseMod;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -18,9 +19,14 @@ public class FixDescriptionWidthCustomDynamicVariable
             locator=Locator.class,
             localvars={"gl", "word"}
     )
-    public static void Insert(AbstractCard __instance, @ByRef GlyphLayout[] gl, String word)
+    public static void Insert(AbstractCard __instance, @ByRef GlyphLayout[] gl, @ByRef String[] word)
     {
-        if (word.startsWith("!")) {
+        if (BaseMod.keywordIsUnique(word[0].toLowerCase())) {
+            String prefix = BaseMod.getKeywordPrefix(word[0].toLowerCase());
+            word[0] = word[0].replaceFirst(prefix, "");
+            gl[0].width -= (new GlyphLayout(FontHelper.cardDescFont_N, prefix)).width;
+        }
+        else if (word[0].startsWith("!")) {
             gl[0] = new GlyphLayout(FontHelper.cardDescFont_N, "!D");
         }
     }

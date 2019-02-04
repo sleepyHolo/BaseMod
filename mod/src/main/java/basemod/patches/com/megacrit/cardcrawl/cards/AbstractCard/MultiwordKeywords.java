@@ -21,15 +21,10 @@ public class MultiwordKeywords
 	{
 		@SpireInsertPatch(
 				locator=Locator.class,
-				localvars={"word", "keywordTmp", "currentWidth"}
+				localvars={"word", "keywordTmp"}
 		)
-		public static void Insert(AbstractCard __instance, @ByRef String[] word, String keywordTmp, @ByRef float[] currentWidth)
+		public static void Insert(AbstractCard __instance, @ByRef String[] word, String keywordTmp)
 		{
-			if (BaseMod.keywordIsUnique(word[0].toLowerCase())) {
-				String prefix = BaseMod.getKeywordPrefix(word[0].toLowerCase());
-				word[0] = word[0].replaceFirst(prefix, "");
-				currentWidth[0] -= (new GlyphLayout(FontHelper.cardDescFont_N, prefix)).width;
-			}
 			if (word[0].contains("_") && !keywordTmp.contains("_")) {
 				String tmp = word[0].replace('_', ' ');
 				StringBuilder builder = new StringBuilder();
