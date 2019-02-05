@@ -541,5 +541,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add outline color to ModColorDisplay (kiooeht)
 * Fix Spriter animations being tied to framerate (JohnnyDevo)
 
-#### dev ####
+#### v5.10.0 ####
 * Unique keywords (JohnnyDevo)
+* Fix hex code card text coloration in CN languages (JohnnyDevo)
+
+#### dev ####
