@@ -1461,6 +1461,20 @@ public class BaseMod {
 		return keywordUniquePrefixes.get(keyword);
 	}
 
+	public static String getKeywordTitle(String keyword) {
+		keyword = GameDictionary.parentWord.get(keyword);
+		String title = getKeywordProper(keyword);
+		if (title != null) {
+			return title;
+		}
+		return TipHelper.capitalize(keyword);
+	}
+
+	public static String getKeywordDescription(String keyword) {
+		keyword = GameDictionary.parentWord.get(keyword);
+		return GameDictionary.keywords.get(keyword);
+	}
+
 	//
 	// Unlocks
 	//

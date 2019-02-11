@@ -549,3 +549,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix incorrect line breaks when using unique keywords (Celicath)
 * Fix unique keywords in relic descriptions (JohnnyDevo)
 * Fix energy tooltip appearing in SingleCardViewPopup (kiooeht)
+* Add simple API for getting keyword title/description (kiooeht)
