@@ -474,5 +474,82 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.3.1 ####
 * Fix for week 50 drawing colorless icon over custom character cards in single card view (kiooeht)
 
-#### dev ####
+#### v5.3.2 ####
 * Fix custom character name color in stats screen (kiooeht)
+* Allow Spriter animations to flip (support Spear & Shield fight) (kiooeht)
+* Fix dialog position being reset on custom characters when entering a room (kiooeht)
+* Fix PrePotionUse hook being called without targeting a monster (kiooeht)
+* Fix crash if custom character has no character specific relics (kiooeht)
+* Fix hand rendering craziness when the hand size gets out of control (kiooeht)
+* Fix custom card tooltips going off the bottom of the screen (kiooeht)
+* Fix max HP change hook triggering on ANY creature changing max HP (kiooeht)
+
+#### v5.3.3 ####
+* Fix Whatmod appearing on heart screen and in event combats (kiooeht)
+* Maybe fix unlock crash on victory with custom characters (kiooeht)
+
+#### v5.3.4 ####
+* Fix startup crash if base character is fully (level 6) unlocked (kiooeht)
+
+#### v5.3.5 ####
+* Fix PostEnergyRecharge hook (kiooeht)
+* Fix crash when toggling beta art on modded cards (kiooeht)
+* Fix crash if modded card is missing _p texture (kiooeht)
+
+#### v5.4.0 ####
+* Fix unlock crash on victory with custom characters (kiooeht)
+* Fix PostDeath hook not triggering on killing Heart (kiooeht)
+* Tag the basegame basic cards with BASIC_STRIKE, BASIC_DEFEND, and FORM (kiooeht)
+* Custom victory cutscenes for custom characters (kiooeht)
+* Custom victory effects for custom characters (kiooeht)
+
+#### v5.5.0 ####
+* Add OnPlayerLoseBlockSubscriber hook (JohnnyDevo)
+* Added function to remove relics from custom characters' pools (Moocowsgomoo)
+
+#### v5.6.0 ####
+* Custom Rewards (Blank The Evil)
+
+#### v5.7.0 ####
+* Allow Dynamic Variables to show in smith view upgraded (kiooeht)
+* Make card description patches work for Chinese:
+  * Shrink long descriptions (kiooeht)
+  * [E] in small card descriptions (kiooeht)
+  * [E] in SingleCardViewPopup (kiooeht)
+  * Custom Dynamic variables (kiooeht)
+
+#### v5.7.1 ####
+* Fix Dynamic Variables showing in smith view breaking things (kiooeht)
+
+#### v5.7.2 ####
+* Fix too many characters going offscreen on the custom mode screen (kiooeht)
+
+#### v5.8.0 ####
+* Steam Rich Presence (kiooeht)
+* Fix whatmod purple color code not working in Chinese (kiooeht)
+* Fix whatmod not working on linked relics (kiooeht)
+* Add option for Custom Mode button (JohnnyDevo)
+* Fix custom character unlocks (MichaelMayhem)
+* Fix power console command for some powers (admiralbolt)
+* Fix power console command not stacking powers correctly (admiralbolt)
+* Fix Twitch integration position in Top Panel (kiooeht)
+
+#### v5.9.0 ####
+* Make whatmod API public (kiooeht)
+  * `WhatMod.findModName`
+  * `WhatMod.findModID`
+* Add outline color to ModColorDisplay (kiooeht)
+* Fix Spriter animations being tied to framerate (JohnnyDevo)
+
+#### v5.10.0 ####
+* Unique keywords (JohnnyDevo)
+* Fix hex code card text coloration in CN languages (JohnnyDevo)
+
+#### v5.11.0 ####
+* Fix incorrect line breaks when using unique keywords (Celicath)
+* Fix unique keywords in relic descriptions (JohnnyDevo)
+* Fix energy tooltip appearing in SingleCardViewPopup (kiooeht)
+* Add simple API for getting keyword title/description (kiooeht)
+* Fix typo in MaxHPChangeSubscriber (kiooeht)
+
+#### dev ####

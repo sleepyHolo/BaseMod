@@ -5,14 +5,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>basemod</groupId>
-  <artifactId>BaseMod</artifactId>
-  <version>5.3.1</version>
-  <packaging>jar</packaging>
+  <artifactId>BaseMod-root</artifactId>
+  <version>5.11.0</version>
+    <modules>
+        <module>mod</module>
+        <module>testmod</module>
+    </modules>
+    <packaging>pom</packaging>
   
   <name>BaseMod</name>
-  <description>Slay the Spire mod which tests BaseMod.</description>
 
- 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
