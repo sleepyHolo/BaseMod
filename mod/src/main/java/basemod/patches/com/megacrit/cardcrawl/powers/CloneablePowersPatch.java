@@ -2106,4 +2106,29 @@ public class CloneablePowersPatch {
             ctClass.addMethod(method);
         }
     }
+
+    @SpirePatch(
+            clz = RegenerateMonsterPower.class,
+            method = SpirePatch.CONSTRUCTOR
+    )
+    public static class RegenerateMonsterPowerPatch {
+        public static void Raw(CtBehavior ctMethodToPatch) throws NotFoundException, CannotCompileException {
+            CtClass ctClass = ctMethodToPatch.getDeclaringClass();
+            ClassPool pool = ctClass.getClassPool();
+
+            CtClass ctCloneablePowerInterface = pool.get(CloneablePowerInterface.class.getName());
+            ctClass.addInterface(ctCloneablePowerInterface);
+            CtClass ctAbstractPower = pool.get(AbstractPower.class.getName());
+
+            CtMethod method = CtNewMethod.make(
+                    ctAbstractPower, // Return
+                    "makeCopy", // Method name
+                    new CtClass[]{},
+                    null, // Exceptions
+                    "return new " + RegenerateMonsterPower.class.getName() + "(owner, amount);",
+                    ctClass
+            );
+            ctClass.addMethod(method);
+        }
+    }
 }
