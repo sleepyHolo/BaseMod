@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.*;
 import javassist.*;
 
+@SuppressWarnings("unused")
 public class CloneablePowersPatch {
 
     @SpirePatch(
