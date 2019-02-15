@@ -11,20 +11,32 @@
 
     <artifactId>BaseMod</artifactId>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <SlayTheSpire.version>01-23-2019</SlayTheSpire.version>
+        <ModTheSpire.version>3.8.0</ModTheSpire.version>
+        <!--CHANGE THIS TO YOUR STEAM INSTALLATION-->
+        <!--Also change the path at the very bottom of the file.-->
+        <Steam.path>/home/reina/.local/share/Steam/steamapps</Steam.path>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.megacrit.cardcrawl</groupId>
             <artifactId>slaythespire</artifactId>
             <version>${SlayTheSpire.version}</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../../lib/desktop-1.0.jar</systemPath>
+            <systemPath>${Steam.path}/common/SlayTheSpire/desktop-1.0.jar</systemPath>
+            <!--<systemPath>${basedir}/../lib/desktop-1.0.jar</systemPath>-->
         </dependency>
         <dependency>
             <groupId>com.evacipated.cardcrawl</groupId>
-            <artifactId>ModTheSpire</artifactId>
+            <artifactId>modthespire</artifactId>
             <version>${ModTheSpire.version}</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../../lib/ModTheSpire.jar</systemPath>
+            <systemPath>${Steam.path}/workshop/content/646570/1605060445/ModTheSpire.jar</systemPath>
+            <!--<systemPath>${basedir}/../lib/ModTheSpire.jar</systemPath>-->
         </dependency>
         <dependency>
             <groupId>com.github.trixt0r</groupId>
@@ -64,8 +76,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <copy file="target/${artifactId}.jar" tofile="../../_ModTheSpire/mods/${artifactId}.jar"/>
-                                <copy file="target/${artifactId}.jar" tofile="../../lib/${artifactId}.jar"/>
+                                <copy file="target/BaseMod.jar" tofile="/home/reina/.local/share/Steam/steamapps/common/SlayTheSpire/mods/BaseMod.jar"/>
                             </target>
                         </configuration>
                         <goals>
