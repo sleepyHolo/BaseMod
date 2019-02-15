@@ -553,4 +553,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix typo in MaxHPChangeSubscriber (kiooeht)
 
 #### dev ####
+* Make base game powers cloneable (Reina)
 * Allow Smart Texts to remove spaces between 2 words using a special keyword [REMOVE_SPACE] (JohnnyBazooka89)
