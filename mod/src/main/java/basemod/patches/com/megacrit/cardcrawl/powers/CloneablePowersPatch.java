@@ -2556,4 +2556,29 @@ public class CloneablePowersPatch {
             ctClass.addMethod(method);
         }
     }
+
+    @SpirePatch(
+            clz = SurroundedPower.class,
+            method = SpirePatch.CONSTRUCTOR
+    )
+    public static class SurroundedPowerPatch {
+        public static void Raw(CtBehavior ctMethodToPatch) throws NotFoundException, CannotCompileException {
+            CtClass ctClass = ctMethodToPatch.getDeclaringClass();
+            ClassPool pool = ctClass.getClassPool();
+
+            CtClass ctCloneablePowerInterface = pool.get(CloneablePowerInterface.class.getName());
+            ctClass.addInterface(ctCloneablePowerInterface);
+            CtClass ctAbstractPower = pool.get(AbstractPower.class.getName());
+
+            CtMethod method = CtNewMethod.make(
+                    ctAbstractPower, // Return
+                    "makeCopy", // Method name
+                    new CtClass[]{},
+                    null, // Exceptions
+                    "return new " + SurroundedPower.class.getName() + "(owner);",
+                    ctClass
+            );
+            ctClass.addMethod(method);
+        }
+    }
 }
