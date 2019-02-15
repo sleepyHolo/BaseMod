@@ -1764,7 +1764,12 @@ public class CloneablePowersPatch {
 
     @SpirePatch(
             clz = NextTurnBlockPower.class,
-            method = SpirePatch.CONSTRUCTOR
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = {
+                    AbstractCreature.class,
+                    int.class,
+                    String.class
+            }
     )
     public static class NextTurnBlockPowerPatch {
         public static void Raw(CtBehavior ctMethodToPatch) throws NotFoundException, CannotCompileException {
