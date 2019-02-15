@@ -5,132 +5,21 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>basemod</groupId>
-  <artifactId>BaseMod</artifactId>
-  <version>5.3.1</version>
-  <packaging>jar</packaging>
-  
+  <artifactId>BaseMod-root</artifactId>
+  <version>5.11.0</version>
+  <modules>
+    <module>mod</module>
+    <module>testmod</module>
+  </modules>
+  <packaging>pom</packaging>
+
   <name>BaseMod</name>
-  <description>Slay the Spire mod which tests BaseMod.</description>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <SlayTheSpire.version>11-15-2018</SlayTheSpire.version>
-    <ModTheSpire.version>3.6.0</ModTheSpire.version>
+    <SlayTheSpire.version>01-23-2019</SlayTheSpire.version>
+    <ModTheSpire.version>3.8.0</ModTheSpire.version>
   </properties>
-  
-  <dependencies>
-    <dependency>
-      <groupId>com.megacrit.cardcrawl</groupId>
-      <artifactId>slaythespire</artifactId>
-      <version>${SlayTheSpire.version}</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/desktop-1.0.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.evacipated.cardcrawl</groupId>
-      <artifactId>ModTheSpire</artifactId>
-      <version>${ModTheSpire.version}</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/../lib/ModTheSpire.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.github.trixt0r</groupId>
-      <artifactId>Spriter</artifactId>
-      <version>1.1</version>
-    </dependency>
-  </dependencies>
-  
-  <build>
-    <finalName>BaseMod</finalName>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.2</version>
-        <executions>
-        
-          <execution>
-            <id>BaseMod-TestMod</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/TestMod.jar</outputFile>
-              <artifactSet>
-                <includes>
-                  <include>basemod:BaseMod:jar</include>
-                </includes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>basemod:BaseMod</artifact>
-                  <includes>
-                    <include>basemod/test/**</include>
-                    <include>img/**</include>
-                    <include>localization/**</include>
-                  </includes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-          
-          <execution>
-            <id>BaseMod</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>basemod.test.TestMod</mainClass>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
-                  <resource>TestMod.jar</resource>
-                  <file>target/${project.artifactId}-TestMod.jar</file>
-                </transformer>
-              </transformers>
-              <filters>
-                <filter>
-                  <artifact>basemod:BaseMod</artifact>
-                  <excludes>
-                    <exclude>basemod/test/***</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <copy file="target/${name}.jar" tofile="../_ModTheSpire/mods/${name}.jar"/>
-                <copy file="target/TestMod.jar" tofile="../_ModTheSpire/mods/TestMod.jar"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  
+
 </project>
