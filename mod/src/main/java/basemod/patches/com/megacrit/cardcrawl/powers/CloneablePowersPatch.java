@@ -2,6 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.powers;
 
 import basemod.interfaces.CloneablePowerInterface;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.powers.*;
 import javassist.*;
 
@@ -1684,7 +1685,11 @@ public class CloneablePowersPatch {
 
     @SpirePatch(
             clz = MalleablePower.class,
-            method = SpirePatch.CONSTRUCTOR
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = {
+                    AbstractCreature.class,
+                    int.class
+            }
     )
     public static class MalleablePowerPatch {
         public static void Raw(CtBehavior ctMethodToPatch) throws NotFoundException, CannotCompileException {
