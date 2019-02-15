@@ -34,4 +34,3 @@ target/
 
 # Mvn Shade Files
 dependency-reduced-pom.xml
-pom.xml
