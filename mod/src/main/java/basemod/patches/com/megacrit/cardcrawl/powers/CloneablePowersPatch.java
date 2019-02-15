@@ -3,6 +3,7 @@ package basemod.patches.com.megacrit.cardcrawl.powers;
 import basemod.interfaces.CloneablePowerInterface;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.*;
 import javassist.*;
 
@@ -2135,7 +2136,7 @@ public class CloneablePowersPatch {
                     "makeCopy", // Method name
                     new CtClass[]{},
                     null, // Exceptions
-                    "return new " + RegenerateMonsterPower.class.getName() + "(owner, amount);",
+                    "return new " + RegenerateMonsterPower.class.getName() + "((" + AbstractMonster.class.getName() + ")" + "owner, amount);",
                     ctClass
             );
             ctClass.addMethod(method);
