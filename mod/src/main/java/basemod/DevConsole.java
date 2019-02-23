@@ -435,6 +435,8 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 				} else if (BlightHelper.getBlight(blightName) != null) {
 					AbstractDungeon.getCurrRoom().spawnBlightAndObtain(Settings.WIDTH / 2.0f, Settings.HEIGHT / 2.0f,
 							BlightHelper.getBlight(blightName));
+				} else {
+					log("invalid blight ID");
 				}
 			} else {
 				cmdBlightHelp();
