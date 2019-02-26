@@ -591,12 +591,14 @@ public class BaseMod {
 
 		if (map != null)
 		{
-			logger.info("added " + audioToAdd.size() + " sounds");
 			map.putAll(audioToAdd);
+			logger.info("added " + audioToAdd.size() + " sounds");
 		}
-		else {
-			logger.info("added 0 sounds");
+		else
+		{
+			logger.info("unexpectedly failed to add sounds.");
 		}
+
 
 		ReflectionHacks.setPrivate(__instance, SoundMaster.class, "map", map);
 	}
@@ -852,7 +854,7 @@ public class BaseMod {
 	{
 		FileHandle sfxFile = Gdx.files.internal(file); // Ensure audio is valid file
 
-		if (sfxFile != null) {
+		if (sfxFile != null && sfxFile.exists()) {
 			Sfx audioSfx = new Sfx(file, false);
 			audioToAdd.put(audioKey, audioSfx);
 		} else {
