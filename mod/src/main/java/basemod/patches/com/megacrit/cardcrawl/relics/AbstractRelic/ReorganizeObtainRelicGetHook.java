@@ -3,6 +3,7 @@ package basemod.patches.com.megacrit.cardcrawl.relics.AbstractRelic;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import javassist.CtBehavior;
 
@@ -15,9 +16,11 @@ public class ReorganizeObtainRelicGetHook
 	@SpireInsertPatch(
 			locator=Locator.class
 	)
-	public static void Insert(AbstractRelic __instance, AbstractPlayer p,int slot, boolean callOnEquip, int relicAmount)
+	public static void Insert(AbstractRelic __instance, AbstractPlayer p, int slot, boolean callOnEquip, int relicAmount)
 	{
-		BaseMod.publishRelicGet(__instance);
+		if (AbstractDungeon.player == p) {
+			BaseMod.publishRelicGet(__instance);
+		}
 	}
 
 	private static class Locator extends SpireInsertLocator
