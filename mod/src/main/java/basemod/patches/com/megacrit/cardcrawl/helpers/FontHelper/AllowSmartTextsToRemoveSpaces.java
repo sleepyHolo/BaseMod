@@ -34,7 +34,7 @@ public class AllowSmartTextsToRemoveSpaces
 				locator = RemoveSpecialWordLocator.class,
 				localvars = {"word"}
 		)
-		public static void Insert(SpriteBatch sb, BitmapFont font, String msg, float x, float y, float lineWidth, float lineSpacing, Color baseColor, @ByRef String[] word)
+		public static void InsertRemoveSpecialWord(SpriteBatch sb, BitmapFont font, String msg, float x, float y, float lineWidth, float lineSpacing, Color baseColor, @ByRef String[] word)
 		{
 			removeSpace = false;
 			if (word[0].startsWith(REMOVE_SPACE_SPECIAL_KEYWORD)) {
@@ -57,7 +57,7 @@ public class AllowSmartTextsToRemoveSpaces
 				locator = RemoveSpaceLocator.class,
 				localvars = {"curWidth", "spaceWidth"}
 		)
-		public static void Insert(SpriteBatch sb, BitmapFont font, String msg, float x, float y, float lineWidth, float lineSpacing, Color baseColor, @ByRef float[] curWidth, float spaceWidth)
+		public static void InsertRemoveSpace(SpriteBatch sb, BitmapFont font, String msg, float x, float y, float lineWidth, float lineSpacing, Color baseColor, @ByRef float[] curWidth, float spaceWidth)
 		{
 			if (removeSpace) {
 				curWidth[0] -= spaceWidth;
