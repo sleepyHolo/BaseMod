@@ -591,9 +591,9 @@ public class BaseMod {
 
 		if (map != null) {
 			map.putAll(audioToAdd);
-			logger.info("added " + audioToAdd.size() + " sounds");
+			logger.info("Added " + audioToAdd.size() + " sounds");
 		} else {
-			logger.info("unexpectedly failed to add sounds.");
+			logger.warn("Unexpectedly failed to add sounds.");
 		}
 
 
@@ -855,7 +855,7 @@ public class BaseMod {
 			Sfx audioSfx = new Sfx(file, false);
 			audioToAdd.put(audioKey, audioSfx);
 		} else {
-			logger.info("Audio file: " + file + " was not found.");
+			logger.warn("Audio file: " + file + " was not found.");
 		}
 	}
 
