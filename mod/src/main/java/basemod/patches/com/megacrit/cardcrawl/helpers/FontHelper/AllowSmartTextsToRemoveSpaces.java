@@ -7,6 +7,9 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import javassist.CtBehavior;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AllowSmartTextsToRemoveSpaces
 {
 	public static final String REMOVE_SPACE_SPECIAL_KEYWORD = "[REMOVE_SPACE]";
@@ -69,7 +72,9 @@ public class AllowSmartTextsToRemoveSpaces
 			public int[] Locate(CtBehavior method) throws Exception
 			{
 				Matcher matcher = new Matcher.MethodCallMatcher(BitmapFont.class, "draw");
-				return new int[]{LineFinder.findAllInOrder(method, matcher)[1]};
+				List<Matcher> prereqs = new ArrayList<>();
+				prereqs.add(matcher);
+				return LineFinder.findInOrder(method, prereqs, matcher);
 			}
 		}
 	}
