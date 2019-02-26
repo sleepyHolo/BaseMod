@@ -592,6 +592,7 @@ public class BaseMod {
 		if (map != null) {
 			map.putAll(audioToAdd);
 			logger.info("Added " + audioToAdd.size() + " sounds");
+			audioToAdd.clear();
 		} else {
 			logger.warn("Unexpectedly failed to add sounds.");
 		}
