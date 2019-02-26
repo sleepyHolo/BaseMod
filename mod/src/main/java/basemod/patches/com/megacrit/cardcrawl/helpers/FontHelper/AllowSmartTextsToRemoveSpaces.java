@@ -10,6 +10,12 @@ import javassist.CtBehavior;
 import java.util.ArrayList;
 import java.util.List;
 
+// Note: This has a bug where words before and after the removed space can be split across lines
+// Example:
+// This is some text [REMOVE_SPACE]. More text.
+// Rendered:
+// This is some text
+// . More text.
 public class AllowSmartTextsToRemoveSpaces
 {
 	public static final String REMOVE_SPACE_SPECIAL_KEYWORD = "[REMOVE_SPACE]";
