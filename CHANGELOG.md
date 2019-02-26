@@ -552,7 +552,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add simple API for getting keyword title/description (kiooeht)
 * Fix typo in MaxHPChangeSubscriber (kiooeht)
 
-#### dev ####
+#### v5.12.0 ####
 * Make base game powers cloneable (Reina)
 * Fix RelicGetSubscriber not being called (kiooeht)
 * Fix RelicGetSubscriber being called a bunch during game startup (kiooeht)
@@ -562,3 +562,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add OnPlayerDamagedSubscriber (Rin Camelia)
 * Allow Smart Texts to remove spaces between 2 words using a special keyword [REMOVE_SPACE] (JohnnyBazooka89)
 * Add AddAudioSubscriber (Alchyr)
+
+#### dev ####
