@@ -559,3 +559,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix blight add command crashing (fiiiiilth)
 * Fix colored card text line length in CN mode (JohnnyDevo)
 * Fix unique keyword linebreaks in CN mode (JohnnyDevo)
+* Add OnPlayerDamagedSubscriber (Rin Camelia)
