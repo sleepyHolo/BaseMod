@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -145,6 +146,7 @@ public class BaseMod {
 	private static ArrayList<MaxHPChangeSubscriber> maxHPChangeSubscribers;
 	private static ArrayList<PreRoomRenderSubscriber> preRoomRenderSubscribers;
 	private static ArrayList<OnPlayerLoseBlockSubscriber> onPlayerLoseBlockSubscribers;
+	private static ArrayList<OnPlayerDamagedSubscriber> onPlayerDamagedSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -454,6 +456,7 @@ public class BaseMod {
 		maxHPChangeSubscribers = new ArrayList<>();
 		preRoomRenderSubscribers = new ArrayList<>();
 		onPlayerLoseBlockSubscribers = new ArrayList<>();
+		onPlayerDamagedSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -2539,6 +2542,17 @@ public class BaseMod {
 		return amount;
 	}
 
+	public static int publishOnPlayerDamaged(int amount, DamageInfo info) {
+		logger.info("publish on Player Damaged");
+
+		for (OnPlayerDamagedSubscriber sub : onPlayerDamagedSubscribers) {
+			amount = sub.receiveOnPlayerDamaged(amount, info);
+		}
+
+		unsubscribeLaterHelper(OnPlayerDamagedSubscriber.class);
+		return amount;
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2611,6 +2625,7 @@ public class BaseMod {
 		subscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		subscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		subscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
+		subscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
 	}
 
 	// subscribe -
@@ -2704,6 +2719,8 @@ public class BaseMod {
 			preRoomRenderSubscribers.add((PreRoomRenderSubscriber) sub);
 		} else if (additionClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
+		} else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
+			onPlayerDamagedSubscribers.add((OnPlayerDamagedSubscriber) sub);
 		}
 	}
 
@@ -2754,6 +2771,7 @@ public class BaseMod {
 		unsubscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		unsubscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		unsubscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
+		unsubscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2847,6 +2865,8 @@ public class BaseMod {
 			preRoomRenderSubscribers.remove(sub);
 		} else if (removalClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.remove(sub);
+		} else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
+			onPlayerDamagedSubscribers.remove(sub);
 		}
 	}
 
