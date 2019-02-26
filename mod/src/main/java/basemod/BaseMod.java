@@ -589,13 +589,10 @@ public class BaseMod {
 		@SuppressWarnings("unchecked")
 		HashMap<String, Sfx> map = (HashMap<String, Sfx>) ReflectionHacks.getPrivate(__instance, SoundMaster.class, "map");
 
-		if (map != null)
-		{
+		if (map != null) {
 			map.putAll(audioToAdd);
 			logger.info("added " + audioToAdd.size() + " sounds");
-		}
-		else
-		{
+		} else {
 			logger.info("unexpectedly failed to add sounds.");
 		}
 
