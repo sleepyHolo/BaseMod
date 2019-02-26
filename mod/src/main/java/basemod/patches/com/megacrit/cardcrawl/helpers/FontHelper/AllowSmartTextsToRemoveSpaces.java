@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import javassist.CtBehavior;
-import org.apache.commons.lang3.StringUtils;
 
 public class AllowSmartTextsToRemoveSpaces
 {
@@ -38,7 +37,7 @@ public class AllowSmartTextsToRemoveSpaces
 		{
 			removeSpace = false;
 			if (word[0].startsWith(REMOVE_SPACE_SPECIAL_KEYWORD)) {
-				word[0] = word[0].replace(REMOVE_SPACE_SPECIAL_KEYWORD, StringUtils.EMPTY);
+				word[0] = word[0].replace(REMOVE_SPACE_SPECIAL_KEYWORD, "");
 				removeSpace = true;
 			}
 		}
@@ -94,7 +93,7 @@ public class AllowSmartTextsToRemoveSpaces
 		public static void Insert(BitmapFont font, String msg, float lineWidth, float lineSpacing, @ByRef String[] word)
 		{
 			if (word[0].startsWith(REMOVE_SPACE_SPECIAL_KEYWORD)) {
-				word[0] = word[0].replace(REMOVE_SPACE_SPECIAL_KEYWORD, StringUtils.EMPTY);
+				word[0] = word[0].replace(REMOVE_SPACE_SPECIAL_KEYWORD, "");
 			}
 		}
 
