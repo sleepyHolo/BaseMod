@@ -557,3 +557,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix RelicGetSubscriber not being called (kiooeht)
 * Fix RelicGetSubscriber being called a bunch during game startup (kiooeht)
 * Fix blight add command crashing (fiiiiilth)
+* Fix colored card text line length in CN mode (JohnnyDevo)
+* Fix unique keyword linebreaks in CN mode (JohnnyDevo)
