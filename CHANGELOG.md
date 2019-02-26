@@ -561,3 +561,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix unique keyword linebreaks in CN mode (JohnnyDevo)
 * Add OnPlayerDamagedSubscriber (Rin Camelia)
 * Allow Smart Texts to remove spaces between 2 words using a special keyword [REMOVE_SPACE] (JohnnyBazooka89)
+* Add AddAudioSubscriber (Alchyr)
