@@ -18,14 +18,11 @@ import javassist.expr.MethodCall;
         paramtypez = {DamageInfo.class}
 )
 public class OnPlayerDamagedHook {
-    public OnPlayerDamagedHook() {
-    }
-
     @SpireInsertPatch(
             localvars = {"damageAmount"},
             locator = OnPlayerDamagedHook.LocatorPre.class
     )
-    public static void InsertPre(AbstractCreature __instance, DamageInfo info, @ByRef int[] damageAmount) {
+    public static void InsertPre(AbstractPlayer __instance, DamageInfo info, @ByRef int[] damageAmount) {
         int damage = BaseMod.publishOnPlayerDamaged(damageAmount[0], info);
         if (damage < 0) {
             damage = 0;
@@ -34,9 +31,6 @@ public class OnPlayerDamagedHook {
     }
 
     private static class LocatorPre extends SpireInsertLocator {
-        private LocatorPre() {
-        }
-
         public int[] Locate(CtBehavior ctBehavior) throws Exception {
             Matcher matcher = new Matcher.MethodCallMatcher(AbstractPlayer.class, "decrementBlock");
             return LineFinder.findInOrder(ctBehavior, matcher);

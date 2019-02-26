@@ -2719,7 +2719,7 @@ public class BaseMod {
 			preRoomRenderSubscribers.add((PreRoomRenderSubscriber) sub);
 		} else if (additionClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
-		}else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
+		} else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.add((OnPlayerDamagedSubscriber) sub);
 		}
 	}
@@ -2865,7 +2865,7 @@ public class BaseMod {
 			preRoomRenderSubscribers.remove(sub);
 		} else if (removalClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.remove(sub);
-		}else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
+		} else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.remove(sub);
 		}
 	}
