@@ -564,3 +564,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add AddAudioSubscriber (Alchyr)
 
 #### dev ####
+* Fix not auto-registering bottle relics when added to custom pool

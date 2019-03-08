@@ -1075,6 +1075,10 @@ public class BaseMod {
 			customRelicPools.get(color).put(relic.relicId, relic);
 			RelicLibrary.addToTierList(relic);
 			customRelicLists.get(color).add(relic);
+
+			if (relic instanceof CustomBottleRelic) {
+				registerBottleRelic(((CustomBottleRelic) relic).isOnCard(), relic);
+			}
 		} else {
 			logger.error("could not add relic to non existent custom pool: " + color);
 		}
