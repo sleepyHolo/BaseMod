@@ -564,5 +564,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add AddAudioSubscriber (Alchyr)
 
 #### dev ####
-* Fix not auto-registering bottle relics when added to custom pool
+* Fix not auto-registering bottle relics when added to custom pool (kiooeht)
 * Fix to Shrink Long Description feature, when description font size was not correct after card was upgraded (JohnnyBazooka89)
+* Fix lcoked cards saying "Unknown" instead of "Locked" (Seeonee)
