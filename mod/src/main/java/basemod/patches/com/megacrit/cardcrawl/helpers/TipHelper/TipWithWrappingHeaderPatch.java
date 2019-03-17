@@ -56,9 +56,7 @@ public class TipWithWrappingHeaderPatch {
         			FontHelper.tipHeaderFont, 
         			title, 
         			BODY_TEXT_WIDTH, 
-        			TIP_DESC_LINE_SPACING + (
-        					FontHelper.getHeight(FontHelper.tipHeaderFont, "x", Settings.scale) -
-        					FontHelper.getHeight(FontHelper.tipBodyFont, "x", Settings.scale)));
+        			TIP_DESC_LINE_SPACING);
         	textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
         }
     }
@@ -101,9 +99,7 @@ public class TipWithWrappingHeaderPatch {
         			FontHelper.tipHeaderFont, 
         			TipHelper.capitalize(word), 
         			BODY_TEXT_WIDTH, 
-        			TIP_DESC_LINE_SPACING + (
-        					FontHelper.getHeight(FontHelper.tipHeaderFont, "x", Settings.scale) -
-        					FontHelper.getHeight(FontHelper.tipBodyFont, "x", Settings.scale)));
+        			TIP_DESC_LINE_SPACING);
         	textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
         }
     }
