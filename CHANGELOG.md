@@ -569,3 +569,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix locked cards saying "Unknown" instead of "Locked" (Seeonee)
 
 #### dev ####
+* Allow CustomCards to use base game card atlas (kiooeht)

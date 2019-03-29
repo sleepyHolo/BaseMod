@@ -79,6 +79,10 @@ public abstract class CustomCard extends AbstractCard {
 			loadCardImage(img);
 		}
 	}
+
+	public CustomCard(String id, String name, RegionName img, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target) {
+		super(id, name, "status/beta", img.name, cost, rawDescription, type, color, rarity, target);
+	}
 	
 	// 
 	// per card energy orb functionality
@@ -236,5 +240,13 @@ public abstract class CustomCard extends AbstractCard {
 	@Override
 	public void unlock() {
 		this.isLocked = false;
+	}
+
+	public static class RegionName {
+		public final String name;
+
+		public RegionName(String name) {
+			this.name = name;
+		}
 	}
 }
