@@ -22,20 +22,7 @@ public abstract class CustomCard extends AbstractCard {
 	public static final String PORTRAIT_ENDING = "_p";
 	
 	public static Texture getPortraitImage(CustomCard card) {
-		if (card.textureImg == null) {
-			return null;
-		}
-		int endingIndex = card.textureImg.lastIndexOf(".");
-		String newPath = card.textureImg.substring(0, endingIndex) + 
-				PORTRAIT_ENDING + card.textureImg.substring(endingIndex); 
-		System.out.println("Finding texture: " + newPath);
-		Texture portraitTexture;
-		try {
-			portraitTexture = ImageMaster.loadImage(newPath);
-		} catch (Exception e) {
-			portraitTexture = null;
-		}
-		return portraitTexture;
+		return card.getPortraitImage();
 	}
 	
 	private static void loadTextureFromString(String textureString) {
@@ -240,6 +227,23 @@ public abstract class CustomCard extends AbstractCard {
 	@Override
 	public void unlock() {
 		this.isLocked = false;
+	}
+
+	protected Texture getPortraitImage() {
+		if (textureImg == null) {
+			return null;
+		}
+		int endingIndex = textureImg.lastIndexOf(".");
+		String newPath = textureImg.substring(0, endingIndex) +
+				PORTRAIT_ENDING + textureImg.substring(endingIndex);
+		System.out.println("Finding texture: " + newPath);
+		Texture portraitTexture;
+		try {
+			portraitTexture = ImageMaster.loadImage(newPath);
+		} catch (Exception e) {
+			portraitTexture = null;
+		}
+		return portraitTexture;
 	}
 
 	public static class RegionName {

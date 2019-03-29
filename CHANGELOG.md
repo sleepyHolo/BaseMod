@@ -570,3 +570,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Allow CustomCards to use base game card atlas (kiooeht)
+* Allow CustomCards to customize how their portrait images are loaded (kiooeht)
