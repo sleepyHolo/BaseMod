@@ -1,22 +1,22 @@
-package basemod.patches.com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
+package basemod.patches.com.megacrit.cardcrawl.actions.common.VampireDamageAllEnemiesAction;
 
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
-import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
+import com.megacrit.cardcrawl.actions.unique.VampireDamageAllEnemiesAction;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
 
 @SpirePatch(
-        clz = DamageAllEnemiesAction.class,
+        clz = VampireDamageAllEnemiesAction.class,
         method = "update"
 )
 public class SafeDamageAllEnemies {
-    @SpireInsertPatch (
+    @SpireInsertPatch(
             locator = Locator.class
     )
-    public static void checkSafety(DamageAllEnemiesAction __instance)
+    public static void checkSafety(VampireDamageAllEnemiesAction __instance)
     {
         if (__instance.damage.length != AbstractDungeon.getCurrRoom().monsters.monsters.size()) //There's a problem.
         {
