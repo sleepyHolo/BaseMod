@@ -17,26 +17,18 @@ import java.util.ArrayList;
         method="initializeDescriptionCN"
 )
 public class CNCardTextColors {
-    private static float widthLimit = 0.0f;
     @SpireInsertPatch(
             locator = Locator.class,
-            localvars = {"word", "currentWidth", "numLines", "currentLine"}
+            localvars = {"word", "currentWidth", "numLines", "currentLine", "CN_DESC_BOX_WIDTH"}
     )
-    public static void Insert(AbstractCard __instance, @ByRef String[] word, @ByRef float[] currentWidth, @ByRef int[] numLines, @ByRef StringBuilder[] currentLine) {
+    public static void Insert(AbstractCard __instance, @ByRef String[] word, @ByRef float[] currentWidth, @ByRef int[] numLines, @ByRef StringBuilder[] currentLine, float CN_DESC_BOX_WIDTH) {
         if (word[0].startsWith("[#") && word[0].endsWith("[]")) {
-            if (widthLimit == 0.0f) {
-                try {
-                    Field CN_DESC_BOX_WIDTH_FIELD = AbstractCard.class.getDeclaredField("CN_DESC_BOX_WIDTH");
-                    CN_DESC_BOX_WIDTH_FIELD.setAccessible(true);
-                    widthLimit = (float) CN_DESC_BOX_WIDTH_FIELD.get(null);
-
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
             String wordTrim = word[0].substring(9, word[0].length() - 2);
+            String buffer = "一";
             float wordWidth = new GlyphLayout(FontHelper.cardDescFont_N, wordTrim).width;
-            if (currentWidth[0] + wordWidth > widthLimit) {
+            float bufferWidth = new GlyphLayout(FontHelper.cardDescFont_N, buffer).width;
+            float limitPlusBuffer = CN_DESC_BOX_WIDTH + bufferWidth;
+            if (currentWidth[0] + wordWidth > limitPlusBuffer) {
                 ++numLines[0];
                 __instance.description.add(new DescriptionLine(currentLine[0].toString(), currentWidth[0]));
                 currentLine[0] = new StringBuilder();

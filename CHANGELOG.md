@@ -552,4 +552,20 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add simple API for getting keyword title/description (kiooeht)
 * Fix typo in MaxHPChangeSubscriber (kiooeht)
 
+#### v5.12.0 ####
+* Make base game powers cloneable (Reina)
+* Fix RelicGetSubscriber not being called (kiooeht)
+* Fix RelicGetSubscriber being called a bunch during game startup (kiooeht)
+* Fix blight add command crashing (fiiiiilth)
+* Fix colored card text line length in CN mode (JohnnyDevo)
+* Fix unique keyword linebreaks in CN mode (JohnnyDevo)
+* Add OnPlayerDamagedSubscriber (Rin Camelia)
+* Allow Smart Texts to remove spaces between 2 words using a special keyword [REMOVE_SPACE] (JohnnyBazooka89)
+* Add AddAudioSubscriber (Alchyr)
+
+#### v5.12.1 ####
+* Fix not auto-registering bottle relics when added to custom pool (kiooeht)
+* Fix to Shrink Long Description feature, when description font size was not correct after card was upgraded (JohnnyBazooka89)
+* Fix locked cards saying "Unknown" instead of "Locked" (Seeonee)
+
 #### dev ####

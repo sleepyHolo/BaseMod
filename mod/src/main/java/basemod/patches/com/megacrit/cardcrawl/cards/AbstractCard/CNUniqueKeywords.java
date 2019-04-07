@@ -1,6 +1,7 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -27,9 +28,9 @@ public class CNUniqueKeywords {
 
     public static class Locator extends SpireInsertLocator {
         public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-            Matcher finalMatcher = new Matcher.NewExprMatcher(StringBuilder.class);
+            Matcher finalMatcher = new Matcher.NewExprMatcher(GlyphLayout.class);
 
-            return new int[] {LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher)[1]};
+            return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }
 }

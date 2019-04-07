@@ -12,6 +12,7 @@ import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,8 +32,11 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.megacrit.cardcrawl.audio.Sfx;
+import com.megacrit.cardcrawl.audio.SoundMaster;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -130,6 +134,7 @@ public class BaseMod {
 	private static ArrayList<EditRelicsSubscriber> editRelicsSubscribers;
 	private static ArrayList<EditCharactersSubscriber> editCharactersSubscribers;
 	private static ArrayList<EditStringsSubscriber> editStringsSubscribers;
+	private static ArrayList<AddAudioSubscriber> addAudioSubscribers;
 	private static ArrayList<EditKeywordsSubscriber> editKeywordsSubscribers;
 	private static ArrayList<PostBattleSubscriber> postBattleSubscribers;
 	private static ArrayList<SetUnlocksSubscriber> setUnlocksSubscribers;
@@ -145,6 +150,7 @@ public class BaseMod {
 	private static ArrayList<MaxHPChangeSubscriber> maxHPChangeSubscribers;
 	private static ArrayList<PreRoomRenderSubscriber> preRoomRenderSubscribers;
 	private static ArrayList<OnPlayerLoseBlockSubscriber> onPlayerLoseBlockSubscribers;
+	private static ArrayList<OnPlayerDamagedSubscriber> onPlayerDamagedSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -181,6 +187,8 @@ public class BaseMod {
 	private static HashMap<String, AbstractPlayer.PlayerClass> potionPlayerClassMap;
 
 	private static HashMap<String, Class<? extends AbstractPower>> powerMap;
+
+	private static HashMap<String, Sfx> audioToAdd;
 
 	private static HashMap<String, String> keywordProperNames;
 	private static HashMap<String, String> keywordUniqueNames;
@@ -350,6 +358,9 @@ public class BaseMod {
 		initializePotionList();
 		initializePowerMap();
 		initializeUnderscorePowerIDs();
+
+		audioToAdd = new HashMap<>();
+
 		keywordProperNames = new HashMap<>();
 		keywordUniqueNames = new HashMap<>();
 		keywordUniquePrefixes = new HashMap<>();
@@ -439,6 +450,7 @@ public class BaseMod {
 		editRelicsSubscribers = new ArrayList<>();
 		editCharactersSubscribers = new ArrayList<>();
 		editStringsSubscribers = new ArrayList<>();
+		addAudioSubscribers = new ArrayList<>();
 		editKeywordsSubscribers = new ArrayList<>();
 		postBattleSubscribers = new ArrayList<>();
 		setUnlocksSubscribers = new ArrayList<>();
@@ -454,6 +466,7 @@ public class BaseMod {
 		maxHPChangeSubscribers = new ArrayList<>();
 		preRoomRenderSubscribers = new ArrayList<>();
 		onPlayerLoseBlockSubscribers = new ArrayList<>();
+		onPlayerDamagedSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -572,6 +585,23 @@ public class BaseMod {
 				}
 			}
 		}
+	}
+
+	// Add Sfx in audio map to SoundMaster
+	private static void addAudioToSoundMaster(SoundMaster __instance) {
+		@SuppressWarnings("unchecked")
+		HashMap<String, Sfx> map = (HashMap<String, Sfx>) ReflectionHacks.getPrivate(__instance, SoundMaster.class, "map");
+
+		if (map != null) {
+			map.putAll(audioToAdd);
+			logger.info("Added " + audioToAdd.size() + " sounds");
+			audioToAdd.clear();
+		} else {
+			logger.warn("Unexpectedly failed to add sounds.");
+		}
+
+
+		ReflectionHacks.setPrivate(__instance, SoundMaster.class, "map", map);
 	}
 
 	static void initializeEncounters() {
@@ -820,6 +850,19 @@ public class BaseMod {
 		return customToRemoveColors;
 	}
 
+	// add audio to add
+	public static void addAudio(String audioKey, String file)
+	{
+		FileHandle sfxFile = Gdx.files.internal(file); // Ensure audio is valid file
+
+		if (sfxFile != null && sfxFile.exists()) {
+			Sfx audioSfx = new Sfx(file, false);
+			audioToAdd.put(audioKey, audioSfx);
+		} else {
+			logger.warn("Audio file: " + file + " was not found.");
+		}
+	}
+
 	// add card
 	public static void addCard(AbstractCard card) {
 		switch (card.color) {
@@ -1032,6 +1075,10 @@ public class BaseMod {
 			customRelicPools.get(color).put(relic.relicId, relic);
 			RelicLibrary.addToTierList(relic);
 			customRelicLists.get(color).add(relic);
+
+			if (relic instanceof CustomBottleRelic) {
+				registerBottleRelic(((CustomBottleRelic) relic).isOnCard(), relic);
+			}
 		} else {
 			logger.error("could not add relic to non existent custom pool: " + color);
 		}
@@ -2354,6 +2401,19 @@ public class BaseMod {
 		unsubscribeLaterHelper(EditStringsSubscriber.class);
 	}
 
+	// publishAddAudio -
+	public static void publishAddAudio(SoundMaster __instance) {
+		logger.info("begin adding custom sounds");
+
+		for (AddAudioSubscriber sub : addAudioSubscribers) {
+			sub.receiveAddAudio();
+		}
+
+		BaseMod.addAudioToSoundMaster(__instance);
+
+		unsubscribeLaterHelper(AddAudioSubscriber.class);
+	}
+
 	// publishPostBattle -
 	public static void publishPostBattle(AbstractRoom battleRoom) {
 		logger.info("publish post combat");
@@ -2539,6 +2599,17 @@ public class BaseMod {
 		return amount;
 	}
 
+	public static int publishOnPlayerDamaged(int amount, DamageInfo info) {
+		logger.info("publish on Player Damaged");
+
+		for (OnPlayerDamagedSubscriber sub : onPlayerDamagedSubscribers) {
+			amount = sub.receiveOnPlayerDamaged(amount, info);
+		}
+
+		unsubscribeLaterHelper(OnPlayerDamagedSubscriber.class);
+		return amount;
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2593,6 +2664,7 @@ public class BaseMod {
 		subscribeIfInstance(postCreateShopRelicSubscribers, sub, PostCreateShopRelicSubscriber.class);
 		subscribeIfInstance(postCreateShopPotionSubscribers, sub, PostCreateShopPotionSubscriber.class);
 		subscribeIfInstance(editCardsSubscribers, sub, EditCardsSubscriber.class);
+		subscribeIfInstance(addAudioSubscribers, sub, AddAudioSubscriber.class);
 		subscribeIfInstance(editRelicsSubscribers, sub, EditRelicsSubscriber.class);
 		subscribeIfInstance(editCharactersSubscribers, sub, EditCharactersSubscriber.class);
 		subscribeIfInstance(editStringsSubscribers, sub, EditStringsSubscriber.class);
@@ -2611,6 +2683,7 @@ public class BaseMod {
 		subscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		subscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		subscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
+		subscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
 	}
 
 	// subscribe -
@@ -2704,6 +2777,8 @@ public class BaseMod {
 			preRoomRenderSubscribers.add((PreRoomRenderSubscriber) sub);
 		} else if (additionClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
+		} else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
+			onPlayerDamagedSubscribers.add((OnPlayerDamagedSubscriber) sub);
 		}
 	}
 
@@ -2754,6 +2829,7 @@ public class BaseMod {
 		unsubscribeIfInstance(maxHPChangeSubscribers, sub, MaxHPChangeSubscriber.class);
 		unsubscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		unsubscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
+		unsubscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -2819,6 +2895,8 @@ public class BaseMod {
 			editStringsSubscribers.remove(sub);
 		} else if (removalClass.equals(EditKeywordsSubscriber.class)) {
 			editKeywordsSubscribers.remove(sub);
+		} else if (removalClass.equals(AddAudioSubscriber.class)) {
+			addAudioSubscribers.remove(sub);
 		} else if (removalClass.equals(PostBattleSubscriber.class)) {
 			postBattleSubscribers.remove(sub);
 		} else if (removalClass.equals(SetUnlocksSubscriber.class)) {
@@ -2847,6 +2925,8 @@ public class BaseMod {
 			preRoomRenderSubscribers.remove(sub);
 		} else if (removalClass.equals(OnPlayerLoseBlockSubscriber.class)) {
 			onPlayerLoseBlockSubscribers.remove(sub);
+		} else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
+			onPlayerDamagedSubscribers.remove(sub);
 		}
 	}
 
