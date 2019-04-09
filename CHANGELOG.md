@@ -573,3 +573,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow CustomCards to customize how their portrait images are loaded (kiooeht)
 * Allow CustomCards to change name font size (kiooeht)
 * Fix tooltips covering up cards in SingleCardViewPopup (kiooeht)
+* Fix custom card libraries being incorrectly scaled (Seeonee)
