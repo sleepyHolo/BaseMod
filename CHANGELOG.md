@@ -575,3 +575,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix tooltips covering up cards in SingleCardViewPopup (kiooeht)
 * Fix custom card libraries being incorrectly scaled (Seeonee)
 * Fix unlock screen visual bug with CustomRelics (Seeonee)
+* Fix event command while in combat (fiiiiilth)
