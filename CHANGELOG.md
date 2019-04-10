@@ -577,3 +577,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix unlock screen visual bug with CustomRelics (Seeonee)
 * Fix event command while in combat (fiiiiilth)
 * Fix keyword tooltips to wrap if too long (bugsniper)
+* Fix DamageAllEnemiesAction to stop crash if monsters change (Alchyr)
