@@ -568,7 +568,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix to Shrink Long Description feature, when description font size was not correct after card was upgraded (JohnnyBazooka89)
 * Fix locked cards saying "Unknown" instead of "Locked" (Seeonee)
 
-#### dev ####
+#### v5.13.0 ####
 * Allow CustomCards to use base game card atlas (kiooeht)
 * Allow CustomCards to customize how their portrait images are loaded (kiooeht)
 * Allow CustomCards to change name font size (kiooeht)
@@ -578,3 +578,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix event command while in combat (fiiiiilth)
 * Fix keyword tooltips to wrap if too long (bugsniper)
 * Fix DamageAllEnemiesAction to stop crash if monsters change (Alchyr)
+
+#### dev ####
