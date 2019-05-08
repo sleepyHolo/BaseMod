@@ -580,3 +580,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix DamageAllEnemiesAction to stop crash if monsters change (Alchyr)
 
 #### dev ####
+* Fix energy tooltip rendering red orb under custom orb (kiooeht)
