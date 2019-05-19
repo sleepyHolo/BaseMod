@@ -7,6 +7,7 @@ import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.*;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
+import basemod.patches.com.megacrit.cardcrawl.screens.select.GridCardSelectScreen.GridCardSelectScreenFields;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
@@ -2966,5 +2967,15 @@ public class BaseMod {
 
 	public static String findCallingModName() {
 		return null;
+	}
+
+	public static void openCustomGridScreen(CardGroup group, int numCards, String tipMsg, GridCardSelectScreenFields.GridCallback callback) {
+		logger.debug("Opening custom grid screen");
+		String gridCancelText = CardCrawlGame.languagePack.getUIString("CombatRewardScreen").TEXT[6];
+		AbstractDungeon.gridSelectScreen.open(group, numCards, tipMsg, false);
+		AbstractDungeon.overlayMenu.cancelButton.show(gridCancelText);
+		AbstractDungeon.dynamicBanner.hide();
+		GridCardSelectScreenFields.forCustomReward.set(AbstractDungeon.gridSelectScreen, true);
+		GridCardSelectScreenFields.customCallback.set(AbstractDungeon.gridSelectScreen, callback);
 	}
 }
