@@ -8,10 +8,11 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 
 import java.util.ArrayList;
-import java.util.List;
 
+@SuppressWarnings("unused")
 public class CustomActionHooks {
 
+    @SuppressWarnings("unused")
     @SpirePatch(clz = GridCardSelectScreen.class, method = "update")
     public static class updatePatch {
 
@@ -25,20 +26,41 @@ public class CustomActionHooks {
                     BaseMod.logger.error("GridCardSelectScreen is being called for a custom reward without a callback");
                 }
 
+                // Callback that was passed in from `open` is executed here
                 GridCardSelectScreenFields.customCallback.get(__instance).callback(selectedCards);
-                __instance.selectedCards.clear();
 
-                GridCardSelectScreenFields.forCustomReward.set(__instance, false);
-                GridCardSelectScreenFields.customCallback.set(__instance, null);
+                // Reset screen
+                __instance.selectedCards.clear();
+                GridCardSelectScreenFields.resetFields(__instance);
             }
         }
     }
 
+    @SuppressWarnings("unused")
     @SpirePatch(clz = GridCardSelectScreen.class, method = "reopen")
     public static class reopenPatch {
         public static void Postfix(GridCardSelectScreen __instance) {
             if (GridCardSelectScreenFields.forCustomReward.get(__instance)) {
                 AbstractDungeon.overlayMenu.proceedButton.hide();
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @SpirePatch(clz = GridCardSelectScreen.class, method = "callOnOpen")
+    public static class resetFlagsOnOpen {
+        public static void Prefix(GridCardSelectScreen __instance) {
+            GridCardSelectScreenFields.resetFields(__instance);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @SpirePatch(clz = AbstractDungeon.class, method = "closeCurrentScreen")
+    public static class resetFlagsOnClose {
+        @SpireInsertPatch(rloc = 51)
+        public static void Insert() {
+            if (GridCardSelectScreenFields.forCustomReward.get(AbstractDungeon.gridSelectScreen)) {
+                AbstractDungeon.gridSelectScreen.selectedCards.clear();
             }
         }
     }

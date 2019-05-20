@@ -16,4 +16,9 @@ public class GridCardSelectScreenFields {
 
     public static SpireField<Boolean> forCustomReward = new SpireField<>(() -> false);
     public static SpireField<GridCallback> customCallback = new SpireField<>(() -> null);
+
+    static void resetFields(GridCardSelectScreen instance) {
+        GridCardSelectScreenFields.forCustomReward.set(instance, false);
+        GridCardSelectScreenFields.customCallback.set(instance, null);
+    }
 }
