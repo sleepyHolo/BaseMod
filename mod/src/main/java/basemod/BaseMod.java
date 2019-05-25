@@ -1637,9 +1637,8 @@ public class BaseMod {
 			CharacterOption option = new CharacterOption(
 					character.getLocalizedCharacterName(),
 					CardCrawlGame.characterManager.recreateCharacter(character.chosenClass),
-					// note that these will fail so we patch this in
-					// basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
-					playerSelectButtonMap.get(character.chosenClass), playerPortraitMap.get(character.chosenClass)
+					ImageMaster.loadImage(playerSelectButtonMap.get(character.chosenClass)),
+					ImageMaster.loadImage(playerPortraitMap.get(character.chosenClass))
 			);
 			options.add(option);
 		}
