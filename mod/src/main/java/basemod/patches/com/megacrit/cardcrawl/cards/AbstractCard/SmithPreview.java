@@ -20,13 +20,19 @@ public class SmithPreview
 	{
 		Pattern pattern;
 		if (Settings.lineBreakViaCharacter) {
-			pattern = Pattern.compile("!(.+)!!");
+			pattern = Pattern.compile("\\$(.+)\\$\\$");
 		} else {
 			pattern = Pattern.compile("!(.+)!.*");
 		}
 
 		for (DescriptionLine line : __instance.description) {
-			for (String word : line.text.split(" ")) {
+			String[] tokenized;
+			if (Settings.lineBreakViaCharacter) {
+				tokenized = line.getCachedTokenizedTextCN();
+			} else {
+				tokenized = line.getCachedTokenizedText();
+			}
+			for (String word : tokenized) {
 				Matcher matcher = pattern.matcher(word);
 				if (matcher.find()) {
 					word = matcher.group(1);
