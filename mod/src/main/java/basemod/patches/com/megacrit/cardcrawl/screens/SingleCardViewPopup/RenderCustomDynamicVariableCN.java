@@ -13,7 +13,7 @@ import javassist.CtBehavior;
 import java.util.regex.Pattern;
 
 @SpirePatch(
-		clz= SingleCardViewPopup.class,
+		clz=SingleCardViewPopup.class,
 		method="renderDescriptionCN"
 )
 public class RenderCustomDynamicVariableCN
@@ -24,10 +24,10 @@ public class RenderCustomDynamicVariableCN
 	)
 	public static void Insert(SingleCardViewPopup __instance, SpriteBatch sb, AbstractCard card, @ByRef String[] tmp)
 	{
-		if (tmp[0].startsWith("!")) {
+		if (tmp[0].startsWith("$")) {
 			String key = tmp[0];
 
-			Pattern pattern = Pattern.compile("!(.+)!!");
+			Pattern pattern = Pattern.compile("\\$(.+)\\$\\$");
 			java.util.regex.Matcher matcher = pattern.matcher(key);
 			if (matcher.find()) {
 				key = matcher.group(1);
@@ -52,7 +52,7 @@ public class RenderCustomDynamicVariableCN
 	{
 		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{
-			Matcher finalMatcher = new Matcher.MethodCallMatcher(String.class, "replace");
+			Matcher finalMatcher = new Matcher.MethodCallMatcher(String.class, "length");
 			return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
 		}
 	}
