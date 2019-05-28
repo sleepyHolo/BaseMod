@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class CNCardTextColors {
     @SpireInsertPatch(
             locator = Locator.class,
-            localvars = {"word", "currentWidth", "numLines", "currentLine", "CN_DESC_BOX_WIDTH"}
+            localvars = {"word", "currentWidth", "numLines", "sbuilder", "CN_DESC_BOX_WIDTH"}
     )
     public static void Insert(AbstractCard __instance, @ByRef String[] word, @ByRef float[] currentWidth, @ByRef int[] numLines, @ByRef StringBuilder[] currentLine, float CN_DESC_BOX_WIDTH) {
         if (word[0].startsWith("[#") && word[0].endsWith("[]")) {

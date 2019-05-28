@@ -82,7 +82,7 @@ public class ShrinkLongDescription
 			float height = 0;
 			GlyphLayout gl = new GlyphLayout();
 			for (int i=0; i<description.size(); ++i) {
-				gl.setText(font, description.get(i).text);
+				gl.setText(font, description.get(i).getText());
 				height += gl.height;
 			}
 			return height;

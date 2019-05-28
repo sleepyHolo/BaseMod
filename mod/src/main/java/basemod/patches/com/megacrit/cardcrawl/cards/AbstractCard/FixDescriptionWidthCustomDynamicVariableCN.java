@@ -15,7 +15,7 @@ public class FixDescriptionWidthCustomDynamicVariableCN
 {
 	@SpireInsertPatch(
 			locator=Locator.class,
-			localvars={"word", "currentWidth", "currentLine", "numLines", "CN_DESC_BOX_WIDTH"}
+			localvars={"word", "currentWidth", "sbuilder", "numLines", "CN_DESC_BOX_WIDTH"}
 	)
 	public static void Insert(AbstractCard __instance, @ByRef String[] word, @ByRef float[] currentWidth,
 							  @ByRef StringBuilder[] currentLine, @ByRef int[] numLines,
