@@ -117,12 +117,13 @@ public class ScrollingTooltips
 
 		@SpireInsertPatch(
 				rloc=6,
-				localvars={"shift", "y"}
+				localvars={/*"shift",*/ "y"}
 		)
-		public static void Insert(float x, float yParam, SpriteBatch sb, ArrayList<PowerTip> powerTips, @ByRef boolean[] shift, @ByRef float[] y)
+		public static void Insert(float x, float yParam, SpriteBatch sb, ArrayList<PowerTip> powerTips, /*@ByRef boolean[] shift,*/ @ByRef float[] y)
 		{
 			if (IsScrolling.isScrolling.get() > 0) {
-				shift[0] = true;
+				// TODO: BD broke this
+				//shift[0] = true;
 				y[0] += Fields.scrollPosition;
 			}
 		}
