@@ -114,19 +114,6 @@ public class ScrollingTooltips
 				IsScrolling.isScrolling.set(-1f);
 			}
 		}
-
-		@SpireInsertPatch(
-				rloc=6,
-				localvars={/*"shift",*/ "y"}
-		)
-		public static void Insert(float x, float yParam, SpriteBatch sb, ArrayList<PowerTip> powerTips, /*@ByRef boolean[] shift,*/ @ByRef float[] y)
-		{
-			if (IsScrolling.isScrolling.get() > 0) {
-				// TODO: BD broke this
-				//shift[0] = true;
-				y[0] += Fields.scrollPosition;
-			}
-		}
 	}
 
 	@SpirePatch(
@@ -209,9 +196,9 @@ public class ScrollingTooltips
 
 	public static void queueScrollingPowerTips(float x, float y, ArrayList<PowerTip> powerTips, float scrollingSize)
 	{
-		// Normalize the positions of keyword tooltips on all cards
-		// For some reason they move slightly depending on the number of tooltips
-		y += powerTips.size() * 20 * Settings.scale;
+		// When BDWSSBB "fixed" power tip rendering I guess he failed to know that the keyword tooltips from SingleCardViewPopup
+		// also use the same rendering code, so now they are being rendered too high up, causing them to touch the arrow button and look bad.
+		// This line pushes them down a little bit so they're back to being rendered where they were originally intended to be.
 		y -= 20 * Settings.scale;
 
 		float tipsHeight = powerTipsHeight(powerTips);
