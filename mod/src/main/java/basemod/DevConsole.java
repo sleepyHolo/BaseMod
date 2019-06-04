@@ -110,12 +110,6 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 
 		ConsoleCommand.execute(tokens);
-
-		switch (tokens[0].toLowerCase()) {
-			case "info": {
-				break;
-			}
-		}
 	}
 
 
