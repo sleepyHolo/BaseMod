@@ -1,6 +1,7 @@
 package basemod.DevCommands;
 
 import basemod.BaseMod;
+import basemod.DevCommands.act.Act;
 import basemod.DevCommands.blight.Blight;
 import basemod.DevCommands.clear.Clear;
 import basemod.DevCommands.debug.Debug;
@@ -137,6 +138,9 @@ public abstract class ConsoleCommand {
         root.put("relic", Relic.class);
         root.put("unlock", Unlock.class);
         root.put("history", History.class);
+        root.put("act", Act.class);
+
+        Act.initialize();
     }
     public static Iterator<String> getKeys() {
         return root.keySet().iterator();
