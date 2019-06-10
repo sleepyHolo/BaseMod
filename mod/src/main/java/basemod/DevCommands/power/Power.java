@@ -4,8 +4,6 @@ import basemod.BaseMod;
 import basemod.ConsoleTargetedPower;
 import basemod.DevCommands.ConsoleCommand;
 import basemod.DevConsole;
-import basemod.helpers.ConvertHelper;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import java.util.ArrayList;
 

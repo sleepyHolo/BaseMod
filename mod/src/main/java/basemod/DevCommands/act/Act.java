@@ -13,23 +13,26 @@ import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Act extends ConsoleCommand {
 
-    private static ArrayList<String> acts = new ArrayList<>();
+    private static Map<String, Integer> acts = new HashMap<>();
     public static void initialize() {
-        addAct(Exordium.ID);
-        addAct(TheCity.ID);
-        addAct(TheBeyond.ID);
-        addAct(TheEnding.ID);
+        addAct(Exordium.ID, 1);
+        addAct(TheCity.ID, 2);
+        addAct(TheBeyond.ID, 3);
+        addAct(TheEnding.ID, 4);
 
         if(Loader.isModLoaded("theJungle")) {
-            addAct("theJungle:Jungle");
+            addAct("theJungle:Jungle", 2);
         }
     }
-    public static void addAct(String actID) {
-        if(!acts.contains(actID)) {
-            acts.add(actID);
+    public static void addAct(String actID, int actNum) {
+        if(!acts.containsKey(actID)) {
+            acts.put(actID, actNum);
         } else {
             BaseMod.logger.error("Act " + actID + " is already registered!");
         }
@@ -43,7 +46,7 @@ public class Act extends ConsoleCommand {
 
     @Override
     public void execute(String[] tokens, int depth) {
-        if(acts.contains(tokens[depth])) {
+        if(acts.containsKey(tokens[depth])) {
             try {
                 DevConsole.log("Skipping to act " + tokens[depth]);
 
@@ -55,6 +58,7 @@ public class Act extends ConsoleCommand {
 
                 CardCrawlGame.nextDungeon = tokens[depth];
                 CardCrawlGame.dungeonTransitionScreen = new DungeonTransitionScreen(tokens[depth]);
+                AbstractDungeon.actNum = acts.get(tokens[depth]);
                 //Phase to complete to enable map control, otherwise game effectively softlocks.
                 AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
             } catch (Exception ex) {}
@@ -64,6 +68,10 @@ public class Act extends ConsoleCommand {
     }
 
     public ArrayList<String> extraOptions(String[] tokens, int depth) {
-        return acts;
+        ArrayList<String> tmp = new ArrayList<>();
+        for(final String s : acts.keySet()) {
+            tmp.add(s);
+        }
+        return tmp;
     }
 }
