@@ -1,7 +1,7 @@
 package basemod.DevCommands;
 
 import basemod.BaseMod;
-import basemod.DevCommands.act.Act;
+import basemod.DevCommands.act.ActCommand;
 import basemod.DevCommands.blight.Blight;
 import basemod.DevCommands.clear.Clear;
 import basemod.DevCommands.debug.Debug;
@@ -14,6 +14,7 @@ import basemod.DevCommands.gold.Gold;
 import basemod.DevCommands.hand.Hand;
 import basemod.DevCommands.history.History;
 import basemod.DevCommands.hp.Hp;
+import basemod.DevCommands.key.KeyCommand;
 import basemod.DevCommands.kill.Kill;
 import basemod.DevCommands.maxhp.MaxHp;
 import basemod.DevCommands.potions.Potions;
@@ -138,9 +139,10 @@ public abstract class ConsoleCommand {
         root.put("relic", Relic.class);
         root.put("unlock", Unlock.class);
         root.put("history", History.class);
-        root.put("act", Act.class);
+        root.put("act", ActCommand.class);
+        root.put("endingkey", KeyCommand.class);
 
-        Act.initialize();
+        ActCommand.initialize();
     }
     public static Iterator<String> getKeys() {
         return root.keySet().iterator();

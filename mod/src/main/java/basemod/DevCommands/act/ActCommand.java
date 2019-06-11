@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Act extends ConsoleCommand {
+public class ActCommand extends ConsoleCommand {
 
     private static Map<String, Integer> acts = new HashMap<>();
     public static void initialize() {
@@ -32,14 +32,14 @@ public class Act extends ConsoleCommand {
         }
     }
     public static void addAct(String actID, int actNum) {
-        if(!acts.containsKey(actID) && !actID.equalsIgnoreCase("boss")) {
+        if(!acts.containsKey(actID) && !actID.equalsIgnoreCase("boss") && !actID.equalsIgnoreCase("num")) {
             acts.put(actID, actNum);
         } else {
             BaseMod.logger.error("Act " + actID + " is already registered!");
         }
     }
 
-    public Act() {
+    public ActCommand() {
         requiresPlayer = true;
         minExtraTokens = 1;
         simpleCheck = true;
@@ -57,6 +57,11 @@ public class Act extends ConsoleCommand {
             AbstractDungeon.combatRewardScreen.clear();
             AbstractDungeon.previousScreen = null;
             AbstractDungeon.closeCurrentScreen();
+
+            CardCrawlGame.music.silenceTempBgmInstantly();
+            CardCrawlGame.music.silenceBGMInstantly();
+        } else if(tokens[depth].equalsIgnoreCase("num")) {
+            DevConsole.log("Current Actnumber: " + AbstractDungeon.actNum);
         } else if(acts.containsKey(tokens[depth])) {
             try {
                 DevConsole.log("Skipping to act " + tokens[depth]);
@@ -69,7 +74,7 @@ public class Act extends ConsoleCommand {
 
                 CardCrawlGame.nextDungeon = tokens[depth];
                 CardCrawlGame.dungeonTransitionScreen = new DungeonTransitionScreen(tokens[depth]);
-                AbstractDungeon.actNum = acts.get(tokens[depth]);
+                AbstractDungeon.actNum = acts.get(tokens[depth]) - 1;
                 //Phase to complete to enable map control, otherwise game effectively softlocks.
                 AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
             } catch (Exception ex) {}
@@ -81,6 +86,7 @@ public class Act extends ConsoleCommand {
     public ArrayList<String> extraOptions(String[] tokens, int depth) {
         ArrayList<String> tmp = new ArrayList<>();
         tmp.add("boss");
+        tmp.add("num");
         for(final String s : acts.keySet()) {
             tmp.add(s);
         }
