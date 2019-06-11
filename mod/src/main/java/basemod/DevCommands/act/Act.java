@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 
 import java.lang.reflect.Array;
@@ -31,7 +32,7 @@ public class Act extends ConsoleCommand {
         }
     }
     public static void addAct(String actID, int actNum) {
-        if(!acts.containsKey(actID)) {
+        if(!acts.containsKey(actID) && !actID.equalsIgnoreCase("boss")) {
             acts.put(actID, actNum);
         } else {
             BaseMod.logger.error("Act " + actID + " is already registered!");
@@ -46,7 +47,17 @@ public class Act extends ConsoleCommand {
 
     @Override
     public void execute(String[] tokens, int depth) {
-        if(acts.containsKey(tokens[depth])) {
+        if(tokens[depth].equalsIgnoreCase("boss")) {
+            DevConsole.log("Skipping to bossroom");
+            AbstractDungeon.currMapNode.room = new MonsterRoomBoss();
+            AbstractDungeon.getCurrRoom().onPlayerEntry();
+
+            AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
+
+            AbstractDungeon.combatRewardScreen.clear();
+            AbstractDungeon.previousScreen = null;
+            AbstractDungeon.closeCurrentScreen();
+        } else if(acts.containsKey(tokens[depth])) {
             try {
                 DevConsole.log("Skipping to act " + tokens[depth]);
 
@@ -69,6 +80,7 @@ public class Act extends ConsoleCommand {
 
     public ArrayList<String> extraOptions(String[] tokens, int depth) {
         ArrayList<String> tmp = new ArrayList<>();
+        tmp.add("boss");
         for(final String s : acts.keySet()) {
             tmp.add(s);
         }
