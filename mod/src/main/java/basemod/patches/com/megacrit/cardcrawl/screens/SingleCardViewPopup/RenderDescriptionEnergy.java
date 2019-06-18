@@ -67,6 +67,6 @@ public class RenderDescriptionEnergy
         if (tmp.equals("[E]") || tmp.equals("[E] ") || tmp.equals("[E]. ")) {
             return BaseMod.getCardSmallEnergy((AbstractCard)card);
         }
-        return ImageMaster.GREEN_ORB;
+        return AbstractCard.orb_green;
     }
 }
