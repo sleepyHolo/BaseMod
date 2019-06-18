@@ -266,13 +266,10 @@ public abstract class CustomCard extends AbstractCard {
 			return;
 		}
 
-		BitmapFont savedFont_N = FontHelper.cardTitleFont_small_N;
-		BitmapFont savedFont_L = FontHelper.cardTitleFont_small_L;
-		FontHelper.cardTitleFont_small_N = titleFont;
-		FontHelper.cardTitleFont_small_L = titleFont;
+		BitmapFont savedFont = FontHelper.cardTitleFont_small;
+		FontHelper.cardTitleFont_small = titleFont;
 		SpireSuper.call(sb);
-		FontHelper.cardTitleFont_small_N = savedFont_N;
-		FontHelper.cardTitleFont_small_L = savedFont_L;
+		FontHelper.cardTitleFont_small = savedFont;
 	}
 
 	private static BitmapFont generateTitleFont(float size) {
