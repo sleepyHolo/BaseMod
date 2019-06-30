@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.DevCommands.ConsoleCommand;
 import basemod.abstracts.*;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
@@ -371,6 +372,8 @@ public class BaseMod {
 		config = makeConfig();
 		setProperties();
 		console = new DevConsole();
+
+		ConsoleCommand.initialize();
 	}
 
 	// setupAnimationGfx -
