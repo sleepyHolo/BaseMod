@@ -7,6 +7,7 @@ import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.*;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
+import basemod.patches.com.megacrit.cardcrawl.screens.select.GridCardSelectScreen.GridCardSelectScreenFields;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
@@ -2965,5 +2966,29 @@ public class BaseMod {
 
 	public static String findCallingModName() {
 		return null;
+	}
+
+	@SuppressWarnings("unused")
+	/**
+	 * Open a {@link com.megacrit.cardcrawl.screens.select.GridCardSelectScreen} for selecting cards.
+	 * Executes a callback function with the cards selected once selection is completed. Method must
+	 * be called after {@link AbstractDungeon} has been initialized
+	 *
+	 * @param group Group of cards to select from
+	 * @param numCards Number of cards to select
+	 * @param tipMsg Tip message displayed at the bottom of the screen
+	 * @param callback Callback function that is executed once card selection is complete. This function
+	 *                 is not executed if the card selection is canceled/skipped.
+	 *
+	 *                 Example callback function: (cards) -> { cards.forEach(c -> logger.debug(c.cardID)); }
+	 */
+	public static void openCustomGridScreen(CardGroup group, int numCards, String tipMsg, GridCardSelectScreenFields.GridCallback callback) {
+		logger.debug("Opening custom grid screen");
+		String gridCancelText = CardCrawlGame.languagePack.getUIString("CardRewardScreen").TEXT[0];
+		AbstractDungeon.gridSelectScreen.open(group, numCards, tipMsg, false);
+		AbstractDungeon.overlayMenu.cancelButton.show(gridCancelText);
+		AbstractDungeon.dynamicBanner.hide();
+		GridCardSelectScreenFields.forCustomReward.set(AbstractDungeon.gridSelectScreen, true);
+		GridCardSelectScreenFields.customCallback.set(AbstractDungeon.gridSelectScreen, callback);
 	}
 }
