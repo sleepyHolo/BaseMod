@@ -581,3 +581,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix energy tooltip rendering red orb under custom orb (kiooeht)
+* Fix to [REMOVE_SPACE] feature: commas, dots and similar should no longer go to the next line (JohnnyBazooka89)"
