@@ -2444,7 +2444,7 @@ public class BaseMod {
 
 	// publishOnCardUse -
 	public static void publishOnCardUse(AbstractCard c) {
-		logger.info("publish on card use: " + c.cardID);
+		logger.info("publish on card use: " + (c == null ? "null" : c.cardID));
 
 		for (OnCardUseSubscriber sub : onCardUseSubscribers) {
 			sub.receiveCardUsed(c);
