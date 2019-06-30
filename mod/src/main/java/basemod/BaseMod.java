@@ -1,6 +1,6 @@
 package basemod;
 
-import basemod.DevCommands.ConsoleCommand;
+import basemod.devcommands.ConsoleCommand;
 import basemod.abstracts.*;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
@@ -83,7 +83,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
