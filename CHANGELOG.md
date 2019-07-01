@@ -585,3 +585,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix ClickableUIElement x render position not being calculated correctly (kobting)
 * Custom GridCardSelectScreen that takes CardGroup and callback (alexdriedger)
 * Fix to [REMOVE_SPACE] feature: commas, dots and similar should no longer go to the next line (JohnnyBazooka89)"
+* Updated dev console code (Raz)
