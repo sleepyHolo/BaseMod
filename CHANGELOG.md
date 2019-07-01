@@ -588,3 +588,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Updated dev console code (Raz)
 
 #### dev ####
+* Fix not rendering cost of playable status/curse cards regression (kiooeht)

@@ -5,15 +5,19 @@ import basemod.abstracts.CustomCard;
 import basemod.helpers.SuperclassFinder;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardColor;
+import com.megacrit.cardcrawl.cards.curses.Pride;
+import com.megacrit.cardcrawl.cards.status.Slimed;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import javassist.CannotCompileException;
+import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import org.apache.logging.log4j.LogManager;
@@ -74,6 +78,29 @@ public class RenderFixSwitches
 			};
 		}
 
+		@SpireInsertPatch(
+                locator=Locator.class,
+				localvars={"text", "font", "costColor"}
+		)
+		public static void Insert(AbstractCard __instance, SpriteBatch sb, String text, BitmapFont font, Color costColor)
+		{
+			if ((__instance.type == AbstractCard.CardType.STATUS && !__instance.cardID.equals(Slimed.ID))
+				|| (__instance.color == CardColor.CURSE && !__instance.cardID.equals(Pride.ID))) {
+				FontHelper.renderRotatedText(
+						sb,
+						font,
+						text,
+						__instance.current_x,
+						__instance.current_y,
+						-132 * __instance.drawScale * Settings.scale,
+						192 * __instance.drawScale * Settings.scale,
+						__instance.angle,
+						false,
+						costColor
+				);
+			}
+		}
+
 		@SuppressWarnings("unused")
 		public static TextureAtlas.AtlasRegion getEnergyOrb(AbstractCard card, TextureAtlas.AtlasRegion orb)
 		{
@@ -108,6 +135,16 @@ public class RenderFixSwitches
 			texture = ImageMaster.loadImage(BaseMod.getEnergyOrb(card.color));
 			BaseMod.saveEnergyOrbTexture(card.color, texture);
 			return new TextureAtlas.AtlasRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
+		}
+
+		private static class Locator extends SpireInsertLocator
+		{
+			@Override
+			public int[] Locate(CtBehavior ctBehavior) throws Exception
+			{
+				Matcher matcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "type");
+				return LineFinder.findInOrder(ctBehavior, matcher);
+			}
 		}
 	}
 	
