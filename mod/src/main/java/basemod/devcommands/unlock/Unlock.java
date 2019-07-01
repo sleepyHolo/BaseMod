@@ -30,7 +30,7 @@ public class Unlock extends ConsoleCommand {
 
         if(tokens[depth].equalsIgnoreCase("always")) {
             if(tokens.length > depth + 1 && tokens[depth + 1].length() > 0) {
-                randomizeWtf();
+                tooManyTokensError();
             } else {
                 complete = true;
             }
@@ -43,7 +43,7 @@ public class Unlock extends ConsoleCommand {
                 complete = true;
             }
         } else if(tokens.length > depth + 1) {
-            randomizeWtf();
+            tooManyTokensError();
         }
         return result;
     }

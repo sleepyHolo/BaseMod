@@ -339,7 +339,7 @@ public class AutoComplete {
 	}
 
 	private static boolean shouldRenderInfo() {
-		return suggestionPairs.isEmpty() || suggestions.isEmpty() || ConsoleCommand.wtf || ConsoleCommand.complete;
+		return suggestionPairs.isEmpty() || suggestions.isEmpty() || ConsoleCommand.errormsg != null || ConsoleCommand.complete;
 	}
 
 	public static void render(SpriteBatch sb) {
@@ -357,7 +357,7 @@ public class AutoComplete {
 			if (suggestions.isEmpty() && ConsoleCommand.duringRun) {
 				text = "[Only available during a run]";
 			}
-			if (ConsoleCommand.wtf) {
+			if (ConsoleCommand.errormsg != null) {
 				text = "[" + ConsoleCommand.errormsg + "]";
 			}
 			if (ConsoleCommand.complete) {

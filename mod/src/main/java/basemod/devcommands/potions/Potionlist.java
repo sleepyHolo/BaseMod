@@ -18,7 +18,7 @@ public class Potionlist extends ConsoleCommand {
     public ArrayList<String> extraOptions(String[] tokens, int depth) {
         complete = true;
         if(tokens.length > depth && tokens[depth].length() > 0) {
-            randomizeWtf();
+            tooManyTokensError();
         }
         return null;
     }

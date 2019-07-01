@@ -22,7 +22,6 @@ import basemod.devcommands.power.Power;
 import basemod.devcommands.relic.Relic;
 import basemod.devcommands.unlock.Unlock;
 import basemod.DevConsole;
-import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -40,17 +39,22 @@ public abstract class ConsoleCommand {
     protected int maxExtraTokens = 1;
 
     protected abstract void execute(String[] tokens, int depth);
+
     protected ArrayList<String> extraOptions(String[] tokens, int depth) {
         if(followup.isEmpty()) {
             if (tokens.length > depth && tokens[depth].length() > 0) {
-                randomizeWtf();
+                tooManyTokensError();
             } else {
                 complete = true;
             }
         }
         return new ArrayList<>();
     }
-    protected void errorMsg(String[] tokens) {errorMsg();}
+
+    protected void errorMsg(String[] tokens) {
+        errorMsg();
+    }
+
     protected void errorMsg() {}
 
     private ConsoleCommand last(String[] tokens, int[] depth, boolean forExecution) throws IllegalAccessException, InstantiationException, InvalidCommandException {
@@ -68,8 +72,7 @@ public abstract class ConsoleCommand {
             } else if(forExecution && tokens.length < depth[0] + minExtraTokens) {
                 this.errorMsg();
             } else if(!forExecution && maxExtraTokens > 0 && tokens.length > maxExtraTokens + depth[0] && tokens[depth[0] + maxExtraTokens].length() > 0) {
-                randomizeWtf();
-                wtf = true;
+                tooManyTokensError();
             } else {
                 return this;
             }
@@ -118,6 +121,7 @@ public abstract class ConsoleCommand {
     }
 
     private static Map<String, Class> root = new HashMap<>();
+
     public static void initialize() {
         root.put("deck", Deck.class);
         root.put("potion", Potions.class);
@@ -144,6 +148,7 @@ public abstract class ConsoleCommand {
 
         ActCommand.initialize();
     }
+
     public static Iterator<String> getKeys() {
         return root.keySet().iterator();
     }
@@ -169,12 +174,13 @@ public abstract class ConsoleCommand {
     public static boolean complete;
     public static boolean isNumber;
     public static boolean duringRun;
-    public static boolean wtf;
+    public static String errormsg;
+
     public static ArrayList<String> suggestions(String[] tokens) {
         complete = false;
         isNumber = false;
         duringRun = false;
-        wtf = false;
+        errormsg = null;
         ConsoleCommand cc;
         int[] depth = new int[]{0};
         if((cc = getLastCommand(tokens, depth, false)) != null) {
@@ -185,13 +191,12 @@ public abstract class ConsoleCommand {
                 ConsoleCommand.complete = true;
             }
 
-            if(!complete && !duringRun && !wtf) {
+            if(!complete && !duringRun && errormsg == null) {
                 return result;
             }
         }
         return new ArrayList<>();
     }
-
 
     public static ArrayList<String> smallNumbers() {
         ArrayList<String> result = new ArrayList<>();
@@ -201,6 +206,7 @@ public abstract class ConsoleCommand {
         isNumber = true;
         return result;
     }
+
     public static ArrayList<String> mediumNumbers() {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 10; i <= 90; i += 10) {
@@ -210,6 +216,7 @@ public abstract class ConsoleCommand {
         isNumber = true;
         return result;
     }
+
     public static ArrayList<String> bigNumbers() {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 100; i <= 900; i += 100) {
@@ -219,6 +226,7 @@ public abstract class ConsoleCommand {
         isNumber = true;
         return result;
     }
+
     public static ArrayList<String> getCardOptions() {
         ArrayList<String> result = new ArrayList<>();
         for (String key : CardLibrary.cards.keySet()) {
@@ -246,24 +254,7 @@ public abstract class ConsoleCommand {
         return result;
     }
 
-
-
-    public static String errormsg;
-    public static void randomizeWtf() {
-        String[] possibilities = new String[]{
-                "What are you even doing?",
-                "Quit it!",
-                "Really, stop!",
-                "Typing more doesn't do anything!",
-                "What have I done to you?",
-                "Less parameters, dude!",
-                "Layer 8 error.",
-                "Staaaaahp",
-                "Seriously?",
-                "...",
-                "I hope at least you're having fun, cause I don't."
-        };
-        errormsg = possibilities[MathUtils.random(possibilities.length - 1)];
-        wtf = true;
+    public static void tooManyTokensError() {
+        errormsg = "Too many tokens";
     }
 }

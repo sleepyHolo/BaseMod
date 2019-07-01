@@ -77,10 +77,10 @@ public class HandSet extends ConsoleCommand {
 
                 return options;
             } else {
-                randomizeWtf();
+                tooManyTokensError();
             }
         } else if(tokens.length > depth + 1) {//CardID is not correct, but you're typing more parameters???
-            randomizeWtf();
+            tooManyTokensError();
         }
         return options;
     }

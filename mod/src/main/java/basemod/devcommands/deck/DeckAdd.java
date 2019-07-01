@@ -61,15 +61,15 @@ public class DeckAdd extends DeckManipulator {
                     if(tokens[depth + 2].matches("\\d+")) {
                         ConsoleCommand.complete = true;
                     } else if(tokens[depth + 2].length() > 0) {
-                        randomizeWtf();
+                        tooManyTokensError();
                     }
                 }
                 return ConsoleCommand.smallNumbers();
             } else if(tokens.length > depth + 1) {
-                randomizeWtf();
+                tooManyTokensError();
             }
         } else if(tokens.length > depth + 1) {//CardID is not correct, but you're typing more parameters???
-            randomizeWtf();
+            tooManyTokensError();
         }
         return options;
     }
