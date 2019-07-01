@@ -34,8 +34,6 @@ public class FixDescriptionWidthCustomDynamicVariableCN
 				currentWidth[0] += gl.width;
 			}
 			word[0] = "";
-
-			//gl[0] = new GlyphLayout(FontHelper.cardDescFont_N, "!D");
 		}
 	}
 

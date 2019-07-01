@@ -589,3 +589,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix not rendering cost of playable status/curse cards regression (kiooeht)
+* Fix unique keywords misaligning card descriptions (kiooeht)
