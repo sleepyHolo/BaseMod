@@ -587,6 +587,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix to [REMOVE_SPACE] feature: commas, dots and similar should no longer go to the next line (JohnnyBazooka89)"
 * Updated dev console code (Raz)
 
-#### dev ####
+#### v5.14.1 ####
 * Fix not rendering cost of playable status/curse cards regression (kiooeht)
 * Fix unique keywords misaligning card descriptions (kiooeht)
+
+#### dev ####
