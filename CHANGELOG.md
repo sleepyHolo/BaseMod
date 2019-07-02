@@ -594,6 +594,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.14.2 ####
 * Fix calculateModifiedCardDamage (kiooeht)
 
-#### dev ####
+#### v5.15.0 ####
 * Allow custom card tooltips before normal tooltips (kiooeht)
 * Fix ConsoleCommand.addCommand (kiooeht)
+
+#### dev ####
