@@ -371,8 +371,6 @@ public class BaseMod {
 		config = makeConfig();
 		setProperties();
 		console = new DevConsole();
-
-		ConsoleCommand.initialize();
 	}
 
 	// setupAnimationGfx -
