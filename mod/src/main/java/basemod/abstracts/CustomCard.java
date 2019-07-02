@@ -223,6 +223,11 @@ public abstract class CustomCard extends AbstractCard {
 	{
 		return null;
 	}
+
+	public List<TooltipInfo> getCustomTooltipsTop()
+	{
+		return null;
+	}
 	
 	//
 	// For events that care about Strikes and Defends
