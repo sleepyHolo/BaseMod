@@ -31,7 +31,7 @@ import java.util.*;
 
 public abstract class ConsoleCommand {
 
-    protected Map<String, Class> followup = new HashMap<>();
+    protected Map<String, Class<? extends ConsoleCommand>> followup = new HashMap<>();
 
     protected boolean simpleCheck = false;
     protected boolean requiresPlayer = false;
@@ -120,31 +120,31 @@ public abstract class ConsoleCommand {
         return null;
     }
 
-    private static Map<String, Class> root = new HashMap<>();
+    private static Map<String, Class<? extends ConsoleCommand>> root = new HashMap<>();
 
     public static void initialize() {
-        root.put("deck", Deck.class);
-        root.put("potion", Potions.class);
-        root.put("blight", Blight.class);
-        root.put("clear", Clear.class);
-        root.put("debug", Debug.class);
-        root.put("draw", Draw.class);
-        root.put("energy", Energy.class);
-        root.put("event", Event.class);
-        root.put("fight", Fight.class);
-        root.put("gold", Gold.class);
-        root.put("hand", Hand.class);
-        root.put("help", Help.class);
-        root.put("hp", Hp.class);
-        root.put("info", Info.class);
-        root.put("kill", Kill.class);
-        root.put("maxhp", MaxHp.class);
-        root.put("power", Power.class);
-        root.put("relic", Relic.class);
-        root.put("unlock", Unlock.class);
-        root.put("history", History.class);
-        root.put("act", ActCommand.class);
-        root.put("endingkey", KeyCommand.class);
+        addCommand("deck", Deck.class);
+        addCommand("potion", Potions.class);
+        addCommand("blight", Blight.class);
+        addCommand("clear", Clear.class);
+        addCommand("debug", Debug.class);
+        addCommand("draw", Draw.class);
+        addCommand("energy", Energy.class);
+        addCommand("event", Event.class);
+        addCommand("fight", Fight.class);
+        addCommand("gold", Gold.class);
+        addCommand("hand", Hand.class);
+        addCommand("help", Help.class);
+        addCommand("hp", Hp.class);
+        addCommand("info", Info.class);
+        addCommand("kill", Kill.class);
+        addCommand("maxhp", MaxHp.class);
+        addCommand("power", Power.class);
+        addCommand("relic", Relic.class);
+        addCommand("unlock", Unlock.class);
+        addCommand("history", History.class);
+        addCommand("act", ActCommand.class);
+        addCommand("key", KeyCommand.class);
 
         ActCommand.initialize();
     }
@@ -153,10 +153,10 @@ public abstract class ConsoleCommand {
         return root.keySet().iterator();
     }
 
-    public static void AddCommand(String key, Class val) {
+    public static void addCommand(String key, Class<? extends ConsoleCommand> val) {
         if(root.containsKey(key)) {
             BaseMod.logger.error("Command \"" + key + "\" already exists.");
-        } else if(key.matches("[a-zA-Z:]+")) {
+        } else if(!key.matches("[a-zA-Z:]+")) {
             BaseMod.logger.error("Commands cannot contain whitespaces.");
         } else {
             root.put(key, val);
