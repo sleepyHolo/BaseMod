@@ -598,6 +598,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow custom card tooltips before normal tooltips (kiooeht)
 * Fix ConsoleCommand.addCommand (kiooeht)
 
-#### dev ####
+#### v5.15.1 ####
 * Support for Slay the Spire 07-17-2019 update (kiooeht)
 * Fix custom energy icons in card descriptions not working in SingleCardViewPopup (kiooeht)
+
+#### dev ####
