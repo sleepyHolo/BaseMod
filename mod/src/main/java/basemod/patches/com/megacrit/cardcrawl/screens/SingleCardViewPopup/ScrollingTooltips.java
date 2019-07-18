@@ -161,7 +161,7 @@ public class ScrollingTooltips
 			@Override
 			public int[] Locate(CtBehavior ctBehavior) throws Exception
 			{
-				Matcher matcher = new Matcher.FieldAccessMatcher(InputHelper.class, "justReleasedClickLeft");
+				Matcher matcher = new Matcher.FieldAccessMatcher(InputHelper.class, "justClickedLeft");
 				return LineFinder.findInOrder(ctBehavior, matcher);
 			}
 		}
