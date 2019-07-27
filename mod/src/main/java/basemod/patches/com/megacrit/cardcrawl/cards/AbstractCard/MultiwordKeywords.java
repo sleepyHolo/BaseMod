@@ -46,6 +46,7 @@ public class MultiwordKeywords
 				List<Matcher> prevMatchers = new ArrayList<>();
 				prevMatchers.add(matcher);
 				prevMatchers.add(matcher);
+				prevMatchers.add(matcher);
 				return LineFinder.findInOrder(ctBehavior, prevMatchers, matcher);
 			}
 		}

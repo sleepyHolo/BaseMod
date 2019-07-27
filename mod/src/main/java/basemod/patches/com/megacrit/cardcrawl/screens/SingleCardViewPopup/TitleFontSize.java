@@ -72,7 +72,7 @@ public class TitleFontSize
 			@Override
 			public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
 			{
-				Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "cardTitleFont_small_N");
+				Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "cardTitleFont_small");
 				return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
 			}
 		}

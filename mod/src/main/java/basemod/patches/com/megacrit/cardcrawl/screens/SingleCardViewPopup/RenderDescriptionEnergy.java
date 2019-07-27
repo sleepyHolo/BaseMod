@@ -31,13 +31,13 @@ public class RenderDescriptionEnergy
             public void edit(MethodCall m) throws CannotCompileException
             {
                 if (m.getClassName().equals(String.class.getName()) && m.getMethodName().equals("equals")) {
-                    m.replace("{ $_ = basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup.RenderDescriptionEnergy.replaceEquals(tmp, (java.lang.String)$1); }");
+                    m.replace("$_ = " + RenderDescriptionEnergy.class.getName() + ".replaceEquals(tmp, (java.lang.String)$1);");
                 }
             }
             public void edit(FieldAccess m) throws CannotCompileException
             {
-                if (m.getClassName().equals(ImageMaster.class.getName()) && m.getFieldName().equals("GREEN_ORB")) {
-                    m.replace("{ $_ = basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup.RenderDescriptionEnergy.replaceOrbField(tmp, this.card); }");
+                if (m.getClassName().equals(AbstractCard.class.getName()) && m.getFieldName().equals("orb_green")) {
+                    m.replace("$_ = " + RenderDescriptionEnergy.class.getName() + ".replaceOrbField(tmp, this.card);");
                 }
             }
         };
@@ -67,6 +67,6 @@ public class RenderDescriptionEnergy
         if (tmp.equals("[E]") || tmp.equals("[E] ") || tmp.equals("[E]. ")) {
             return BaseMod.getCardSmallEnergy((AbstractCard)card);
         }
-        return ImageMaster.GREEN_ORB;
+        return AbstractCard.orb_green;
     }
 }

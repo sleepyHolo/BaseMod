@@ -61,6 +61,12 @@ public class FakeKeywords
         if (acard instanceof CustomCard) {
             CustomCard card = (CustomCard) acard;
             List<TooltipInfo> tooltips = card.getCustomTooltips();
+            List<TooltipInfo> pretooltips = card.getCustomTooltipsTop();
+            if (tooltips != null && pretooltips != null) {
+                tooltips.addAll(pretooltips);
+            } else if (tooltips == null && pretooltips != null) {
+                tooltips = pretooltips;
+            }
             if (tooltips != null) {
                 for (TooltipInfo tooltip : tooltips) {
                     float textHeight = -FontHelper.getSmartHeight(
@@ -88,6 +94,38 @@ public class FakeKeywords
         // Cancel out the base game's hardcoded "solution"
         if (keywords.size() >= 4) {
             y[0] -= (keywords.size() - 1) * 62 * Settings.scale;
+        }
+
+        try {
+            if (acard instanceof CustomCard) {
+                CustomCard card = (CustomCard) acard;
+                List<TooltipInfo> tooltips = card.getCustomTooltipsTop();
+                if (tooltips != null) {
+                    for (TooltipInfo tooltip : tooltips) {
+                        Field textHeight = TipHelper.class.getDeclaredField("textHeight");
+                        textHeight.setAccessible(true);
+                        float h = -FontHelper.getSmartHeight(
+                                FontHelper.tipHeaderFont,
+                                TipHelper.capitalize(tooltip.title),
+                                BODY_TEXT_WIDTH,
+                                TIP_DESC_LINE_SPACING) -
+                                FontHelper.getSmartHeight(
+                                        FontHelper.tipBodyFont,
+                                        tooltip.description,
+                                        BODY_TEXT_WIDTH,
+                                        TIP_DESC_LINE_SPACING) - 7.0f * Settings.scale;
+                        ;
+                        textHeight.set(null, h);
+
+                        Method renderTipBox = TipHelper.class.getDeclaredMethod("renderTipBox", float.class, float.class, SpriteBatch.class, String.class, String.class);
+                        renderTipBox.setAccessible(true);
+                        renderTipBox.invoke(null, x, y[0], sb, tooltip.title, tooltip.description);
+                        y[0] -= h + BOX_EDGE_H * 3.15f;
+                    }
+                }
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
+            e.printStackTrace();
         }
     }
 

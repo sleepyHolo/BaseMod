@@ -579,4 +579,27 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix keyword tooltips to wrap if too long (bugsniper)
 * Fix DamageAllEnemiesAction to stop crash if monsters change (Alchyr)
 
+#### v5.14.0 ####
+* Support for Slay the Spire v1.1 (kiooeht)
+* Fix energy tooltip rendering red orb under custom orb (kiooeht)
+* Fix ClickableUIElement x render position not being calculated correctly (kobting)
+* Custom GridCardSelectScreen that takes CardGroup and callback (alexdriedger)
+* Fix to [REMOVE_SPACE] feature: commas, dots and similar should no longer go to the next line (JohnnyBazooka89)"
+* Updated dev console code (Raz)
+
+#### v5.14.1 ####
+* Fix not rendering cost of playable status/curse cards regression (kiooeht)
+* Fix unique keywords misaligning card descriptions (kiooeht)
+
+#### v5.14.2 ####
+* Fix calculateModifiedCardDamage (kiooeht)
+
+#### v5.15.0 ####
+* Allow custom card tooltips before normal tooltips (kiooeht)
+* Fix ConsoleCommand.addCommand (kiooeht)
+
+#### v5.15.1 ####
+* Support for Slay the Spire 07-17-2019 update (kiooeht)
+* Fix custom energy icons in card descriptions not working in SingleCardViewPopup (kiooeht)
+
 #### dev ####

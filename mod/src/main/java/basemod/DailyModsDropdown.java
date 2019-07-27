@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.daily.DailyScreen;
 import com.megacrit.cardcrawl.daily.mods.AbstractDailyMod;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -17,6 +18,7 @@ public class DailyModsDropdown extends ClickableUIElement {
     private ArrayList<AbstractDailyMod> dailyMods;
     private ArrayList<DailyModIcon> dailyModIcons;
     private boolean showModList = false;
+    private String text;
     private final float SHADOW_DIST_X = 9.0F * Settings.scale;
     private final float SHADOW_DIST_Y = 14.0F * Settings.scale;
     private final float BOX_EDGE_H = 32.0F * Settings.scale;
@@ -36,6 +38,12 @@ public class DailyModsDropdown extends ClickableUIElement {
             this.setY(y * Settings.scale);
         }
         initDailyModIcons();
+
+        // Trim "Modifiers: " -> "Modifiers"
+        text = DailyScreen.TEXT[13].trim();
+        if (text.endsWith(":")) {
+            text = text.substring(0, text.length()-1);
+        }
     }
 
     @Override
@@ -55,11 +63,10 @@ public class DailyModsDropdown extends ClickableUIElement {
     public void render(SpriteBatch sb) {
         super.render(sb);
         sb.setColor(Color.WHITE);
-        // TODO that unicode character
         if (hitbox.hovered) {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
         } else {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, "Daily Mods \u25BC", x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
         }
         if (showModList) {
             renderBox(sb, y - 60f * Settings.scale);

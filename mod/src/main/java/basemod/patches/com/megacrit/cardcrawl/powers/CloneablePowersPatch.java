@@ -278,7 +278,7 @@ public class CloneablePowersPatch {
                     "makeCopy", // Method name
                     new CtClass[]{},
                     null, // Exceptions
-                    "return new " + BerserkPower.class.getName() + "(name, owner, amount);",
+                    "return new " + BerserkPower.class.getName() + "(owner, amount);",
                     ctClass
             );
             ctClass.addMethod(method);

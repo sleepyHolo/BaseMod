@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.devcommands.ConsoleCommand;
 import basemod.abstracts.*;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
@@ -7,6 +8,7 @@ import basemod.helpers.dynamicvariables.DamageVariable;
 import basemod.helpers.dynamicvariables.MagicNumberVariable;
 import basemod.interfaces.*;
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
+import basemod.patches.com.megacrit.cardcrawl.screens.select.GridCardSelectScreen.GridCardSelectScreenFields;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
@@ -81,7 +83,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -1637,9 +1638,8 @@ public class BaseMod {
 			CharacterOption option = new CharacterOption(
 					character.getLocalizedCharacterName(),
 					CardCrawlGame.characterManager.recreateCharacter(character.chosenClass),
-					// note that these will fail so we patch this in
-					// basemode.patches.com.megacrit.cardcrawl.screens.charSelect.CharacterOption.CtorSwitch
-					playerSelectButtonMap.get(character.chosenClass), playerPortraitMap.get(character.chosenClass)
+					ImageMaster.loadImage(playerSelectButtonMap.get(character.chosenClass)),
+					ImageMaster.loadImage(playerPortraitMap.get(character.chosenClass))
 			);
 			options.add(option);
 		}
@@ -2445,7 +2445,7 @@ public class BaseMod {
 
 	// publishOnCardUse -
 	public static void publishOnCardUse(AbstractCard c) {
-		logger.info("publish on card use");
+		logger.info("publish on card use: " + (c == null ? "null" : c.cardID));
 
 		for (OnCardUseSubscriber sub : onCardUseSubscribers) {
 			sub.receiveCardUsed(c);
@@ -2966,5 +2966,29 @@ public class BaseMod {
 
 	public static String findCallingModName() {
 		return null;
+	}
+
+	@SuppressWarnings("unused")
+	/**
+	 * Open a {@link com.megacrit.cardcrawl.screens.select.GridCardSelectScreen} for selecting cards.
+	 * Executes a callback function with the cards selected once selection is completed. Method must
+	 * be called after {@link AbstractDungeon} has been initialized
+	 *
+	 * @param group Group of cards to select from
+	 * @param numCards Number of cards to select
+	 * @param tipMsg Tip message displayed at the bottom of the screen
+	 * @param callback Callback function that is executed once card selection is complete. This function
+	 *                 is not executed if the card selection is canceled/skipped.
+	 *
+	 *                 Example callback function: (cards) -> { cards.forEach(c -> logger.debug(c.cardID)); }
+	 */
+	public static void openCustomGridScreen(CardGroup group, int numCards, String tipMsg, GridCardSelectScreenFields.GridCallback callback) {
+		logger.debug("Opening custom grid screen");
+		String gridCancelText = CardCrawlGame.languagePack.getUIString("CardRewardScreen").TEXT[0];
+		AbstractDungeon.gridSelectScreen.open(group, numCards, tipMsg, false);
+		AbstractDungeon.overlayMenu.cancelButton.show(gridCancelText);
+		AbstractDungeon.dynamicBanner.hide();
+		GridCardSelectScreenFields.forCustomReward.set(AbstractDungeon.gridSelectScreen, true);
+		GridCardSelectScreenFields.customCallback.set(AbstractDungeon.gridSelectScreen, callback);
 	}
 }

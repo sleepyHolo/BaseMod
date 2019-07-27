@@ -100,7 +100,7 @@ public abstract class ClickableUIElement {
             float halfWidth = image.getWidth() / 2.0f;
             float halfHeight = image.getHeight() / 2.0f;
             sb.draw(image,
-                    x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                    x - halfWidth + halfWidth * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
                     halfWidth, halfHeight,
                     image.getWidth(), image.getHeight(),
                     Settings.scale, Settings.scale,
@@ -112,7 +112,7 @@ public abstract class ClickableUIElement {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
                 sb.setColor(tint);
                 sb.draw(image,
-                        x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                        x - halfWidth + halfWidth * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
                         halfWidth, halfHeight,
                         image.getWidth(), image.getHeight(),
                         Settings.scale, Settings.scale,
@@ -126,7 +126,7 @@ public abstract class ClickableUIElement {
             float halfWidth = region.packedWidth / 2.0f;
             float halfHeight = region.packedHeight / 2.0f;
             sb.draw(region,
-                    x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                    x - halfWidth + halfWidth * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
                     halfWidth, halfHeight,
                     region.packedWidth, region.packedHeight,
                     Settings.scale, Settings.scale,
@@ -135,7 +135,7 @@ public abstract class ClickableUIElement {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
                 sb.setColor(tint);
                 sb.draw(region,
-                        x - halfWidth + halfHeight * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
+                        x - halfWidth + halfWidth * Settings.scale, y - halfHeight + halfHeight * Settings.scale,
                         halfWidth, halfHeight,
                         region.packedWidth, region.packedHeight,
                         Settings.scale, Settings.scale,

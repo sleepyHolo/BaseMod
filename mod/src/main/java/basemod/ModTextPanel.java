@@ -206,19 +206,19 @@ public class ModTextPanel implements RenderSubscriber, PostUpdateSubscriber {
 				CONFIRM_W, CONFIRM_H, Settings.scale, Settings.scale, 0.0f, 0, 0, 360, 414, false, false);
 		sb.draw(ImageMaster.RENAME_BOX, Settings.WIDTH / 2.0f - 160.0f, Settings.OPTION_Y - 160.0f, 160.0f, 160.0f,
 				320.0f, 320.0f, Settings.scale, Settings.scale, 0.0f, 0, 0, 320, 320, false, false);
-		FontHelper.renderSmartText(sb, FontHelper.cardTitleFont_small_N, ModTextPanel.textField,
+		FontHelper.renderSmartText(sb, FontHelper.cardTitleFont_small, ModTextPanel.textField,
 				Settings.WIDTH / 2.0f - 120.0f * Settings.scale, Settings.OPTION_Y + 4.0f * Settings.scale, 100000.0f,
 				0.0f, this.uiColor);
 		final float tmpAlpha = (MathUtils.cosDeg(System.currentTimeMillis() / 3L % 360L) + 1.25f) / 3.0f
 				* this.uiColor.a;
-		FontHelper.renderSmartText(sb, FontHelper.cardTitleFont_small_N, "_",
+		FontHelper.renderSmartText(sb, FontHelper.cardTitleFont_small, "_",
 				Settings.WIDTH / 2.0f - 122.0f * Settings.scale
-						+ FontHelper.getSmartWidth(FontHelper.cardTitleFont_small_N, ModTextPanel.textField, 1000000.0f,
+						+ FontHelper.getSmartWidth(FontHelper.cardTitleFont_small, ModTextPanel.textField, 1000000.0f,
 								0.0f),
 				Settings.OPTION_Y + 4.0f * Settings.scale, 100000.0f, 0.0f, new Color(1.0f, 1.0f, 1.0f, tmpAlpha));
 		Color c = Settings.GOLD_COLOR.cpy();
 		c.a = this.uiColor.a;
-		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont_N, explanationText, Settings.WIDTH / 2.0f,
+		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont, explanationText, Settings.WIDTH / 2.0f,
 				Settings.OPTION_Y + 126.0f * Settings.scale, c);
 		if (this.yesHb.clickStarted) {
 			sb.setColor(new Color(1.0f, 1.0f, 1.0f, this.uiColor.a * 0.9f));
@@ -248,7 +248,7 @@ public class ModTextPanel implements RenderSubscriber, PostUpdateSubscriber {
 			c = Settings.GOLD_COLOR.cpy();
 		}
 		c.a = this.uiColor.a;
-		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont_small_N, CONFIRM_TEXT,
+		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont_small, CONFIRM_TEXT,
 				Settings.WIDTH / 2.0f - 110.0f * Settings.scale, Settings.OPTION_Y - 118.0f * Settings.scale, c, 1.0f);
 		sb.draw(ImageMaster.OPTION_NO, Settings.WIDTH / 2.0f - 80.5f + 106.0f * Settings.scale,
 				Settings.OPTION_Y - 37.0f - 120.0f * Settings.scale, 80.5f, 37.0f, NO_W, BUTTON_H, Settings.scale,
@@ -270,7 +270,7 @@ public class ModTextPanel implements RenderSubscriber, PostUpdateSubscriber {
 			c = Settings.GOLD_COLOR.cpy();
 		}
 		c.a = this.uiColor.a;
-		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont_small_N, CANCEL_TEXT,
+		FontHelper.renderFontCentered(sb, FontHelper.cardTitleFont_small, CANCEL_TEXT,
 				Settings.WIDTH / 2.0f + 110.0f * Settings.scale, Settings.OPTION_Y - 118.0f * Settings.scale, c, 1.0f);
 		if (this.shown) {
 			this.yesHb.render(sb);
@@ -291,7 +291,7 @@ class ModTextPanelInputHelper implements InputProcessor {
 		}
 		if (tmp.length() != 1)
 			return false;
-		if (FontHelper.getSmartWidth(FontHelper.cardTitleFont_small_N, ModTextPanel.textField, 1.0E7F, 0.0F) >= 240.0F
+		if (FontHelper.getSmartWidth(FontHelper.cardTitleFont_small, ModTextPanel.textField, 1.0E7F, 0.0F) >= 240.0F
 				* Settings.scale) {
 
 			return false;

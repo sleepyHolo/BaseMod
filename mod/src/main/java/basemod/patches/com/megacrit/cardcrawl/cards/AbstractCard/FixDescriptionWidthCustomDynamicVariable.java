@@ -27,7 +27,7 @@ public class FixDescriptionWidthCustomDynamicVariable
             gl[0].width -= (new GlyphLayout(FontHelper.cardDescFont_N, prefix)).width;
         }
         else if (word[0].startsWith("!")) {
-            gl[0] = new GlyphLayout(FontHelper.cardDescFont_N, "!D");
+            gl[0].setText(FontHelper.cardDescFont_N, "!D");
         }
     }
 

@@ -22,10 +22,25 @@ import java.util.stream.Collectors;
 public class FakeKeywords
 {
 	@SpireInsertPatch(
-			locator=Locator.class,
+			locator=LocatorBefore.class,
 			localvars={"card", "t"}
 	)
-	public static void Insert(SingleCardViewPopup __instance, SpriteBatch sb, AbstractCard acard, @ByRef ArrayList<PowerTip>[] t)
+	public static void InsertBefore(SingleCardViewPopup __instance, SpriteBatch sb, AbstractCard acard, @ByRef ArrayList<PowerTip>[] t)
+	{
+		if (acard instanceof CustomCard) {
+			CustomCard card = (CustomCard) acard;
+			List<TooltipInfo> tooltips = card.getCustomTooltipsTop();
+			if (tooltips != null) {
+				t[0].addAll(tooltips.stream().map(TooltipInfo::toPowerTip).collect(Collectors.toList()));
+			}
+		}
+	}
+
+	@SpireInsertPatch(
+			locator=LocatorAfter.class,
+			localvars={"card", "t"}
+	)
+	public static void InsertAfter(SingleCardViewPopup __instance, SpriteBatch sb, AbstractCard acard, @ByRef ArrayList<PowerTip>[] t)
 	{
 		if (acard instanceof CustomCard) {
 			CustomCard card = (CustomCard) acard;
@@ -36,7 +51,16 @@ public class FakeKeywords
 		}
 	}
 
-	private static class Locator extends SpireInsertLocator
+	private static class LocatorBefore extends SpireInsertLocator
+	{
+		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+		{
+			Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "keywords");
+			return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+		}
+	}
+
+	private static class LocatorAfter extends SpireInsertLocator
 	{
 		public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
 		{

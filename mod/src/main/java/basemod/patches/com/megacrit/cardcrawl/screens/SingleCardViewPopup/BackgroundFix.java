@@ -4,8 +4,8 @@ import basemod.BaseMod;
 import basemod.abstracts.CustomCard;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -13,11 +13,9 @@ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
-import org.omg.CORBA.UNKNOWN;
+import javassist.expr.FieldAccess;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 public class BackgroundFix
 {
@@ -121,47 +119,41 @@ public class BackgroundFix
 		{
 			return new ExprEditor() {
 				@Override
-				public void edit(MethodCall m) throws CannotCompileException
+				public void edit(FieldAccess f) throws CannotCompileException
 				{
-					if (m.getClassName().equals(SpriteBatch.class.getName()) && m.getMethodName().equals("draw")) {
-						m.replace(EnergyOrbTexture.class.getName() + ".drawEnergyOrb(card, sb, $$);");
+					if (f.getFieldName().equals("CARD_GRAY_ORB_L")) {
+						f.replace("$_ = " + EnergyOrbTexture.class.getName() + ".getEnergyOrb(card, $proceed($$));");
 					}
 				}
 			};
 		}
 
 		@SuppressWarnings("unused")
-		public static void drawEnergyOrb(AbstractCard card, SpriteBatch sb,
-										 Texture texture,
-										 float x, float y,
-										 float originX, float originY,
-										 float width, float height,
-										 float scaleX, float scaleY,
-										 float rotation,
-										 int srcX, int srcY,
-										 int srcWidth, int srcHeight,
-										 boolean flipX, boolean flipY)
+		public static TextureAtlas.AtlasRegion getEnergyOrb(AbstractCard card, TextureAtlas.AtlasRegion orb)
 		{
-			if (card.color != AbstractCard.CardColor.RED && card.color != AbstractCard.CardColor.GREEN && card.color != AbstractCard.CardColor.BLUE
-				&& card.color != AbstractCard.CardColor.COLORLESS && card.color != AbstractCard.CardColor.CURSE) {
-				if (card instanceof CustomCard) {
-					texture = ((CustomCard) card).getOrbLargeTexture();
-				}
+			if (card.color == AbstractCard.CardColor.COLORLESS) {
+				return orb;
+			}
 
-				if (texture == null) {
-					texture = BaseMod.getEnergyOrbPortraitTexture(card.color);
-					if (texture == null) {
-						texture = ImageMaster.loadImage(BaseMod.getEnergyOrbPortrait(card.color));
-						BaseMod.saveEnergyOrbPortraitTexture(card.color, texture);
-					}
-				}
+			Texture texture = null;
 
+			if (card instanceof CustomCard) {
+				texture = ((CustomCard) card).getOrbLargeTexture();
+			}
+
+			if (texture == null) {
+				texture = BaseMod.getEnergyOrbPortraitTexture(card.color);
 				if (texture == null) {
-					texture = ImageMaster.CARD_GRAY_ORB_L;
+					texture = ImageMaster.loadImage(BaseMod.getEnergyOrbPortrait(card.color));
+					BaseMod.saveEnergyOrbPortraitTexture(card.color, texture);
 				}
 			}
 
-			sb.draw(texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, srcX, srcY, srcWidth, srcHeight, flipX, flipY);
+			if (texture == null) {
+				return orb;
+			}
+
+			return new TextureAtlas.AtlasRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
 		}
 	}
 	
@@ -171,38 +163,28 @@ public class BackgroundFix
 	)
 	public static class BannerTexture
 	{
-		public static void Replace(Object __obj_instance, SpriteBatch sb)
+		@SpireInsertPatch(
+				locator=Locator.class,
+				localvars={"card", "tmpImg"}
+		)
+		public static void Insert(SingleCardViewPopup __instance, SpriteBatch sb, AbstractCard card, @ByRef TextureAtlas.AtlasRegion[] tmpImg)
 		{
-			try {
-				SingleCardViewPopup view = (SingleCardViewPopup)__obj_instance;
-				AbstractCard card;
-				
-				Field cardField;
-				cardField = view.getClass().getDeclaredField("card");
-				cardField.setAccessible(true);
-				
-				card = (AbstractCard)cardField.get(view);
-				
-				AbstractCard.CardRarity rarity = card.rarity;
-				
-				Texture bannerTexture = null;
-				if (card instanceof CustomCard) {
-					bannerTexture = ((CustomCard)card).getBannerLargeTexture();
+			if (card instanceof CustomCard) {
+				Texture bannerTexture = ((CustomCard)card).getBannerLargeTexture();
+				if (bannerTexture != null) {
+					tmpImg[0] = new TextureAtlas.AtlasRegion(bannerTexture, 0, 0, bannerTexture.getWidth(), bannerTexture.getHeight());
 				}
-				if (bannerTexture == null) {
-					if (rarity == AbstractCard.CardRarity.UNCOMMON) {
-						bannerTexture = ImageMaster.CARD_BANNER_UNCOMMON_L;
-					} else if (rarity == AbstractCard.CardRarity.RARE) {
-						bannerTexture = ImageMaster.CARD_BANNER_RARE_L;
-					} else {
-						bannerTexture = ImageMaster.CARD_BANNER_COMMON_L;
-					}
-				}
-				sb.draw(bannerTexture, Settings.WIDTH / 2.0f - 512.0f, Settings.HEIGHT / 2.0f - 512.0f, 512.0f, 512.0f, 1024.0f, 1024.0f, 
-						Settings.scale, Settings.scale, 0.0f, 0,0,1024,1024, false, false);
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}
+		}
+
+		private static class Locator extends SpireInsertLocator
+		{
+			@Override
+			public int[] Locate(CtBehavior ctBehavior) throws Exception
+			{
+				Matcher matcher = new Matcher.MethodCallMatcher(SingleCardViewPopup.class, "renderHelper");
+				int[] found = LineFinder.findInOrder(ctBehavior, matcher);
+				return new int[]{found[0]-1};
 			}
 		}
 	}
