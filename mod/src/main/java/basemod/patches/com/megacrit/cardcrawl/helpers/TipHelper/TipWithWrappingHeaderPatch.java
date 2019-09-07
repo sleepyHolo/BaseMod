@@ -44,11 +44,7 @@ public class TipWithWrappingHeaderPatch {
             };
         }
         
-        @SpireInsertPatch(
-                rloc=0,
-                localvars={"textHeight"}
-        )
-        public static void Insert(float x, float y, SpriteBatch sb, String title, String description, @ByRef float[] textHeight){
+        public static void Prefix(float x, float y, SpriteBatch sb, String title, String description, @ByRef float[] ___textHeight){
             if (TipWithWrappingHeaderPatch.BODY_TEXT_WIDTH == 0){
                 getConstants();
             }
@@ -57,7 +53,7 @@ public class TipWithWrappingHeaderPatch {
                     title, 
                     BODY_TEXT_WIDTH, 
                     TIP_DESC_LINE_SPACING);
-            textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
+            ___textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
         }
     }
     
@@ -87,11 +83,7 @@ public class TipWithWrappingHeaderPatch {
             };
         }
         
-        @SpireInsertPatch(
-                rloc=0,
-                localvars={"textHeight"}
-        )
-        public static void Insert(SpriteBatch sb, String word, float x, float y, @ByRef float[] textHeight){
+        public static void Prefix(SpriteBatch sb, String word, float x, float y, @ByRef float[] ___textHeight){
             if (TipWithWrappingHeaderPatch.BODY_TEXT_WIDTH == 0){
                 getConstants();
             }
@@ -100,7 +92,7 @@ public class TipWithWrappingHeaderPatch {
                     TipHelper.capitalize(word), 
                     BODY_TEXT_WIDTH, 
                     TIP_DESC_LINE_SPACING);
-            textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
+            ___textHeight[0] += TipWithWrappingHeaderPatch.headerHeight;
         }
     }
     
