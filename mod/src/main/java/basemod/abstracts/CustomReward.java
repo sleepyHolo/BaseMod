@@ -109,7 +109,7 @@ public abstract class CustomReward extends RewardItem
 			c = Settings.GOLD_COLOR.cpy();
 		}
 
-		FontHelper.renderSmartText(sb, FontHelper.rewardTipFont, this.text, 833.0f * Settings.scale, this.y + 5.0f * Settings.scale, 1000.0f * Settings.scale, 0.0f, c);
+		FontHelper.renderSmartText(sb, FontHelper.cardDescFont_N, this.text, 833.0f * Settings.scale, this.y + 5.0f * Settings.scale, 1000.0f * Settings.scale, 0.0f, c);
 
 		if (!this.hb.hovered) {
 			for (AbstractGameEffect e : this.effects) {

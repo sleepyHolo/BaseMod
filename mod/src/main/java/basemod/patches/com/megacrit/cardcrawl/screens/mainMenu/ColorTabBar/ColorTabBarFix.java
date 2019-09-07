@@ -152,7 +152,7 @@ public class ColorTabBarFix
                     }
                 }
                 String tabName = playerClass != null ? BaseMod.findCharacter(playerClass).getLocalizedCharacterName() : capitalizeWord(Fields.modTabs.get(i).color.toString());
-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, tabName, 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
+                FontHelper.renderFontCentered(sb, FontHelper.cardEnergyFont_L, tabName, 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
             }
 
             for (int i = 0; i<Fields.modTabs.size(); ++i) {
