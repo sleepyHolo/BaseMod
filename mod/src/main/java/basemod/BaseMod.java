@@ -690,6 +690,9 @@ public class BaseMod {
 					continue;
 				}
 				try {
+					if (!CloneablePowerInterface.class.isAssignableFrom(BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()))) {
+						logger.warn(String.format("Power (%s) isn't Cloneable", classInfo.getClassName()));
+					}
 					for (FieldInfo fieldInfo : classInfo.getFields()) {
 						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
 							powerMap.put((String) fieldInfo.getValue(),
