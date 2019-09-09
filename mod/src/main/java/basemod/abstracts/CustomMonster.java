@@ -41,10 +41,6 @@ public abstract class CustomMonster extends AbstractMonster
 	public void render(SpriteBatch sb)
 	{
 		if (!isDead && !escaped) {
-			if (damageFlash) {
-				ShaderHelper.setShader(sb, ShaderHelper.Shader.WHITE_SILHOUETTE);
-			}
-
 			if (animation != null && animation.type() == AbstractAnimation.Type.SPRITE) {
 				animation.renderSprite(sb, drawX + animX, drawY + animY + AbstractDungeon.sceneOffsetY);
 			} else if (atlas == null) {
@@ -93,13 +89,6 @@ public abstract class CustomMonster extends AbstractMonster
 						flipVertical
 				);
 				sb.setBlendFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			}
-			if (damageFlash) {
-				ShaderHelper.setShader(sb, ShaderHelper.Shader.DEFAULT);
-				--damageFlashFrames;
-				if (damageFlashFrames == 0) {
-					damageFlash = false;
-				}
 			}
 
 			if (!isDying && !isEscaping && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT
