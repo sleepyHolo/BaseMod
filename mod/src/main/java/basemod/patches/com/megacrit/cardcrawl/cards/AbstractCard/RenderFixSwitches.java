@@ -127,6 +127,8 @@ public class RenderFixSwitches
 					return ImageMaster.CARD_GREEN_ORB;
 				case RED:
 					return ImageMaster.CARD_RED_ORB;
+				case PURPLE:
+					return ImageMaster.CARD_PURPLE_ORB;
 				case COLORLESS:
 				case CURSE:
 					return ImageMaster.CARD_COLORLESS_ORB;
@@ -162,8 +164,7 @@ public class RenderFixSwitches
 			AbstractCard card = (AbstractCard) __obj_instance;
 			CardColor color = card.color;
 			SpriteBatch sb = (SpriteBatch) sbObj;
-			if (color != CardColor.RED && color != CardColor.GREEN && color != CardColor.BLUE
-					&& color != CardColor.COLORLESS && color != CardColor.CURSE) {
+			if (!BaseMod.isBaseGameCardColor(color)) {
 				Color glowColor = BaseMod.getGlowColor(color);
 				if (glowColor == null) {
 					glowColor = Color.WHITE;
@@ -202,11 +203,8 @@ public class RenderFixSwitches
 		public static SpireReturn<?> Prefix(AbstractCard __instance, SpriteBatch sb, float xPos, float yPos)
 		{
 			if (!(__instance instanceof CustomCard)
-					|| __instance.color==AbstractCard.CardColor.RED 
-					|| __instance.color==AbstractCard.CardColor.GREEN
-					|| __instance.color==AbstractCard.CardColor.BLUE 
-					|| __instance.color==AbstractCard.CardColor.COLORLESS
-					|| __instance.color==AbstractCard.CardColor.CURSE) {
+					|| BaseMod.isBaseGameCardColor(__instance.color)
+			) {
 				return SpireReturn.Continue();
 			}
 			CardColor color = __instance.color;

@@ -16,9 +16,7 @@ public class CreateCardImageSwitch {
 	public static class CreateCardImage {
 		public static SpireReturn<?> Prefix(AbstractCard __instance) {
 			//if its color is a default color skip the rest of this
-			if(__instance.color == AbstractCard.CardColor.RED || __instance.color == AbstractCard.CardColor.GREEN ||	
-				__instance.color == AbstractCard.CardColor.BLUE || __instance.color == AbstractCard.CardColor.COLORLESS ||
-				__instance.color == AbstractCard.CardColor.CURSE) {
+			if (BaseMod.isBaseGameCardColor(__instance.color)) {
 				return SpireReturn.Continue();
 			}
 			

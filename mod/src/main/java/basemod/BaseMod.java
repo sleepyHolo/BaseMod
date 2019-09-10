@@ -159,6 +159,8 @@ public class BaseMod {
 	private static ArrayList<String> greenToRemove;
 	private static ArrayList<AbstractCard> blueToAdd;
 	private static ArrayList<String> blueToRemove;
+	private static ArrayList<AbstractCard> purpleToAdd;
+	private static ArrayList<String> purpleToRemove;
 	private static ArrayList<AbstractCard> colorlessToAdd;
 	private static ArrayList<String> colorlessToRemove;
 	private static ArrayList<AbstractCard> curseToAdd;
@@ -339,6 +341,10 @@ public class BaseMod {
 			}
 		}
 		return index <= lastBaseCharacterIndex;
+	}
+
+	public static boolean isBaseGameCardColor(AbstractCard.CardColor color) {
+		return color.compareTo(AbstractCard.CardColor.CURSE) <= 0;
 	}
 
 	// initialize -
@@ -819,6 +825,16 @@ public class BaseMod {
 		return blueToRemove;
 	}
 
+	// purple add -
+	public static ArrayList<AbstractCard> getPurpleCardsToAdd() {
+		return purpleToAdd;
+	}
+
+	// purple remove -
+	public static ArrayList<String> getPurpleCardsToRemove() {
+		return purpleToRemove;
+	}
+
 	// colorless add -
 	public static ArrayList<AbstractCard> getColorlessCardsToAdd() {
 		return colorlessToAdd;
@@ -879,6 +895,9 @@ public class BaseMod {
 			case BLUE:
 				blueToAdd.add(card);
 				break;
+			case PURPLE:
+				purpleToAdd.add(card);
+				break;
 			case COLORLESS:
 				colorlessToAdd.add(card);
 				break;
@@ -903,6 +922,8 @@ public class BaseMod {
 			case BLUE:
 				blueToRemove.add(card);
 				break;
+			case PURPLE:
+				purpleToRemove.add(card);
 			case COLORLESS:
 				colorlessToRemove.add(card);
 				break;
@@ -978,6 +999,9 @@ public class BaseMod {
 			case BLUE:
 				RelicLibrary.addBlue(relic);
 				break;
+			case PURPLE:
+				RelicLibrary.addPurple(relic);
+				break;
 			default:
 				logger.info("tried to add relic of unsupported type: " + relic + " " + type);
 				return;
@@ -1032,6 +1056,15 @@ public class BaseMod {
 						.getPrivateStatic(RelicLibrary.class, "blueRelics");
 				if (blueRelics.containsKey(relic.relicId)) {
 					blueRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			case PURPLE:
+				HashMap<String, AbstractRelic> purpleRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "purpleRelics");
+				if (purpleRelics.containsKey(relic.relicId)) {
+					purpleRelics.remove(relic.relicId);
 					RelicLibrary.totalRelicCount--;
 					removeRelicFromTierList(relic);
 				}
@@ -1150,6 +1183,7 @@ public class BaseMod {
 		removeRelic(relic, RelicType.RED);
 		removeRelic(relic, RelicType.GREEN);
 		removeRelic(relic, RelicType.BLUE);
+		removeRelic(relic, RelicType.PURPLE);
 	}
 
 	// lists the IDs of all Relics from all pools. The casts are actually not
@@ -1611,6 +1645,8 @@ public class BaseMod {
 				return AbstractCard.orb_green;
 			case BLUE:
 				return AbstractCard.orb_blue;
+			case PURPLE:
+				return AbstractCard.orb_purple;
 			case COLORLESS:
 				return getCardSmallEnergy(); // for colorless cards, use the player color
 			default:
