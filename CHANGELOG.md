@@ -602,4 +602,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for Slay the Spire 07-17-2019 update (kiooeht)
 * Fix custom energy icons in card descriptions not working in SingleCardViewPopup (kiooeht)
 
+#### v5.16.0-beta ####
+* Support for Slay the Spire 09-09-2019 BETA (kiooeht)
+
 #### dev ####
