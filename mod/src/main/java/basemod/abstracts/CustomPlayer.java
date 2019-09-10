@@ -320,4 +320,10 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 	{
 
 	}
+
+	@Override
+	public String getPortraitImageName()
+	{
+		return BaseMod.getPlayerPortrait(chosenClass);
+	}
 }
