@@ -606,3 +606,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for Slay the Spire 09-09-2019 BETA (kiooeht)
 
 #### dev ####
+* Fix colored text being offset badly (kiooeht)
