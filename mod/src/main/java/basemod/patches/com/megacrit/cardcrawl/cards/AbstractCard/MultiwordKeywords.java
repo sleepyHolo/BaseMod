@@ -1,15 +1,12 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MultiwordKeywords
 {
@@ -42,12 +39,8 @@ public class MultiwordKeywords
 			@Override
 			public int[] Locate(CtBehavior ctBehavior) throws Exception
 			{
-				Matcher matcher = new Matcher.MethodCallMatcher(StringBuilder.class, "append");
-				List<Matcher> prevMatchers = new ArrayList<>();
-				prevMatchers.add(matcher);
-				prevMatchers.add(matcher);
-				prevMatchers.add(matcher);
-				return LineFinder.findInOrder(ctBehavior, prevMatchers, matcher);
+				Matcher matcher = new Matcher.MethodCallMatcher(ArrayList.class, "contains");
+				return LineFinder.findInOrder(ctBehavior, matcher);
 			}
 		}
 	}
