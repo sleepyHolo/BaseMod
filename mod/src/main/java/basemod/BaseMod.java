@@ -484,6 +484,8 @@ public class BaseMod {
 		greenToRemove = new ArrayList<>();
 		blueToAdd = new ArrayList<>();
 		blueToRemove = new ArrayList<>();
+		purpleToAdd = new ArrayList<>();
+		purpleToRemove = new ArrayList<>();
 		colorlessToAdd = new ArrayList<>();
 		colorlessToRemove = new ArrayList<>();
 		curseToAdd = new ArrayList<>();
