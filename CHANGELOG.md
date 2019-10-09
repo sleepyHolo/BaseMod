@@ -610,3 +610,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix multi-word keywords not removing underscores (kiooeht)
 * Fix adding and removing Watcher cards (kiooeht)
 * Make Vampires event use standard remove function (kiooeht)
+* Move card preview in SingleCardView to not cover whatmod (kiooeht)
