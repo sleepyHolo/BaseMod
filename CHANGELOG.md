@@ -613,3 +613,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Move card preview in SingleCardView to not cover whatmod (kiooeht)
 
 #### dev ####
+* Fix RitualPower cloneable patch crash (kiooeht)

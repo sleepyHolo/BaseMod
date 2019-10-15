@@ -2287,7 +2287,7 @@ public class CloneablePowersPatch {
                     "makeCopy", // Method name
                     new CtClass[]{},
                     null, // Exceptions
-                    "return new " + RitualPower.class.getName() + "(owner, amount);",
+                    "return new " + RitualPower.class.getName() + "(owner, amount, onPlayer);",
                     ctClass
             );
             ctClass.addMethod(method);
