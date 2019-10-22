@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -67,6 +68,9 @@ public class ColorTabBarFix
         {
             Fields.modTabs = new ArrayList<>();
             for (AbstractCard.CardColor color : BaseMod.getCardColors()) {
+                if (CardLibrary.getCardList(CardLibrary.LibraryType.valueOf(color.name())).isEmpty()) {
+                    continue;
+                }
                 Fields.modTabs.add(new ModColorTab(
                         color,
                         new Hitbox(235.0f * Settings.scale, 51.0f * Settings.scale)
