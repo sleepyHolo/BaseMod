@@ -621,3 +621,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix `potion list` command not including potions from other characters (kiooeht)
 * Fix `potion` command not giving potions from other characters (kiooeht)
 * Fix `potion` command not autocompleting potions from other characters (kiooeht)
+* Add whatmod support for potions (kiooeht)
