@@ -85,10 +85,9 @@ public class Potions extends ConsoleCommand {
 
         if(result.contains(tokens[depth]) && tokens.length > depth + 1) {
             result.clear();
-            if (PotionHelper.potions != null) {
-                for (String key : PotionHelper.potions) {
-                    result.add(key.replace(' ', '_'));
-                }
+            List<String> allPotions = PotionHelper.getPotions(AbstractPlayer.PlayerClass.IRONCLAD, true);
+            for (String key : allPotions) {
+                result.add(key.replace(' ', '_'));
             }
             if(result.contains(tokens[depth + 1])) {
                 complete = true;
