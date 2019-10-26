@@ -2,6 +2,7 @@ package basemod.patches.whatmod;
 
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import javassist.*;
@@ -16,8 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+// What class/method we put here doesn't matter
 @SpirePatch(
-		clz=AbstractPotion.class,
+		clz=CardCrawlGame.class,
 		method=SpirePatch.CONSTRUCTOR
 )
 public class PotionTips
