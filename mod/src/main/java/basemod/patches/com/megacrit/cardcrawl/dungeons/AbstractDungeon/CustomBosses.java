@@ -67,6 +67,14 @@ public class CustomBosses
 		{
 			BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(key);
 			if (bossInfo != null) {
+				// Dispose old map icon
+				if (DungeonMap.boss != null) {
+					DungeonMap.boss.dispose();
+				}
+				if (DungeonMap.bossOutline != null) {
+					DungeonMap.bossOutline.dispose();
+				}
+
 				AbstractDungeon.bossKey = key;
 				DungeonMap.boss = bossInfo.loadBossMap();
 				DungeonMap.bossOutline = bossInfo.loadBossMapOutline();
