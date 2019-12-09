@@ -80,7 +80,7 @@ public class RenderCustomDynamicVariable
 
             // Main body of method
             StringBuilder stringBuilder = new StringBuilder();
-            Color c = null;
+            Color c;
             int num = 0;
             DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
             if (dv != null) {
@@ -99,6 +99,9 @@ public class RenderCustomDynamicVariable
                 logger.error("No dynamic card variable found for key \"" + key + "\"!");
                 c = textColor;
             }
+            c = c.cpy();
+            c.a = textColor.a;
+
             stringBuilder.append(num);
             gl.setText(font, stringBuilder.toString());
             FontHelper.renderRotatedText(sb, font, stringBuilder.toString(),
@@ -111,7 +114,7 @@ public class RenderCustomDynamicVariable
                         __instance.current_x, __instance.current_y,
                         start_x - __instance.current_x + gl.width + 4.0f * Settings.scale,
                         i * 1.45f * -font.getCapHeight() + draw_y - __instance.current_y + -6.0f,
-                        0.0f, true, Settings.CREAM_COLOR);
+                        0.0f, true, textColor);
                 stringBuilder.append(end);
             }
             stringBuilder.append(' ');
