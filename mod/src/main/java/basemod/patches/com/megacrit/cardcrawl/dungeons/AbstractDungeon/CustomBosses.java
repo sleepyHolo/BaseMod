@@ -68,8 +68,8 @@ public class CustomBosses
 			BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(key);
 			if (bossInfo != null) {
 				AbstractDungeon.bossKey = key;
-				DungeonMap.boss = bossInfo.bossMap;
-				DungeonMap.bossOutline = bossInfo.bossMapOutline;
+				DungeonMap.boss = bossInfo.loadBossMap();
+				DungeonMap.bossOutline = bossInfo.loadBossMapOutline();
 
 				logger.info("[BOSS] " + key);
 				return SpireReturn.Return(null);

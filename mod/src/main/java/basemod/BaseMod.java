@@ -1443,21 +1443,21 @@ public class BaseMod {
 
 	public static class BossInfo {
 		public final String id;
-		public final Texture bossMap;
-		public final Texture bossMapOutline;
+		private final String bossMap;
+		private final String bossMapOutline;
 
 		private BossInfo(String id, String mapIcon, String mapIconOutline) {
 			this.id = id;
-			if (mapIcon != null) {
-				bossMap = ImageMaster.loadImage(mapIcon);
-			} else {
-				bossMap = null;
-			}
-			if (mapIconOutline != null) {
-				bossMapOutline = ImageMaster.loadImage(mapIconOutline);
-			} else {
-				bossMapOutline = null;
-			}
+			bossMap = mapIcon;
+			bossMapOutline = mapIconOutline;
+		}
+
+		public Texture loadBossMap() {
+			return ImageMaster.loadImage(bossMap);
+		}
+
+		public Texture loadBossMapOutline() {
+			return ImageMaster.loadImage(bossMapOutline);
 		}
 	}
 
