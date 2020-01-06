@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiwordKeywords
 {
@@ -40,7 +41,13 @@ public class MultiwordKeywords
 			public int[] Locate(CtBehavior ctBehavior) throws Exception
 			{
 				Matcher matcher = new Matcher.MethodCallMatcher(StringBuilder.class, "append");
-				return new int[]{LineFinder.findAllInOrder(ctBehavior, matcher)[5]};
+				List<Matcher> matchers = new ArrayList<>();
+				matchers.add(matcher);
+				matchers.add(matcher);
+				matchers.add(matcher);
+				matchers.add(matcher);
+				matchers.add(matcher);
+				return LineFinder.findInOrder(ctBehavior, matchers, matcher);
 			}
 		}
 	}
