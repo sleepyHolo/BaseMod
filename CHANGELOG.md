@@ -615,7 +615,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.16.0-beta.3 ####
 * Fix RitualPower cloneable patch crash (kiooeht)
 
-#### dev ####
+#### v5.16.0-beta.4 ####
 * Don't show card colors in compendium that contain no cards to avoid crash (kiooeht)
 * Fix `potion list` command changing potion rng (kiooeht)
 * Fix `potion list` command not including potions from other characters (kiooeht)
@@ -626,3 +626,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix boss map icons leaking memory (kiooeht)
 * Fix dynamic variables always rendering fully opaque (kiooeht)
 * Fix multiword keywords that use underscores (JohnnyBazooka89)
+
+#### dev ####
