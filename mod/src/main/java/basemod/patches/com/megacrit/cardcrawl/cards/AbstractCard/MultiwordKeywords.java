@@ -39,8 +39,8 @@ public class MultiwordKeywords
 			@Override
 			public int[] Locate(CtBehavior ctBehavior) throws Exception
 			{
-				Matcher matcher = new Matcher.MethodCallMatcher(ArrayList.class, "contains");
-				return LineFinder.findInOrder(ctBehavior, matcher);
+				Matcher matcher = new Matcher.MethodCallMatcher(StringBuilder.class, "append");
+				return new int[]{LineFinder.findAllInOrder(ctBehavior, matcher)[5]};
 			}
 		}
 	}

@@ -625,3 +625,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom boss map icons being black square if used a second time (kiooeht)
 * Fix boss map icons leaking memory (kiooeht)
 * Fix dynamic variables always rendering fully opaque (kiooeht)
+* Fix multiword keywords that use underscores (JohnnyBazooka89)
