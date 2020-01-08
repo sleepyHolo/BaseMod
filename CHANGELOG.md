@@ -628,3 +628,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix multiword keywords that use underscores (JohnnyBazooka89)
 
 #### dev ####
+* Deprecate BASIC_STRIKE and BASIC_DEFEND tags, use STARTER_STRIKE and STARTER_DEFEND instead (kiooeht)
