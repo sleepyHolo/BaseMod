@@ -5,6 +5,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.EchoForm;
 import com.megacrit.cardcrawl.cards.green.WraithForm;
+import com.megacrit.cardcrawl.cards.purple.DevaForm;
 import com.megacrit.cardcrawl.cards.red.DemonForm;
 
 public class TagBasicCards
@@ -19,6 +20,10 @@ public class TagBasicCards
 	)
 	@SpirePatch(
 			clz=EchoForm.class,
+			method=SpirePatch.CONSTRUCTOR
+	)
+	@SpirePatch(
+			clz=DevaForm.class,
 			method=SpirePatch.CONSTRUCTOR
 	)
 	public static class Forms
