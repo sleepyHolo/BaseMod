@@ -232,11 +232,13 @@ public abstract class CustomCard extends AbstractCard {
 	//
 	// For events that care about Strikes and Defends
 	//
-	
+
+	@Deprecated
 	public boolean isStrike() {
 		return hasTag(BaseModCardTags.BASIC_STRIKE);
 	}
-	
+
+	@Deprecated
 	public boolean isDefend() {
 		return hasTag(BaseModCardTags.BASIC_DEFEND);
 	}
