@@ -16,7 +16,7 @@ import java.util.List;
 public class MyTrueFormPatch
 {
 	@SpirePatch(
-			cls="com.megacrit.cardcrawl.screens.custom.CustomModeScreen",
+			clz=CustomModeScreen.class,
 			method="addNonDailyMods"
 	)
 	public static class CustomMode
@@ -28,7 +28,7 @@ public class MyTrueFormPatch
 					case "My True Form":
 						List<String> cards = new ArrayList<>();
 						for (AbstractCard card : CardLibrary.getAllCards()) {
-							if (CardTags.hasTag(card, BaseModCardTags.FORM)) {
+							if (CardTags.hasTag(card, BaseModCardTags.FORM) && !trial.extraStartingCardIDs().contains(card.cardID)) {
 								cards.add(card.cardID);
 							}
 						}
@@ -40,7 +40,7 @@ public class MyTrueFormPatch
 	}
 
 	@SpirePatch(
-			cls="com.megacrit.cardcrawl.trials.MyTrueFormTrial",
+			clz=MyTrueFormTrial.class,
 			method="dailyModIDs"
 	)
 	public static class SeededRun
@@ -48,7 +48,7 @@ public class MyTrueFormPatch
 		public static ArrayList<String> Postfix(ArrayList<String> __result, MyTrueFormTrial __instance)
 		{
 			for (AbstractCard card : CardLibrary.getAllCards()) {
-				if (CardTags.hasTag(card, BaseModCardTags.FORM)) {
+				if (CardTags.hasTag(card, BaseModCardTags.FORM) && !__result.contains(card.cardID)) {
 					__result.add(card.cardID);
 				}
 			}
