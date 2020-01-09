@@ -632,3 +632,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Tag Deva Form with FORM (kiooeht)
 * Fix My True Form double adding base game form cards (kiooeht)
 * Fix Smoke Bomb causing player dialog to render in the wrong position (kiooeht)
+* Fix custom character name not visible in compendium for some languages (Celicath)
