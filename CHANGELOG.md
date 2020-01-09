@@ -631,3 +631,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Deprecate BASIC_STRIKE and BASIC_DEFEND tags, use STARTER_STRIKE and STARTER_DEFEND instead (kiooeht)
 * Tag Deva Form with FORM (kiooeht)
 * Fix My True Form double adding base game form cards (kiooeht)
+* Fix Smoke Bomb causing player dialog to render in the wrong position (kiooeht)

@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireOverride;
+import com.evacipated.cardcrawl.modthespire.lib.SpireSuper;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
@@ -300,6 +302,19 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		animX = 0;
 		animY = 0;
 		refreshHitboxLocation();
+	}
+
+	@SpireOverride
+	protected void updateEscapeAnimation()
+	{
+		if (escapeTimer != 0) {
+			if (flipHorizontal) {
+				dialogX -= Gdx.graphics.getDeltaTime() * 400f * Settings.scale;
+			} else {
+				dialogX += Gdx.graphics.getDeltaTime() * 500f * Settings.scale;
+			}
+		}
+		SpireSuper.call();
 	}
 
 	public Texture getCutsceneBg()
