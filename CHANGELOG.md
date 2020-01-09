@@ -635,3 +635,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom character name not visible in compendium for some languages (Celicath)
 * Fix button positions on character select when using 4:3 resolution (kiooeht)
 * Display all characters on character select if only one modded character is loaded (kiooeht)
+* Hide long offscreen starter relic descriptions on character select (kiooeht)
