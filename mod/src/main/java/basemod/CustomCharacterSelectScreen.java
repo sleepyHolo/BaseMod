@@ -26,8 +26,16 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
     public CustomCharacterSelectScreen(){
         super();
-        leftArrow = new LeftOptionsButton("img/tinyLeftArrow.png", (int)(425 * Settings.scale),(int)(180 * Settings.scale));
-        rightArrow = new RightOptionsButton("img/tinyRightArrow.png", (int)(1425 * Settings.scale), (int)(180 * Settings.scale));
+        leftArrow = new LeftOptionsButton(
+                "img/tinyLeftArrow.png",
+                (int)(425 * Settings.scale),
+                (int)((Settings.isFourByThree ? 244 : 180) * Settings.scale)
+        );
+        rightArrow = new RightOptionsButton(
+                "img/tinyRightArrow.png",
+                (int)(1425 * Settings.scale),
+                (int)((Settings.isFourByThree ? 244 : 180) * Settings.scale)
+        );
         updateOptionsIndex();
         allOptions = new ArrayList<>();
     }
@@ -78,7 +86,10 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
         float offsetX = Settings.WIDTH / 2.0F - 2.0F * 220.0F * Settings.scale + 0.5F * 220.0F * Settings.scale;
 
         for(int i = 0; i < count; ++i) {
-            ((CharacterOption)this.options.get(i)).move(offsetX + (float)i * 220.0F * Settings.scale, 190.0F * Settings.scale);
+            this.options.get(i).move(
+                    offsetX + (float)i * 220.0F * Settings.scale,
+                    (Settings.isFourByThree ? 254.0F : 190.0F) * Settings.scale
+            );
         }
 
     }
