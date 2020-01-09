@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
     //Number of characters per selection screen. If changed update arrow positions.
-    private static final int optionsPerIndex = 4;
+    private int optionsPerIndex = 4;
     private int selectIndex = 0;
     private int maxSelectIndex;
     private int optionsIndex;
@@ -51,6 +51,10 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             allOptions.add(option);
         }
 
+        if (allOptions.size() == optionsPerIndex + 1) {
+            ++optionsPerIndex;
+        }
+
         selectIndex = 0;
 		updateOptionsIndex();
         maxSelectIndex = (int)Math.ceil((float)allOptions.size() / optionsPerIndex) - 1;
@@ -83,7 +87,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
     private void positionButtons() {
         int count = this.options.size();
 
-        float offsetX = Settings.WIDTH / 2.0F - 2.0F * 220.0F * Settings.scale + 0.5F * 220.0F * Settings.scale;
+        float offsetX = Settings.WIDTH / 2.0F - (optionsPerIndex / 2f) * 220.0F * Settings.scale + 0.5F * 220.0F * Settings.scale;
 
         for(int i = 0; i < count; ++i) {
             this.options.get(i).move(
