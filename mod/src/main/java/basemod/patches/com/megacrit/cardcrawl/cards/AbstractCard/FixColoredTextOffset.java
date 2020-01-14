@@ -6,6 +6,8 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import javassist.CtBehavior;
 
+import java.util.ArrayList;
+
 @SpirePatch(
 		clz=AbstractCard.class,
 		method="initializeDescription"
@@ -29,8 +31,11 @@ public class FixColoredTextOffset
 		@Override
 		public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
 		{
-			Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "logger");
-			return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+			Matcher finalMatcher1 = new Matcher.MethodCallMatcher(ArrayList.class, "contains");
+			Matcher finalMatcher2 = new Matcher.FieldAccessMatcher(AbstractCard.class, "logger");
+			int[] result1 = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher1);
+			int[] result2 = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher2);
+			return new int[] { result1[1], result1[2], result1[3], result1[4], result1[5], result2[0] };
 		}
 	}
 }
