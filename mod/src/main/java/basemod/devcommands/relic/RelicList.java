@@ -34,6 +34,7 @@ public class RelicList extends ConsoleCommand {
             }
             case "rare": {
                 list = RelicLibrary.rareList;
+                break;
             }
             case "boss": {
                 list = RelicLibrary.bossList;

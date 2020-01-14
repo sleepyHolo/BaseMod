@@ -1215,6 +1215,11 @@ public class BaseMod {
 		if (blueRelics != null) {
 			relicIDs.addAll(blueRelics.keySet());
 		}
+		HashMap<String, AbstractRelic> purpleRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "purpleRelics");
+		if (purpleRelics != null) {
+			relicIDs.addAll(purpleRelics.keySet());
+		}
 		if (getAllCustomRelics() != null) {
 			for (HashMap<String, AbstractRelic> e : getAllCustomRelics().values()) {
 				if (e != null) {
