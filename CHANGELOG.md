@@ -638,3 +638,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Hide long offscreen starter relic descriptions on character select (kiooeht)
 * Fix `relic add` command not showing Watcher only relics (JohnnyBazooka89)
 * Fix `relic list rare` command incorrectly showing boss relics (JohnnyBazooka89)
+* Fix BaseMod altering encounter rng compared to basegame (kiooeht)
