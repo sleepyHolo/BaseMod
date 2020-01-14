@@ -627,7 +627,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix dynamic variables always rendering fully opaque (kiooeht)
 * Fix multiword keywords that use underscores (JohnnyBazooka89)
 
-#### dev ####
+#### v5.17.0 ####
 * Deprecate BASIC_STRIKE and BASIC_DEFEND tags, use STARTER_STRIKE and STARTER_DEFEND instead (kiooeht)
 * Tag Deva Form with FORM (kiooeht)
 * Fix My True Form double adding base game form cards (kiooeht)
@@ -640,3 +640,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix `relic list rare` command incorrectly showing boss relics (JohnnyBazooka89)
 * Fix BaseMod altering encounter rng compared to basegame (kiooeht)
 * Fix colored text issues (Celicath)
+
+#### dev ####
