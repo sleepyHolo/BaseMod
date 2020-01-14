@@ -16,13 +16,13 @@ public class FixColoredTextOffset
 {
 	@SpireInsertPatch(
 			locator=Locator.class,
-			localvars={"word"}
+			localvars={"word", "sbuilder2"}
 	)
-	public static void Insert(AbstractCard __instance, GlyphLayout ___gl, String word)
+	public static void Insert(AbstractCard __instance, GlyphLayout ___gl, String word, StringBuilder sbuilder2)
 	{
 		// TODO this check should be less hardcoded
 		if (word.length() > 3) {
-			___gl.setText(FontHelper.cardDescFont_N, word);
+			___gl.setText(FontHelper.cardDescFont_N, word + sbuilder2);
 		}
 	}
 
