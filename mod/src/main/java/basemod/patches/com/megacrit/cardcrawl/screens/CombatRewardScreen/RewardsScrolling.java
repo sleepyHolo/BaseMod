@@ -45,7 +45,7 @@ public class RewardsScrolling
     {
         private static ScrollBar scrollBar = new ScrollBar(new ScrollListener(),
                 Settings.WIDTH / 2.0f + 270.0f * Settings.scale,
-                Settings.HEIGHT - 614.0f * Settings.scale,
+                Settings.HEIGHT / 2f - 86f * Settings.scale,
                 500 * Settings.scale);
         private static float scrollLowerBound = 0.0f;
         private static float scrollUpperBound = 0.0f;
