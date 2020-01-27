@@ -27,10 +27,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class RewardsScrolling {
-    private static class ScrollListener implements ScrollBarListener {
+public class RewardsScrolling
+{
+    private static class ScrollListener implements ScrollBarListener
+    {
         @Override
-        public void scrolledUsingBar(float v) {
+        public void scrolledUsingBar(float v)
+        {
             Fields.scrollPosition = MathHelper.valueFromPercentBetween(Fields.scrollLowerBound, Fields.scrollUpperBound, v);
             Fields.scrollTarget = Fields.scrollPosition;
             AbstractDungeon.combatRewardScreen.positionRewards();
@@ -38,7 +41,8 @@ public class RewardsScrolling {
         }
     }
 
-    private static class Fields {
+    private static class Fields
+    {
         private static ScrollBar scrollBar = new ScrollBar(new ScrollListener(),
                 Settings.WIDTH / 2.0f + 270.0f * Settings.scale,
                 Settings.HEIGHT - 614.0f * Settings.scale,
@@ -52,9 +56,14 @@ public class RewardsScrolling {
         private static float grabStartY = 0.0f;
     }
 
-    @SpirePatch(clz = CombatRewardScreen.class, method = "setupItemReward")
-    public static class ResetScrollPosition {
-        public static void Prefix(CombatRewardScreen __instance) {
+    @SpirePatch(
+            clz = CombatRewardScreen.class,
+            method = "setupItemReward"
+    )
+    public static class ResetScrollPosition
+    {
+        public static void Prefix(CombatRewardScreen __instance)
+        {
             Fields.scrollPosition = 0.0f;
             Fields.scrollTarget = 0.0f;
 
@@ -63,12 +72,19 @@ public class RewardsScrolling {
         }
     }
 
-    @SpirePatch(clz = CombatRewardScreen.class, method = "renderItemReward")
-    public static class RenderScissor {
+    @SpirePatch(
+            clz = CombatRewardScreen.class,
+            method = "renderItemReward"
+    )
+    public static class RenderScissor
+    {
         private static OrthographicCamera camera = null;
 
-        @SpireInsertPatch(locator =  Locator.class)
-        public static void Insert(CombatRewardScreen __instance, SpriteBatch sb) {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static void Insert(CombatRewardScreen __instance, SpriteBatch sb)
+        {
             if (camera == null) {
                 try {
                     Field f = CardCrawlGame.class.getDeclaredField("camera");
@@ -88,7 +104,8 @@ public class RewardsScrolling {
             ScissorStack.pushScissors(scissors);
         }
 
-        public static void Postfix(CombatRewardScreen __instance, SpriteBatch sb) {
+        public static void Postfix(CombatRewardScreen __instance, SpriteBatch sb)
+        {
             if (camera != null) {
                 sb.flush();
                 ScissorStack.popScissors();
@@ -99,34 +116,46 @@ public class RewardsScrolling {
             }
         }
 
-        private static class Locator extends SpireInsertLocator {
-            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+        private static class Locator extends SpireInsertLocator
+        {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+            {
                 Matcher finalMatcher = new Matcher.FieldAccessMatcher(CombatRewardScreen.class, "rewards");
                 return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
             }
         }
     }
 
-    @SpirePatch(clz = CombatRewardScreen.class, method = "positionRewards")
-    public static class PositionRewards {
-        public static SpireReturn<Void> Prefix(CombatRewardScreen __instance) {
-                float baseY = Settings.HEIGHT - 410.0f * Settings.scale;
-                float spacingY = 100.0f * Settings.scale;
+    @SpirePatch(
+            clz = CombatRewardScreen.class,
+            method = "positionRewards"
+    )
+    public static class PositionRewards
+    {
+        public static SpireReturn<Void> Prefix(CombatRewardScreen __instance)
+        {
+            float baseY = Settings.HEIGHT - 410.0f * Settings.scale;
+            float spacingY = 100.0f * Settings.scale;
 
-                for (int i = 0; i < __instance.rewards.size(); ++i) {
-                    __instance.rewards.get(i).move(baseY - i * spacingY + Fields.scrollPosition);
-                }
-                if (__instance.rewards.isEmpty()) {
-                    __instance.hasTakenAll = true;
-                }
+            for (int i = 0; i < __instance.rewards.size(); ++i) {
+                __instance.rewards.get(i).move(baseY - i * spacingY + Fields.scrollPosition);
+            }
+            if (__instance.rewards.isEmpty()) {
+                __instance.hasTakenAll = true;
+            }
 
-                return SpireReturn.Return(null);
+            return SpireReturn.Return(null);
         }
     }
 
-    @SpirePatch(clz = CombatRewardScreen.class, method = "rewardViewUpdate")
-    public static class ScrollUpdate {
-        public static void Postfix(CombatRewardScreen __instance) {
+    @SpirePatch(
+            clz = CombatRewardScreen.class,
+            method = "rewardViewUpdate"
+    )
+    public static class ScrollUpdate
+    {
+        public static void Postfix(CombatRewardScreen __instance)
+        {
             if (__instance.rewards.size() < 6) {
                 Fields.scrollTarget = 0.0f;
                 Fields.scrollPosition = 0.0f;
@@ -175,15 +204,19 @@ public class RewardsScrolling {
             updateBarPosition();
         }
 
-        private static void updateBarPosition() {
+        private static void updateBarPosition()
+        {
             float percent = MathHelper.percentFromValueBetween(Fields.scrollLowerBound, Fields.scrollUpperBound, Fields.scrollPosition);
             Fields.scrollBar.parentScrolledToPercent(percent);
         }
 
-        public static ExprEditor Instrument() {
-            return new ExprEditor() {
+        public static ExprEditor Instrument()
+        {
+            return new ExprEditor()
+            {
                 @Override
-                public void edit(MethodCall m) throws CannotCompileException {
+                public void edit(MethodCall m) throws CannotCompileException
+                {
                     if (m.getClassName().equals(RewardItem.class.getName()) && m.getMethodName().equals("update")) {
                         m.replace("if (" + ScrollUpdate.class.getName() + ".DoUpdate($0)) {" +
                                 "$_ = $proceed($$);" +
@@ -193,7 +226,8 @@ public class RewardsScrolling {
             };
         }
 
-        public static boolean DoUpdate(RewardItem reward) {
+        public static boolean DoUpdate(RewardItem reward)
+        {
             boolean ret = false;
             if (reward.y < 800.0f * Settings.scale && reward.y > 200.0f * Settings.scale) {
                 ret = true;
@@ -245,7 +279,8 @@ public class RewardsScrolling {
             return ret;
         }
 
-        private static void moveRewardGlowEffect(RewardGlowEffect effect, float x, float y) {
+        private static void moveRewardGlowEffect(RewardGlowEffect effect, float x, float y)
+        {
             try {
                 Field f = RewardGlowEffect.class.getDeclaredField("x");
                 f.setAccessible(true);
