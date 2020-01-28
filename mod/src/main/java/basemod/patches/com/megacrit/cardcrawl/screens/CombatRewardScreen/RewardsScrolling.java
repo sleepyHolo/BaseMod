@@ -229,7 +229,9 @@ public class RewardsScrolling
         public static boolean DoUpdate(RewardItem reward)
         {
             boolean ret = false;
-            if (reward.y < 800.0f * Settings.scale && reward.y > 200.0f * Settings.scale) {
+            float upperBounds = Settings.HEIGHT / 2f + 204f * Settings.scale;
+            float lowerBounds = Settings.HEIGHT / 2f + (124f - 460) * Settings.scale;
+            if (reward.y < upperBounds && reward.y > lowerBounds) {
                 ret = true;
             }
 
