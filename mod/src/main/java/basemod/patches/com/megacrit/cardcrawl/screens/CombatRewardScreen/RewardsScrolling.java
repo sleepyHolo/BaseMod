@@ -134,7 +134,7 @@ public class RewardsScrolling
     {
         public static SpireReturn<Void> Prefix(CombatRewardScreen __instance)
         {
-            float baseY = Settings.HEIGHT - 410.0f * Settings.scale;
+            float baseY = Settings.HEIGHT / 2f + 124f * Settings.scale;
             float spacingY = 100.0f * Settings.scale;
 
             for (int i = 0; i < __instance.rewards.size(); ++i) {
