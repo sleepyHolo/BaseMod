@@ -642,3 +642,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix colored text issues (Celicath)
 
 #### dev ####
+* Move rewards scrolling code from Hubris to BaseMod (kiooeht/erasels)
