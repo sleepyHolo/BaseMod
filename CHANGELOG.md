@@ -641,5 +641,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix BaseMod altering encounter rng compared to basegame (kiooeht)
 * Fix colored text issues (Celicath)
 
-#### dev ####
+#### v5.18.0 ####
 * Move rewards scrolling code from Hubris to BaseMod (kiooeht/erasels)
+
+#### dev ####
