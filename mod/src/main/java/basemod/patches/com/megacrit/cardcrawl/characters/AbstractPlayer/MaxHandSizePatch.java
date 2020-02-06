@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.purple.Scrawl;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -72,6 +73,10 @@ import java.util.HashMap;
 @SpirePatch(
 		clz=DiscoveryAction.class,
 		method="update"
+)
+@SpirePatch(
+		clz=Scrawl.class,
+		method="use"
 )
 public class MaxHandSizePatch
 {
