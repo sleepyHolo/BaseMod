@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.actions.unique.DiscoveryAction;
 import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
 import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
+import com.megacrit.cardcrawl.actions.watcher.FlickerReturnToHandAction;
 import com.megacrit.cardcrawl.actions.watcher.ForeignInfluenceAction;
 import com.megacrit.cardcrawl.actions.watcher.MeditateAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -86,6 +87,11 @@ import java.util.HashMap;
 )
 @SpirePatch(
 		clz=MeditateAction.class,
+		method="update"
+)
+// Flicker is a deprecated card, but someone might try to use the action
+@SpirePatch(
+		clz=FlickerReturnToHandAction.class,
 		method="update"
 )
 public class MaxHandSizePatch

@@ -648,3 +648,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make certain Watcher cards work with max hand size changes (kiooeht)
   * Scrawl
   * Foreign Influence
+  * Meditate
+  * Flicker (deprecated)
