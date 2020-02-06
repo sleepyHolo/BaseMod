@@ -156,6 +156,16 @@ public class MaxHandSizePatch
 					bytecode.addGetstatic(BaseMod.class.getName(), "MAX_HAND_SIZE", Descriptor.of(CtClass.intType));
 					iterator.insert(pos, bytecode.get());
 					//System.out.println("EDITED BIPUSH@" + ainfo.toLineNumber(pos));
+				} else if (v == value - 1) {
+					iterator.writeByte(Opcode.NOP, pos);
+					iterator.writeByte(Opcode.NOP, pos + 1);
+					Bytecode bytecode = new Bytecode(cp);
+					bytecode.addGetstatic(BaseMod.class.getName(), "MAX_HAND_SIZE", Descriptor.of(CtClass.intType));
+					// MAX_HAND_SIZE - 1
+					bytecode.addIconst(1);
+					bytecode.add(Opcode.ISUB);
+					iterator.insert(pos, bytecode.get());
+					//System.out.println("EDITED BIPUSH-1@" + ainfo.toLineNumber(pos));
 				} else {
 					//System.out.println("FAILED BECAUSE BIPUSH@" + ainfo.toLineNumber(pos) + " != 10: " + v);
 				}
