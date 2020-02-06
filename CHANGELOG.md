@@ -645,4 +645,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Move rewards scrolling code from Hubris to BaseMod (kiooeht/erasels)
 
 #### dev ####
-* Make Scrawl work with max hand size changes (kiooeht)
+* Make certain Watcher cards work with max hand size changes (kiooeht)
+  * Scrawl
+  * Foreign Influence
