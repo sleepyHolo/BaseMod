@@ -650,3 +650,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Foreign Influence
   * Meditate
   * Flicker (deprecated)
+* Fix many actions to work with max hand size changes (kiooeht)

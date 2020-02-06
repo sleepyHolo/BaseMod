@@ -3,15 +3,17 @@ package basemod.patches.com.megacrit.cardcrawl.characters.AbstractPlayer;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.annotations.SerializedName;
+import com.megacrit.cardcrawl.actions.common.BetterDiscardPileToHandAction;
+import com.megacrit.cardcrawl.actions.common.BetterDrawPileToHandAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
+import com.megacrit.cardcrawl.actions.defect.DiscardPileToHandAction;
 import com.megacrit.cardcrawl.actions.defect.ScrapeAction;
 import com.megacrit.cardcrawl.actions.defect.SeekAction;
-import com.megacrit.cardcrawl.actions.unique.AttackFromDeckToHandAction;
-import com.megacrit.cardcrawl.actions.unique.DiscoveryAction;
-import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
-import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
+import com.megacrit.cardcrawl.actions.unique.*;
+import com.megacrit.cardcrawl.actions.utility.DiscardToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
+import com.megacrit.cardcrawl.actions.utility.ExhaustToHandAction;
 import com.megacrit.cardcrawl.actions.watcher.FlickerReturnToHandAction;
 import com.megacrit.cardcrawl.actions.watcher.ForeignInfluenceAction;
 import com.megacrit.cardcrawl.actions.watcher.MeditateAction;
@@ -92,6 +94,30 @@ import java.util.HashMap;
 // Flicker is a deprecated card, but someone might try to use the action
 @SpirePatch(
 		clz=FlickerReturnToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DiscardToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DiscardPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=BetterDiscardPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DrawPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=BetterDrawPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=ExhaustToHandAction.class,
 		method="update"
 )
 public class MaxHandSizePatch
