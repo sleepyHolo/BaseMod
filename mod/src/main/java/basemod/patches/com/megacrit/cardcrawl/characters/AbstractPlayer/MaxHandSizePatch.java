@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
 import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
 import com.megacrit.cardcrawl.actions.watcher.ForeignInfluenceAction;
+import com.megacrit.cardcrawl.actions.watcher.MeditateAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.purple.Scrawl;
@@ -81,6 +82,10 @@ import java.util.HashMap;
 )
 @SpirePatch(
 		clz=ForeignInfluenceAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=MeditateAction.class,
 		method="update"
 )
 public class MaxHandSizePatch
