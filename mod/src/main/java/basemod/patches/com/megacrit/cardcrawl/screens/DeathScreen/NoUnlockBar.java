@@ -37,7 +37,8 @@ public class NoUnlockBar {
         }
         catch (Exception e)
         {
-            logger.error("Unexpected error while testing if player class has a valid unlock bundle.\n" + e.getMessage());
+            logger.error("Unexpected error while testing if player class has a valid unlock bundle.");
+            e.printStackTrace();
         }
         return SpireReturn.Continue();
     }
