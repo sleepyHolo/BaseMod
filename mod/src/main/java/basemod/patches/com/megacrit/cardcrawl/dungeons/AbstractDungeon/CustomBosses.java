@@ -5,7 +5,6 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.DungeonMap;
-import com.megacrit.cardcrawl.random.Random;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -16,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class CustomBosses
 {
@@ -38,7 +38,6 @@ public class CustomBosses
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (m.getMethodName().equals("initializeBoss")) {
 						m.replace("{" +
-								AddBosses.class.getName() + ".SaveRandom();" +
 								"$_ = $proceed($$);" +
 								AddBosses.class.getName() + ".Do(this);" +
 								"}");
@@ -47,29 +46,19 @@ public class CustomBosses
 			};
 		}
 
-		private static Random savedRandom = null;
-
-		public static void SaveRandom()
-		{
-			savedRandom = AbstractDungeon.monsterRng;
-			AbstractDungeon.monsterRng = savedRandom.copy();
-		}
-
 		public static void Do(AbstractDungeon dungeon)
 		{
-			// Reset the random
-			if (savedRandom != null) {
-				AbstractDungeon.monsterRng = savedRandom;
-				savedRandom = null;
-			}
-
 			// Don't add custom bosses if player is still on guaranteed bosses due to not seeing all bosses
 			if (AbstractDungeon.bossList.size() == 1) {
 				return;
 			}
 
-			AbstractDungeon.bossList.addAll(BaseMod.getBossIDs(AbstractDungeon.id));
-			Collections.shuffle(AbstractDungeon.bossList, new java.util.Random(AbstractDungeon.monsterRng.randomLong()));
+			List<String> customBosses = BaseMod.getBossIDs(AbstractDungeon.id);
+			// It's important to avoid reshuffling if we have no custom bosses to add. See #229
+			if (!customBosses.isEmpty()) {
+				AbstractDungeon.bossList.addAll(customBosses);
+				Collections.shuffle(AbstractDungeon.bossList, new java.util.Random(AbstractDungeon.monsterRng.randomLong()));
+			}
 		}
 	}
 
