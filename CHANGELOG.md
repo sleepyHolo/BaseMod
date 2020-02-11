@@ -644,7 +644,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.18.0 ####
 * Move rewards scrolling code from Hubris to BaseMod (kiooeht/erasels)
 
-#### dev ####
+#### v5.18.1 ####
 * Make certain Watcher cards work with max hand size changes (kiooeht)
   * Scrawl
   * Foreign Influence
@@ -652,3 +652,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Flicker (deprecated)
 * Fix many actions to work with max hand size changes (kiooeht)
 * Fix bias in boss selection RNG (dbjorge)
+
+#### dev ####
