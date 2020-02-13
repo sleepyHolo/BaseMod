@@ -69,12 +69,20 @@ public class History extends ConsoleCommand {
     public static void getlastVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        setLoadout(rdlist.get(rdlist.size() - 1));
+        if (rdlist.size() > 0) {
+            setLoadout(rdlist.get(rdlist.size() - 1));
+        } else {
+            DevConsole.log("could not find run data for " + AbstractDungeon.player.name);
+        }
     }
     public static void getrandomVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        setLoadout(rdlist.get(MathUtils.random(rdlist.size() - 1)));
+        if (rdlist.size() > 0) {
+            setLoadout(rdlist.get(MathUtils.random(rdlist.size() - 1)));
+        } else {
+            DevConsole.log("could not find run data for " + AbstractDungeon.player.name);
+        }
     }
 
     public static void setLoadout(RunData rd) {
@@ -93,13 +101,9 @@ public class History extends ConsoleCommand {
             if(card.matches(".*\\+\\d+")) {
                 index = card.lastIndexOf("+");
 
-                ac = CardLibrary.getCopy(card.substring(0, index));
-                index = Integer.parseInt(card.substring(index + 1));
-                for(int i = 0; i < index; i++) {
-                    ac.upgrade();
-                }
+                ac = CardLibrary.getCopy(card.substring(0, index), index, 0);
             } else {
-                ac = CardLibrary.getCopy(card);
+                ac = CardLibrary.getCopy(card, 0, 0);
             }
             AbstractDungeon.player.masterDeck.group.add(ac);
         }
