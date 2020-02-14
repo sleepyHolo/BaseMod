@@ -94,20 +94,13 @@ public class FixCharacterFilter
 				characterFilterField.setAccessible(true);
 			
 				int selectedIndex = ((DropdownMenu) characterFilterField.get(__instance)).getSelectedIndex();
-				int index = 4; // start at index 4 b/c 0,1,2,3 are used by base game
-				if (selectedIndex < index) return; // don't need to filter if base game handled the filter
-				
-				AbstractPlayer.PlayerClass compareTo = null;
-				for (AbstractPlayer character : BaseMod.getModdedCharacters()) {
-					if (selectedIndex == index) {
-						compareTo = character.chosenClass;
-						break;
+
+				if (selectedIndex > 0) {
+					AbstractPlayer.PlayerClass compareTo = CardCrawlGame.characterManager.getAllCharacters().get(selectedIndex - 1).chosenClass;
+					if (compareTo != null) {
+						String runCharacter = data.character_chosen;
+						includeMe[0] = includeMe[0] && (runCharacter.equals(compareTo.name()));
 					}
-					index++;
-				}
-				if (compareTo != null) {
-					String runCharacter = data.character_chosen;
-					includeMe[0] = includeMe[0] && (runCharacter.equals(compareTo.name()));
 				}
 			} catch (Exception e) {
 				logger.error("unable to filter characters on run history screen");
