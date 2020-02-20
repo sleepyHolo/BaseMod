@@ -4,6 +4,7 @@ import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import org.clapper.util.classutil.*;
@@ -16,37 +17,80 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class AutoAdd
 {
-	public static <T> Collection<CtClass> findClasses(String modID, Filter pkgFilter, Class<T> type)
+	private ClassFinder finder;
+	private List<ClassFilter> filters;
+	private ClassPool pool;
+	private Boolean defaultSeenOverride = null;
+
+	public AutoAdd(String modID)
 	{
+		finder = new ClassFinder();
 		try {
-			ClassFinder finder = new ClassFinder();
 			for (ModInfo info : Loader.MODINFOS) {
 				if (info != null && modID != null && modID.equals(info.ID) && info.jarURL != null) {
 					finder.add(new File(info.jarURL.toURI()));
 				}
 			}
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 
-			if (pkgFilter == null) {
-				pkgFilter = new Filter("");
-			}
-			ClassFilter filter =
-					new AndClassFilter(
-							new NotClassFilter(new InterfaceOnlyClassFilter()),
-							new NotClassFilter(new AbstractClassFilter()),
-							new ClassModifiersClassFilter(Modifier.PUBLIC),
-							pkgFilter
-					);
+		filters = new ArrayList<>();
+		pool = Loader.getClassPool();
+	}
+
+	public AutoAdd overrideClassPool(ClassPool pool)
+	{
+		this.pool = pool;
+		return this;
+	}
+
+	public AutoAdd setDefaultSeen(boolean seen)
+	{
+		defaultSeenOverride = seen;
+		return this;
+	}
+
+	public AutoAdd filter(ClassFilter filter)
+	{
+		filters.add(filter);
+		return this;
+	}
+
+	public AutoAdd packageFilter(String packageName)
+	{
+		return filter(new PackageFilter(packageName));
+	}
+
+	public AutoAdd packageFilter(Class<?> packageClass)
+	{
+		return filter(new PackageFilter(packageClass));
+	}
+
+	public <T> Collection<CtClass> findClasses(Class<T> type)
+	{
+		try {
+			List<ClassFilter> tmp = new ArrayList<>();
+			tmp.addAll(Arrays.asList(
+					new NotClassFilter(new InterfaceOnlyClassFilter()),
+					new NotClassFilter(new AbstractClassFilter()),
+					new ClassModifiersClassFilter(Modifier.PUBLIC)
+			));
+			tmp.addAll(filters);
+			ClassFilter filter = new AndClassFilter(tmp.toArray(new ClassFilter[0]));
 			Collection<ClassInfo> foundClasses = new ArrayList<>();
 			finder.findClasses(foundClasses, filter);
 
 			Collection<CtClass> ret = new ArrayList<>();
 			for (ClassInfo classInfo : foundClasses) {
-				CtClass ctClass = Loader.getClassPool().get(classInfo.getClassName());
+				CtClass ctClass = pool.get(classInfo.getClassName());
 
 				CtClass ctSuperClass = ctClass;
 				do {
@@ -59,28 +103,23 @@ public class AutoAdd
 			}
 
 			return ret;
-		} catch (NotFoundException | URISyntaxException e) {
+		} catch (NotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static <T> Collection<CtClass> findClasses(String modID, Class<T> type)
-	{
-		return findClasses(modID, null, type);
-	}
-
-	public static <T> void any(String modID, Filter pkgFilter, Class<T> type, BiConsumer<Info, T> add)
+	public <T> void any(Class<T> type, BiConsumer<Info, T> add)
 	{
 		try {
-			Collection<CtClass> foundClasses = findClasses(modID, pkgFilter, type);
+			Collection<CtClass> foundClasses = findClasses(type);
 
 			for (CtClass ctClass : foundClasses) {
-				Info info = (Info) ctClass.getAnnotation(Info.class);
-				if (info != null && info.ignore()) {
+				Info info = new Info(ctClass);
+				if (info.ignore) {
 					continue;
 				}
 
-				T t = type.cast(Loader.getClassPool().getClassLoader().loadClass(ctClass.getName()).newInstance());
+				T t = type.cast(pool.getClassLoader().loadClass(ctClass.getName()).newInstance());
 				add.accept(info, t);
 			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -88,59 +127,64 @@ public class AutoAdd
 		}
 	}
 
-	public static <T> void any(String modID, Class<T> type, BiConsumer<Info, T> add)
-	{
-		any(modID, null, type, add);
-	}
-
-	public static void cards(String modID, Filter pkgFilter)
+	public void cards()
 	{
 		any(
-				modID,
-				pkgFilter,
 				AbstractCard.class,
 				(info, card) -> {
 					BaseMod.addCard(card);
-					if (info != null && info.seen()) {
+					if (info.seen) {
 						UnlockTracker.unlockCard(card.cardID);
 					}
 				}
 		);
 	}
 
-	public static void cards(String modID, String pkgFilter)
+	public class Info
 	{
-		cards(modID, new Filter(pkgFilter));
-	}
+		private static final boolean DEFAULT_IGNORE = false;
+		private static final boolean DEFAULT_SEEN = false;
 
-	public static void cards(String modID, Class<?> pkgFilter)
-	{
-		cards(modID, new Filter(pkgFilter));
-	}
+		private Info(CtClass ctClass)
+		{
+			ignore = ctClass.hasAnnotation(Ignore.class) || DEFAULT_IGNORE;
+			if (ctClass.hasAnnotation(NotSeen.class)) {
+				seen = false;
+			} else if (ctClass.hasAnnotation(Seen.class)) {
+				seen = true;
+			} else if (defaultSeenOverride != null) {
+				seen = defaultSeenOverride;
+			} else {
+				seen = DEFAULT_SEEN;
+			}
+		}
 
-	public static void cards(String modID)
-	{
-		cards(modID, "");
+		public final boolean ignore;
+		public final boolean seen;
 	}
 
 	@Target({ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Info
-	{
-		boolean ignore() default false;
-		boolean seen() default false;
-	}
+	public @interface Ignore {}
 
-	public static class Filter implements ClassFilter
+	@Target({ElementType.TYPE})
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Seen {}
+
+	@Target({ElementType.TYPE})
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface NotSeen {}
+
+	public static class PackageFilter implements ClassFilter
 	{
 		private final String packageName;
 
-		public Filter(String pkgName)
+		public PackageFilter(String pkgName)
 		{
 			packageName = pkgName;
 		}
 
-		public Filter(Class<?> cls)
+		public PackageFilter(Class<?> cls)
 		{
 			this(cls.getPackage().getName());
 		}
