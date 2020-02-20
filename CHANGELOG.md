@@ -654,3 +654,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix bias in boss selection RNG (dbjorge)
 
 #### dev ####
+* AutoAdd API for auto-adding cards (kiooeht)
