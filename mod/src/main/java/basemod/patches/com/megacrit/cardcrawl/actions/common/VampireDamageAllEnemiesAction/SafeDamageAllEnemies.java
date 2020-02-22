@@ -14,11 +14,12 @@ import javassist.CtBehavior;
 )
 public class SafeDamageAllEnemies {
     @SpireInsertPatch(
-            locator = Locator.class
+            locator = Locator.class,
+	    localvars= {"utilizeBaseDamage"}
     )
-    public static void checkSafety(VampireDamageAllEnemiesAction __instance)
+    public static void checkSafety(VampireDamageAllEnemiesAction __instance, boolean utilizeBaseDamage)
     {
-        if (__instance.damage.length != AbstractDungeon.getCurrRoom().monsters.monsters.size()) //There's a problem.
+        if (!utilizeBaseDamage && __instance.damage.length != AbstractDungeon.getCurrRoom().monsters.monsters.size()) //There's a problem.
         {
             int[] newDamage = new int[AbstractDungeon.getCurrRoom().monsters.monsters.size()];
 
