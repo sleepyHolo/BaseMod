@@ -70,19 +70,19 @@ public class History extends ConsoleCommand {
     public static void getlastVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        if (rdlist.size() > 0) {
+        if (!rdlist.isEmpty()) {
             setLoadout(rdlist.get(rdlist.size() - 1));
         } else {
-            DevConsole.log("could not find run data for " + AbstractDungeon.player.name);
+            DevConsole.log("could not find run data for the current class");
         }
     }
     public static void getrandomVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        if (rdlist.size() > 0) {
+        if (!rdlist.isEmpty()) {
             setLoadout(rdlist.get(MathUtils.random(rdlist.size() - 1)));
         } else {
-            DevConsole.log("could not find run data for " + AbstractDungeon.player.name);
+            DevConsole.log("could not find run data for the current class");
         }
     }
 
