@@ -7,6 +7,7 @@ import basemod.DevConsole;
 import basemod.ReflectionHacks;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractImageEvent;
+import com.megacrit.cardcrawl.events.RoomEventDialog;
 import com.megacrit.cardcrawl.helpers.EventHelper;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
@@ -46,6 +47,8 @@ public class Event extends ConsoleCommand {
             DevConsole.log(eventName + " is not an event ID");
             return;
         }
+        
+        RoomEventDialog.optionList.clear();
 
         AbstractDungeon.eventList.add(0, eventName);
 
