@@ -28,11 +28,7 @@ public class FakeKeywords
     private static float TIP_DESC_LINE_SPACING = 0;
     private static float BOX_EDGE_H = 0;
 
-    @SpireInsertPatch(
-            rloc=0,
-            localvars={"y", "card"}
-    )
-    public static void Insert(float x, float _y, SpriteBatch sb, ArrayList<String> keywords, @ByRef float[] y, AbstractCard acard)
+    public static void Prefix(float x, @ByRef float[] y, SpriteBatch sb, ArrayList<String> keywords, AbstractCard ___card)
     {
         if (BODY_TEXT_WIDTH == 0) {
             getConstants();
@@ -58,8 +54,8 @@ public class FakeKeywords
         }
 
         // Calculate height of custom tooltips
-        if (acard instanceof CustomCard) {
-            CustomCard card = (CustomCard) acard;
+        if (___card instanceof CustomCard) {
+            CustomCard card = (CustomCard) ___card;
             List<TooltipInfo> tooltips = card.getCustomTooltips();
             List<TooltipInfo> pretooltips = card.getCustomTooltipsTop();
             if (tooltips != null && pretooltips != null) {
@@ -97,8 +93,8 @@ public class FakeKeywords
         }
 
         try {
-            if (acard instanceof CustomCard) {
-                CustomCard card = (CustomCard) acard;
+            if (___card instanceof CustomCard) {
+                CustomCard card = (CustomCard) ___card;
                 List<TooltipInfo> tooltips = card.getCustomTooltipsTop();
                 if (tooltips != null) {
                     for (TooltipInfo tooltip : tooltips) {

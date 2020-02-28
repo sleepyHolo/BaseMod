@@ -159,6 +159,8 @@ public class BaseMod {
 	private static ArrayList<String> greenToRemove;
 	private static ArrayList<AbstractCard> blueToAdd;
 	private static ArrayList<String> blueToRemove;
+	private static ArrayList<AbstractCard> purpleToAdd;
+	private static ArrayList<String> purpleToRemove;
 	private static ArrayList<AbstractCard> colorlessToAdd;
 	private static ArrayList<String> colorlessToRemove;
 	private static ArrayList<AbstractCard> curseToAdd;
@@ -341,6 +343,10 @@ public class BaseMod {
 		return index <= lastBaseCharacterIndex;
 	}
 
+	public static boolean isBaseGameCardColor(AbstractCard.CardColor color) {
+		return color.compareTo(AbstractCard.CardColor.CURSE) <= 0;
+	}
+
 	// initialize -
 	public static void initialize() {
 		System.out.println("libgdx version " + Version.VERSION);
@@ -478,6 +484,8 @@ public class BaseMod {
 		greenToRemove = new ArrayList<>();
 		blueToAdd = new ArrayList<>();
 		blueToRemove = new ArrayList<>();
+		purpleToAdd = new ArrayList<>();
+		purpleToRemove = new ArrayList<>();
 		colorlessToAdd = new ArrayList<>();
 		colorlessToRemove = new ArrayList<>();
 		curseToAdd = new ArrayList<>();
@@ -690,6 +698,9 @@ public class BaseMod {
 					continue;
 				}
 				try {
+					if (!CloneablePowerInterface.class.isAssignableFrom(BaseMod.class.getClassLoader().loadClass(classInfo.getClassName()))) {
+						logger.warn(String.format("Power (%s) isn't Cloneable", classInfo.getClassName()));
+					}
 					for (FieldInfo fieldInfo : classInfo.getFields()) {
 						if (fieldInfo.getName().equals("POWER_ID") && fieldInfo.getValue() instanceof String) {
 							powerMap.put((String) fieldInfo.getValue(),
@@ -816,6 +827,16 @@ public class BaseMod {
 		return blueToRemove;
 	}
 
+	// purple add -
+	public static ArrayList<AbstractCard> getPurpleCardsToAdd() {
+		return purpleToAdd;
+	}
+
+	// purple remove -
+	public static ArrayList<String> getPurpleCardsToRemove() {
+		return purpleToRemove;
+	}
+
 	// colorless add -
 	public static ArrayList<AbstractCard> getColorlessCardsToAdd() {
 		return colorlessToAdd;
@@ -876,6 +897,9 @@ public class BaseMod {
 			case BLUE:
 				blueToAdd.add(card);
 				break;
+			case PURPLE:
+				purpleToAdd.add(card);
+				break;
 			case COLORLESS:
 				colorlessToAdd.add(card);
 				break;
@@ -900,6 +924,8 @@ public class BaseMod {
 			case BLUE:
 				blueToRemove.add(card);
 				break;
+			case PURPLE:
+				purpleToRemove.add(card);
 			case COLORLESS:
 				colorlessToRemove.add(card);
 				break;
@@ -975,6 +1001,9 @@ public class BaseMod {
 			case BLUE:
 				RelicLibrary.addBlue(relic);
 				break;
+			case PURPLE:
+				RelicLibrary.addPurple(relic);
+				break;
 			default:
 				logger.info("tried to add relic of unsupported type: " + relic + " " + type);
 				return;
@@ -1029,6 +1058,15 @@ public class BaseMod {
 						.getPrivateStatic(RelicLibrary.class, "blueRelics");
 				if (blueRelics.containsKey(relic.relicId)) {
 					blueRelics.remove(relic.relicId);
+					RelicLibrary.totalRelicCount--;
+					removeRelicFromTierList(relic);
+				}
+				break;
+			case PURPLE:
+				HashMap<String, AbstractRelic> purpleRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+						.getPrivateStatic(RelicLibrary.class, "purpleRelics");
+				if (purpleRelics.containsKey(relic.relicId)) {
+					purpleRelics.remove(relic.relicId);
 					RelicLibrary.totalRelicCount--;
 					removeRelicFromTierList(relic);
 				}
@@ -1147,6 +1185,7 @@ public class BaseMod {
 		removeRelic(relic, RelicType.RED);
 		removeRelic(relic, RelicType.GREEN);
 		removeRelic(relic, RelicType.BLUE);
+		removeRelic(relic, RelicType.PURPLE);
 	}
 
 	// lists the IDs of all Relics from all pools. The casts are actually not
@@ -1175,6 +1214,11 @@ public class BaseMod {
 				.getPrivateStatic(RelicLibrary.class, "blueRelics");
 		if (blueRelics != null) {
 			relicIDs.addAll(blueRelics.keySet());
+		}
+		HashMap<String, AbstractRelic> purpleRelics = (HashMap<String, AbstractRelic>) ReflectionHacks
+				.getPrivateStatic(RelicLibrary.class, "purpleRelics");
+		if (purpleRelics != null) {
+			relicIDs.addAll(purpleRelics.keySet());
 		}
 		if (getAllCustomRelics() != null) {
 			for (HashMap<String, AbstractRelic> e : getAllCustomRelics().values()) {
@@ -1404,21 +1448,21 @@ public class BaseMod {
 
 	public static class BossInfo {
 		public final String id;
-		public final Texture bossMap;
-		public final Texture bossMapOutline;
+		private final String bossMap;
+		private final String bossMapOutline;
 
 		private BossInfo(String id, String mapIcon, String mapIconOutline) {
 			this.id = id;
-			if (mapIcon != null) {
-				bossMap = ImageMaster.loadImage(mapIcon);
-			} else {
-				bossMap = null;
-			}
-			if (mapIconOutline != null) {
-				bossMapOutline = ImageMaster.loadImage(mapIconOutline);
-			} else {
-				bossMapOutline = null;
-			}
+			bossMap = mapIcon;
+			bossMapOutline = mapIconOutline;
+		}
+
+		public Texture loadBossMap() {
+			return ImageMaster.loadImage(bossMap);
+		}
+
+		public Texture loadBossMapOutline() {
+			return ImageMaster.loadImage(bossMapOutline);
 		}
 	}
 
@@ -1608,6 +1652,8 @@ public class BaseMod {
 				return AbstractCard.orb_green;
 			case BLUE:
 				return AbstractCard.orb_blue;
+			case PURPLE:
+				return AbstractCard.orb_purple;
 			case COLORLESS:
 				return getCardSmallEnergy(); // for colorless cards, use the player color
 			default:

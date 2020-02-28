@@ -14,12 +14,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.*;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class DevConsole
 implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {
@@ -131,7 +132,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		prompted.add(0, false);
 	}
 
-	public static void log(@SuppressWarnings("rawtypes") ArrayList list) {
+	public static void log(Collection<?> list) {
 		for (Object o : list) {
 			log(o.toString());
 		}

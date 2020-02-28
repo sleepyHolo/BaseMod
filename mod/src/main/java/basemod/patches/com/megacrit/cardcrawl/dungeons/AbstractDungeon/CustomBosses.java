@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class CustomBosses
 {
@@ -38,21 +39,26 @@ public class CustomBosses
 					if (m.getMethodName().equals("initializeBoss")) {
 						m.replace("{" +
 								"$_ = $proceed($$);" +
-								"basemod.patches.com.megacrit.cardcrawl.dungeons.AbstractDungeon.CustomBosses.AddBosses.Do(this);" +
+								AddBosses.class.getName() + ".Do(this);" +
 								"}");
 					}
 				}
 			};
 		}
 
-		public static void Do(AbstractDungeon dungeon) {
+		public static void Do(AbstractDungeon dungeon)
+		{
 			// Don't add custom bosses if player is still on guaranteed bosses due to not seeing all bosses
 			if (AbstractDungeon.bossList.size() == 1) {
 				return;
 			}
 
-			AbstractDungeon.bossList.addAll(BaseMod.getBossIDs(AbstractDungeon.id));
-			Collections.shuffle(AbstractDungeon.bossList, new java.util.Random(AbstractDungeon.monsterRng.randomLong()));
+			List<String> customBosses = BaseMod.getBossIDs(AbstractDungeon.id);
+			// It's important to avoid reshuffling if we have no custom bosses to add. See #229
+			if (!customBosses.isEmpty()) {
+				AbstractDungeon.bossList.addAll(customBosses);
+				Collections.shuffle(AbstractDungeon.bossList, new java.util.Random(AbstractDungeon.monsterRng.randomLong()));
+			}
 		}
 	}
 
@@ -67,9 +73,17 @@ public class CustomBosses
 		{
 			BaseMod.BossInfo bossInfo = BaseMod.getBossInfo(key);
 			if (bossInfo != null) {
+				// Dispose old map icon
+				if (DungeonMap.boss != null) {
+					DungeonMap.boss.dispose();
+				}
+				if (DungeonMap.bossOutline != null) {
+					DungeonMap.bossOutline.dispose();
+				}
+
 				AbstractDungeon.bossKey = key;
-				DungeonMap.boss = bossInfo.bossMap;
-				DungeonMap.bossOutline = bossInfo.bossMapOutline;
+				DungeonMap.boss = bossInfo.loadBossMap();
+				DungeonMap.bossOutline = bossInfo.loadBossMapOutline();
 
 				logger.info("[BOSS] " + key);
 				return SpireReturn.Return(null);

@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import java.lang.reflect.Field;
 
 @SpirePatch(
-    cls="com.megacrit.cardcrawl.screens.SingleRelicViewPopup",
+    clz=SingleRelicViewPopup.class,
     method="renderTips"
 )
 public class RelicView

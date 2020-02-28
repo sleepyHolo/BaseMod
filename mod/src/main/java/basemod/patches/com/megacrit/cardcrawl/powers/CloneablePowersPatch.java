@@ -2020,6 +2020,31 @@ public class CloneablePowersPatch {
     }
 
     @SpirePatch(
+            clz = PoisonPower.class,
+            method = SpirePatch.CONSTRUCTOR
+    )
+    public static class PoisonPowerPatch {
+        public static void Raw(CtBehavior ctMethodToPatch) throws NotFoundException, CannotCompileException {
+            CtClass ctClass = ctMethodToPatch.getDeclaringClass();
+            ClassPool pool = ctClass.getClassPool();
+
+            CtClass ctCloneablePowerInterface = pool.get(CloneablePowerInterface.class.getName());
+            ctClass.addInterface(ctCloneablePowerInterface);
+            CtClass ctAbstractPower = pool.get(AbstractPower.class.getName());
+
+            CtMethod method = CtNewMethod.make(
+                    ctAbstractPower, // Return
+                    "makeCopy", // Method name
+                    new CtClass[]{},
+                    null, // Exceptions
+                    "return new " + PoisonPower.class.getName() + "(owner, source, amount);",
+                    ctClass
+            );
+            ctClass.addMethod(method);
+        }
+    }
+
+    @SpirePatch(
             clz = RagePower.class,
             method = SpirePatch.CONSTRUCTOR
     )
@@ -2262,7 +2287,7 @@ public class CloneablePowersPatch {
                     "makeCopy", // Method name
                     new CtClass[]{},
                     null, // Exceptions
-                    "return new " + RitualPower.class.getName() + "(owner, amount);",
+                    "return new " + RitualPower.class.getName() + "(owner, amount, onPlayer);",
                     ctClass
             );
             ctClass.addMethod(method);

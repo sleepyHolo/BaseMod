@@ -108,7 +108,7 @@ public class TestMod implements
 
 	public static final String ASSET_FOLDER = "img/test/test";
 	public static final String LOCALIZATION_FOLDER = "localization";
-	private static final Color PURPLE = CardHelper.getColor(139.0f, 0.0f, 139.0f);
+	private static final Color PURPLE = CardHelper.getColor(139, 0, 139);
     
 	// card strings
 	public static final String STRIKE_PURPLE = "cards/strike_purple.png";

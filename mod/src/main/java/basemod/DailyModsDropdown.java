@@ -64,9 +64,9 @@ public class DailyModsDropdown extends ClickableUIElement {
         super.render(sb);
         sb.setColor(Color.WHITE);
         if (hitbox.hovered) {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.tipBodyFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR.cpy().lerp(Color.WHITE, 0.3f));
         } else {
-            FontHelper.renderFontCenteredHeight(sb, FontHelper.panelNameTitleFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
+            FontHelper.renderFontCenteredHeight(sb, FontHelper.tipBodyFont, text, x, y + hb_h / 2.0f, Settings.GOLD_COLOR);
         }
         if (showModList) {
             renderBox(sb, y - 60f * Settings.scale);

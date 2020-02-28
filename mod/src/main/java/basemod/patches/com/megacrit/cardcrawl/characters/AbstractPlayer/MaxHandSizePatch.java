@@ -3,17 +3,23 @@ package basemod.patches.com.megacrit.cardcrawl.characters.AbstractPlayer;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.annotations.SerializedName;
+import com.megacrit.cardcrawl.actions.common.BetterDiscardPileToHandAction;
+import com.megacrit.cardcrawl.actions.common.BetterDrawPileToHandAction;
 import com.megacrit.cardcrawl.actions.common.DrawCardAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
+import com.megacrit.cardcrawl.actions.defect.DiscardPileToHandAction;
 import com.megacrit.cardcrawl.actions.defect.ScrapeAction;
 import com.megacrit.cardcrawl.actions.defect.SeekAction;
-import com.megacrit.cardcrawl.actions.unique.AttackFromDeckToHandAction;
-import com.megacrit.cardcrawl.actions.unique.DiscoveryAction;
-import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
-import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
+import com.megacrit.cardcrawl.actions.unique.*;
+import com.megacrit.cardcrawl.actions.utility.DiscardToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
+import com.megacrit.cardcrawl.actions.utility.ExhaustToHandAction;
+import com.megacrit.cardcrawl.actions.watcher.FlickerReturnToHandAction;
+import com.megacrit.cardcrawl.actions.watcher.ForeignInfluenceAction;
+import com.megacrit.cardcrawl.actions.watcher.MeditateAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.purple.Scrawl;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -73,6 +79,47 @@ import java.util.HashMap;
 		clz=DiscoveryAction.class,
 		method="update"
 )
+@SpirePatch(
+		clz=Scrawl.class,
+		method="use"
+)
+@SpirePatch(
+		clz=ForeignInfluenceAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=MeditateAction.class,
+		method="update"
+)
+// Flicker is a deprecated card, but someone might try to use the action
+@SpirePatch(
+		clz=FlickerReturnToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DiscardToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DiscardPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=BetterDiscardPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=DrawPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=BetterDrawPileToHandAction.class,
+		method="update"
+)
+@SpirePatch(
+		clz=ExhaustToHandAction.class,
+		method="update"
+)
 public class MaxHandSizePatch
 {
 	public static class TransformBipush extends Transformer
@@ -109,6 +156,16 @@ public class MaxHandSizePatch
 					bytecode.addGetstatic(BaseMod.class.getName(), "MAX_HAND_SIZE", Descriptor.of(CtClass.intType));
 					iterator.insert(pos, bytecode.get());
 					//System.out.println("EDITED BIPUSH@" + ainfo.toLineNumber(pos));
+				} else if (v == value - 1) {
+					iterator.writeByte(Opcode.NOP, pos);
+					iterator.writeByte(Opcode.NOP, pos + 1);
+					Bytecode bytecode = new Bytecode(cp);
+					bytecode.addGetstatic(BaseMod.class.getName(), "MAX_HAND_SIZE", Descriptor.of(CtClass.intType));
+					// MAX_HAND_SIZE - 1
+					bytecode.addIconst(1);
+					bytecode.add(Opcode.ISUB);
+					iterator.insert(pos, bytecode.get());
+					//System.out.println("EDITED BIPUSH-1@" + ainfo.toLineNumber(pos));
 				} else {
 					//System.out.println("FAILED BECAUSE BIPUSH@" + ainfo.toLineNumber(pos) + " != 10: " + v);
 				}

@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import java.lang.reflect.Field;
 
 @SpirePatch(
-    cls="com.megacrit.cardcrawl.screens.SingleCardViewPopup",
+    clz=SingleCardViewPopup.class,
     method="renderTips"
 )
 public class CardView

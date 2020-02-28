@@ -58,7 +58,7 @@ public class TopPanelPatches
                     sb.setColor(Color.WHITE);
                     sb.draw(ImageMaster.TIMER_ICON, TIME_X_POS, Settings.HEIGHT - 64.0f * Settings.scale, 64.0f * Settings.scale, 64.0f * Settings.scale);
                     Color clockColor = CardCrawlGame.stopClock ? Settings.GREEN_TEXT_COLOR : Settings.GOLD_COLOR;
-                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.panelNameTitleFont,
+                    FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipBodyFont,
                             CharStat.formatHMSM(CardCrawlGame.playtime), TIME_X_POS + 60.0f * Settings.scale, titleY, clockColor);
 
                     if (__instance.timerHb.hovered) {

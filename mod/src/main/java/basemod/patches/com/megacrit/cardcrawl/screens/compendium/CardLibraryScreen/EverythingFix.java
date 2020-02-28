@@ -59,9 +59,8 @@ public class EverythingFix
             @Override
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
             {
-                Matcher finalMatcher = new Matcher.MethodCallMatcher("com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen", "calculateScrollBounds");
-
-                return LineFinder.findInOrder(ctMethodToPatch, new ArrayList<Matcher>(), finalMatcher);
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(CardLibraryScreen.class, "calculateScrollBounds");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
     }

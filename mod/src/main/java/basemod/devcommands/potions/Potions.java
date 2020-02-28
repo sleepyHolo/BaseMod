@@ -3,11 +3,13 @@ package basemod.devcommands.potions;
 import basemod.BaseMod;
 import basemod.devcommands.ConsoleCommand;
 import basemod.DevConsole;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Potions extends ConsoleCommand {
 
@@ -54,11 +56,12 @@ public class Potions extends ConsoleCommand {
             potionID = BaseMod.underScorePotionIDs.get(potionID);
         }
 
+        List<String> allPotions = PotionHelper.getPotions(AbstractPlayer.PlayerClass.IRONCLAD, true);
         AbstractPotion p = null;
-        if (PotionHelper.potions.contains(potionID)) {
+        if (allPotions.contains(potionID)) {
             p = PotionHelper.getPotion(potionID);
         }
-        if (PotionHelper.potions.contains(potionID + " Potion")) {
+        if (allPotions.contains(potionID + " Potion")) {
             p = PotionHelper.getPotion(potionID + " Potion");
         }
 
@@ -82,10 +85,9 @@ public class Potions extends ConsoleCommand {
 
         if(result.contains(tokens[depth]) && tokens.length > depth + 1) {
             result.clear();
-            if (PotionHelper.potions != null) {
-                for (String key : PotionHelper.potions) {
-                    result.add(key.replace(' ', '_'));
-                }
+            List<String> allPotions = PotionHelper.getPotions(AbstractPlayer.PlayerClass.IRONCLAD, true);
+            for (String key : allPotions) {
+                result.add(key.replace(' ', '_'));
             }
             if(result.contains(tokens[depth + 1])) {
                 complete = true;

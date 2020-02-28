@@ -602,4 +602,63 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Support for Slay the Spire 07-17-2019 update (kiooeht)
 * Fix custom energy icons in card descriptions not working in SingleCardViewPopup (kiooeht)
 
+#### v5.16.0-beta ####
+* Support for Slay the Spire 09-09-2019 BETA (kiooeht)
+
+#### v5.16.0-beta.2 ####
+* Fix colored text being offset badly (kiooeht)
+* Fix multi-word keywords not removing underscores (kiooeht)
+* Fix adding and removing Watcher cards (kiooeht)
+* Make Vampires event use standard remove function (kiooeht)
+* Move card preview in SingleCardView to not cover whatmod (kiooeht)
+
+#### v5.16.0-beta.3 ####
+* Fix RitualPower cloneable patch crash (kiooeht)
+
+#### v5.16.0-beta.4 ####
+* Don't show card colors in compendium that contain no cards to avoid crash (kiooeht)
+* Fix `potion list` command changing potion rng (kiooeht)
+* Fix `potion list` command not including potions from other characters (kiooeht)
+* Fix `potion` command not giving potions from other characters (kiooeht)
+* Fix `potion` command not autocompleting potions from other characters (kiooeht)
+* Add whatmod support for potions (kiooeht)
+* Fix custom boss map icons being black square if used a second time (kiooeht)
+* Fix boss map icons leaking memory (kiooeht)
+* Fix dynamic variables always rendering fully opaque (kiooeht)
+* Fix multiword keywords that use underscores (JohnnyBazooka89)
+
+#### v5.17.0 ####
+* Deprecate BASIC_STRIKE and BASIC_DEFEND tags, use STARTER_STRIKE and STARTER_DEFEND instead (kiooeht)
+* Tag Deva Form with FORM (kiooeht)
+* Fix My True Form double adding base game form cards (kiooeht)
+* Fix Smoke Bomb causing player dialog to render in the wrong position (kiooeht)
+* Fix custom character name not visible in compendium for some languages (Celicath)
+* Fix button positions on character select when using 4:3 resolution (kiooeht)
+* Display all characters on character select if only one modded character is loaded (kiooeht)
+* Hide long offscreen starter relic descriptions on character select (kiooeht)
+* Fix `relic add` command not showing Watcher only relics (JohnnyBazooka89)
+* Fix `relic list rare` command incorrectly showing boss relics (JohnnyBazooka89)
+* Fix BaseMod altering encounter rng compared to basegame (kiooeht)
+* Fix colored text issues (Celicath)
+
+#### v5.18.0 ####
+* Move rewards scrolling code from Hubris to BaseMod (kiooeht/erasels)
+
+#### v5.18.1 ####
+* Make certain Watcher cards work with max hand size changes (kiooeht)
+  * Scrawl
+  * Foreign Influence
+  * Meditate
+  * Flicker (deprecated)
+* Fix many actions to work with max hand size changes (kiooeht)
+* Fix bias in boss selection RNG (dbjorge)
+
+#### v5.19.0 ####
+* AutoAdd API for auto-adding cards (kiooeht)
+* Fix character filter in run history (Celicath)
+* Fix history command (Celicath)
+* Hide unnecessary unlock bar (Alchyr)
+* Fix SafeDamageAllEnemies crash (Alchyr)
+* Fix duplicate options when using event command (Alchyr)
+
 #### dev ####

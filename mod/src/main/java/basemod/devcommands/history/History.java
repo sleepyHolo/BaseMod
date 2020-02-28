@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.characters.TheSilent;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
@@ -69,12 +70,20 @@ public class History extends ConsoleCommand {
     public static void getlastVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        setLoadout(rdlist.get(rdlist.size() - 1));
+        if (!rdlist.isEmpty()) {
+            setLoadout(rdlist.get(rdlist.size() - 1));
+        } else {
+            DevConsole.log("could not find run data for the current class");
+        }
     }
     public static void getrandomVictorySetup() {
         ArrayList<RunData> rdlist = getVictories(
                 characterIndex(AbstractDungeon.player));
-        setLoadout(rdlist.get(MathUtils.random(rdlist.size() - 1)));
+        if (!rdlist.isEmpty()) {
+            setLoadout(rdlist.get(MathUtils.random(rdlist.size() - 1)));
+        } else {
+            DevConsole.log("could not find run data for the current class");
+        }
     }
 
     public static void setLoadout(RunData rd) {
@@ -93,13 +102,9 @@ public class History extends ConsoleCommand {
             if(card.matches(".*\\+\\d+")) {
                 index = card.lastIndexOf("+");
 
-                ac = CardLibrary.getCopy(card.substring(0, index));
-                index = Integer.parseInt(card.substring(index + 1));
-                for(int i = 0; i < index; i++) {
-                    ac.upgrade();
-                }
+                ac = CardLibrary.getCopy(card.substring(0, index), index, 0);
             } else {
-                ac = CardLibrary.getCopy(card);
+                ac = CardLibrary.getCopy(card, 0, 0);
             }
             AbstractDungeon.player.masterDeck.group.add(ac);
         }
@@ -130,23 +135,14 @@ public class History extends ConsoleCommand {
     }
 
     public static int characterIndex(AbstractPlayer p) {
-
-        if(p instanceof TheSilent) {
-            return 2;
-        } else if(p instanceof Ironclad) {
-            return 1;
-        } else if(p instanceof Defect) {
-            return 3;
-        }
-
-        int index = 4;
-
-        for(Iterator var7 = BaseMod.getModdedCharacters().iterator(); var7.hasNext(); ++index) {
-            AbstractPlayer character = (AbstractPlayer)var7.next();
-            if (character.chosenClass == p.chosenClass) {
+        int index = 1;
+        for (AbstractPlayer p2 : CardCrawlGame.characterManager.getAllCharacters()) {
+            if (p2.chosenClass == p.chosenClass) {
                 break;
             }
+            index++;
         }
+
         return index;
     }
 }

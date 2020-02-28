@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -67,6 +68,9 @@ public class ColorTabBarFix
         {
             Fields.modTabs = new ArrayList<>();
             for (AbstractCard.CardColor color : BaseMod.getCardColors()) {
+                if (CardLibrary.getCardList(CardLibrary.LibraryType.valueOf(color.name())).isEmpty()) {
+                    continue;
+                }
                 Fields.modTabs.add(new ModColorTab(
                         color,
                         new Hitbox(235.0f * Settings.scale, 51.0f * Settings.scale)
@@ -152,7 +156,7 @@ public class ColorTabBarFix
                     }
                 }
                 String tabName = playerClass != null ? BaseMod.findCharacter(playerClass).getLocalizedCharacterName() : capitalizeWord(Fields.modTabs.get(i).color.toString());
-                FontHelper.renderFontCentered(sb, FontHelper.bannerFont, tabName, 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.6f);
+                FontHelper.renderFontCentered(sb, FontHelper.buttonLabelFont, tabName, 157.0f * Settings.scale, y - (SPACING * (i+1) * Settings.scale) + 50.0f * Settings.scale, textcolor, 0.85f);
             }
 
             for (int i = 0; i<Fields.modTabs.size(); ++i) {

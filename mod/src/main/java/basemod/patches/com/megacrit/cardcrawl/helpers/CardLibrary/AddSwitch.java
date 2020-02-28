@@ -20,18 +20,11 @@ public class AddSwitch
 	public static void Insert(AbstractCard card)
 	{
 		CardColor color = card.color;
-		switch (color) {
-			case RED:
-			case GREEN:
-			case BLUE:
-			case COLORLESS:
-			case CURSE:
-				break;
-			default:
-				BaseMod.incrementCardCount(color);
-				if (UnlockTracker.isCardSeen(card.cardID)) {
-					BaseMod.incrementSeenCardCount(color);
-				}
+		if (!BaseMod.isBaseGameCardColor(color)) {
+			BaseMod.incrementCardCount(color);
+			if (UnlockTracker.isCardSeen(card.cardID)) {
+				BaseMod.incrementSeenCardCount(color);
+			}
 		}
 	}
 
