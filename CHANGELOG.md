@@ -662,3 +662,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix duplicate options when using event command (Alchyr)
 
 #### dev ####
+* Fix scrolling tooltips in single-card view omitting some tips when many exist
