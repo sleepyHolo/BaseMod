@@ -661,8 +661,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix SafeDamageAllEnemies crash (Alchyr)
 * Fix duplicate options when using event command (Alchyr)
 
-#### dev ####
+#### v5.20.0 ####
 * Fix scrolling tooltips in single-card view omitting some tips when many exist (dbjorge)
 * Custom card frames (Alchyr)
 * Show correct unlock stats on character select screen (Alchyr)
 * Save dev console history across game restarts (kiooeht)
+
+#### dev ####
