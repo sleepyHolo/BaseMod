@@ -143,6 +143,7 @@ public abstract class CustomCard extends AbstractCard {
 		
 		return getTextureFromString(textureBackgroundSmallImg);
 	}
+
 	public Texture getBackgroundLargeTexture() {
 		if (textureBackgroundLargeImg == null) {
 			switch (this.type) {
@@ -157,6 +158,7 @@ public abstract class CustomCard extends AbstractCard {
 		
 		return getTextureFromString(textureBackgroundLargeImg);
 	}
+
 	public void setBackgroundTexture(String backgroundSmallImg, String backgroundLargeImg) {
 		this.textureBackgroundSmallImg = backgroundSmallImg;
 		this.textureBackgroundLargeImg = backgroundLargeImg;
@@ -175,6 +177,7 @@ public abstract class CustomCard extends AbstractCard {
 		
 		return getTextureFromString(textureBannerSmallImg);
 	}
+
 	public Texture getBannerLargeTexture() {
 		if (textureBannerLargeImg == null) {
 			return null;
@@ -192,6 +195,7 @@ public abstract class CustomCard extends AbstractCard {
 		}
 		return bannerSmallRegion;
 	}
+
 	public AtlasRegion getBannerLargeRegion() {
 		if (bannerLargeRegion == null && textureBannerLargeImg != null)
 		{
@@ -213,6 +217,7 @@ public abstract class CustomCard extends AbstractCard {
 		t = getBannerLargeTexture();
 		this.bannerLargeRegion = new TextureAtlas.AtlasRegion(t, 0, 0, t.getWidth(), t.getHeight());
 	}
+
 	public void setPortraitTextures(String cardFrameSmall, String cardFrameLarge)
 	{
 		loadTextureFromString(cardFrameSmall);
@@ -223,6 +228,7 @@ public abstract class CustomCard extends AbstractCard {
 		t = getTextureFromString(cardFrameLarge);
 		this.frameLargeRegion = new TextureAtlas.AtlasRegion(t, 0, 0, t.getWidth(), t.getHeight());
 	}
+
 	public void setPortraitTextures(String cardFrameSmall, String cardFrameLarge, String dynamicLeftFrame, String dynamicMiddleFrame, String dynamicRightFrame, String dynamicLeftFrameLarge, String dynamicMiddleFrameLarge, String dynamicRightFrameLarge)
 	{
 		loadTextureFromString(cardFrameSmall);
