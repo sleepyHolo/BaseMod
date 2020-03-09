@@ -667,5 +667,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Show correct unlock stats on character select screen (Alchyr)
 * Save dev console history across game restarts (kiooeht)
 
-#### dev ####
+#### v5.20.1 ####
 * Fix crash if mods add unlocks badly (kiooeht)
+
+#### dev ####
