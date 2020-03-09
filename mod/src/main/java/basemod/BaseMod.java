@@ -1578,6 +1578,10 @@ public class BaseMod {
 
 	// add new unlock bundle
 	public static void addUnlockBundle(CustomUnlockBundle bundle, AbstractPlayer.PlayerClass c, int unlockLevel) {
+		if (bundle == null) {
+			return;
+		}
+
 		if (!unlockBundles.containsKey(c)) {
 			HashMap<Integer, CustomUnlockBundle> newBundles = new HashMap<>();
 			newBundles.put(unlockLevel, bundle);

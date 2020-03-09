@@ -668,3 +668,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Save dev console history across game restarts (kiooeht)
 
 #### dev ####
+* Fix crash if mods add unlocks badly (kiooeht)
