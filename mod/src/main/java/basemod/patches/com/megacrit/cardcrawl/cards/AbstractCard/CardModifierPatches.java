@@ -25,6 +25,31 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
+            method = "makeStatEquivalentCopy"
+    )
+    public static class CardModifierStatEquivalentCopyModifiers
+    {
+        @SpireInsertPatch(
+                locator = Locator.class,
+                localvars = {"card"}
+        )
+        public static void Insert(AbstractCard __instance, AbstractCard card) {
+            CardModifierManager.copyModifiers(__instance, card);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "timesUpgraded");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
             method = "resetAttributes"
     )
     public static class CardModifierRemoveEndOfTurnModifiers

@@ -48,4 +48,19 @@ public class CardModifierManager
         }
     }
 
+    public static void removeAllModifiers(AbstractCard card) {
+        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
+        while (it.hasNext()) {
+            AbstractCardModifier mod = it.next();
+            it.remove();
+        }
+    }
+
+    public static void copyModifiers(AbstractCard oldCard, AbstractCard newCard) {
+        removeAllModifiers(newCard);
+        modifiers(oldCard).forEach((item) -> {
+            AbstractCardModifier newMod = item.makeCopy();
+            modifiers(newCard).add(newMod);
+        });
+    }
 }
