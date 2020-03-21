@@ -116,6 +116,14 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public void onRender(AbstractCard card, SpriteBatch sb) {
 
     }
+    /**
+     * Manipulate the way the cost variable displays. For example, you could make the cost render as 'Y'.
+     * Note: the mod with higher priority will prioritize the change, due to it being the last to run this method.
+     */
+    public String replaceCostString(AbstractCard card, String currentCostString) {
+        return currentCostString;
+    }
+
     public abstract AbstractCardModifier makeCopy();
 
     /**

@@ -307,6 +307,18 @@ public class CardModifierPatches
             CardModifierManager.onRender(__instance, sb);
         }
     }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "getCost"
+    )
+    public static class getCardModifierCostString
+    {
+        public static String Postfix(String __result, AbstractCard __instance) {
+            __result = CardModifierManager.getCostString(__instance, __result);
+            return __result;
+        }
+    }
     @SpirePatch(
             clz = AbstractCard.class,
             method = "resetAttributes"

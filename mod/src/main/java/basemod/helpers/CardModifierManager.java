@@ -145,4 +145,11 @@ public class CardModifierManager
             mod.onRender(card, sb);
         }
     }
+
+    public static String getCostString(AbstractCard card, String currentString) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            currentString = mod.replaceCostString(card, currentString);
+        }
+        return currentString;
+    }
 }
