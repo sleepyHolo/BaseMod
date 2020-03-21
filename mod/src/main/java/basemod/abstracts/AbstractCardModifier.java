@@ -23,6 +23,31 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * Methods modify the relevant stat as it's being calculated on the game's end, without
+     * interfering with normal card stats. The return is the new value used by the game.
+     * all card parameters pass the instance of the card which the mod is applied to.
+     * AbstractMonster parameters will pass null when called from ApplyPowers.
+     */
+    //called before related power functions, for flat increases, to happen before vulnerable.
+    public float modifyDamage(float damage, DamageInfo.DamageType type, AbstractCard card, AbstractMonster target) {
+        return damage;
+    }
+
+    //called before "final" power functions, to apply percentage increases, but before things like intangible.
+    public float modifyDamageFinal(float damage, DamageInfo.DamageType type, AbstractCard card, AbstractMonster target) {
+        return damage;
+    }
+
+    //called before power functions, for flat increases.
+    public float modifyBlock(float block, AbstractCard card) {
+        return block;
+    }
+
+    //called after power functions, for percentage and immutable(panic button-like) changes.
+    public float modifyBlockFinal(float block, AbstractCard card) {
+        return block;
+    }
+    /**
      * called when the mod is initially applied to the card, including when
      * a new instance of a card is created, and mods are copied to that new card.
      */

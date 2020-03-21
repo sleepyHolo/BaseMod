@@ -22,6 +22,221 @@ import javassist.expr.MethodCall;
 import java.util.ArrayList;
 public class CardModifierPatches
 {
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "calculateCardDamage"
+    )
+    public static class CardModifierCalculateCardDamage
+    {
+        //modifyDamage
+        @SpireInsertPatch(
+                locator = DamageLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void damageInsert(AbstractCard __instance, AbstractMonster m, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyDamage(tmp[0], __instance, m);
+        }
+
+        private static class DamageLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[0]};
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = MultiDamageLocator.class,
+                localvars = {"tmp", "i"}
+        )
+        public static void multiDamageInsert(AbstractCard __instance, AbstractMonster m, float[] tmp, int i) {
+            tmp[i] = CardModifierManager.onModifyDamage(tmp[i], __instance, m);
+        }
+
+        private static class MultiDamageLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[2]};
+            }
+        }
+
+        //modifyDamageFinal
+        @SpireInsertPatch(
+                locator = DamageFinalLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void damageFinalInsert(AbstractCard __instance, AbstractMonster m, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyDamageFinal(tmp[0], __instance, m);
+        }
+
+        private static class DamageFinalLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[1]};
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = MultiDamageFinalLocator.class,
+                localvars = {"tmp", "i"}
+        )
+        public static void multiDamageFinalInsert(AbstractCard __instance, AbstractMonster m, float[] tmp, int i) {
+            tmp[i] = CardModifierManager.onModifyDamageFinal(tmp[i], __instance, m);
+        }
+
+        private static class MultiDamageFinalLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[3]};
+            }
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "applyPowersToBlock"
+    )
+    public static class CardModifierApplyPowersToBlock
+    {
+        //modifyBlock
+        @SpireInsertPatch(
+                locator = BlockLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void blockInsert(AbstractCard __instance, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyBlock(tmp[0], __instance);
+        }
+
+        private static class BlockLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        //modifyBlockFinal
+        @SpireInsertPatch(
+                locator = BlockFinalLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void blockFinalInsert(AbstractCard __instance, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyBlockFinal(tmp[0], __instance);
+        }
+
+        private static class BlockFinalLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(MathUtils.class, "floor");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "applyPowers"
+    )
+    public static class CardModifierOnApplyPowers
+    {
+
+        //modifyDamage
+        @SpireInsertPatch(
+                locator = DamageLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void damageInsert(AbstractCard __instance, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyDamage(tmp[0], __instance, null);
+        }
+
+        private static class DamageLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[0]};
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = MultiDamageLocator.class,
+                localvars = {"tmp", "i"}
+        )
+        public static void multiDamageInsert(AbstractCard __instance, float[] tmp, int i) {
+            tmp[i] = CardModifierManager.onModifyDamage(tmp[i], __instance, null);
+        }
+
+        private static class MultiDamageLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[2]};
+            }
+        }
+
+        //modifyDamageFinal
+        @SpireInsertPatch(
+                locator = DamageFinalLocator.class,
+                localvars = {"tmp"}
+        )
+        public static void damageFinalInsert(AbstractCard __instance, @ByRef float[] tmp) {
+            tmp[0] = CardModifierManager.onModifyDamageFinal(tmp[0], __instance, null);
+        }
+
+        private static class DamageFinalLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[1]};
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = MultiDamageFinalLocator.class,
+                localvars = {"tmp", "i"}
+        )
+        public static void multiDamageFinalInsert(AbstractCard __instance, float[] tmp, int i) {
+            tmp[i] = CardModifierManager.onModifyDamageFinal(tmp[i], __instance, null);
+        }
+
+        private static class MultiDamageFinalLocator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "powers");
+                int[] tmp = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[] {tmp[3]};
+            }
+        }
+    }
 
     @SpirePatch(
             clz = AbstractCard.class,
