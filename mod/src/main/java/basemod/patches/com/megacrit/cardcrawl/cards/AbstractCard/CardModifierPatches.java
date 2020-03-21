@@ -304,6 +304,32 @@ public class CardModifierPatches
     {
         public static SpireField<ArrayList<AbstractCardModifier>> cardModifiers = new SpireField<>(ArrayList::new);
     }
+
+    @SpirePatch(
+            clz = AbstractPlayer.class,
+            method = "draw",
+            paramtypez = {int.class}
+    )
+    public static class CardModifierWhenDrawn
+    {
+        @SpireInsertPatch(
+                locator = Locator.class,
+                localvars = {"c"}
+        )
+        public static void Insert(AbstractPlayer __instance, int numCards, AbstractCard c) {
+            CardModifierManager.onCardDrawn(c);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "triggerWhenDrawn");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
     @SpirePatch(
             clz = UseCardAction.class,
             method = SpirePatch.CONSTRUCTOR,
