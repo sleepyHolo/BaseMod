@@ -306,6 +306,30 @@ public class CardModifierPatches
     }
 
     @SpirePatch(
+            clz = CardGroup.class,
+            method = "moveToExhaustPile"
+    )
+    public static class CardModifierWhenExhausted
+    {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static void Insert(CardGroup __instance, AbstractCard c) {
+            CardModifierManager.onCardExhausted(c);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "triggerOnExhaust");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
+    @SpirePatch(
             clz = AbstractPlayer.class,
             method = "draw",
             paramtypez = {int.class}

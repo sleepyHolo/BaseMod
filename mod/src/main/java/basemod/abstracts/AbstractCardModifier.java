@@ -69,6 +69,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public void onDrawn(AbstractCard card) {
 
     }
+
+    /**
+     * called when the card is exhausted.
+     */
+    public void onExhausted(AbstractCard card) {
+
+    }
     /**
      * called when the mod is initially applied to the card, including when
      * a new instance of a card is created, and mods are copied to that new card.
