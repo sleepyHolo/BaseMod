@@ -431,6 +431,46 @@ public class CardModifierPatches
             }
         }
     }
+
+    @SpirePatch(
+            clz = AbstractPlayer.class,
+            method = "useCard"
+    )
+    public static class CardModifierSpendResources
+    {
+        public static ExprEditor Instrument() {
+            return new ExprEditor() {
+                public void edit(MethodCall m) throws CannotCompileException {
+                    if (m.getClassName().equals(EnergyManager.class.getName()) && m.getMethodName().equals("use")) {
+                        String manager = CardModifierManager.class.getName();
+                        String energy = EnergyPanel.class.getName();
+                        m.replace(
+                                "if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
+                                            manager + ".spendPreEnergyResource(c);" +
+                                        "} else if (" + energy + ".totalCount >= c.costForTurn) {" +
+                                            "$proceed($$);" +
+                                        "} else if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
+                                            manager + ".spendPostEnergyResource(c);" +
+                                        "} else {" +
+                                            "int tmp = c.costForTurn;" +
+                                            "tmp = " + manager + ".spendPreEnergySplittableResource(c);" +
+                                            "if (tmp > 0) {" +
+                                                "if (tmp > " + energy + ".totalCount) {" +
+                                                    "tmp -= " + energy + ".totalCount;" +
+                                                    "this.energy.use(" + energy + ".totalCount);" +
+                                                    manager + ".spendPostEnergySplittableResource(c, tmp);" +
+                                                "} else {" +
+                                                    "this.energy.use(tmp);" +
+                                                "}" +
+                                            "}" +
+                                        "}"
+                        );
+                    }
+                }
+            };
+        }
+    }
+
     @SpirePatch(
             clz = UseCardAction.class,
             method = SpirePatch.CONSTRUCTOR,

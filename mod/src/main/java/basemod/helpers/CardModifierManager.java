@@ -187,4 +187,86 @@ public class CardModifierManager
         }
         return currentString;
     }
+
+    public static int getPreEnergyResourceAmount(AbstractCard card) {
+        int tmp = 0;
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (!mod.canSplitCost(card) && mod.prioritizeAlternateCost(card)) {
+                tmp = Math.max(tmp, mod.getAlternateResource(card));
+            }
+        }
+        return tmp;
+    }
+
+    public static int getPostEnergyResourceAmount(AbstractCard card) {
+        int tmp = 0;
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (!mod.canSplitCost(card) && !mod.prioritizeAlternateCost(card)) {
+                tmp = Math.max(tmp, mod.getAlternateResource(card));
+            }
+        }
+        return tmp;
+    }
+
+    public static int getSplittableResourceAmount(AbstractCard card) {
+        int tmp = 0;
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (mod.canSplitCost(card)) {
+                int c = mod.getAlternateResource(card);
+                if (c > -1) {
+                    tmp += c;
+                }
+            }
+        }
+        return tmp;
+    }
+
+    public static void spendPreEnergyResource(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (mod.prioritizeAlternateCost(card)) {
+                int c = mod.getAlternateResource(card);
+                if (c >= card.costForTurn) {
+                    mod.spendAlternateCost(card, card.costForTurn);
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void spendPostEnergyResource(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (!mod.prioritizeAlternateCost(card)) {
+                int c = mod.getAlternateResource(card);
+                if (c >= card.costForTurn) {
+                    mod.spendAlternateCost(card, card.costForTurn);
+                    return;
+                }
+            }
+        }
+    }
+
+    public static int spendPreEnergySplittableResource(AbstractCard card) {
+        int remainingCost = card.costForTurn;
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (mod.prioritizeAlternateCost(card) && mod.canSplitCost(card)) {
+                remainingCost = mod.spendAlternateCost(card, remainingCost);
+                if (remainingCost <= 0) {
+                    break;
+                }
+            }
+        }
+        return remainingCost;
+    }
+
+    public static void spendPostEnergySplittableResource(AbstractCard card, int remainingCost) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (!mod.prioritizeAlternateCost(card) && mod.canSplitCost(card)) {
+                remainingCost = mod.spendAlternateCost(card, remainingCost);
+                if (remainingCost <= 0) {
+                    return;
+                }
+            }
+        }
+        System.out.println("CardModifierManager: WARNING: splittable resources spent for " + card + "without being sufficient!");
+    }
 }
