@@ -158,6 +158,10 @@ public class CardModifierPatches
     )
     public static class CardModifierOnApplyPowers
     {
+        //onApplyPowers
+        public static void Postfix(AbstractCard __instance) {
+            CardModifierManager.onApplyPowers(__instance);
+        }
 
         //modifyDamage
         @SpireInsertPatch(

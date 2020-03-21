@@ -58,6 +58,14 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public void onRemove(AbstractCard card) {
 
     }
+
+    /**
+     * called whenever applyPowers is called on a card. Useful for if you want an
+     * effect to be tied to the existence of a power, or otherwise somehow dynamic.
+     */
+    public void onApplyPowers(AbstractCard card) {
+
+    }
     public abstract AbstractCardModifier makeCopy();
 
     /**
