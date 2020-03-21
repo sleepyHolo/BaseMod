@@ -47,6 +47,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public float modifyBlockFinal(float block, AbstractCard card) {
         return block;
     }
+
+    /**
+     * Called when the card is used, same timing as onUseCard hooks in powers and relics.
+     */
+    public void onUse(AbstractCard card) {
+
+    }
     /**
      * called when the mod is initially applied to the card, including when
      * a new instance of a card is created, and mods are copied to that new card.

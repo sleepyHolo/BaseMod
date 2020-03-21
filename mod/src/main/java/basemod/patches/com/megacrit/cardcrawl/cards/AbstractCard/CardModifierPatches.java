@@ -297,6 +297,7 @@ public class CardModifierPatches
                 locator = Locator.class
         )
         public static void Insert(UseCardAction __instance, AbstractCard card, AbstractCreature target) {
+            CardModifierManager.onUseCard(card);
             CardModifierManager.removeWhenPlayedModifiers(card);
         }
 
