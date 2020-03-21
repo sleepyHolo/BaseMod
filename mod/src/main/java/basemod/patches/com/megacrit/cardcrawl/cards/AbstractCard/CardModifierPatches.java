@@ -25,10 +25,45 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
+            method = "resetAttributes"
+    )
+    public static class CardModifierRemoveEndOfTurnModifiers
+    {
+        public static void Prefix(AbstractCard __instance) {
+            CardModifierManager.removeEndOfTurnModifiers(__instance);
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
             method = SpirePatch.CLASS
     )
     public static class CardModifierFields
     {
         public static SpireField<ArrayList<AbstractCardModifier>> cardModifiers = new SpireField<>(ArrayList::new);
+    }
+    @SpirePatch(
+            clz = UseCardAction.class,
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = {AbstractCard.class, AbstractCreature.class}
+    )
+    public static class CardModifierOnUseCard
+    {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static void Insert(UseCardAction __instance, AbstractCard card, AbstractCreature target) {
+            CardModifierManager.removeWhenPlayedModifiers(card);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractPlayer.class, "hand");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
     }
 }

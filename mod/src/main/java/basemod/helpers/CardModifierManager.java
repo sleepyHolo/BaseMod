@@ -27,4 +27,25 @@ public class CardModifierManager
             modifiers(card).remove(mod);
         }
     }
+
+    public static void removeEndOfTurnModifiers(AbstractCard card) {
+        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
+        while (it.hasNext()) {
+            AbstractCardModifier mod = it.next();
+            if (mod.removeAtEndOfTurn(card)) {
+                it.remove();
+            }
+        }
+    }
+
+    public static void removeWhenPlayedModifiers(AbstractCard card) {
+        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
+        while (it.hasNext()) {
+            AbstractCardModifier mod = it.next();
+            if (mod.removeOnCardPlayed(card)) {
+                it.remove();
+            }
+        }
+    }
+
 }
