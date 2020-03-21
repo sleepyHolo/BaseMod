@@ -99,6 +99,13 @@ public class CardModifierManager
             mod.onExhausted(card);
         }
     }
+
+    public static void onCardDiscarded(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            mod.onDiscarded(card);
+        }
+    }
+
     public static float onModifyDamage(float damage, AbstractCard card, AbstractMonster mo) {
         for (AbstractCardModifier mod : modifiers(card)) {
             damage = mod.modifyDamage(damage, card.damageTypeForTurn, card, mo);

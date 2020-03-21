@@ -307,6 +307,20 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = CardGroup.class,
+            method = "moveToDiscardPile"
+    )
+    public static class CardModifierWhenDiscarded
+    {
+        public static void Prefix(CardGroup __instance, AbstractCard c) {
+            if (__instance == AbstractDungeon.player.hand && !AbstractDungeon.actionManager.turnHasEnded && __instance.contains(c)) {
+                System.out.println("was " + c + " manually discarded?");
+                CardModifierManager.onCardDiscarded(c);
+            }
+        }
+    }
+
+    @SpirePatch(
+            clz = CardGroup.class,
             method = "moveToExhaustPile"
     )
     public static class CardModifierWhenExhausted
