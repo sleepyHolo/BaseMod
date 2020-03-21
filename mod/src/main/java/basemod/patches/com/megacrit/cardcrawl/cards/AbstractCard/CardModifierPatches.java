@@ -319,6 +319,35 @@ public class CardModifierPatches
             return __result;
         }
     }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "hasEnoughEnergy"
+    )
+    public static class cardModifierHasEnoughAlternateResource
+    {
+        @SpireInsertPatch(
+                locator = Locator.class
+        )
+        public static SpireReturn<Boolean> Insert(AbstractCard __instance) {
+            if (CardModifierManager.hasEnoughAlternateCost(__instance)) {
+                return SpireReturn.Return(true);
+            } else {
+                return SpireReturn.Continue();
+            }
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "costForTurn");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
     @SpirePatch(
             clz = AbstractCard.class,
             method = "resetAttributes"

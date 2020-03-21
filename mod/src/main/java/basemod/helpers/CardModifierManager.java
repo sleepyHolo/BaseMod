@@ -146,6 +146,41 @@ public class CardModifierManager
         }
     }
 
+    //the player is considered to have enough alternate cost when their energy + the total of alternate splittable resources >=
+    // cost for turn, OR when any single non-splittable resource >= cost for turn.
+    public static boolean hasEnoughAlternateCost(AbstractCard card) {
+        ArrayList<AbstractCardModifier> splittableCosts = new ArrayList<>();
+        ArrayList<AbstractCardModifier> nonSplittableCosts = new ArrayList<>();
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (mod.canSplitCost(card)) {
+                splittableCosts.add(mod);
+            } else {
+                nonSplittableCosts.add(mod);
+            }
+
+        }
+        int amt = EnergyPanel.totalCount;
+        for (AbstractCardModifier mod : splittableCosts) {
+            int c = mod.getAlternateResource(card);
+            if (c > -1) {
+                amt += c;
+            }
+        }
+        if (amt > card.costForTurn) {
+            return true;
+        }
+        for (AbstractCardModifier mod : nonSplittableCosts) {
+            int c = mod.getAlternateResource(card);
+            if (c > amt) {
+                amt = c;
+                if (amt > card.costForTurn) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static String getCostString(AbstractCard card, String currentString) {
         for (AbstractCardModifier mod : modifiers(card)) {
             currentString = mod.replaceCostString(card, currentString);
