@@ -21,6 +21,18 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public boolean removeAtEndOfTurn(AbstractCard card) {
         return false;
     }
+
+    /**
+     * called when the mod is initially applied to the card, including when
+     * a new instance of a card is created, and mods are copied to that new card.
+     */
+    public void onInitialApplication(AbstractCard card) {
+
+    }
+
+    public void onRemove(AbstractCard card) {
+
+    }
     public abstract AbstractCardModifier makeCopy();
 
     /**

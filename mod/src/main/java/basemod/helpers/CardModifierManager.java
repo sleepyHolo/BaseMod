@@ -20,11 +20,13 @@ public class CardModifierManager
     public static void addModifier(AbstractCard card, AbstractCardModifier mod) {
         modifiers(card).add(mod);
         Collections.sort(modifiers(card));
+        mod.onInitialApplication(card);
     }
 
     public static void removeModifier(AbstractCard card, AbstractCardModifier mod) {
         if (modifiers(card).contains(mod)) {
             modifiers(card).remove(mod);
+            mod.onRemove(card);
         }
     }
 
@@ -34,6 +36,7 @@ public class CardModifierManager
             AbstractCardModifier mod = it.next();
             if (mod.removeAtEndOfTurn(card)) {
                 it.remove();
+                mod.onRemove(card);
             }
         }
     }
@@ -44,6 +47,7 @@ public class CardModifierManager
             AbstractCardModifier mod = it.next();
             if (mod.removeOnCardPlayed(card)) {
                 it.remove();
+                mod.onRemove(card);
             }
         }
     }
@@ -53,6 +57,7 @@ public class CardModifierManager
         while (it.hasNext()) {
             AbstractCardModifier mod = it.next();
             it.remove();
+            mod.onRemove(card);
         }
     }
 
@@ -61,6 +66,7 @@ public class CardModifierManager
         modifiers(oldCard).forEach((item) -> {
             AbstractCardModifier newMod = item.makeCopy();
             modifiers(newCard).add(newMod);
+            newMod.onInitialApplication(newCard);
         });
     }
 }
