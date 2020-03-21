@@ -244,6 +244,24 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
+            method = "initializeDescription"
+    )
+    public static class CardModifierOnCreateDescription
+    {
+        private static String storedRawDescription;
+
+        public static void Prefix(AbstractCard __instance) {
+            storedRawDescription = __instance.rawDescription;
+            CardModifierManager.onCreateDescription(__instance);
+        }
+
+        public static void Postfix(AbstractCard __instance) {
+            __instance.rawDescription = storedRawDescription;
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
             method = "makeStatEquivalentCopy"
     )
     public static class CardModifierStatEquivalentCopyModifiers

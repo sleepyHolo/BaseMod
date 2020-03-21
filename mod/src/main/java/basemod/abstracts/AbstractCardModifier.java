@@ -49,6 +49,14 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * Intercepts the creation of a card's description at the time that initializeDescription is called.
+     * rawDescription can be manipulated freely at this point, and then the game will parse it as normal.
+     */
+    public String modifyDescription(String rawDescription, AbstractCard card) {
+        return rawDescription;
+    }
+
+    /**
      * Called when the card is used, same timing as onUseCard hooks in powers and relics.
      */
     public void onUse(AbstractCard card) {

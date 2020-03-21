@@ -76,6 +76,12 @@ public class CardModifierManager
         }
     }
 
+    public static void onCreateDescription(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            card.rawDescription = mod.modifyDescription(card.rawDescription, card);
+        }
+    }
+
     public static void onUseCard(AbstractCard card) {
         for (AbstractCardModifier mod : modifiers(card)) {
             mod.onUse(card);
