@@ -287,6 +287,28 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
+            method = "update"
+    )
+    public static class CardModifierUpdate
+    {
+        public static void Postfix(AbstractCard __instance) {
+            CardModifierManager.onUpdate(__instance);
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "render",
+            paramtypez = {SpriteBatch.class}
+    )
+    public static class CardModifierRender
+    {
+        public static void Postfix(AbstractCard __instance, SpriteBatch sb) {
+            CardModifierManager.onRender(__instance, sb);
+        }
+    }
+    @SpirePatch(
+            clz = AbstractCard.class,
             method = "resetAttributes"
     )
     public static class CardModifierRemoveEndOfTurnModifiers

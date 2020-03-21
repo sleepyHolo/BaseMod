@@ -133,4 +133,16 @@ public class CardModifierManager
         }
         return block;
     }
+
+    public static void onUpdate(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            mod.onUpdate(card);
+        }
+    }
+
+    public static void onRender(AbstractCard card, SpriteBatch sb) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            mod.onRender(card, sb);
+        }
+    }
 }

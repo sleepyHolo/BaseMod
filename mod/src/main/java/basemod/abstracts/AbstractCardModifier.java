@@ -105,6 +105,17 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     public void onApplyPowers(AbstractCard card) {
 
     }
+
+    /**
+     * update/render hooks. Can be used to attach particle systems to a card, or a bottle icon, or similar.
+     */
+    public void onUpdate(AbstractCard card) {
+
+    }
+
+    public void onRender(AbstractCard card, SpriteBatch sb) {
+
+    }
     public abstract AbstractCardModifier makeCopy();
 
     /**
