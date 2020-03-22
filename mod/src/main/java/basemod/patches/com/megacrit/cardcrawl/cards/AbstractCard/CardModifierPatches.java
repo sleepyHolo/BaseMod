@@ -326,6 +326,7 @@ public class CardModifierPatches
     )
     public static class cardModifierHasEnoughAlternateResource
     {
+        //alternate costs
         @SpireInsertPatch(
                 locator = Locator.class
         )
@@ -344,6 +345,18 @@ public class CardModifierPatches
             {
                 Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "costForTurn");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        //canPlayCard
+        @SpireInsertPatch(
+             rloc = 0
+        )
+        public static SpireReturn<Boolean> preInsert(AbstractCard __instance) {
+            if (!CardModifierManager.canPlayCard(__instance)) {
+                return SpireReturn.Return(false);
+            } else {
+                return SpireReturn.Continue();
             }
         }
     }

@@ -128,6 +128,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * return false to make the card unplayable.
+     */
+    public boolean canPlayCard(AbstractCard card) {
+        return true;
+    }
+
+    /**
      * Method group used for implementing an alternative cost for cards. Gold, Health, orb slots, stacks of a power, etc.
      * most methods should use card.costForTurn for checking against it.
      *

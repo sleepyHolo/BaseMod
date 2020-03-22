@@ -154,6 +154,15 @@ public class CardModifierManager
         }
     }
 
+    public static boolean canPlayCard(AbstractCard card) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            if (!mod.canPlayCard(card)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //the player is considered to have enough alternate cost when their energy + the total of alternate splittable resources >=
     // cost for turn, OR when any single non-splittable resource >= cost for turn.
     public static boolean hasEnoughAlternateCost(AbstractCard card) {
