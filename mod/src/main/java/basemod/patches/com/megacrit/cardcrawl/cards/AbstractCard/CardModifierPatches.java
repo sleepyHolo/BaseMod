@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -20,6 +21,8 @@ import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
+import javax.jws.soap.SOAPBinding;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 public class CardModifierPatches
 {
@@ -403,7 +406,23 @@ public class CardModifierPatches
     {
         public static void Prefix(CardGroup __instance, AbstractCard c) {
             if (__instance == AbstractDungeon.player.hand && !AbstractDungeon.actionManager.turnHasEnded && __instance.contains(c)) {
-                System.out.println("was " + c + " manually discarded?");
+                for (AbstractGameAction action : AbstractDungeon.actionManager.actions) {
+                    if (action instanceof UseCardAction) {
+                        UseCardAction useAction = (UseCardAction)action;
+                        try {
+                            Field targetCardField = UseCardAction.class.getDeclaredField("targetCard");
+                            targetCardField.setAccessible(true);
+                            AbstractCard card = (AbstractCard)targetCardField.get(useAction);
+                            if (card == c) {
+                                return;
+                            }
+                        } catch (Exception e){
+                            System.out.println("UseCardAction.targetCard field access failed:");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                System.out.println("was " + c + " manually discarded? If not, please report.");
                 CardModifierManager.onCardDiscarded(c);
             }
         }
