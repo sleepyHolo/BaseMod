@@ -2,6 +2,7 @@ package basemod.abstracts;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -62,7 +63,7 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     /**
      * Called when the card is used, same timing as onUseCard hooks in powers and relics.
      */
-    public void onUse(AbstractCard card, AbstractCreature target) {
+    public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
     }
 

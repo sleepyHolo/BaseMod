@@ -509,7 +509,7 @@ public class CardModifierPatches
                 locator = Locator.class
         )
         public static void Insert(UseCardAction __instance, AbstractCard card, AbstractCreature target) {
-            CardModifierManager.onUseCard(card, target);
+            CardModifierManager.onUseCard(card, target, __instance);
             CardModifierManager.removeWhenPlayedModifiers(card);
         }
 

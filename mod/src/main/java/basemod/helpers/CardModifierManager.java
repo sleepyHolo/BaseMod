@@ -4,6 +4,7 @@ import basemod.abstracts.AbstractCardModifier;
 import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPatches;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -85,9 +86,9 @@ public class CardModifierManager
         }
     }
 
-    public static void onUseCard(AbstractCard card, AbstractCreature target) {
+    public static void onUseCard(AbstractCard card, AbstractCreature target, UseCardAction action) {
         for (AbstractCardModifier mod : modifiers(card)) {
-            mod.onUse(card, target);
+            mod.onUse(card, target, action);
         }
     }
 
