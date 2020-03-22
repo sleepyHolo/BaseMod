@@ -164,12 +164,16 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
-     * "costs" should be "spent", or removed, in this method.
-     * If the cost can be split, return should be remaining energy to spend. Else return 0. Resources spent should
-     * be based on the int passed, rather than card.costForTurn, due to other mods possibly interacting with it.
+     * "costs" should be "spent", or removed, in this method. If the cost can be split, spend as much as is possible,
+     * then the return should be remaining cost-equivalent value that the game still needs to spend from other resources.
+     * Resources spent should be based on the int passed to the method, rather than card.costForTurn, due to other
+     * CardModifiers possibly interacting with the cost before this modifier is reached.
+     * @param card -- the card that this modifier is attached to.
+     * @param costToSpend -- the cost-equivalent amount of the resource that should be removed via this method.
+     * @return -- the amount of cost-equivalent resource that the game still needs to spend after this method.
      */
     public int spendAlternateCost(AbstractCard card, int costToSpend) {
-        return 0;
+        return costToSpend;
     }
 
     /**
