@@ -2,6 +2,7 @@ package basemod.abstracts;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -115,6 +116,14 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     public void onRender(AbstractCard card, SpriteBatch sb) {
+
+    }
+
+    /**
+     * triggers at the end of the player's turn. The group passed is the current location of the card at the
+     * time that this method is called.
+     */
+    public void atEndOfTurn(AbstractCard card, CardGroup group) {
 
     }
 

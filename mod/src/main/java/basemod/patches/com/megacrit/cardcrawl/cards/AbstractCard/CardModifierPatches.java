@@ -496,4 +496,24 @@ public class CardModifierPatches
             }
         }
     }
+
+    @SpirePatch(
+            clz = AbstractCreature.class,
+            method = "applyEndOfTurnTriggers"
+    )
+    public static class CardModifierAtEndOfTurn
+    {
+        public static void Postfix(AbstractCreature __instance) {
+            AbstractPlayer p = AbstractDungeon.player;
+            for (AbstractCard c : p.drawPile.group) {
+                CardModifierManager.atEndOfTurn(c, p.drawPile);
+            }
+            for (AbstractCard c : p.discardPile.group) {
+                CardModifierManager.atEndOfTurn(c, p.discardPile);
+            }
+            for (AbstractCard c : p.hand.group) {
+                CardModifierManager.atEndOfTurn(c, p.hand);
+            }
+        }
+    }
 }
