@@ -208,7 +208,7 @@ public class CardModifierManager
     public static int getPreEnergyResourceAmount(AbstractCard card) {
         int tmp = 0;
         for (AbstractCardModifier mod : modifiers(card)) {
-            if (!mod.canSplitCost(card) && mod.prioritizeAlternateCost(card)) {
+            if (mod.prioritizeAlternateCost(card)) {
                 tmp = Math.max(tmp, mod.getAlternateResource(card));
             }
         }
@@ -218,7 +218,7 @@ public class CardModifierManager
     public static int getPostEnergyResourceAmount(AbstractCard card) {
         int tmp = 0;
         for (AbstractCardModifier mod : modifiers(card)) {
-            if (!mod.canSplitCost(card) && !mod.prioritizeAlternateCost(card)) {
+            if (!mod.prioritizeAlternateCost(card)) {
                 tmp = Math.max(tmp, mod.getAlternateResource(card));
             }
         }
