@@ -2,6 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.*;
@@ -310,13 +311,26 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
-            method = "getCost"
+            method = "renderEnergy"
     )
     public static class getCardModifierCostString
     {
-        public static String Postfix(String __result, AbstractCard __instance) {
-            __result = CardModifierManager.getCostString(__instance, __result);
-            return __result;
+        @SpireInsertPatch(
+                locator = Locator.class,
+                localvars = {"text", "color"}
+        )
+        public static void Insert(AbstractCard __instance, SpriteBatch sb, @ByRef String[] text, Color color) {
+            text[0] = CardModifierManager.getCostString(__instance, text[0], color);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "getEnergyFont");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
         }
     }
 

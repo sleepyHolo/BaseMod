@@ -1,5 +1,6 @@
 package basemod.abstracts;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -173,8 +174,9 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     /**
      * Manipulate the way the cost variable displays. For example, you could make the cost render as 'Y'.
      * Note: the mod with higher priority will prioritize the change, due to it being the last to run this method.
+     * The method is also passed the current color. You can manipulate its attributes by setting color.a, r, g, and b.
      */
-    public String replaceCostString(AbstractCard card, String currentCostString) {
+    public String replaceCostString(AbstractCard card, String currentCostString, Color currentCostColor) {
         return currentCostString;
     }
 
