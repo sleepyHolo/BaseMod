@@ -138,6 +138,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * triggers whenever the card is retained. Same conditions as AbstractCard.onRetained.
+     */
+    public void onRetained(AbstractCard card) {
+
+    }
+
+    /**
      * Method group used for implementing an alternative cost for cards. Gold, Health, orb slots, stacks of a power, etc.
      * most methods should use card.costForTurn for checking against it.
      *

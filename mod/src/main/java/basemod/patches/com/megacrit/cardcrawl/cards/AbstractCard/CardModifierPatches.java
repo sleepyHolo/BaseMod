@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.unique.RestoreRetainedCardsAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -561,6 +562,31 @@ public class CardModifierPatches
             }
             for (AbstractCard c : p.hand.group) {
                 CardModifierManager.atEndOfTurn(c, p.hand);
+            }
+        }
+    }
+
+    @SpirePatch(
+            clz = RestoreRetainedCardsAction.class,
+            method = "update"
+    )
+    public static class CardModifierOnRetained
+    {
+        @SpireInsertPatch(
+                locator = Locator.class,
+                localvars = {"e"}
+        )
+        public static void Insert(RestoreRetainedCardsAction __instance, AbstractCard e) {
+            CardModifierManager.onCardRetained(e);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(CardGroup.class, "addToTop");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
     }
