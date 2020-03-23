@@ -261,6 +261,8 @@ public class CardModifierPatches
 
         public static void Postfix(AbstractCard __instance) {
             __instance.rawDescription = storedRawDescription;
+            storedRawDescription = null;
+            System.out.println(__instance.rawDescription);
         }
     }
 
