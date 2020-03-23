@@ -22,7 +22,6 @@ import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
-import javax.jws.soap.SOAPBinding;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 public class CardModifierPatches
