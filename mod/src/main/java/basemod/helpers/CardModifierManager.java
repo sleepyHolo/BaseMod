@@ -168,6 +168,12 @@ public class CardModifierManager
         }
     }
 
+    public static void onOtherCardPlayed(AbstractCard card, AbstractCard otherCard, CardGroup group) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            mod.onOtherCardPlayed(card, otherCard, group);
+        }
+    }
+
     public static boolean canPlayCard(AbstractCard card) {
         for (AbstractCardModifier mod : modifiers(card)) {
             if (!mod.canPlayCard(card)) {

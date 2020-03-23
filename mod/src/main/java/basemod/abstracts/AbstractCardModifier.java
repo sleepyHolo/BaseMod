@@ -131,6 +131,16 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * triggers when another card is played.
+     * @param card - the card which this modifier is applied to
+     * @param otherCard - the card that was played
+     * @param group - the current location of the card at the time this method is called.
+     */
+    public void onOtherCardPlayed(AbstractCard card, AbstractCard otherCard, CardGroup group) {
+
+    }
+
+    /**
      * return false to make the card unplayable.
      */
     public boolean canPlayCard(AbstractCard card) {

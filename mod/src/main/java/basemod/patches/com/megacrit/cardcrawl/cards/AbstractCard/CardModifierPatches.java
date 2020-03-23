@@ -531,6 +531,20 @@ public class CardModifierPatches
         )
         public static void Insert(UseCardAction __instance, AbstractCard card, AbstractCreature target) {
             CardModifierManager.onUseCard(card, target, __instance);
+            if (!card.dontTriggerOnUseCard) {
+                AbstractPlayer p = AbstractDungeon.player;
+                for (AbstractCard c : p.hand.group) {
+                    if (c != card) {
+                        CardModifierManager.onOtherCardPlayed(c, card, p.hand);
+                    }
+                }
+                for (AbstractCard c : p.drawPile.group) {
+                    CardModifierManager.onOtherCardPlayed(c, card, p.drawPile);
+                }
+                for (AbstractCard c : p.discardPile.group) {
+                    CardModifierManager.onOtherCardPlayed(c, card, p.discardPile);
+                }
+            }
             CardModifierManager.removeWhenPlayedModifiers(card);
         }
 
