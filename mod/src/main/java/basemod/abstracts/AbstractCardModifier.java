@@ -62,6 +62,7 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
 
     /**
      * Called when the card is used, same timing as onUseCard hooks in powers and relics.
+     * If the card has no target, target will be null.
      */
     public void onUse(AbstractCard card, AbstractCreature target, UseCardAction action) {
 
