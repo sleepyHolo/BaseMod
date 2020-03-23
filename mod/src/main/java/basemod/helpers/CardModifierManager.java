@@ -25,6 +25,7 @@ public class CardModifierManager
         modifiers(card).add(mod);
         Collections.sort(modifiers(card));
         mod.onInitialApplication(card);
+        card.initializeDescription();
     }
 
     public static void removeModifier(AbstractCard card, AbstractCardModifier mod) {
@@ -32,6 +33,7 @@ public class CardModifierManager
             modifiers(card).remove(mod);
             mod.onRemove(card);
         }
+        card.initializeDescription();
     }
 
     public static void removeEndOfTurnModifiers(AbstractCard card) {
@@ -43,6 +45,7 @@ public class CardModifierManager
                 mod.onRemove(card);
             }
         }
+        card.initializeDescription();
     }
 
     public static void removeWhenPlayedModifiers(AbstractCard card) {
@@ -54,6 +57,7 @@ public class CardModifierManager
                 mod.onRemove(card);
             }
         }
+        card.initializeDescription();
     }
 
     public static void removeAllModifiers(AbstractCard card) {
@@ -63,6 +67,7 @@ public class CardModifierManager
             it.remove();
             mod.onRemove(card);
         }
+        card.initializeDescription();
     }
 
     public static void copyModifiers(AbstractCard oldCard, AbstractCard newCard) {
@@ -72,6 +77,7 @@ public class CardModifierManager
             modifiers(newCard).add(newMod);
             newMod.onInitialApplication(newCard);
         });
+        newCard.initializeDescription();
     }
 
     public static void onApplyPowers(AbstractCard card) {
