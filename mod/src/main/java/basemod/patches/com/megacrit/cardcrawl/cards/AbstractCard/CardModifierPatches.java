@@ -322,7 +322,7 @@ public class CardModifierPatches
     {
         @SpireInsertPatch(
                 locator = Locator.class,
-                localvars = {"text", "color"}
+                localvars = {"text", "costColor"}
         )
         public static void Insert(AbstractCard __instance, SpriteBatch sb, @ByRef String[] text, Color color) {
             text[0] = CardModifierManager.getCostString(__instance, text[0], color);
