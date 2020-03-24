@@ -276,7 +276,7 @@ public class CardModifierPatches
                 localvars = {"card"}
         )
         public static void Insert(AbstractCard __instance, AbstractCard card) {
-            CardModifierManager.copyModifiers(__instance, card);
+            CardModifierManager.copyModifiers(__instance, card, false, true, false);
         }
 
         private static class Locator extends SpireInsertLocator

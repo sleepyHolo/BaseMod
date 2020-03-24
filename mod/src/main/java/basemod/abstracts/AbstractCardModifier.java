@@ -27,6 +27,15 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * method determines whether this modifier should be counted as a permanent part of the card. For example, if you
+     * create a modifier that would be applied to a card in its own constructor, and it's to be considered an immutable
+     * part of it, not removable by effects that can remove card modifiers, have this method return true.
+     */
+    public boolean isInherent(AbstractCard card) {
+        return false;
+    }
+
+    /**
      * Methods modify the relevant stat as it's being calculated on the game's end, without
      * interfering with normal card stats. The return is the new value used by the game.
      * all card parameters pass the instance of the card which the mod is applied to.
@@ -203,7 +212,18 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
         return currentCostString;
     }
 
+    /**
+     * needs to be overridden by all CardModifiers, since CardModifiers are, by default, copied between instances.
+     */
     public abstract AbstractCardModifier makeCopy();
+
+    /**
+     * for use with hasModifier and getModifier methods. If you have no reason to use those methods,
+     * then there's no need to establish an ID.
+     */
+    public String identifier(AbstractCard card) {
+        return null;
+    }
 
     /**
      * lower number = calculates first. For list sorting purposes. Don't override. Or do, I'm a comment, not a cop.
