@@ -367,10 +367,7 @@ public class CardModifierPatches
         }
 
         //canPlayCard
-        @SpireInsertPatch(
-             rloc = 0
-        )
-        public static SpireReturn<Boolean> preInsert(AbstractCard __instance) {
+        public static SpireReturn<Boolean> Prefix(AbstractCard __instance) {
             if (!CardModifierManager.canPlayCard(__instance)) {
                 return SpireReturn.Return(false);
             } else {
