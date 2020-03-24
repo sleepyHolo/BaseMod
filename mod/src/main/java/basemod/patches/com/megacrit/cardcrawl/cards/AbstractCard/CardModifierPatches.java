@@ -317,7 +317,7 @@ public class CardModifierPatches
             clz = AbstractCard.class,
             method = "renderEnergy"
     )
-    public static class getCardModifierCostString
+    public static class GetCardModifierCostString
     {
         @SpireInsertPatch(
                 locator = Locator.class,
@@ -342,7 +342,7 @@ public class CardModifierPatches
             clz = AbstractCard.class,
             method = "hasEnoughEnergy"
     )
-    public static class cardModifierHasEnoughAlternateResource
+    public static class CardModifierHasEnoughAlternateResource
     {
         //alternate costs
         @SpireInsertPatch(
