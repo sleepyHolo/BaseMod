@@ -21,6 +21,9 @@ public class CardModifierManager
         return CardModifierPatches.CardModifierFields.cardModifiers.get(c);
     }
 
+    /**
+     * adds a modifier (mod) to card.
+     */
     public static void addModifier(AbstractCard card, AbstractCardModifier mod) {
         modifiers(card).add(mod);
         Collections.sort(modifiers(card));
@@ -28,6 +31,9 @@ public class CardModifierManager
         card.initializeDescription();
     }
 
+    /**
+     * removes a specific instance of a modifier from card, but only if it's not inherent or the method is sent "true"
+     */
     public static void removeSpecificModifier(AbstractCard card, AbstractCardModifier mod, boolean includeInherent) {
         if (modifiers(card).contains(mod) && (!mod.isInherent(card) || includeInherent)) {
             modifiers(card).remove(mod);
@@ -36,6 +42,9 @@ public class CardModifierManager
         card.initializeDescription();
     }
 
+    /**
+     * removes all modifiers from card that match id. Inherent mods are only included if the method is sent "true"
+     */
     public static void removeModifiersById(AbstractCard card, String id, boolean includeInherent) {
         Iterator<AbstractCardModifier> it = modifiers(card).iterator();
         while (it.hasNext()) {
@@ -48,6 +57,9 @@ public class CardModifierManager
         card.initializeDescription();
     }
 
+    /**
+     * returns true if card has a modifier that matches id
+     */
     public static boolean hasModifier(AbstractCard card, String id) {
         for (AbstractCardModifier mod : modifiers(card)) {
             if (mod.identifier(card).equals(id)) {
@@ -57,6 +69,9 @@ public class CardModifierManager
         return false;
     }
 
+    /**
+     * returns an ArrayList containing all modifiers that match id on card.
+     */
     public static ArrayList<AbstractCardModifier> getModifiers(AbstractCard card, String id) {
         ArrayList<AbstractCardModifier> retVal = new ArrayList<>();
         for (AbstractCardModifier mod : modifiers(card)) {
@@ -67,30 +82,9 @@ public class CardModifierManager
         return retVal;
     }
 
-    public static void removeEndOfTurnModifiers(AbstractCard card) {
-        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
-        while (it.hasNext()) {
-            AbstractCardModifier mod = it.next();
-            if (mod.removeAtEndOfTurn(card)) {
-                it.remove();
-                mod.onRemove(card);
-            }
-        }
-        card.initializeDescription();
-    }
-
-    public static void removeWhenPlayedModifiers(AbstractCard card) {
-        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
-        while (it.hasNext()) {
-            AbstractCardModifier mod = it.next();
-            if (mod.removeOnCardPlayed(card)) {
-                it.remove();
-                mod.onRemove(card);
-            }
-        }
-        card.initializeDescription();
-    }
-
+    /**
+     * removes all modifiers from card. Mods that are inherent are only included if the method is sent "true"
+     */
     public static void removeAllModifiers(AbstractCard card, boolean includeInherent) {
         Iterator<AbstractCardModifier> it = modifiers(card).iterator();
         while (it.hasNext()) {
@@ -130,6 +124,30 @@ public class CardModifierManager
             oldCard.initializeDescription();
         }
         newCard.initializeDescription();
+    }
+
+    public static void removeEndOfTurnModifiers(AbstractCard card) {
+        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
+        while (it.hasNext()) {
+            AbstractCardModifier mod = it.next();
+            if (mod.removeAtEndOfTurn(card)) {
+                it.remove();
+                mod.onRemove(card);
+            }
+        }
+        card.initializeDescription();
+    }
+
+    public static void removeWhenPlayedModifiers(AbstractCard card) {
+        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
+        while (it.hasNext()) {
+            AbstractCardModifier mod = it.next();
+            if (mod.removeOnCardPlayed(card)) {
+                it.remove();
+                mod.onRemove(card);
+            }
+        }
+        card.initializeDescription();
     }
 
     public static void onApplyPowers(AbstractCard card) {
