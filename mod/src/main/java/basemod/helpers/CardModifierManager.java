@@ -273,14 +273,14 @@ public class CardModifierManager
                 amt += c;
             }
         }
-        if (amt > card.costForTurn) {
+        if (amt >= card.costForTurn) {
             return true;
         }
         for (AbstractCardModifier mod : nonSplittableCosts) {
             int c = mod.getAlternateResource(card);
             if (c > amt) {
                 amt = c;
-                if (amt > card.costForTurn) {
+                if (amt >= card.costForTurn) {
                     return true;
                 }
             }
