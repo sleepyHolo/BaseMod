@@ -1,15 +1,15 @@
 package basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
-import java.util.Map;
-
+import basemod.BaseMod;
+import basemod.abstracts.CustomSavableRaw;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
-import basemod.BaseMod;
-import basemod.abstracts.CustomSavableRaw;
+import java.util.Map;
 
 @SpirePatch(clz=SaveFile.class, method=SpirePatch.CONSTRUCTOR, paramtypez={SaveFile.SaveType.class})
 public class ConstructSaveFilePatch
@@ -36,6 +36,17 @@ public class ConstructSaveFilePatch
             }
         }
         ModSaves.modRelicSaves.set(__instance, modRelicSaves);
+
+        // Potion saves
+        ModSaves.ArrayListOfJsonElement modPotionSaves = new ModSaves.ArrayListOfJsonElement();
+        for (AbstractPotion potion : AbstractDungeon.player.potions) {
+            if (potion instanceof CustomSavableRaw) {
+                modPotionSaves.add(((CustomSavableRaw)potion).onSaveRaw());
+            } else {
+                modPotionSaves.add(null);
+            }
+        }
+        ModSaves.modPotionSaves.set(__instance, modPotionSaves);
 
         // Mod saves
         ModSaves.HashMapOfJsonElement modSaves = new ModSaves.HashMapOfJsonElement();

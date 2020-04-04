@@ -672,3 +672,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix hi-res relic art not being used on mod relics that have it (kiooeht)
+* Custom save fields for potions (kiooeht)

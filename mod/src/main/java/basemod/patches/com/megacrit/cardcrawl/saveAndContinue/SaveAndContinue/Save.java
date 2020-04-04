@@ -24,6 +24,7 @@ public class Save
         params.put("basemod:mod_saves", ModSaves.modSaves.get(save));
         params.put("basemod:mod_card_saves", ModSaves.modCardSaves.get(save));
         params.put("basemod:mod_relic_saves", ModSaves.modRelicSaves.get(save));
+        params.put("basemod:mod_potion_saves", ModSaves.modPotionSaves.get(save));
     }
 
     private static class Locator extends SpireInsertLocator
