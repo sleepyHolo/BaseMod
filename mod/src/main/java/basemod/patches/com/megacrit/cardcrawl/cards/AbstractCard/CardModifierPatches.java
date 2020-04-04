@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
 
 import java.lang.reflect.Field;
@@ -250,18 +251,23 @@ public class CardModifierPatches
             clz = AbstractCard.class,
             method = "initializeDescription"
     )
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "initializeDescriptionCN"
+    )
     public static class CardModifierOnCreateDescription
     {
-        private static String storedRawDescription;
-
-        public static void Prefix(AbstractCard __instance) {
-            storedRawDescription = __instance.rawDescription;
-            CardModifierManager.onCreateDescription(__instance);
+        public static ExprEditor Instrument() {
+            return new ExprEditor() {
+                public void edit(FieldAccess f) throws CannotCompileException {
+                    if (f.getClassName().equals(AbstractCard.class.getName()) && f.getFieldName().equals("rawDescription")) {
+                        f.replace("$_ = " + CardModifierPatches.CardModifierOnCreateDescription.class.getName() + ".calculateRawDescription(this, $proceed($$));");
+                    }
+                }
+            };
         }
-
-        public static void Postfix(AbstractCard __instance) {
-            __instance.rawDescription = storedRawDescription;
-            storedRawDescription = null;
+        public static String calculateRawDescription(AbstractCard card, String rawDescription) {
+            return CardModifierManager.onCreateDescription(card, rawDescription);
         }
     }
 

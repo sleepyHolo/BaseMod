@@ -156,10 +156,11 @@ public class CardModifierManager
         }
     }
 
-    public static void onCreateDescription(AbstractCard card) {
+    public static String onCreateDescription(AbstractCard card, String rawDescription) {
         for (AbstractCardModifier mod : modifiers(card)) {
-            card.rawDescription = mod.modifyDescription(card.rawDescription, card);
+            rawDescription = mod.modifyDescription(rawDescription, card);
         }
+        return rawDescription;
     }
 
     public static void onUseCard(AbstractCard card, AbstractCreature target, UseCardAction action) {
