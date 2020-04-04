@@ -676,3 +676,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * CardModifier (JohnnyDevo)
 
 #### dev ####
+* Fix CustomRelic using small relic art as large relic art (kiooeht)
