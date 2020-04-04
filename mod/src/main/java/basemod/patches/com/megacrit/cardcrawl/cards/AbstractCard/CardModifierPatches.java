@@ -398,36 +398,6 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = CardGroup.class,
-            method = "moveToDiscardPile"
-    )
-    public static class CardModifierWhenDiscarded
-    {
-        public static void Prefix(CardGroup __instance, AbstractCard c) {
-            if (__instance == AbstractDungeon.player.hand && !AbstractDungeon.actionManager.turnHasEnded && __instance.contains(c)) {
-                for (AbstractGameAction action : AbstractDungeon.actionManager.actions) {
-                    if (action instanceof UseCardAction) {
-                        UseCardAction useAction = (UseCardAction)action;
-                        try {
-                            Field targetCardField = UseCardAction.class.getDeclaredField("targetCard");
-                            targetCardField.setAccessible(true);
-                            AbstractCard card = (AbstractCard)targetCardField.get(useAction);
-                            if (card == c) {
-                                return;
-                            }
-                        } catch (Exception e){
-                            System.out.println("UseCardAction.targetCard field access failed:");
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                System.out.println("was " + c + " manually discarded? If not, please report.");
-                CardModifierManager.onCardDiscarded(c);
-            }
-        }
-    }
-
-    @SpirePatch(
-            clz = CardGroup.class,
             method = "moveToExhaustPile"
     )
     public static class CardModifierWhenExhausted

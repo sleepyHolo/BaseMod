@@ -180,12 +180,6 @@ public class CardModifierManager
         }
     }
 
-    public static void onCardDiscarded(AbstractCard card) {
-        for (AbstractCardModifier mod : modifiers(card)) {
-            mod.onDiscarded(card);
-        }
-    }
-
     public static void onCardRetained(AbstractCard card) {
         for (AbstractCardModifier mod : modifiers(card)) {
             mod.onRetained(card);

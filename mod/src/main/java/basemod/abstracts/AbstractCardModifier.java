@@ -92,15 +92,6 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
-     * called when the card is discarded.
-     * WARNING: this hook might possibly be unstable.
-     * Please keep an eye on if it ever triggers when it should not.
-     */
-    public void onDiscarded(AbstractCard card) {
-
-    }
-
-    /**
      * called when the mod is initially applied to the card, including when
      * a new instance of a card is created, and mods are copied to that new card.
      */
