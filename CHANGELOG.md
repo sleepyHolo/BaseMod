@@ -677,3 +677,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix CustomRelic using small relic art as large relic art (kiooeht)
+* Remove broken onDiscarded CardModifier hook (JohnnyDevo)
+* Fix crash on very long card text caused by CardMod (JohnnyDevo)
