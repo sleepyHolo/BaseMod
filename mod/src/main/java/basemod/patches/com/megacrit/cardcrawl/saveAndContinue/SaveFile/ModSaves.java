@@ -15,6 +15,7 @@ public class ModSaves
     // Note: if we use a SpireField<ArrayList<T>>, then mod the spire discards the <T> part of the type
     // this causes gson to not know how to deserialize the elements
     public static class ArrayListOfJsonElement extends ArrayList<JsonElement> {}
+    public static class ArrayListOfString extends ArrayList<String> {}
     public static class HashMapOfJsonElement extends HashMap<String,JsonElement> {}
 
     @SerializedName("basemod:mod_saves")
@@ -25,4 +26,6 @@ public class ModSaves
     public static SpireField<ArrayListOfJsonElement> modRelicSaves = new SpireField<>(() -> null);
     @SerializedName("basemod:mod_potion_saves")
     public static SpireField<ArrayListOfJsonElement> modPotionSaves = new SpireField<>(() -> null);
+    @SerializedName("basemod:event_saves")
+    public static SpireField<ArrayListOfString> eventSaves = new SpireField<>(() -> null);
 }

@@ -2,6 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavableRaw;
+import basemod.patches.com.megacrit.cardcrawl.characters.AbstractPlayer.SeenEvents;
 import basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile.ModSaves;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -47,6 +48,11 @@ public class LoadPlayerSaves
             }
             i++;
         }
+
+        // Seen Events
+        ModSaves.ArrayListOfString seenEventSaves = ModSaves.eventSaves.get(CardCrawlGame.saveFile);
+        if (seenEventSaves != null)
+            SeenEvents.seenEvents.get(AbstractDungeon.player).addAll(seenEventSaves);
 
         // Custom save fields
         ModSaves.HashMapOfJsonElement modSaves = ModSaves.modSaves.get(CardCrawlGame.saveFile);
