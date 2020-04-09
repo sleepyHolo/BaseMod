@@ -5,7 +5,6 @@ import basemod.eventUtil.util.ConditionalEvent;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.EventHelper;
 
@@ -20,7 +19,7 @@ public class GetCustomEvents {
             for (ConditionalEvent<? extends AbstractEvent> c : EventUtils.overrideEvents.get(key)) {
                 if (c.isValid() &&
                         (!EventUtils.overrideBonusConditions.containsKey(c)) ||
-                        EventUtils.overrideBonusConditions.get(c).test(AbstractDungeon.player)) {
+                        EventUtils.overrideBonusConditions.get(c).test()) {
                     return SpireReturn.Return(c.getEvent());
                 }
             }

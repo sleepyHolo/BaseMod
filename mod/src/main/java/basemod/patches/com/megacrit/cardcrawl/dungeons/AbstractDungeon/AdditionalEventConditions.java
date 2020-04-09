@@ -25,7 +25,7 @@ public class AdditionalEventConditions {
                 localvars = {"tmp"}
         )
         public static void insert(Random rng, ArrayList<String> tmp) {
-            tmp.removeIf((e) -> EventUtils.normalEventBonusConditions.containsKey(e) && !EventUtils.normalEventBonusConditions.get(e).test(AbstractDungeon.player));
+            tmp.removeIf((e) -> EventUtils.normalEventBonusConditions.containsKey(e) && !EventUtils.normalEventBonusConditions.get(e).test());
         }
 
         private static class NormalEventConditionLocator extends SpireInsertLocator {
@@ -74,7 +74,7 @@ public class AdditionalEventConditions {
                 localvars = {"tmp"}
         )
         public static void insert(Random rng, ArrayList<String> tmp) {
-            tmp.removeIf((e) -> EventUtils.specialEventBonusConditions.containsKey(e) && !EventUtils.specialEventBonusConditions.get(e).test(AbstractDungeon.player));
+            tmp.removeIf((e) -> EventUtils.specialEventBonusConditions.containsKey(e) && !EventUtils.specialEventBonusConditions.get(e).test());
         }
 
         private static class SpecialEventConditionLocator extends SpireInsertLocator {

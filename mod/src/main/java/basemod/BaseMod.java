@@ -1310,11 +1310,11 @@ public class BaseMod {
 		addEvent(eventID, eventClass, null, dungeonIDs, spawnCondition, null, null, EventUtils.EventType.NORMAL);
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs, Predicate<AbstractPlayer> bonusCondition) {
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs, Condition bonusCondition) {
 		addEvent(eventID, eventClass, null, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Predicate<AbstractPlayer> bonusCondition) {
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition bonusCondition) {
 		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
 	}
 
@@ -1322,7 +1322,7 @@ public class BaseMod {
 		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, fullReplace ? EventUtils.EventType.FULL_REPLACE : (overrideEvent == null ? EventUtils.EventType.NORMAL : EventUtils.EventType.OVERRIDE));
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, Predicate<AbstractPlayer> bonusCondition, EventUtils.EventType type) {
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, Condition bonusCondition, EventUtils.EventType type) {
 		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, bonusCondition, type);
 	}
 
@@ -1334,7 +1334,7 @@ public class BaseMod {
 		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, type);
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition spawnCondition, String overrideEvent, Predicate<AbstractPlayer> bonusCondition, EventUtils.EventType type)
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventUtils.EventType type)
 	{
 		EventUtils.registerEvent(eventID, eventClass, playerClass, dungeonIDs, spawnCondition, overrideEvent, bonusCondition, type);
 	}

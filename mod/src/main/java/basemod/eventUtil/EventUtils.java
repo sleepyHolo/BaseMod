@@ -19,11 +19,6 @@ import java.util.function.Predicate;
 
 public class EventUtils {
     /* D O C U M E N T A T I O N
-
-        Register your events with EventUtils.registerEvent instead of BaseMod.addEvent
-
-        Supply whatever arguments you need to make the event spawn how you want
-
         ID:
             The event ID. Make it whatever you want.
         eventClass:
@@ -47,7 +42,7 @@ public class EventUtils {
 
             Default: null
         bonusCondition:
-            A predicate that determines if the event can be triggered. This is checked whenever an event is encountered.
+            A condition that determines if the event can be triggered. This is checked whenever an event is encountered.
             Default: null
         type:
             The event type. Determines what pool it is (or the type of replacement, if overriding)
@@ -59,9 +54,9 @@ public class EventUtils {
         Overload/Full Replace events can be seen whenever the event they are replacing can be seen.
      */
     public static Logger eventLogger = LogManager.getLogger("EventUtil");
-    public static HashMap<String, Predicate<AbstractPlayer>> normalEventBonusConditions = new HashMap<>();
-    public static HashMap<String, Predicate<AbstractPlayer>> specialEventBonusConditions = new HashMap<>();
-    public static HashMap<ConditionalEvent<? extends AbstractEvent>, Predicate<AbstractPlayer>> overrideBonusConditions = new HashMap<>();
+    public static HashMap<String, Condition> normalEventBonusConditions = new HashMap<>();
+    public static HashMap<String, Condition> specialEventBonusConditions = new HashMap<>();
+    public static HashMap<ConditionalEvent<? extends AbstractEvent>, Condition> overrideBonusConditions = new HashMap<>();
     public static HashMap<String, ConditionalEvent<? extends AbstractEvent>> normalEvents = new HashMap<>();
     public static HashMap<String, ConditionalEvent<? extends AbstractEvent>> shrineEvents = new HashMap<>();
     public static HashMap<String, ConditionalEvent<? extends AbstractEvent>> oneTimeEvents = new HashMap<>();
@@ -72,7 +67,7 @@ public class EventUtils {
     public static HashSet<String> eventIDs = new HashSet<>(); //for normal, shrine, oneTime, and fullReplace events.
     private static int id = 0;
 
-    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, Class<? extends AbstractPlayer> playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Predicate<AbstractPlayer> bonusCondition, EventType type) {
+    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, Class<? extends AbstractPlayer> playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventType type) {
         /*if (!(overrideEvent != null || spawnCondition != null || actIDs != null || playerClass != null || bonusCondition != null)) {
             eventLogger.info("Event " + eventClass.getName() + " has no special conditions, and should be registered through BaseMod instead.");
             return;
