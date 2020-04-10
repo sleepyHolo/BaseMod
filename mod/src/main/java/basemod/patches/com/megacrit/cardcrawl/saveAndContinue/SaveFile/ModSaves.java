@@ -23,4 +23,6 @@ public class ModSaves
     public static SpireField<ArrayListOfJsonElement> modCardSaves = new SpireField<>(() -> null);
     @SerializedName("basemod:mod_relic_saves")
     public static SpireField<ArrayListOfJsonElement> modRelicSaves = new SpireField<>(() -> null);
+    @SerializedName("basemod:abstract_card_modifiers_save")
+    public static SpireField<ArrayListOfJsonElement> cardModifierSaves = new SpireField<>(() -> null);
 }

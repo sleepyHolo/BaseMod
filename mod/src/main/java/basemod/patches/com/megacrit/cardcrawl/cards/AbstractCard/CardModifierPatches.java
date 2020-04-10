@@ -575,4 +575,48 @@ public class CardModifierPatches
             }
         }
     }
+
+    public static class ModifierClassFilter implements ClassFilter {
+        public boolean accept(ClassInfo info, ClassFinder finder) {
+            if (info != null) {
+                HashMap<String, ClassInfo> superClasses = new HashMap<>();
+                finder.findAllSuperClasses(info, superClasses);
+                if (superClasses.containsKey(AbstractCardModifier.class.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public static RuntimeTypeAdapterFactory<AbstractCardModifier> modifierAdapter;
+
+    public static void initializeAdapterFactory() {
+        modifierAdapter = RuntimeTypeAdapterFactory.of(AbstractCardModifier.class, "classname");
+        ClassFinder finder = new ClassFinder();
+        finder.add(new File(Loader.STS_JAR));
+        for (ModInfo info : Loader.MODINFOS) {
+            if (info.jarURL != null) {
+                try {
+                    finder.add(new File(info.jarURL.toURI()));
+                } catch (URISyntaxException ignored) {
+
+                }
+            }
+        }
+        AndClassFilter filter = new AndClassFilter(
+                new NotClassFilter(new AbstractClassFilter()),
+                new ModifierClassFilter()
+        );
+        ArrayList<ClassInfo> cardModifiers = new ArrayList<>();
+        finder.findClasses(cardModifiers, filter);
+        for (ClassInfo info : cardModifiers) {
+            try {
+                Class c = Class.forName(info.getClassName());
+                modifierAdapter.registerSubtype(c, info.getClassName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
