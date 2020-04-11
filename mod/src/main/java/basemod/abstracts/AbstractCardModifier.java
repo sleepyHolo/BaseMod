@@ -155,46 +155,6 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
-     * Method group used for implementing an alternative cost for cards. Gold, Health, orb slots, stacks of a power, etc.
-     * most methods should use card.costForTurn for checking against it.
-     *
-     * Method Determines both the existence of an alternate cost, and whether the player has sufficient amount of it.
-     * return -1 for no alternate cost, or an int for how much energy-equivalent the player has in that resource.
-     * For example, if the player has 8 stacks of a power, and every 3 stacks equals 1 energy, return 2.
-     */
-    public int getAlternateResource(AbstractCard card) {
-        return -1;
-    }
-
-    /**
-     * determines whether the alternate cost is to be considered before normal energy expenditure.
-     */
-    public boolean prioritizeAlternateCost(AbstractCard card) {
-        return false;
-    }
-
-    /**
-     * determines whether the cost can be split. For example, if the player has only 2 energy
-     * and 2 resource, but the cost is 3, spend 2 and 1.
-     */
-    public boolean canSplitCost(AbstractCard card) {
-        return false;
-    }
-
-    /**
-     * "costs" should be "spent", or removed, in this method. If the cost can be split, spend as much as is possible,
-     * then the return should be remaining cost-equivalent value that the game still needs to spend from other resources.
-     * Resources spent should be based on the int passed to the method, rather than card.costForTurn, due to other
-     * CardModifiers possibly interacting with the cost before this modifier is reached.
-     * @param card -- the card that this modifier is attached to.
-     * @param costToSpend -- the cost-equivalent amount of the resource that should be removed via this method.
-     * @return -- the amount of cost-equivalent resource that the game still needs to spend after this method.
-     */
-    public int spendAlternateCost(AbstractCard card, int costToSpend) {
-        return costToSpend;
-    }
-
-    /**
      * Manipulate the way the cost variable displays. For example, you could make the cost render as 'Y'.
      * Note: the mod with higher priority will prioritize the change, due to it being the last to run this method.
      * The method is also passed the current color. You can manipulate its attributes by setting color.a, r, g, and b.
