@@ -19,10 +19,11 @@ public class ModLabeledButton implements IUIElement {
     private float x;
     private float y;
     private float w;
+    private float middle_width;
     private float h;
-    private String label;
-    private BitmapFont font;
 
+    public BitmapFont font;
+    public String label;
     public ModPanel parent;
     public Color color, colorHover;
 
@@ -54,10 +55,10 @@ public class ModLabeledButton implements IUIElement {
 
         x = xPos * Settings.scale;
         y = yPos * Settings.scale;
-        w = (this.textureLeft.getWidth() + this.textureRight.getWidth() - TEXT_OFFSET * 2) * Settings.scale +
-                FontHelper.getSmartWidth(font, label, 9999f, 0f);
-        h = this.textureLeft.getHeight() * Settings.scale;
 
+        middle_width = Math.max(0, FontHelper.getSmartWidth(font, label, 9999f, 0f) - 2 * TEXT_OFFSET * Settings.scale);
+        w = (this.textureLeft.getWidth() + this.textureRight.getWidth()) * Settings.scale + middle_width;
+        h = this.textureLeft.getHeight() * Settings.scale;
         hb = new Hitbox(this.x + 1F * Settings.scale, this.y + 1F * Settings.scale, this.w - 2F * Settings.scale, this.h - 2F * Settings.scale);
 
         parent = p;
@@ -65,13 +66,10 @@ public class ModLabeledButton implements IUIElement {
     }
 
     public void render(SpriteBatch sb) {
-        float text_width = FontHelper.getSmartWidth(font, label, 9999f, 0.0f) -
-                (2 * TEXT_OFFSET) * Settings.scale;
-        text_width = Math.max(0, text_width);
 
         sb.draw(textureLeft, x, y, textureLeft.getWidth() * Settings.scale, h);
-        sb.draw(textureMiddle, x + textureLeft.getWidth() * Settings.scale, y, text_width, h);
-        sb.draw(textureRight, x + textureLeft.getWidth() * Settings.scale + text_width, y,
+        sb.draw(textureMiddle, x + textureLeft.getWidth() * Settings.scale, y, middle_width, h);
+        sb.draw(textureRight, x + textureLeft.getWidth() * Settings.scale + middle_width, y,
                 textureRight.getWidth() * Settings.scale, h);
 
         hb.render(sb);
