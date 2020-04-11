@@ -6,6 +6,9 @@ import java.util.Map;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPatches;
+import basemod.BaseMod;
+import basemod.abstracts.CustomSavableRaw;
+import basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile.ModSaves;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,11 +17,10 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 
-import basemod.BaseMod;
-import basemod.abstracts.CustomSavableRaw;
-import basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile.ModSaves;
+import java.util.Map;
 
 @SpirePatch(clz=CardCrawlGame.class, method="loadPlayerSave")
 public class LoadPlayerSaves
@@ -41,6 +43,16 @@ public class LoadPlayerSaves
         for (AbstractRelic relic : AbstractDungeon.player.relics) {
             if (relic instanceof CustomSavableRaw) {
                 ((CustomSavableRaw)relic).onLoadRaw(modRelicSaves == null || i >= modRelicSaves.size() ? null : modRelicSaves.get(i));
+            }
+            i++;
+        }
+
+        // Potions
+        ModSaves.ArrayListOfJsonElement modPotionSaves = ModSaves.modPotionSaves.get(CardCrawlGame.saveFile);
+        i = 0;
+        for (AbstractPotion potion : AbstractDungeon.player.potions) {
+            if (potion instanceof CustomSavableRaw) {
+                ((CustomSavableRaw)potion).onLoadRaw(modPotionSaves == null || i >= modPotionSaves.size() ? null : modPotionSaves.get(i));
             }
             i++;
         }

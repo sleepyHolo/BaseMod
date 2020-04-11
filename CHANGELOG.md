@@ -670,4 +670,14 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.20.1 ####
 * Fix crash if mods add unlocks badly (kiooeht)
 
+#### v5.21.0 ####
+* Fix hi-res relic art not being used on mod relics that have it (kiooeht)
+* Custom save fields for potions (kiooeht)
+* CardModifier (JohnnyDevo)
+
+#### v5.21.1 ####
+* Fix CustomRelic using small relic art as large relic art (kiooeht)
+* Remove broken onDiscarded CardModifier hook (JohnnyDevo)
+* Fix crash on very long card text caused by CardMod (JohnnyDevo)
+
 #### dev ####
