@@ -8,6 +8,7 @@ import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPat
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -60,7 +61,7 @@ public class ConstructSaveFilePatch
         for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
             ArrayList<AbstractCardModifier> cardModifierList = CardModifierPatches.CardModifierFields.cardModifiers.get(card);
             if (!cardModifierList.isEmpty()) {
-                cardModifierSaves.add(gson.toJsonTree(cardModifierList));
+                cardModifierSaves.add(gson.toJsonTree(cardModifierList, new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType()));
             } else {
                 cardModifierSaves.add(null);
             }
