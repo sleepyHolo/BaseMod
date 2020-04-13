@@ -681,3 +681,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash on very long card text caused by CardMod (JohnnyDevo)
 
 #### dev ####
+* Add ModLabeledButton (LordAddy)
+* Make CardModifiers save and load on maste deck (JohnnyDevo)
+* Refactor CardModifier alternate cost system (JohnnyDevo)
