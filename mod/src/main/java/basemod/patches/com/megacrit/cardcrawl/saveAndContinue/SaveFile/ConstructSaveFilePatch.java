@@ -1,15 +1,21 @@
 package basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import basemod.abstracts.AbstractCardModifier;
+import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPatches;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavableRaw;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
-
-import java.util.Map;
 
 @SpirePatch(clz=SaveFile.class, method=SpirePatch.CONSTRUCTOR, paramtypez={SaveFile.SaveType.class})
 public class ConstructSaveFilePatch
@@ -54,5 +60,23 @@ public class ConstructSaveFilePatch
             modSaves.put(field.getKey(), field.getValue().onSaveRaw());
         }
         ModSaves.modSaves.set(__instance, modSaves);
+
+        //Master deck AbstractCardModifiers
+        ModSaves.ArrayListOfJsonElement cardModifierSaves = new ModSaves.ArrayListOfJsonElement();
+        GsonBuilder builder = new GsonBuilder();
+        if (CardModifierPatches.modifierAdapter == null) {
+            CardModifierPatches.initializeAdapterFactory();
+        }
+        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
+        Gson gson = builder.create();
+        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
+            ArrayList<AbstractCardModifier> cardModifierList = CardModifierPatches.CardModifierFields.cardModifiers.get(card);
+            if (!cardModifierList.isEmpty()) {
+                cardModifierSaves.add(gson.toJsonTree(cardModifierList, new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType()));
+            } else {
+                cardModifierSaves.add(null);
+            }
+        }
+        ModSaves.cardModifierSaves.set(__instance, cardModifierSaves);
     }
 }

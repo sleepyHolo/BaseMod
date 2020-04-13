@@ -1,9 +1,18 @@
 package basemod.patches.com.megacrit.cardcrawl.core.CardCrawlGame;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.CardModifierManager;
+import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPatches;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavableRaw;
 import basemod.patches.com.megacrit.cardcrawl.saveAndContinue.SaveFile.ModSaves;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -52,6 +61,25 @@ public class LoadPlayerSaves
         ModSaves.HashMapOfJsonElement modSaves = ModSaves.modSaves.get(CardCrawlGame.saveFile);
         for (Map.Entry<String, CustomSavableRaw> field : BaseMod.getSaveFields().entrySet()) {
             field.getValue().onLoadRaw(modSaves == null ? null : modSaves.get(field.getKey()));
+        }
+
+        //Master deck AbstractCardModifiers
+        GsonBuilder builder = new GsonBuilder();
+        if (CardModifierPatches.modifierAdapter == null) {
+            CardModifierPatches.initializeAdapterFactory();
+        }
+        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
+        Gson gson = builder.create();
+        ModSaves.ArrayListOfJsonElement cardModifierSaves = ModSaves.cardModifierSaves.get(CardCrawlGame.saveFile);
+        i = 0;
+        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
+            ArrayList<AbstractCardModifier> cardModifiersList = gson.fromJson(cardModifierSaves == null || i >= cardModifierSaves.size() ? null : cardModifierSaves.get(i), new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType());
+            if (cardModifiersList != null) {
+                for (AbstractCardModifier mod : cardModifiersList) {
+                    CardModifierManager.addModifier(card, mod.makeCopy());
+                }
+            }
+            i++;
         }
     }
 }
