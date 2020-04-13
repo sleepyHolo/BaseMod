@@ -1,6 +1,7 @@
 package basemod;
 
 import basemod.abstracts.*;
+import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
 import basemod.eventUtil.util.Condition;
 import basemod.helpers.RelicType;
@@ -1275,68 +1276,28 @@ public class BaseMod {
 	// Additional documentation can be found in EventUtils.
 
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
-		addEvent(eventID, eventClass, (String)null);
-	}
-	
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass) {
-		addEvent(eventID, eventClass, playerClass, null, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, null, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
+		addEvent(new AddEventParams.Builder(eventID, eventClass).create());
 	}
 
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
-		addEvent(eventID, eventClass, null, dungeonID != null ? new String[] { dungeonID } : null, null, null, null, EventUtils.EventType.NORMAL);
+		addEvent(
+				new AddEventParams.Builder(eventID, eventClass)
+						.dungeonID(dungeonID)
+						.create()
+		);
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String dungeonID) {
-		addEvent(eventID, eventClass, playerClass, new String[]{dungeonID}, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, null, dungeonIDs, spawnCondition, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs, Condition bonusCondition) {
-		addEvent(eventID, eventClass, null, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition bonusCondition) {
-		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, boolean fullReplace) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, fullReplace ? EventUtils.EventType.FULL_REPLACE : (overrideEvent == null ? EventUtils.EventType.NORMAL : EventUtils.EventType.OVERRIDE));
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, Condition bonusCondition, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, bonusCondition, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventUtils.EventType type)
-	{
-		EventUtils.registerEvent(eventID, eventClass, playerClass, dungeonIDs, spawnCondition, overrideEvent, bonusCondition, type);
+	public static void addEvent(AddEventParams params) {
+		EventUtils.registerEvent(
+				params.eventID,
+				params.eventClass,
+				params.playerClass,
+				params.dungeonIDs.toArray(new String[0]),
+				params.spawnCondition,
+				params.overrideEventID,
+				params.bonusCondition,
+				params.eventType
+		);
 	}
 
 	//implemented to avoid issues if someone uses them.
