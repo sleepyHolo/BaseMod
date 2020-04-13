@@ -16,7 +16,7 @@ public class AddEventParams
 	public EventUtils.EventType eventType = EventUtils.EventType.NORMAL;
 
 	public List<String> dungeonIDs = new ArrayList<>();
-	public Class<? extends AbstractPlayer> playerClass = null;
+	public AbstractPlayer.PlayerClass playerClass = null;
 
 	public Condition spawnCondition = null;
 	public Condition bonusCondition = null;
@@ -50,7 +50,7 @@ public class AddEventParams
 			return this;
 		}
 
-		public Builder playerClass(Class<? extends AbstractPlayer> playerClass)
+		public Builder playerClass(AbstractPlayer.PlayerClass playerClass)
 		{
 			params.playerClass = playerClass;
 			return this;

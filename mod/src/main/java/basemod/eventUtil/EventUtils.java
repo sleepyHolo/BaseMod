@@ -67,7 +67,7 @@ public class EventUtils {
     public static HashSet<String> eventIDs = new HashSet<>(); //for normal, shrine, oneTime, and fullReplace events.
     private static int id = 0;
 
-    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, Class<? extends AbstractPlayer> playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventType type) {
+    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, AbstractPlayer.PlayerClass playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventType type) {
         /*if (!(overrideEvent != null || spawnCondition != null || actIDs != null || playerClass != null || bonusCondition != null)) {
             eventLogger.info("Event " + eventClass.getName() + " has no special conditions, and should be registered through BaseMod instead.");
             return;

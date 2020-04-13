@@ -12,13 +12,13 @@ import static basemod.eventUtil.EventUtils.eventLogger;
 
 public class ConditionalEvent<T extends AbstractEvent> {
     public Class<T> eventClass;
-    public Class<? extends AbstractPlayer> playerClass;
+    public AbstractPlayer.PlayerClass playerClass;
     public Condition spawnCondition;
     public List<String> actIDs;
 
     public String overrideEvent = "";
 
-    public ConditionalEvent(Class<T> eventClass, Class<? extends AbstractPlayer> playerClass, Condition spawnCondition, String[] actIDs) {
+    public ConditionalEvent(Class<T> eventClass, AbstractPlayer.PlayerClass playerClass, Condition spawnCondition, String[] actIDs) {
         this.eventClass = eventClass;
         this.playerClass = playerClass;
         this.spawnCondition = spawnCondition;
@@ -42,7 +42,7 @@ public class ConditionalEvent<T extends AbstractEvent> {
     public boolean isValid() {
         return (actIDs.isEmpty() || actIDs.contains(AbstractDungeon.id)) &&
                 (spawnCondition.test()) &&
-                (playerClass == null || AbstractDungeon.player.getClass().equals(playerClass));
+                (playerClass == null || AbstractDungeon.player.chosenClass == playerClass);
     }
 
     @Override
@@ -51,6 +51,6 @@ public class ConditionalEvent<T extends AbstractEvent> {
     }
 
     public String getConditions() {
-        return (playerClass != null ? playerClass.getSimpleName().toUpperCase() : "ANY") + " | " + (actIDs.isEmpty() ? "ANY" : actIDs);
+        return (playerClass != null ? playerClass.name().toUpperCase() : "ANY") + " | " + (actIDs.isEmpty() ? "ANY" : actIDs);
     }
 }
