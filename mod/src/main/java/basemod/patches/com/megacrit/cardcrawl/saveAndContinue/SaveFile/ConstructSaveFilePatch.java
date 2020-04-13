@@ -32,6 +32,24 @@ public class ConstructSaveFilePatch
         }
         ModSaves.modCardSaves.set(__instance, modCardSaves);
 
+        //Master deck AbstractCardModifiers
+        ModSaves.ArrayListOfJsonElement cardModifierSaves = new ModSaves.ArrayListOfJsonElement();
+        GsonBuilder builder = new GsonBuilder();
+        if (CardModifierPatches.modifierAdapter == null) {
+            CardModifierPatches.initializeAdapterFactory();
+        }
+        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
+        Gson gson = builder.create();
+        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
+            ArrayList<AbstractCardModifier> cardModifierList = CardModifierPatches.CardModifierFields.cardModifiers.get(card);
+            if (!cardModifierList.isEmpty()) {
+                cardModifierSaves.add(gson.toJsonTree(cardModifierList, new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType()));
+            } else {
+                cardModifierSaves.add(null);
+            }
+        }
+        ModSaves.cardModifierSaves.set(__instance, cardModifierSaves);
+
         // Relic saves
         ModSaves.ArrayListOfJsonElement modRelicSaves = new ModSaves.ArrayListOfJsonElement();
         for (AbstractRelic relic : AbstractDungeon.player.relics) {
@@ -60,23 +78,5 @@ public class ConstructSaveFilePatch
             modSaves.put(field.getKey(), field.getValue().onSaveRaw());
         }
         ModSaves.modSaves.set(__instance, modSaves);
-
-        //Master deck AbstractCardModifiers
-        ModSaves.ArrayListOfJsonElement cardModifierSaves = new ModSaves.ArrayListOfJsonElement();
-        GsonBuilder builder = new GsonBuilder();
-        if (CardModifierPatches.modifierAdapter == null) {
-            CardModifierPatches.initializeAdapterFactory();
-        }
-        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
-        Gson gson = builder.create();
-        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
-            ArrayList<AbstractCardModifier> cardModifierList = CardModifierPatches.CardModifierFields.cardModifiers.get(card);
-            if (!cardModifierList.isEmpty()) {
-                cardModifierSaves.add(gson.toJsonTree(cardModifierList, new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType()));
-            } else {
-                cardModifierSaves.add(null);
-            }
-        }
-        ModSaves.cardModifierSaves.set(__instance, cardModifierSaves);
     }
 }

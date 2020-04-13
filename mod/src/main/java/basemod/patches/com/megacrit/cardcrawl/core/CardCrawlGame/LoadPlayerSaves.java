@@ -37,6 +37,25 @@ public class LoadPlayerSaves
             i++;
         }
 
+        //Master deck AbstractCardModifiers
+        GsonBuilder builder = new GsonBuilder();
+        if (CardModifierPatches.modifierAdapter == null) {
+            CardModifierPatches.initializeAdapterFactory();
+        }
+        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
+        Gson gson = builder.create();
+        ModSaves.ArrayListOfJsonElement cardModifierSaves = ModSaves.cardModifierSaves.get(CardCrawlGame.saveFile);
+        i = 0;
+        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
+            ArrayList<AbstractCardModifier> cardModifiersList = gson.fromJson(cardModifierSaves == null || i >= cardModifierSaves.size() ? null : cardModifierSaves.get(i), new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType());
+            if (cardModifiersList != null) {
+                for (AbstractCardModifier mod : cardModifiersList) {
+                    CardModifierManager.addModifier(card, mod.makeCopy());
+                }
+            }
+            i++;
+        }
+
         // Relics
         ModSaves.ArrayListOfJsonElement modRelicSaves = ModSaves.modRelicSaves.get(CardCrawlGame.saveFile);
         i = 0;
@@ -61,25 +80,6 @@ public class LoadPlayerSaves
         ModSaves.HashMapOfJsonElement modSaves = ModSaves.modSaves.get(CardCrawlGame.saveFile);
         for (Map.Entry<String, CustomSavableRaw> field : BaseMod.getSaveFields().entrySet()) {
             field.getValue().onLoadRaw(modSaves == null ? null : modSaves.get(field.getKey()));
-        }
-
-        //Master deck AbstractCardModifiers
-        GsonBuilder builder = new GsonBuilder();
-        if (CardModifierPatches.modifierAdapter == null) {
-            CardModifierPatches.initializeAdapterFactory();
-        }
-        builder.registerTypeAdapterFactory(CardModifierPatches.modifierAdapter);
-        Gson gson = builder.create();
-        ModSaves.ArrayListOfJsonElement cardModifierSaves = ModSaves.cardModifierSaves.get(CardCrawlGame.saveFile);
-        i = 0;
-        for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
-            ArrayList<AbstractCardModifier> cardModifiersList = gson.fromJson(cardModifierSaves == null || i >= cardModifierSaves.size() ? null : cardModifierSaves.get(i), new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType());
-            if (cardModifiersList != null) {
-                for (AbstractCardModifier mod : cardModifiersList) {
-                    CardModifierManager.addModifier(card, mod.makeCopy());
-                }
-            }
-            i++;
         }
     }
 }
