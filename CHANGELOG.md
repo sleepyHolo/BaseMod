@@ -682,7 +682,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### v5.22.0 ####
 * Add ModLabeledButton (LordAddy)
-* Make CardModifiers save and load on maste deck (JohnnyDevo)
+* Make CardModifiers save and load on master deck (JohnnyDevo)
 * Refactor CardModifier alternate cost system (JohnnyDevo)
 * Much more options for how events spawn (Alchyr)
 
