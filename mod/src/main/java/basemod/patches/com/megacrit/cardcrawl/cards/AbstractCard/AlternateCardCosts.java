@@ -88,7 +88,7 @@ public class AlternateCardCosts {
         }
     }
 
-    private static ArrayList<AlternateCardCostModifier> modifiers(AbstractCard c) {
+    public static ArrayList<AlternateCardCostModifier> modifiers(AbstractCard c) {
         ArrayList<AlternateCardCostModifier> alternateCosts = new ArrayList<>();
         for (AbstractCardModifier mod : CardModifierPatches.CardModifierFields.cardModifiers.get(c)) {
             if (mod instanceof AlternateCardCostModifier) {

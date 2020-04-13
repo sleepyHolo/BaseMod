@@ -18,4 +18,12 @@ public interface AlternateCardCostModifier {
     default boolean costEffectActive(AbstractCard card) {
         return true;
     }
+
+    default int setXCostLimit(AbstractCard card) {
+        return -1;
+    }
+
+    default boolean disableEnergyForX(AbstractCard card) {
+        return false;
+    }
 }
