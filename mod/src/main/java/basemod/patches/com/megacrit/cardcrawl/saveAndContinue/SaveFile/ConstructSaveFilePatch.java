@@ -7,6 +7,7 @@ import basemod.abstracts.AbstractCardModifier;
 import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.CardModifierPatches;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavableRaw;
+import basemod.patches.com.megacrit.cardcrawl.characters.AbstractPlayer.SeenEvents;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,5 +79,10 @@ public class ConstructSaveFilePatch
             modSaves.put(field.getKey(), field.getValue().onSaveRaw());
         }
         ModSaves.modSaves.set(__instance, modSaves);
+
+        // Event saves
+        ModSaves.ArrayListOfString eventSaves = new ModSaves.ArrayListOfString();
+        eventSaves.addAll(SeenEvents.seenEvents.get(AbstractDungeon.player));
+        ModSaves.eventSaves.set(__instance, eventSaves);
     }
 }

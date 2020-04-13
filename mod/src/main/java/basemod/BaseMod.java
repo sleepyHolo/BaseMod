@@ -1,6 +1,8 @@
 package basemod;
 
 import basemod.abstracts.*;
+import basemod.eventUtil.EventUtils;
+import basemod.eventUtil.util.Condition;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -1270,39 +1272,81 @@ public class BaseMod {
 	// Events
 	//
 
-	//Event hashmaps
-	// Key: Event ID
-	private static HashMap<String, Class<? extends AbstractEvent>> allCustomEvents = new HashMap<>();
-	// Key: Dungeon ID
-	// Inner Key: Event ID
-	private static HashMap<String, HashMap<String, Class<? extends AbstractEvent>>> customEvents = new HashMap<>();
+	// Additional documentation can be found in EventUtils.
 
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
 		addEvent(eventID, eventClass, (String)null);
 	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
-		if (!customEvents.containsKey(dungeonID)) {
-			customEvents.put(dungeonID, new HashMap<>());
-		}
-		logger.info("Adding " + eventID + " to " + (dungeonID != null ? dungeonID : "ALL") + " pool");
-
-		customEvents.get(dungeonID).put(eventID, eventClass);
-		allCustomEvents.put(eventID, eventClass);
-		if (eventID.contains(" ")) {
-			underScoreEventIDs.put(eventID.replace(' ', '_'), eventID);
-		}
+	
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass) {
+		addEvent(eventID, eventClass, playerClass, null, null, null, null, EventUtils.EventType.NORMAL);
 	}
 
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs) {
+		addEvent(eventID, eventClass, null, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
+		addEvent(eventID, eventClass, null, dungeonID != null ? new String[] { dungeonID } : null, null, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition) {
+		addEvent(eventID, eventClass, null, null, spawnCondition, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent) {
+		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs) {
+		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String dungeonID) {
+		addEvent(eventID, eventClass, playerClass, new String[]{dungeonID}, null, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String[] dungeonIDs) {
+		addEvent(eventID, eventClass, null, dungeonIDs, spawnCondition, null, null, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs, Condition bonusCondition) {
+		addEvent(eventID, eventClass, null, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition bonusCondition) {
+		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, boolean fullReplace) {
+		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, fullReplace ? EventUtils.EventType.FULL_REPLACE : (overrideEvent == null ? EventUtils.EventType.NORMAL : EventUtils.EventType.OVERRIDE));
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, Condition bonusCondition, EventUtils.EventType type) {
+		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, bonusCondition, type);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, EventUtils.EventType type) {
+		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, type);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent, EventUtils.EventType type) {
+		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, type);
+	}
+
+	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventUtils.EventType type)
+	{
+		EventUtils.registerEvent(eventID, eventClass, playerClass, dungeonIDs, spawnCondition, overrideEvent, bonusCondition, type);
+	}
+
+	//implemented to avoid issues if someone uses them.
+	@Deprecated //Labeled as deprecated because changes here will have no impact on what events appear.
 	public static HashMap<String, Class<? extends AbstractEvent>> getEventList(String dungeonID) {
-		if (customEvents.containsKey(dungeonID)) {
-			return customEvents.get(dungeonID);
-		}
-		return new HashMap<>();
+		return EventUtils.getDungeonEvents(dungeonID);
 	}
 
 	public static Class<? extends AbstractEvent> getEvent(String eventID) {
-		return allCustomEvents.get(eventID);
+		return EventUtils.getEventClass(eventID);
 	}
 
 	//
@@ -2486,6 +2530,8 @@ public class BaseMod {
 	// publishEditStrings -
 	public static void publishEditStrings() {
 		logger.info("begin editing localization strings");
+
+		EventUtils.loadBaseEvents();
 
 		BaseMod.loadCustomStringsFile(RunModStrings.class, "localization/basemod/customMods.json");
 
