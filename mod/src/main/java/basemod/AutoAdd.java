@@ -195,4 +195,19 @@ public class AutoAdd
 			return classInfo.getClassName().startsWith(packageName);
 		}
 	}
+
+	public static class NotPackageFilter extends PackageFilter {
+		public NotPackageFilter(String pkgName) {
+			super(pkgName);
+		}
+
+		public NotPackageFilter(Class<?> cls) {
+			super(cls);
+		}
+
+		@Override
+		public boolean accept(ClassInfo classInfo, ClassFinder classFinder) {
+			return !super.accept(classInfo, classFinder);
+		}
+	}
 }
