@@ -74,6 +74,14 @@ public class AutoAdd
 		return filter(new PackageFilter(packageClass));
 	}
 
+	public AutoAdd notPackageFilter(String packageName) {
+		return filter(new NotPackageFilter(packageName));
+	}
+
+	public AutoAdd notPackageFilter(Class<?> packageClass) {
+		return filter(new NotPackageFilter(packageClass));
+	}
+
 	public <T> Collection<CtClass> findClasses(Class<T> type)
 	{
 		try {
