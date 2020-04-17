@@ -1,5 +1,6 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -268,7 +269,11 @@ public class CardModifierPatches
             };
         }
         public static String calculateRawDescription(AbstractCard card, String rawDescription) {
-            return CardModifierManager.onCreateDescription(card, rawDescription);
+            //card modifier logic
+            rawDescription = CardModifierManager.onCreateDescription(card, rawDescription);
+            //OnCreateDescription subscriber
+            rawDescription = BaseMod.publishOnCreateDescription(rawDescription, card);
+            return rawDescription;
         }
     }
 

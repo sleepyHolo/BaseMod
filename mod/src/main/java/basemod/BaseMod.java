@@ -156,6 +156,7 @@ public class BaseMod {
 	private static ArrayList<PreRoomRenderSubscriber> preRoomRenderSubscribers;
 	private static ArrayList<OnPlayerLoseBlockSubscriber> onPlayerLoseBlockSubscribers;
 	private static ArrayList<OnPlayerDamagedSubscriber> onPlayerDamagedSubscribers;
+	private static ArrayList<OnCreateDescriptionSubscriber> onCreateDescriptionSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -480,6 +481,7 @@ public class BaseMod {
 		preRoomRenderSubscribers = new ArrayList<>();
 		onPlayerLoseBlockSubscribers = new ArrayList<>();
 		onPlayerDamagedSubscribers = new ArrayList<>();
+		onCreateDescriptionSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -2715,6 +2717,17 @@ public class BaseMod {
 		return amount;
 	}
 
+	public static String publishOnCreateDescription(String rawDescription, AbstractCard card) {
+		//logger.info("publish on card description initialized"); //too much logging?
+
+		for (OnCreateDescriptionSubscriber sub : onCreateDescriptionSubscribers) {
+			rawDescription = sub.receiveCreateCardDescription(rawDescription, card);
+		}
+
+		unsubscribeLaterHelper(OnCreateDescriptionSubscriber.class);
+		return rawDescription;
+	}
+
 	//
 	// Subscription handlers
 	//
@@ -2789,6 +2802,7 @@ public class BaseMod {
 		subscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		subscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 		subscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
+		subscribeIfInstance(onCreateDescriptionSubscribers, sub, OnCreateDescriptionSubscriber.class);
 	}
 
 	// subscribe -
@@ -2884,6 +2898,8 @@ public class BaseMod {
 			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
 		} else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.add((OnPlayerDamagedSubscriber) sub);
+		} else if (additionClass.equals(OnCreateDescriptionSubscriber.class)) {
+			onCreateDescriptionSubscribers.add((OnCreateDescriptionSubscriber) sub);
 		}
 	}
 
@@ -2935,6 +2951,7 @@ public class BaseMod {
 		unsubscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		unsubscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 		unsubscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
+		unsubscribeIfInstance(onCreateDescriptionSubscribers, sub, OnCreateDescriptionSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -3032,6 +3049,8 @@ public class BaseMod {
 			onPlayerLoseBlockSubscribers.remove(sub);
 		} else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.remove(sub);
+		} else if (removalClass.equals(OnCreateDescriptionSubscriber.class)) {
+			onCreateDescriptionSubscribers.remove(sub);
 		}
 	}
 
