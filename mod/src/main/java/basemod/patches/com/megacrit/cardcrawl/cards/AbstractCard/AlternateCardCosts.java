@@ -38,7 +38,7 @@ public class AlternateCardCosts {
                                         manager + ".spendPreEnergyResource(c);" +
                                         "} else if (" + energy + ".totalCount >= c.costForTurn) {" +
                                         "$proceed($$);" +
-                                        "} else if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
+                                        "} else if (" + manager + ".getPostEnergyResourceAmount(c) >= c.costForTurn) {" +
                                         manager + ".spendPostEnergyResource(c);" +
                                         "} else {" +
                                         "int tmp = c.costForTurn;" +
