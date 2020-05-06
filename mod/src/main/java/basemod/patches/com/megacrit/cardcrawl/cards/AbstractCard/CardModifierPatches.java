@@ -531,7 +531,9 @@ public class CardModifierPatches
         for (ClassInfo info : cardModifiers) {
             try {
                 Class c = Class.forName(info.getClassName());
-                modifierAdapter.registerSubtype(c, info.getClassName());
+                if (!c.isAnnotationPresent(AbstractCardModifier.SaveIgnore.class)) {
+                    modifierAdapter.registerSubtype(c, info.getClassName());
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

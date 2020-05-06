@@ -9,6 +9,11 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 public abstract class AbstractCardModifier implements Comparable<AbstractCardModifier> {
     public int priority = 0;
 
@@ -173,5 +178,17 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     @Override
     public int compareTo(AbstractCardModifier other) {
         return priority - other.priority;
+    }
+
+    /**
+     * By default, card modifiers are saved when placed on a master deck card. This does, however, mean that if a field
+     * exists in a modifier that cannot be saved, the game will crash as soon as you try to load any game, no matter if
+     * that modifier is used anywhere. To prevent this issue, a Card Modifier can be flagged as not savable with this
+     * annotation.
+     */
+    @Target({ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface SaveIgnore
+    {
     }
 }
