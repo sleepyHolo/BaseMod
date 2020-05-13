@@ -169,7 +169,7 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
      * then there's no need to establish an ID.
      */
     public String identifier(AbstractCard card) {
-        return null;
+        return "";
     }
 
     /**
