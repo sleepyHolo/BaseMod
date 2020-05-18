@@ -71,7 +71,6 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.AbstractUnlock;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import javafx.util.Pair;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;

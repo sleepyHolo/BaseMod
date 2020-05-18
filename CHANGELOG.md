@@ -700,3 +700,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix save/load duplicating cardmods
   * Fix non-splittable post-energy resources
   * Fix hasModifier crash on modifiers without identifiers
+* Remove JavaFX dependency (kiooeht)
