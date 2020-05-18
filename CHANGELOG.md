@@ -686,7 +686,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Refactor CardModifier alternate cost system (JohnnyDevo)
 * Much more options for how events spawn (Alchyr)
 
-#### dev ####
+#### v5.23.0 ####
 * Color tiny cards in Run History for modded cards (kiooeht)
 * Fix Expunger description reverting to X (kiooeht)
 * Add not-package filter for AutoAdd (BlankTheEvil)
@@ -701,3 +701,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix non-splittable post-energy resources
   * Fix hasModifier crash on modifiers without identifiers
 * Remove JavaFX dependency (kiooeht)
+
+#### dev ####
