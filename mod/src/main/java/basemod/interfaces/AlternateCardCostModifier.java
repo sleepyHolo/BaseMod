@@ -1,5 +1,6 @@
 package basemod.interfaces;
 
+import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 public interface AlternateCardCostModifier {
@@ -17,5 +18,17 @@ public interface AlternateCardCostModifier {
 
     default boolean costEffectActive(AbstractCard card) {
         return true;
+    }
+
+    default int setXCostLimit(AbstractCard card) {
+        return -1;
+    }
+
+    default boolean disableEnergyForX(AbstractCard card) {
+        return false;
+    }
+
+    default String replaceCostString(AbstractCard card, String currentCostString, Color currentCostColor) {
+        return currentCostString;
     }
 }

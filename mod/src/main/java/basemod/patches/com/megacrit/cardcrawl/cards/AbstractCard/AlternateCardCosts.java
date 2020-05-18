@@ -2,6 +2,8 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.abstracts.AbstractCardModifier;
 import basemod.interfaces.AlternateCardCostModifier;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -36,7 +38,7 @@ public class AlternateCardCosts {
                                         manager + ".spendPreEnergyResource(c);" +
                                         "} else if (" + energy + ".totalCount >= c.costForTurn) {" +
                                         "$proceed($$);" +
-                                        "} else if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
+                                        "} else if (" + manager + ".getPostEnergyResourceAmount(c) >= c.costForTurn) {" +
                                         manager + ".spendPostEnergyResource(c);" +
                                         "} else {" +
                                         "int tmp = c.costForTurn;" +
@@ -55,6 +57,31 @@ public class AlternateCardCosts {
                     }
                 }
             };
+        }
+    }
+
+    @SpirePatch(
+            clz = AbstractCard.class,
+            method = "renderEnergy"
+    )
+    public static class GetCardModifierCostString
+    {
+        @SpireInsertPatch(
+                locator = Locator.class,
+                localvars = {"text", "costColor"}
+        )
+        public static void Insert(AbstractCard __instance, SpriteBatch sb, @ByRef String[] text, Color color) {
+            text[0] = getCostString(__instance, text[0], color);
+        }
+
+        private static class Locator extends SpireInsertLocator
+        {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "getEnergyFont");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
         }
     }
 
@@ -88,7 +115,7 @@ public class AlternateCardCosts {
         }
     }
 
-    private static ArrayList<AlternateCardCostModifier> modifiers(AbstractCard c) {
+    public static ArrayList<AlternateCardCostModifier> modifiers(AbstractCard c) {
         ArrayList<AlternateCardCostModifier> alternateCosts = new ArrayList<>();
         for (AbstractCardModifier mod : CardModifierPatches.CardModifierFields.cardModifiers.get(c)) {
             if (mod instanceof AlternateCardCostModifier) {
@@ -242,5 +269,12 @@ public class AlternateCardCosts {
             }
         }
         return false;
+    }
+
+    public static String getCostString(AbstractCard card, String currentString, Color color) {
+        for (AlternateCardCostModifier mod : modifiers(card)) {
+            currentString = mod.replaceCostString(card, currentString, color);
+        }
+        return currentString;
     }
 }

@@ -1,8 +1,8 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
@@ -269,7 +269,11 @@ public class CardModifierPatches
             };
         }
         public static String calculateRawDescription(AbstractCard card, String rawDescription) {
-            return CardModifierManager.onCreateDescription(card, rawDescription);
+            //card modifier logic
+            rawDescription = CardModifierManager.onCreateDescription(card, rawDescription);
+            //OnCreateDescription subscriber
+            rawDescription = BaseMod.publishOnCreateDescription(rawDescription, card);
+            return rawDescription;
         }
     }
 
@@ -318,31 +322,6 @@ public class CardModifierPatches
     {
         public static void Postfix(AbstractCard __instance, SpriteBatch sb) {
             CardModifierManager.onRender(__instance, sb);
-        }
-    }
-
-    @SpirePatch(
-            clz = AbstractCard.class,
-            method = "renderEnergy"
-    )
-    public static class GetCardModifierCostString
-    {
-        @SpireInsertPatch(
-                locator = Locator.class,
-                localvars = {"text", "costColor"}
-        )
-        public static void Insert(AbstractCard __instance, SpriteBatch sb, @ByRef String[] text, Color color) {
-            text[0] = CardModifierManager.getCostString(__instance, text[0], color);
-        }
-
-        private static class Locator extends SpireInsertLocator
-        {
-            @Override
-            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
-            {
-                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "getEnergyFont");
-                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
-            }
         }
     }
 
@@ -552,7 +531,9 @@ public class CardModifierPatches
         for (ClassInfo info : cardModifiers) {
             try {
                 Class c = Class.forName(info.getClassName());
-                modifierAdapter.registerSubtype(c, info.getClassName());
+                if (!c.isAnnotationPresent(AbstractCardModifier.SaveIgnore.class)) {
+                    modifierAdapter.registerSubtype(c, info.getClassName());
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

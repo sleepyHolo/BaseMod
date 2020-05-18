@@ -50,6 +50,7 @@ public class LoadPlayerSaves
         for (AbstractCard card : AbstractDungeon.player.masterDeck.group) {
             ArrayList<AbstractCardModifier> cardModifiersList = gson.fromJson(cardModifierSaves == null || i >= cardModifierSaves.size() ? null : cardModifierSaves.get(i), new TypeToken<ArrayList<AbstractCardModifier>>(){}.getType());
             if (cardModifiersList != null) {
+                CardModifierManager.removeAllModifiers(card, true);
                 for (AbstractCardModifier mod : cardModifiersList) {
                     CardModifierManager.addModifier(card, mod.makeCopy());
                 }
