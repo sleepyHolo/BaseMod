@@ -122,33 +122,35 @@ public class AlternateCardCosts {
                 alternateCosts.add((AlternateCardCostModifier)mod);
             }
         }
-        for (AbstractPower power : AbstractDungeon.player.powers) {
-            if (power instanceof AlternateCardCostModifier) {
-                alternateCosts.add((AlternateCardCostModifier)power);
+        if (AbstractDungeon.player != null) {
+            for (AbstractPower power : AbstractDungeon.player.powers) {
+                if (power instanceof AlternateCardCostModifier) {
+                    alternateCosts.add((AlternateCardCostModifier) power);
+                }
             }
-        }
-        for (AbstractRelic relic : AbstractDungeon.player.relics) {
-            if (relic instanceof AlternateCardCostModifier) {
-                alternateCosts.add((AlternateCardCostModifier)relic);
+            for (AbstractRelic relic : AbstractDungeon.player.relics) {
+                if (relic instanceof AlternateCardCostModifier) {
+                    alternateCosts.add((AlternateCardCostModifier) relic);
+                }
             }
-        }
-        for (AbstractCard card : AbstractDungeon.player.hand.group) {
-            if (card instanceof AlternateCardCostModifier) {
-                alternateCosts.add((AlternateCardCostModifier)card);
+            for (AbstractCard card : AbstractDungeon.player.hand.group) {
+                if (card instanceof AlternateCardCostModifier) {
+                    alternateCosts.add((AlternateCardCostModifier) card);
+                }
             }
-        }
-        for (AbstractCard card : AbstractDungeon.player.drawPile.group) {
-            if (card instanceof AlternateCardCostModifier) {
-                alternateCosts.add((AlternateCardCostModifier)card);
+            for (AbstractCard card : AbstractDungeon.player.drawPile.group) {
+                if (card instanceof AlternateCardCostModifier) {
+                    alternateCosts.add((AlternateCardCostModifier) card);
+                }
             }
-        }
-        for (AbstractCard card : AbstractDungeon.player.discardPile.group) {
-            if (card instanceof AlternateCardCostModifier) {
-                alternateCosts.add((AlternateCardCostModifier)card);
+            for (AbstractCard card : AbstractDungeon.player.discardPile.group) {
+                if (card instanceof AlternateCardCostModifier) {
+                    alternateCosts.add((AlternateCardCostModifier) card);
+                }
             }
-        }
-        if (AbstractDungeon.player.cardInUse instanceof AlternateCardCostModifier) {
-            alternateCosts.add((AlternateCardCostModifier)AbstractDungeon.player.cardInUse);
+            if (AbstractDungeon.player.cardInUse instanceof AlternateCardCostModifier) {
+                alternateCosts.add((AlternateCardCostModifier) AbstractDungeon.player.cardInUse);
+            }
         }
         return alternateCosts;
     }
