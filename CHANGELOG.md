@@ -702,5 +702,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix hasModifier crash on modifiers without identifiers
 * Remove JavaFX dependency (kiooeht)
 
-#### dev ####
+#### v5.23.1 ####
 * Fix crash when opening the card compendium (kiooeht)
+
+#### dev ####
