@@ -689,3 +689,14 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Color tiny cards in Run History for modded cards (kiooeht)
 * Fix Expunger description reverting to X (kiooeht)
+* Add not-package filter for AutoAdd (BlankTheEvil)
+* Fix "Hide unnecessary unlock bar" to work on Heart kill (Celicath)
+* Change event utils default behavior to override if no type specified (Alchyr)
+* OnCreateDescriptionSubscriber (JohnnyDevo)
+* XCostModifier interface for changing X cost effect (JohnnyDevo)
+* CardModifier (JohnnyDevo)
+  * Make X costs work with alternate costs
+  * Add annotation for non-savable CardModifiers
+  * Fix save/load duplicating cardmods
+  * Fix non-splittable post-energy resources
+  * Fix hasModifier crash on modifiers without identifiers
