@@ -706,3 +706,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash when opening the card compendium (kiooeht)
 
 #### dev ####
+* Re-add getColor(float) to stop crash because GOG version of StS is out of date (kiooeht)
