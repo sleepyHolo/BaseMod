@@ -709,3 +709,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Re-add getColor(float) to stop crash because GOG version of StS is out of date (kiooeht)
 
 #### dev ####
+* Allow modded character card modifiers to be localized (kiooeht)

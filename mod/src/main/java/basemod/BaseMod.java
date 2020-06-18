@@ -3,7 +3,6 @@ package basemod;
 import basemod.abstracts.*;
 import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
-import basemod.eventUtil.util.Condition;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -2495,7 +2494,11 @@ public class BaseMod {
 
 		EventUtils.loadBaseEvents();
 
-		BaseMod.loadCustomStringsFile(RunModStrings.class, "localization/basemod/customMods.json");
+		String path = String.format("localization/basemod/%s/customMods.json", Settings.language.name().toLowerCase());
+		if (!Gdx.files.internal(path).exists()) {
+			path = String.format("localization/basemod/%s/customMods.json", Settings.GameLanguage.ENG.name().toLowerCase());
+		}
+		BaseMod.loadCustomStringsFile(RunModStrings.class, path);
 
 		for (EditStringsSubscriber sub : editStringsSubscribers) {
 			sub.receiveEditStrings();
@@ -2646,8 +2649,8 @@ public class BaseMod {
 		for (AbstractPlayer character : getModdedCharacters()) {
 			CustomMod mod = new CustomMod(RedCards.ID, "g", true);
 			mod.ID = character.chosenClass.name() + charMod.name;
-			mod.name = character.getLocalizedCharacterName() + charMod.name;
-			mod.description = character.getLocalizedCharacterName() + charMod.description;
+			mod.name = String.format(charMod.name, character.getLocalizedCharacterName());
+			mod.description = String.format(charMod.description, character.getLocalizedCharacterName());
 			String label = FontHelper.colorString("[" + mod.name + "]", mod.color) + " " + mod.description;
 			ReflectionHacks.setPrivate(mod, CustomMod.class, "label", label);
 			float height = -FontHelper.getSmartHeight(FontHelper.charDescFont, label, 1050.0F * Settings.scale, 32.0F * Settings.scale) + 70.0F * Settings.scale;
