@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 public class CardModifierManager
 {
-    private static ArrayList<AbstractCardModifier> modifiers(AbstractCard c) {
+    public static ArrayList<AbstractCardModifier> modifiers(AbstractCard c) {
         return CardModifierPatches.CardModifierFields.cardModifiers.get(c);
     }
 
