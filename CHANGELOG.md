@@ -711,3 +711,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Allow modded character card modifiers to be localized (kiooeht)
 * ZHS translation of modded character card modifiers (Rita-B)
+* Fix Discovery basegame bugs (kiooeht)
+  * Fix Discovery spamming the log and possibly lagging the game when played
+  * Fix returnTrulyRandomCardInCombat marking (almost) every card as seen
