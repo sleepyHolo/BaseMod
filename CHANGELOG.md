@@ -708,7 +708,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.23.2 ####
 * Re-add getColor(float) to stop crash because GOG version of StS is out of date (kiooeht)
 
-#### dev ####
+#### v5.23.3 ####
 * Allow modded character card modifiers to be localized (kiooeht)
 * ZHS translation of modded character card modifiers (Rita-B)
 * Fix Discovery basegame bugs (kiooeht)
@@ -716,3 +716,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix returnTrulyRandomCardInCombat marking (almost) every card as seen
 * Make CardModifierManager.modifiers() public (kiooeht)
 * Fix Potion Lab scroll bounds (kiooeht)
+
+#### dev ####
