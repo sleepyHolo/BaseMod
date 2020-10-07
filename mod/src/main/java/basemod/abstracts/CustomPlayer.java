@@ -283,6 +283,11 @@ public abstract class CustomPlayer extends AbstractPlayer implements ModelRender
 		return characterStrings;
 	}
 
+	public String getSensoryStoneText()
+	{
+		return null;
+	}
+
 	@Override
 	public void refreshCharStat()
 	{
