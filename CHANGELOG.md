@@ -719,3 +719,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Sensory Stone event text for custom characters (kiooeht)
+* Fix upgrade count 0 in hand and deck commands not working (Celicath)
+* Fix ZHS, ZHT, and JPN not displaying color in tooltips (Celicath)
