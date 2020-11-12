@@ -21,6 +21,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -480,6 +481,10 @@ public abstract class CustomCard extends AbstractCard {
 		}
 
 		return font;
+	}
+
+	public List<String> getCardDescriptors() {
+		return Collections.emptyList();
 	}
 
 	protected Texture getPortraitImage() {
