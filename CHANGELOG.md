@@ -731,3 +731,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Change get methods to generic return types
   * Cache Fields for faster access
   * Javadoc comments
+  * Update setPrivateInherited to search all superclasses
+  * Add getPrivateInherited

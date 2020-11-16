@@ -175,16 +175,63 @@ public class ReflectionHacks
 		}
 	}
 
-	// setPrivateInherited - set private variable of superclass of an object
-	public static void setPrivateInherited(Object obj, Class<?> objClass, String fieldName, Object newValue)
+	/**
+	 * Returns the value of a field from a superclass of {@code obj}.
+	 * <p> Searches up the chain of superclasses until it finds a field with the correct name.
+	 * If no such field is found, returns {@code null}.
+	 * <p> If the found field type cannot be cast to {@code <T>} a {@code ClassCastException} will be thrown.
+	 *
+	 * @param obj the object to get the field from
+	 * @param objClass the {@code Class} of {@code obj}
+	 * @param fieldName the name of the field
+	 * @param <T> the type of the field
+	 * @return the value of the field
+	 */
+	public static <T> T getPrivateInherited(Object obj, Class<?> objClass, String fieldName)
 	{
-		try {
-			Field targetField = objClass.getSuperclass().getDeclaredField(fieldName);
-			targetField.setAccessible(true);
-			targetField.set(obj, newValue);
-		} catch (Exception e) {
-			logger.error("Exception occurred when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
+		objClass = objClass.getSuperclass();
+		while (objClass != null && objClass != Object.class) {
+			try {
+				Field f = objClass.getDeclaredField(fieldName);
+				f.setAccessible(true);
+				try {
+					//noinspection unchecked
+					return (T) f.get(obj);
+				} catch (IllegalAccessException e) {
+					logger.error("Exception occurred when getting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
+					return null;
+				}
+			} catch (NoSuchFieldException ignored) {}
+			objClass = objClass.getSuperclass();
 		}
+
+		return null;
 	}
 
+	/**
+	 * Sets the value of a field of a superclass of {@code obj}.
+	 * <p> Searches up the chain of superclasses until it finds a field with the correct name.
+	 *
+	 * @param obj the object to set the field of
+	 * @param objClass the {@code Class} of {@code obj}
+	 * @param fieldName the name of the field
+	 * @param newValue the value to set the field to
+	 */
+	public static void setPrivateInherited(Object obj, Class<?> objClass, String fieldName, Object newValue)
+	{
+		objClass = objClass.getSuperclass();
+		while (objClass != null && objClass != Object.class) {
+			try {
+				Field f = objClass.getDeclaredField(fieldName);
+				f.setAccessible(true);
+				try {
+					f.set(obj, newValue);
+				} catch (IllegalAccessException e) {
+					logger.error("Exception occurred when setting private field " + fieldName + " of the superclass of " + objClass.getName(), e);
+				}
+				return;
+			} catch (NoSuchFieldException ignored) {}
+			objClass = objClass.getSuperclass();
+		}
+	}
 }
