@@ -14,16 +14,6 @@ public class ReflectionHacks
 
 	private static final Map<Pair<Class<?>, String>, Field> fieldMap = new HashMap<>();
 
-	static {
-		try {
-			Field modifiersField = Field.class.getDeclaredField("modifiers");
-			modifiersField.setAccessible(true);
-			fieldMap.put(new Pair<>(Field.class, "modifiers"), modifiersField);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	private ReflectionHacks()
 	{
 	}
