@@ -16,11 +16,12 @@ public class ReflectionHacks {
     //
     
     // getPrivateStatic - read private static variables
-	public static Object getPrivateStatic(Class<?> objClass, String fieldName) {
+	public static <T> T getPrivateStatic(Class<?> objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
-            return targetField.get(null);
+			//noinspection unchecked
+			return (T) targetField.get(null);
         } catch (Exception e) {
             logger.error("Exception occurred when getting private static field " + fieldName + " of " + objClass.getName(), e);
         }
@@ -56,11 +57,12 @@ public class ReflectionHacks {
     }
 
     // getPrivate - read private variables of an object
-	public static Object getPrivate(Object obj, Class<?> objClass, String fieldName) {
+	public static <T> T getPrivate(Object obj, Class<?> objClass, String fieldName) {
         try {
             Field targetField = objClass.getDeclaredField(fieldName);
             targetField.setAccessible(true);
-            return targetField.get(obj);
+			//noinspection unchecked
+			return (T) targetField.get(obj);
         } catch (Exception e) {
             logger.error("Exception occurred when getting private field " + fieldName + " of " + objClass.getName(), e);
         }
@@ -78,7 +80,7 @@ public class ReflectionHacks {
             logger.error("Exception occurred when setting private field " + fieldName + " of " + objClass.getName(), e);
         }
     }
-    
+
     // setPrivateInherited - set private variable of superclass of an object
 	public static void setPrivateInherited(Object obj, Class<?> objClass, String fieldName, Object newValue) {
     	try {

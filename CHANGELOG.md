@@ -727,3 +727,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix Vigor gain from Attacks (kiooeht)
+* ReflectionHacks improvements (kiooeht)
+  * Change get methods to generic return types
