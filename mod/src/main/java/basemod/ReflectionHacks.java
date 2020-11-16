@@ -35,7 +35,7 @@ public class ReflectionHacks
 	 *
 	 * @param clz the {@code Class} the field is declared in
 	 * @param fieldName the name of the field
-	 * @return
+	 * @return the {@code Field} object for the specified field in {@code clz}
 	 */
 	public static Field getCachedField(Class<?> clz, String fieldName)
 	{
