@@ -35,23 +35,24 @@ public class AlternateCardCosts {
                         String energy = EnergyPanel.class.getName();
                         m.replace(
                                 "if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
-                                        manager + ".spendPreEnergyResource(c);" +
-                                        "} else if (" + energy + ".totalCount >= c.costForTurn) {" +
-                                        "$proceed($$);" +
+                                            manager + ".spendPreEnergyResource(c);" +
+                                        "} else if (" + manager + ".getSplittableResourceAmount(c) >= c.costForTurn) {" +
+                                            "int tmp = " + manager + ".spendPreEnergySplittableResource(c);" +
+                                            "if (tmp > 0) {" +
+                                                "if (tmp > " + energy + ".totalCount) {" +
+                                                    "tmp -= " + energy + ".totalCount;" +
+                                                    "this.energy.use(" + energy + ".totalCount);" +
+                                                    manager + ".spendPostEnergySplittableResource(c, tmp);" +
+                                                "} else {" +
+                                                    "this.energy.use(tmp);" +
+                                                "}" +
+                                            "}" +
                                         "} else if (" + manager + ".getPostEnergyResourceAmount(c) >= c.costForTurn) {" +
-                                        manager + ".spendPostEnergyResource(c);" +
+                                            manager + ".spendPostEnergyResource(c);" +
                                         "} else {" +
-                                        "int tmp = c.costForTurn;" +
-                                        "tmp = " + manager + ".spendPreEnergySplittableResource(c);" +
-                                        "if (tmp > 0) {" +
-                                        "if (tmp > " + energy + ".totalCount) {" +
-                                        "tmp -= " + energy + ".totalCount;" +
-                                        "this.energy.use(" + energy + ".totalCount);" +
-                                        manager + ".spendPostEnergySplittableResource(c, tmp);" +
-                                        "} else {" +
-                                        "this.energy.use(tmp);" +
-                                        "}" +
-                                        "}" +
+                                            manager + ".spendPreEnergySplittableResource(c);" +
+                                            "this.energy.use(" + energy + ".totalCount);" +
+                                            manager + ".spendPostEnergySplittableResource(c, c.costForTurn);" +
                                         "}"
                         );
                     }
@@ -158,7 +159,7 @@ public class AlternateCardCosts {
     public static int getPreEnergyResourceAmount(AbstractCard card) {
         int tmp = 0;
         for (AlternateCardCostModifier mod : modifiers(card)) {
-            if (mod.prioritizeAlternateCost(card) && mod.costEffectActive(card)) {
+            if (mod.prioritizeAlternateCost(card) && !mod.canSplitCost(card) && mod.costEffectActive(card)) {
                 tmp = Math.max(tmp, mod.getAlternateResource(card));
             }
         }
@@ -168,7 +169,7 @@ public class AlternateCardCosts {
     public static int getPostEnergyResourceAmount(AbstractCard card) {
         int tmp = 0;
         for (AlternateCardCostModifier mod : modifiers(card)) {
-            if (!mod.prioritizeAlternateCost(card) && mod.costEffectActive(card)) {
+            if (!mod.prioritizeAlternateCost(card) && !mod.canSplitCost(card) && mod.costEffectActive(card)) {
                 tmp = Math.max(tmp, mod.getAlternateResource(card));
             }
         }
@@ -176,7 +177,7 @@ public class AlternateCardCosts {
     }
 
     public static int getSplittableResourceAmount(AbstractCard card) {
-        int tmp = 0;
+        int tmp = EnergyPanel.totalCount;
         for (AlternateCardCostModifier mod : modifiers(card)) {
             if (mod.canSplitCost(card) && mod.costEffectActive(card)) {
                 int c = mod.getAlternateResource(card);
