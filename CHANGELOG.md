@@ -735,3 +735,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Add getPrivateInherited
   * Add privateMethod
   * Add privateStaticMethod
+* Fix modded character selection background animation (kiooeht)
