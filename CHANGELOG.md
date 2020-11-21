@@ -725,7 +725,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.25.0 ####
 * Card descriptors (kiooeht)
 
-#### dev ####
+#### v5.26.0 ####
 * Fix Vigor gain from Attacks (kiooeht)
 * ReflectionHacks improvements (kiooeht)
   * Change get methods to generic return types
@@ -737,3 +737,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Add privateStaticMethod
 * Fix modded character selection background animation (kiooeht)
 * Fix alternate card cost logic to better fit all situtations (JohnnyDevo)
+
+#### dev ####
