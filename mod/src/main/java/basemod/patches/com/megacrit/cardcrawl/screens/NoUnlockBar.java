@@ -4,8 +4,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.Expectation;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.screens.DeathScreen;
-import com.megacrit.cardcrawl.screens.VictoryScreen;
+import com.megacrit.cardcrawl.screens.GameOverScreen;
 import com.megacrit.cardcrawl.unlock.AbstractUnlock;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import javassist.CannotCompileException;
@@ -18,11 +17,7 @@ import java.util.ArrayList;
 import static basemod.BaseMod.logger;
 
 @SpirePatch(
-        clz = DeathScreen.class,
-        method = "calculateUnlockProgress"
-)
-@SpirePatch(
-        clz = VictoryScreen.class,
+        clz = GameOverScreen.class,
         method = "calculateUnlockProgress"
 )
 public class NoUnlockBar {
@@ -30,7 +25,7 @@ public class NoUnlockBar {
             locator = Locator.class,
             localvars = { "unlockLevel", "maxLevel" }
     )
-    public static SpireReturn unlockLimitCheck(Object __instance, int unlockLevel, @ByRef boolean[] maxLevel)
+    public static SpireReturn<Void> unlockLimitCheck(GameOverScreen __instance, int unlockLevel, @ByRef boolean[] maxLevel)
     {
         try {
             ArrayList<AbstractUnlock> testBundle = UnlockTracker.getUnlockBundle(AbstractDungeon.player.chosenClass, unlockLevel);

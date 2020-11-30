@@ -739,3 +739,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix alternate card cost logic to better fit all situtations (JohnnyDevo)
 
 #### dev ####
+* Support for Slay the Spire 11-27-2020 BETA (kiooeht)

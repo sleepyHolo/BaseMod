@@ -84,8 +84,8 @@ public class RenderCardDescriptorsSCV
 				if (descriptors.size() > 1) {
 					String text = String.join(RenderCardDescriptors.SEPARATOR, descriptors);
 					GlyphLayout gl = new GlyphLayout();
-					FontHelper.SCP_cardTypeFont.getData().setScale(1f);
-					gl.setText(FontHelper.SCP_cardTypeFont, text);
+					FontHelper.panelNameFont.getData().setScale(1f);
+					gl.setText(FontHelper.panelNameFont, text);
 					tOffset[0] = (gl.width - 70 * Settings.scale) / 2f;
 					tWidth[0] = (gl.width - 0f) / (62 * Settings.scale);
 				}
