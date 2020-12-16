@@ -60,28 +60,28 @@ public class ModLabel implements IUIElement{
 	}
 
     @Override
-    public void move(float xPos, float yPos) {
+    public void set(float xPos, float yPos) {
         x = xPos*Settings.scale;
         y = yPos*Settings.scale;
     }
 
     @Override
-    public void moveX(float xPos) {
+    public void setX(float xPos) {
         x = xPos*Settings.scale;
     }
 
     @Override
-    public void moveY(float yPos) {
+    public void setY(float yPos) {
         y = yPos*Settings.scale;
     }
 
     @Override
     public float getX() {
-        return x;
+        return x/Settings.scale;
     }
 
     @Override
     public float getY() {
-        return y;
+        return y/Settings.scale;
     }
 }

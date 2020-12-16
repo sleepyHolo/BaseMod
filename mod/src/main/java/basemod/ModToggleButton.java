@@ -14,7 +14,7 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import java.util.function.Consumer;
 
 public class ModToggleButton implements IUIElement {
-	private static final float TOGGLE_Y_DELTA = 8.0f;
+	private static final float TOGGLE_Y_DELTA = 0f;
 	private static final float TOGGLE_X_EXTEND = 12.0f;
 	private static final float HB_WIDTH_EXTENDED = 200.0f;
 	
@@ -114,7 +114,7 @@ public class ModToggleButton implements IUIElement {
 	}
 
 	@Override
-	public void move(float xPos, float yPos) {
+	public void set(float xPos, float yPos) {
 		x = xPos*Settings.scale;
 		y = yPos*Settings.scale;
 
@@ -126,22 +126,22 @@ public class ModToggleButton implements IUIElement {
 	}
 
 	@Override
-	public void moveX(float xPos) {
-		move(xPos, y/=Settings.scale);
+	public void setX(float xPos) {
+		set(xPos, y/Settings.scale);
 	}
 
 	@Override
-	public void moveY(float yPos) {
-		move(x/=Settings.scale, yPos);
+	public void setY(float yPos) {
+		set(x/Settings.scale, yPos);
 	}
 
 	@Override
 	public float getX() {
-		return x;
+		return x/Settings.scale;
 	}
 
 	@Override
 	public float getY() {
-		return y;
+		return y/Settings.scale;
 	}
 }

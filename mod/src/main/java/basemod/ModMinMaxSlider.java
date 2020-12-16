@@ -156,7 +156,7 @@ public class ModMinMaxSlider implements IUIElement {
     }
 
     @Override
-    public void move(float xPos, float yPos) {
+    public void set(float xPos, float yPos) {
         xPos *= Settings.scale;
         handleX = handleX + (xPos - x);
         x = xPos;
@@ -167,23 +167,23 @@ public class ModMinMaxSlider implements IUIElement {
     }
 
     @Override
-    public void moveX(float xPos) {
-        move(xPos, y/=Settings.scale);
+    public void setX(float xPos) {
+        set(xPos, y/Settings.scale);
     }
 
     @Override
-    public void moveY(float yPos) {
-        move(x, yPos);
+    public void setY(float yPos) {
+        set(x/Settings.scale, yPos);
     }
 
     @Override
     public float getX() {
-        return x;
+        return x/Settings.scale;
     }
 
     @Override
     public float getY() {
-        return y;
+        return y/Settings.scale;
     }
 }
 

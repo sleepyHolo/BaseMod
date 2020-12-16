@@ -113,7 +113,7 @@ public class ModColorDisplay implements IUIElement {
 	}
 
     @Override
-    public void move(float xPos, float yPos) {
+    public void set(float xPos, float yPos) {
         x = xPos;
         y = yPos;
 
@@ -121,13 +121,13 @@ public class ModColorDisplay implements IUIElement {
     }
 
     @Override
-    public void moveX(float xPos) {
-        move(xPos, y);
+    public void setX(float xPos) {
+        set(xPos, y);
     }
 
     @Override
-    public void moveY(float yPos) {
-        move(x, yPos);
+    public void setY(float yPos) {
+        set(x, yPos);
     }
 
     @Override

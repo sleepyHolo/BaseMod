@@ -50,21 +50,21 @@ public class ModLabeledToggleButton implements IUIElement {
 	}
 
 	@Override
-	public void move(float xPos, float yPos) {
-		toggle.move(xPos, yPos);
-		text.move(xPos + TEXT_X_OFFSET, yPos + TEXT_Y_OFFSET);
+	public void set(float xPos, float yPos) {
+		toggle.set(xPos, yPos);
+		text.set(xPos + TEXT_X_OFFSET, yPos + TEXT_Y_OFFSET);
 	}
 
 	@Override
-	public void moveX(float xPos) {
-		toggle.moveX(xPos);
-		text.moveX(xPos + TEXT_X_OFFSET);
+	public void setX(float xPos) {
+		toggle.setX(xPos);
+		text.setX(xPos + TEXT_X_OFFSET);
 	}
 
 	@Override
-	public void moveY(float yPos) {
-		toggle.moveY(yPos);
-		text.moveY(yPos + TEXT_Y_OFFSET);
+	public void setY(float yPos) {
+		toggle.setY(yPos);
+		text.setY(yPos + TEXT_Y_OFFSET);
 	}
 
 	@Override
