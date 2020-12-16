@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.helpers.UIElementModificationHelper;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,7 @@ public class ModToggleButton implements IUIElement {
 	private float y;
 	private float w;
 	private float h;
+	private boolean extendedHitbox;
 	
 	public boolean enabled;
 	public ModPanel parent;
@@ -36,6 +38,7 @@ public class ModToggleButton implements IUIElement {
 		y = yPos * Settings.scale;
 		w = ImageMaster.OPTION_TOGGLE.getWidth();
 		h = ImageMaster.OPTION_TOGGLE.getHeight();
+		this.extendedHitbox = extendedHitbox;
 		if (extendedHitbox) {
 			hb = new Hitbox(x - TOGGLE_X_EXTEND * Settings.scale,
 					y - TOGGLE_Y_DELTA * Settings.scale,
@@ -95,6 +98,10 @@ public class ModToggleButton implements IUIElement {
 		this.enabled = !enabled;
 		toggle.accept(this);
 	}
+
+	public void toggle() {
+		onToggle();
+	}
 	
 	@Override
 	public int renderLayer() {
@@ -105,5 +112,36 @@ public class ModToggleButton implements IUIElement {
 	public int updateOrder() {
 		return ModPanel.DEFAULT_UPDATE;
 	}
-	
+
+	@Override
+	public void move(float xPos, float yPos) {
+		x = xPos*Settings.scale;
+		y = yPos*Settings.scale;
+
+		if (extendedHitbox) {
+			UIElementModificationHelper.moveHitboxByOriginalParameters(hb, x - TOGGLE_X_EXTEND * Settings.scale,  y - TOGGLE_Y_DELTA * Settings.scale);
+		} else {
+			UIElementModificationHelper.moveHitboxByOriginalParameters(hb, x, y - TOGGLE_Y_DELTA * Settings.scale);
+		}
+	}
+
+	@Override
+	public void moveX(float xPos) {
+		move(xPos, y/=Settings.scale);
+	}
+
+	@Override
+	public void moveY(float yPos) {
+		move(x/=Settings.scale, yPos);
+	}
+
+	@Override
+	public float getX() {
+		return x;
+	}
+
+	@Override
+	public float getY() {
+		return y;
+	}
 }
