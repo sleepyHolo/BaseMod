@@ -1,5 +1,6 @@
 package basemod;
 
+import basemod.helpers.UIElementModificationHelper;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -109,5 +110,33 @@ public class ModLabeledButton implements IUIElement {
 
     public int updateOrder() {
         return 1;
+    }
+
+    @Override
+    public void move(float xPos, float yPos) {
+        x = xPos*Settings.scale;
+        y = yPos*Settings.scale;
+
+        UIElementModificationHelper.moveHitboxByOriginalParameters(hb, x + 1F * Settings.scale, y + 1F * Settings.scale);
+    }
+
+    @Override
+    public void moveX(float xPos) {
+        move(xPos, y/=Settings.scale);
+    }
+
+    @Override
+    public void moveY(float yPos) {
+        move(x/=Settings.scale, yPos);
+    }
+
+    @Override
+    public float getX() {
+        return x;
+    }
+
+    @Override
+    public float getY() {
+        return y;
     }
 }
