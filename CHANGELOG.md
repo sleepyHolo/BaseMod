@@ -741,6 +741,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.27.0 ####
 * Support for Slay the Spire 11-27-2020 BETA (kiooeht)
 
-#### dev ####
+#### v5.28.0 ####
 * Add get/set X/Y methods to mod config ui elements (erasels)
 * Add ModMinMaxSlider (kiooeht/erasels)
+
+#### dev ####
