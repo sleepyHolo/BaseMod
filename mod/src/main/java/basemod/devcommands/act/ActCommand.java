@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
+import com.megacrit.cardcrawl.vfx.combat.BattleStartEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,5 +97,10 @@ public class ActCommand extends ConsoleCommand {
         AbstractDungeon.actionManager.clear();
         AbstractDungeon.effectsQueue.clear();
         AbstractDungeon.effectList.clear();
+        for(int i = AbstractDungeon.topLevelEffects.size() - 1; i > 0; i--) {
+            if(AbstractDungeon.topLevelEffects.get(i) instanceof BattleStartEffect) {
+                AbstractDungeon.topLevelEffects.remove(i);
+            }
+        }
     }
 }
