@@ -45,6 +45,7 @@ public class ActCommand extends ConsoleCommand {
     public void execute(String[] tokens, int depth) {
         if(tokens[depth].equalsIgnoreCase("boss")) {
             DevConsole.log("Skipping to bossroom");
+            prepareTransition();
             AbstractDungeon.currMapNode.room = new MonsterRoomBoss();
             AbstractDungeon.getCurrRoom().onPlayerEntry();
 
@@ -68,6 +69,7 @@ public class ActCommand extends ConsoleCommand {
                     AbstractDungeon.floorNum = 2;
                 }
 
+                prepareTransition();
                 CardCrawlGame.nextDungeon = tokens[depth];
                 CardCrawlGame.dungeonTransitionScreen = new DungeonTransitionScreen(tokens[depth]);
                 AbstractDungeon.actNum = acts.get(tokens[depth]) - 1;
@@ -87,5 +89,12 @@ public class ActCommand extends ConsoleCommand {
             tmp.add(s);
         }
         return tmp;
+    }
+
+    private void prepareTransition() {
+        AbstractDungeon.player.hand.group.clear();
+        AbstractDungeon.actionManager.clear();
+        AbstractDungeon.effectsQueue.clear();
+        AbstractDungeon.effectList.clear();
     }
 }
