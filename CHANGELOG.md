@@ -746,3 +746,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add ModMinMaxSlider (kiooeht/erasels)
 
 #### dev ####
+* Fix DiscoveryAction for more than 2 copies (kiooeht)
