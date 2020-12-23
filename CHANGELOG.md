@@ -745,8 +745,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add get/set X/Y methods to mod config ui elements (erasels)
 * Add ModMinMaxSlider (kiooeht/erasels)
 
-#### dev ####
+#### v5.28.1 ####
 * Fix DiscoveryAction for more than 2 copies (kiooeht)
 * Refactor CloneablePower code (Raz)
 * Add CloneablePower to base game powers introduced with v2.0 (Raz)
 * Fix crash with act command (Raz)
+
+#### dev ####
