@@ -1,8 +1,8 @@
 package basemod;
 
 import basemod.abstracts.*;
+import basemod.eventUtil.AddEventParams;
 import basemod.eventUtil.EventUtils;
-import basemod.eventUtil.util.Condition;
 import basemod.helpers.RelicType;
 import basemod.helpers.dynamicvariables.BlockVariable;
 import basemod.helpers.dynamicvariables.DamageVariable;
@@ -70,7 +70,6 @@ import com.megacrit.cardcrawl.shop.StorePotion;
 import com.megacrit.cardcrawl.shop.StoreRelic;
 import com.megacrit.cardcrawl.unlock.AbstractUnlock;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import javafx.util.Pair;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -155,6 +154,7 @@ public class BaseMod {
 	private static ArrayList<PreRoomRenderSubscriber> preRoomRenderSubscribers;
 	private static ArrayList<OnPlayerLoseBlockSubscriber> onPlayerLoseBlockSubscribers;
 	private static ArrayList<OnPlayerDamagedSubscriber> onPlayerDamagedSubscribers;
+	private static ArrayList<OnCreateDescriptionSubscriber> onCreateDescriptionSubscribers;
 
 	private static ArrayList<AbstractCard> redToAdd;
 	private static ArrayList<String> redToRemove;
@@ -479,6 +479,7 @@ public class BaseMod {
 		preRoomRenderSubscribers = new ArrayList<>();
 		onPlayerLoseBlockSubscribers = new ArrayList<>();
 		onPlayerDamagedSubscribers = new ArrayList<>();
+		onCreateDescriptionSubscribers = new ArrayList<>();
 	}
 
 	// initializeCardLists -
@@ -1275,68 +1276,28 @@ public class BaseMod {
 	// Additional documentation can be found in EventUtils.
 
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass) {
-		addEvent(eventID, eventClass, (String)null);
-	}
-	
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass) {
-		addEvent(eventID, eventClass, playerClass, null, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, null, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
+		addEvent(new AddEventParams.Builder(eventID, eventClass).create());
 	}
 
 	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String dungeonID) {
-		addEvent(eventID, eventClass, null, dungeonID != null ? new String[] { dungeonID } : null, null, null, null, EventUtils.EventType.NORMAL);
+		addEvent(
+				new AddEventParams.Builder(eventID, eventClass)
+						.dungeonID(dungeonID)
+						.create()
+		);
 	}
 
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String dungeonID) {
-		addEvent(eventID, eventClass, playerClass, new String[]{dungeonID}, null, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String[] dungeonIDs) {
-		addEvent(eventID, eventClass, null, dungeonIDs, spawnCondition, null, null, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, String[] dungeonIDs, Condition bonusCondition) {
-		addEvent(eventID, eventClass, null, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition bonusCondition) {
-		addEvent(eventID, eventClass, playerClass, dungeonIDs, null, null, bonusCondition, EventUtils.EventType.NORMAL);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, boolean fullReplace) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, fullReplace ? EventUtils.EventType.FULL_REPLACE : (overrideEvent == null ? EventUtils.EventType.NORMAL : EventUtils.EventType.OVERRIDE));
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, Condition bonusCondition, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, bonusCondition, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String overrideEvent, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, playerClass, null, null, overrideEvent, null, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Condition spawnCondition, String overrideEvent, EventUtils.EventType type) {
-		addEvent(eventID, eventClass, null, null, spawnCondition, overrideEvent, null, type);
-	}
-
-	public static void addEvent(String eventID, Class<? extends AbstractEvent> eventClass, Class<? extends AbstractPlayer> playerClass, String[] dungeonIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventUtils.EventType type)
-	{
-		EventUtils.registerEvent(eventID, eventClass, playerClass, dungeonIDs, spawnCondition, overrideEvent, bonusCondition, type);
+	public static void addEvent(AddEventParams params) {
+		EventUtils.registerEvent(
+				params.eventID,
+				params.eventClass,
+				params.playerClass,
+				params.dungeonIDs.toArray(new String[0]),
+				params.spawnCondition,
+				params.overrideEventID,
+				params.bonusCondition,
+				params.eventType
+		);
 	}
 
 	//implemented to avoid issues if someone uses them.
@@ -2533,7 +2494,11 @@ public class BaseMod {
 
 		EventUtils.loadBaseEvents();
 
-		BaseMod.loadCustomStringsFile(RunModStrings.class, "localization/basemod/customMods.json");
+		String path = String.format("localization/basemod/%s/customMods.json", Settings.language.name().toLowerCase());
+		if (!Gdx.files.internal(path).exists()) {
+			path = String.format("localization/basemod/%s/customMods.json", Settings.GameLanguage.ENG.name().toLowerCase());
+		}
+		BaseMod.loadCustomStringsFile(RunModStrings.class, path);
 
 		for (EditStringsSubscriber sub : editStringsSubscribers) {
 			sub.receiveEditStrings();
@@ -2684,8 +2649,8 @@ public class BaseMod {
 		for (AbstractPlayer character : getModdedCharacters()) {
 			CustomMod mod = new CustomMod(RedCards.ID, "g", true);
 			mod.ID = character.chosenClass.name() + charMod.name;
-			mod.name = character.getLocalizedCharacterName() + charMod.name;
-			mod.description = character.getLocalizedCharacterName() + charMod.description;
+			mod.name = String.format(charMod.name, character.getLocalizedCharacterName());
+			mod.description = String.format(charMod.description, character.getLocalizedCharacterName());
 			String label = FontHelper.colorString("[" + mod.name + "]", mod.color) + " " + mod.description;
 			ReflectionHacks.setPrivate(mod, CustomMod.class, "label", label);
 			float height = -FontHelper.getSmartHeight(FontHelper.charDescFont, label, 1050.0F * Settings.scale, 32.0F * Settings.scale) + 70.0F * Settings.scale;
@@ -2752,6 +2717,17 @@ public class BaseMod {
 
 		unsubscribeLaterHelper(OnPlayerDamagedSubscriber.class);
 		return amount;
+	}
+
+	public static String publishOnCreateDescription(String rawDescription, AbstractCard card) {
+		//logger.info("publish on card description initialized"); //too much logging?
+
+		for (OnCreateDescriptionSubscriber sub : onCreateDescriptionSubscribers) {
+			rawDescription = sub.receiveCreateCardDescription(rawDescription, card);
+		}
+
+		unsubscribeLaterHelper(OnCreateDescriptionSubscriber.class);
+		return rawDescription;
 	}
 
 	//
@@ -2828,6 +2804,7 @@ public class BaseMod {
 		subscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		subscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 		subscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
+		subscribeIfInstance(onCreateDescriptionSubscribers, sub, OnCreateDescriptionSubscriber.class);
 	}
 
 	// subscribe -
@@ -2923,6 +2900,8 @@ public class BaseMod {
 			onPlayerLoseBlockSubscribers.add((OnPlayerLoseBlockSubscriber) sub);
 		} else if (additionClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.add((OnPlayerDamagedSubscriber) sub);
+		} else if (additionClass.equals(OnCreateDescriptionSubscriber.class)) {
+			onCreateDescriptionSubscribers.add((OnCreateDescriptionSubscriber) sub);
 		}
 	}
 
@@ -2974,6 +2953,7 @@ public class BaseMod {
 		unsubscribeIfInstance(preRoomRenderSubscribers, sub, PreRoomRenderSubscriber.class);
 		unsubscribeIfInstance(onPlayerLoseBlockSubscribers, sub, OnPlayerLoseBlockSubscriber.class);
 		unsubscribeIfInstance(onPlayerDamagedSubscribers, sub, OnPlayerDamagedSubscriber.class);
+		unsubscribeIfInstance(onCreateDescriptionSubscribers, sub, OnCreateDescriptionSubscriber.class);
 	}
 
 	// unsubscribe -
@@ -3071,6 +3051,8 @@ public class BaseMod {
 			onPlayerLoseBlockSubscribers.remove(sub);
 		} else if (removalClass.equals(OnPlayerDamagedSubscriber.class)) {
 			onPlayerDamagedSubscribers.remove(sub);
+		} else if (removalClass.equals(OnCreateDescriptionSubscriber.class)) {
+			onCreateDescriptionSubscribers.remove(sub);
 		}
 	}
 

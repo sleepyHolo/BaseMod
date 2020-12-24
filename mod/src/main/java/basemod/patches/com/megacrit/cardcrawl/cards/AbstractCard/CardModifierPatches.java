@@ -1,30 +1,32 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
+import basemod.BaseMod;
 import basemod.abstracts.AbstractCardModifier;
 import basemod.helpers.CardModifierManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.megacrit.cardcrawl.actions.unique.RestoreRetainedCardsAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
+import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
-import javassist.expr.MethodCall;
+import org.clapper.util.classutil.*;
+import com.evacipated.cardcrawl.modthespire.Loader;
 
-import java.lang.reflect.Field;
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 public class CardModifierPatches
 {
     @SpirePatch(
@@ -267,7 +269,11 @@ public class CardModifierPatches
             };
         }
         public static String calculateRawDescription(AbstractCard card, String rawDescription) {
-            return CardModifierManager.onCreateDescription(card, rawDescription);
+            //card modifier logic
+            rawDescription = CardModifierManager.onCreateDescription(card, rawDescription);
+            //OnCreateDescription subscriber
+            rawDescription = BaseMod.publishOnCreateDescription(rawDescription, card);
+            return rawDescription;
         }
     }
 
@@ -321,58 +327,10 @@ public class CardModifierPatches
 
     @SpirePatch(
             clz = AbstractCard.class,
-            method = "renderEnergy"
-    )
-    public static class GetCardModifierCostString
-    {
-        @SpireInsertPatch(
-                locator = Locator.class,
-                localvars = {"text", "costColor"}
-        )
-        public static void Insert(AbstractCard __instance, SpriteBatch sb, @ByRef String[] text, Color color) {
-            text[0] = CardModifierManager.getCostString(__instance, text[0], color);
-        }
-
-        private static class Locator extends SpireInsertLocator
-        {
-            @Override
-            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
-            {
-                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "getEnergyFont");
-                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
-            }
-        }
-    }
-
-    @SpirePatch(
-            clz = AbstractCard.class,
             method = "hasEnoughEnergy"
     )
-    public static class CardModifierHasEnoughAlternateResource
+    public static class CardModifierCanPlayCard
     {
-        //alternate costs
-        @SpireInsertPatch(
-                locator = Locator.class
-        )
-        public static SpireReturn<Boolean> Insert(AbstractCard __instance) {
-            if (CardModifierManager.hasEnoughAlternateCost(__instance)) {
-                return SpireReturn.Return(true);
-            } else {
-                return SpireReturn.Continue();
-            }
-        }
-
-        private static class Locator extends SpireInsertLocator
-        {
-            @Override
-            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
-            {
-                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "costForTurn");
-                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
-            }
-        }
-
-        //canPlayCard
         public static SpireReturn<Boolean> Prefix(AbstractCard __instance) {
             if (!CardModifierManager.canPlayCard(__instance)) {
                 return SpireReturn.Return(false);
@@ -449,45 +407,6 @@ public class CardModifierPatches
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractCard.class, "triggerWhenDrawn");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
-        }
-    }
-
-    @SpirePatch(
-            clz = AbstractPlayer.class,
-            method = "useCard"
-    )
-    public static class CardModifierSpendResources
-    {
-        public static ExprEditor Instrument() {
-            return new ExprEditor() {
-                public void edit(MethodCall m) throws CannotCompileException {
-                    if (m.getClassName().equals(EnergyManager.class.getName()) && m.getMethodName().equals("use")) {
-                        String manager = CardModifierManager.class.getName();
-                        String energy = EnergyPanel.class.getName();
-                        m.replace(
-                                "if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
-                                            manager + ".spendPreEnergyResource(c);" +
-                                        "} else if (" + energy + ".totalCount >= c.costForTurn) {" +
-                                            "$proceed($$);" +
-                                        "} else if (" + manager + ".getPreEnergyResourceAmount(c) >= c.costForTurn) {" +
-                                            manager + ".spendPostEnergyResource(c);" +
-                                        "} else {" +
-                                            "int tmp = c.costForTurn;" +
-                                            "tmp = " + manager + ".spendPreEnergySplittableResource(c);" +
-                                            "if (tmp > 0) {" +
-                                                "if (tmp > " + energy + ".totalCount) {" +
-                                                    "tmp -= " + energy + ".totalCount;" +
-                                                    "this.energy.use(" + energy + ".totalCount);" +
-                                                    manager + ".spendPostEnergySplittableResource(c, tmp);" +
-                                                "} else {" +
-                                                    "this.energy.use(tmp);" +
-                                                "}" +
-                                            "}" +
-                                        "}"
-                        );
-                    }
-                }
-            };
         }
     }
 
@@ -572,6 +491,51 @@ public class CardModifierPatches
             {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(CardGroup.class, "addToTop");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+    }
+
+    public static class ModifierClassFilter implements ClassFilter {
+        public boolean accept(ClassInfo info, ClassFinder finder) {
+            if (info != null) {
+                HashMap<String, ClassInfo> superClasses = new HashMap<>();
+                finder.findAllSuperClasses(info, superClasses);
+                if (superClasses.containsKey(AbstractCardModifier.class.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public static RuntimeTypeAdapterFactory<AbstractCardModifier> modifierAdapter;
+
+    public static void initializeAdapterFactory() {
+        modifierAdapter = RuntimeTypeAdapterFactory.of(AbstractCardModifier.class, "classname");
+        ClassFinder finder = new ClassFinder();
+        for (ModInfo info : Loader.MODINFOS) {
+            if (info.jarURL != null) {
+                try {
+                    finder.add(new File(info.jarURL.toURI()));
+                } catch (URISyntaxException ignored) {
+
+                }
+            }
+        }
+        AndClassFilter filter = new AndClassFilter(
+                new NotClassFilter(new AbstractClassFilter()),
+                new ModifierClassFilter()
+        );
+        ArrayList<ClassInfo> cardModifiers = new ArrayList<>();
+        finder.findClasses(cardModifiers, filter);
+        for (ClassInfo info : cardModifiers) {
+            try {
+                Class c = Class.forName(info.getClassName());
+                if (!c.isAnnotationPresent(AbstractCardModifier.SaveIgnore.class)) {
+                    modifierAdapter.registerSubtype(c, info.getClassName());
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

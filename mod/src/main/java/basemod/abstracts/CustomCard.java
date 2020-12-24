@@ -21,6 +21,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -443,10 +444,13 @@ public abstract class CustomCard extends AbstractCard {
 			return;
 		}
 
-		BitmapFont savedFont = FontHelper.cardTitleFont_small;
-		FontHelper.cardTitleFont_small = titleFont;
+		BitmapFont savedFont = FontHelper.cardTitleFont;
+		FontHelper.cardTitleFont = titleFont;
+		Boolean useSmallTitleFont = ReflectionHacks.getPrivate(this, AbstractCard.class, "useSmallTitleFont");
+		ReflectionHacks.setPrivate(this, AbstractCard.class, "useSmallTitleFont", false);
 		SpireSuper.call(sb);
-		FontHelper.cardTitleFont_small = savedFont;
+		ReflectionHacks.setPrivate(this, AbstractCard.class, "useSmallTitleFont", useSmallTitleFont);
+		FontHelper.cardTitleFont = savedFont;
 	}
 
 	private static BitmapFont generateTitleFont(float size) {
@@ -480,6 +484,10 @@ public abstract class CustomCard extends AbstractCard {
 		}
 
 		return font;
+	}
+
+	public List<String> getCardDescriptors() {
+		return Collections.emptyList();
 	}
 
 	protected Texture getPortraitImage() {

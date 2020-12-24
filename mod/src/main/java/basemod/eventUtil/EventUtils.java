@@ -67,7 +67,7 @@ public class EventUtils {
     public static HashSet<String> eventIDs = new HashSet<>(); //for normal, shrine, oneTime, and fullReplace events.
     private static int id = 0;
 
-    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, Class<? extends AbstractPlayer> playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventType type) {
+    public static <T extends AbstractEvent> void registerEvent(String ID, Class<T> eventClass, AbstractPlayer.PlayerClass playerClass, String[] actIDs, Condition spawnCondition, String overrideEvent, Condition bonusCondition, EventType type) {
         /*if (!(overrideEvent != null || spawnCondition != null || actIDs != null || playerClass != null || bonusCondition != null)) {
             eventLogger.info("Event " + eventClass.getName() + " has no special conditions, and should be registered through BaseMod instead.");
             return;
@@ -85,21 +85,7 @@ public class EventUtils {
                 spawnCondition,
                 actIDs == null ? new String[]{} : actIDs);
 
-        if (type == EventType.OVERRIDE && overrideEvent != null) {
-            c.overrideEvent = overrideEvent;
-
-            if (!overrideEvents.containsKey(overrideEvent)) {
-                overrideEvents.put(overrideEvent, new ArrayList<>());
-            }
-            overrideEvents.get(overrideEvent).add(c);
-
-            eventLogger.info("Override event " + c + " for event " + overrideEvent + " registered. " + c.getConditions());
-
-            if (bonusCondition != null) {
-                overrideBonusConditions.put(c, bonusCondition);
-                eventLogger.info("  This event has a bonus condition.");
-            }
-        } else if (type == EventType.FULL_REPLACE && overrideEvent != null) {
+        if (type == EventType.FULL_REPLACE && overrideEvent != null) {
             c.overrideEvent = ID;
 
             if (!fullReplaceEventList.containsKey(overrideEvent)) {
@@ -113,6 +99,20 @@ public class EventUtils {
             if (bonusCondition != null) {
                 normalEventBonusConditions.put(ID, bonusCondition);
                 specialEventBonusConditions.put(ID, bonusCondition);
+                eventLogger.info("  This event has a bonus condition.");
+            }
+        } else if (overrideEvent != null) { // type == EventType.OVERRIDE && 
+            c.overrideEvent = overrideEvent;
+
+            if (!overrideEvents.containsKey(overrideEvent)) {
+                overrideEvents.put(overrideEvent, new ArrayList<>());
+            }
+            overrideEvents.get(overrideEvent).add(c);
+
+            eventLogger.info("Override event " + c + " for event " + overrideEvent + " registered. " + c.getConditions());
+
+            if (bonusCondition != null) {
+                overrideBonusConditions.put(c, bonusCondition);
                 eventLogger.info("  This event has a bonus condition.");
             }
         } else if (type == EventType.ONE_TIME) {
