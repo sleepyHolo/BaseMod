@@ -83,7 +83,10 @@ public class CardBorderGlowManager {
                 retVal.add(info);
             }
         }
+        
+        //if card is glowing a different color than the default light blue, include it.
         if (!card.glowColor.equals(defaultGlowColor)) {
+            Color color = card.glowColor.cpy();
             retVal.add(new GlowInfo() {
                 @Override
                 public boolean test(AbstractCard card) {
@@ -92,7 +95,7 @@ public class CardBorderGlowManager {
 
                 @Override
                 public Color getColor(AbstractCard card) {
-                    return defaultGlowColor.cpy();
+                    return color.cpy();
                 }
 
                 @Override
@@ -123,7 +126,6 @@ public class CardBorderGlowManager {
     public static class RenderGlowPatch {
         private static FrameBuffer fbo = createBuffer();
         private static FrameBuffer maskfbo = createBuffer();
-        private static Method renderGlowMethod = null;
         private static ShapeRenderer shape = new ShapeRenderer();
 
         private static TextureRegion currentMask = null;
@@ -161,7 +163,7 @@ public class CardBorderGlowManager {
                 currentRender = colorTracker.get(0);
                 colorTracker.remove(currentRender);
 
-                //if one than one border glow, create a mask, then begin a framebuffer
+                //if more than one border glow, create a mask, then begin a framebuffer
                 if (masks != null) {
                     sb.end();
                     beginBuffer(maskfbo);
@@ -211,11 +213,7 @@ public class CardBorderGlowManager {
 
                     //if not all colors have been rendered, call the method again.
                 } else {
-                    if (renderGlowMethod == null) {
-                        renderGlowMethod = AbstractCard.class.getDeclaredMethod("renderGlow", SpriteBatch.class);
-                        renderGlowMethod.setAccessible(true);
-                    }
-                    renderGlowMethod.invoke(__instance, sb);
+                    ReflectionHacks.privateMethod(AbstractCard.class, "renderGlow", SpriteBatch.class).invoke(__instance, sb);
                 }
             }
         }
