@@ -18,7 +18,6 @@ import javassist.expr.MethodCall;
 import java.util.ArrayList;
 
 public class CardPowerTipsInTipHelperPatch {
-    private static final float DRAW_SCALE = 0.8f;
     private static Float boxW;
     private static Float boxEdgeH;
 
@@ -28,11 +27,11 @@ public class CardPowerTipsInTipHelperPatch {
     )
     public static class PowerTipHeightPatch {
         public static SpireReturn<Float> Prefix(PowerTip powerTip) {
-            if (powerTip instanceof CardPowerTip && powerTip.header == null || powerTip.body == null) {
+            if (powerTip instanceof CardPowerTip && (powerTip.header == null || powerTip.body == null)) {
                 if (boxEdgeH == null) {
                     boxEdgeH = (float)ReflectionHacks.getPrivateStatic(TipHelper.class, "BOX_EDGE_H") * 3.15f;
                 }
-                return SpireReturn.Return((AbstractCard.IMG_HEIGHT * DRAW_SCALE) + (boxEdgeH / 2.0f));
+                return SpireReturn.Return((AbstractCard.IMG_HEIGHT * ((CardPowerTip)powerTip).cardScale) + (boxEdgeH / 2.0f));
             }
             return SpireReturn.Continue();
         }
@@ -43,7 +42,7 @@ public class CardPowerTipsInTipHelperPatch {
                 if (boxEdgeH == null) {
                     boxEdgeH = (float)ReflectionHacks.getPrivateStatic(TipHelper.class, "BOX_EDGE_H") * 3.15f;
                 }
-                return __result + (AbstractCard.IMG_HEIGHT * DRAW_SCALE) + (boxEdgeH / 2.0f);
+                return __result + (AbstractCard.IMG_HEIGHT * ((CardPowerTip)powerTip).cardScale) + (boxEdgeH / 2.0f);
             }
             return __result;
         }
@@ -88,14 +87,14 @@ public class CardPowerTipsInTipHelperPatch {
                 }
                 AbstractCard card = ((CardPowerTip)tip).card;
                 card.current_x = x + (boxW / 2.0f);
-                card.current_y = y - (((CardPowerTip)tip).textHeight + ((AbstractCard.IMG_HEIGHT / 2.0f) * DRAW_SCALE));
+                card.current_y = y - (((CardPowerTip)tip).textHeight + ((AbstractCard.IMG_HEIGHT / 2.0f) * ((CardPowerTip)tip).cardScale));
                 if (((CardPowerTip)tip).body != null) {
                     if (boxEdgeH == null) {
                         boxEdgeH = (float)ReflectionHacks.getPrivateStatic(TipHelper.class, "BOX_EDGE_H") * 3.15f;
                     }
                     card.current_y -= (boxEdgeH / 4.0F) * 3.0F;
                 }
-                card.drawScale = DRAW_SCALE;
+                card.drawScale = ((CardPowerTip)tip).cardScale;
                 card.render(sb);
             }
         }
