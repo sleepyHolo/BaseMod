@@ -16,7 +16,6 @@ import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
 import javassist.CtBehavior;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,7 +84,8 @@ public class CardBorderGlowManager {
         }
         
         //if card is glowing a different color than the default light blue, include it.
-        if (!card.glowColor.equals(defaultGlowColor)) {
+        //can't use Color.equals because cards often change their glow color alpha
+        if (card.glowColor.r != defaultGlowColor.r || card.glowColor.g != defaultGlowColor.g || card.glowColor.b != defaultGlowColor.b) {
             Color color = card.glowColor.cpy();
             retVal.add(new GlowInfo() {
                 @Override
