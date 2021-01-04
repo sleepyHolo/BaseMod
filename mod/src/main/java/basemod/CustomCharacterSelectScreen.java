@@ -96,6 +96,16 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             );
         }
 
+        leftArrow.move(
+                offsetX - 220.0F * Settings.scale,
+                (Settings.isFourByThree ? 254.0F : 190.0F) * Settings.scale
+        );
+
+        rightArrow.move(
+                offsetX + (float)count * 220.0F * Settings.scale,
+                (Settings.isFourByThree ? 254.0F : 190.0F) * Settings.scale
+        );
+
     }
 
     private void setCurrentOptions(boolean rightClicked){
@@ -137,6 +147,12 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             this.w = (int)(Settings.scale * arrow.getWidth());
             this.h = (int)(Settings.scale * arrow.getHeight());
             this.hitbox = new Hitbox(x,y,w,h);
+        }
+
+        public void move(float newX, float newY) {
+            x = (int) (newX - w / 2f);
+            y = (int) (newY - h / 2f);
+            hitbox.move(newX, newY);
         }
 
         @Override
@@ -185,6 +201,12 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             this.w = (int)(Settings.scale * arrow.getWidth());
             this.h = (int)(Settings.scale * arrow.getHeight());
             this.hitbox = new Hitbox(x,y,w,h);
+        }
+
+        public void move(float newX, float newY) {
+            x = (int) (newX - w / 2f);
+            y = (int) (newY - h / 2f);
+            hitbox.move(newX, newY);
         }
 
         @Override
