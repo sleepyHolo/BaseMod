@@ -751,7 +751,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add CloneablePower to base game powers introduced with v2.0 (Raz)
 * Fix crash with act command (Raz)
 
-#### dev ####
+#### v5.29.0 ####
 * Improve typing for dev console (Alchyr)
 * Fix crash to do with CardModifier with SaveIgnore in the master deck (JohnnyDevo)
 * New CardModifier hook: shouldApply (JohnnyDevo)
@@ -764,3 +764,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom reward rendering on ultra-wide resolutions (NotInTheFace)
 * Fix character select screen on ultra-wide resolutions (NotInTheFace)
 * VfxBuilder (NotInTheFace)
+
+#### dev ####
