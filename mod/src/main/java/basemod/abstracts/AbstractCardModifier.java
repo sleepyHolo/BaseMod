@@ -173,6 +173,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * return false to make the modifier not apply to the passed card.
+     */
+    public boolean shouldApply(AbstractCard card) {
+        return true;
+    }
+
+    /**
      * lower number = calculates first. For list sorting purposes. Don't override. Or do, I'm a comment, not a cop.
      */
     @Override
