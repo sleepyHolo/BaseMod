@@ -752,3 +752,15 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash with act command (Raz)
 
 #### dev ####
+* Improve typing for dev console (Alchyr)
+* Fix crash to do with CardModifier with SaveIgnore in the master deck (JohnnyDevo)
+* New CardModifier hook: shouldApply (JohnnyDevo)
+* CardPowerTips (JohnnyDevo)
+  * Display a card in a tooltip
+* CardBorderGlowManager (JohnnyDevo)
+  * Allows card to have multiple glow colors at once
+* No longer cull potion rewards (erasels)
+  * BaseMod allows more than 5 combat rewards
+* Fix custom reward rendering on ultra-wide resolutions (NotInTheFace)
+* Fix character select screen on ultra-wide resolutions (NotInTheFace)
+* VfxBuilder (NotInTheFace)
