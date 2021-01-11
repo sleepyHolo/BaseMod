@@ -1,5 +1,7 @@
 package basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 
+import basemod.BaseMod;
+import basemod.interfaces.PreUpdateSubscriber;
 import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,7 +13,11 @@ import com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor;
 
 import java.util.ArrayList;
 
-public class TextInput {
+public class TextInput implements PreUpdateSubscriber {
+    static {
+        BaseMod.subscribe(new TextInput());
+    }
+
     public static String text = "";
 
     private static final char BACKSPACE = 8;
@@ -23,7 +29,15 @@ public class TextInput {
 
     private static int currentCharLimit = -1;
 
-    private static ArrayList<TextReceiver> receivers = new ArrayList<>();
+    private static final ArrayList<TextReceiver> receivers = new ArrayList<>();
+
+    @Override
+    public void receivePreUpdate() {
+        if (receivers.size() > 0 && receivers.get(0).isDone())
+        {
+            stopTextReceiver(receivers.get(0));
+        }
+    }
 
     public static boolean isTextInputActive()
     {

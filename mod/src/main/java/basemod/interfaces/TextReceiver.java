@@ -3,6 +3,7 @@ package basemod.interfaces;
 public interface TextReceiver {
     String getCurrentText();
     void setText(String updatedText);
+    boolean isDone();
 
     //If you need additional input for extra functionality.
     default boolean onKeyDown(int keycode) { return false; }
