@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.IntStream;
 
 /**
@@ -83,8 +80,10 @@ public class VfxBuilder {
     private List<Predicate<Float>> updaters;
     private final Queue<List<Predicate<Float>>> animStages;
     private final Queue<Float> durationList;
+    private final Queue<Consumer<VfxBuilder>> phaseCompleteCallbacks;
     private boolean additive = false;
     private BiConsumer<VfxBuilder, SpriteBatch> postRenderFn = null;
+    private Consumer<VfxBuilder> phaseCompleteCallback = null;
 
     /**
      * Build a visual effect using an AtlasRegion
@@ -102,6 +101,7 @@ public class VfxBuilder {
         updaters = new ArrayList<>();
         animStages = new LinkedList<>();
         durationList = new LinkedList<>();
+        phaseCompleteCallbacks = new LinkedList<>();
     }
 
     /**
@@ -180,31 +180,87 @@ public class VfxBuilder {
     private Function<Float, Float> interpolator(float from, float to, Interpolations interpolation) {
         switch (interpolation) {
             case BOUNCE:
-                return t -> Interpolation.bounceOut.apply(from, to, t);
+                return t -> Interpolation.bounce.apply(from, to, t);
             case BOUNCEIN:
                 return t -> Interpolation.bounceIn.apply(from, to, t);
+            case BOUNCEOUT:
+                return t -> Interpolation.bounceOut.apply(from, to, t);
             case CIRCLE:
-                return t -> Interpolation.circleOut.apply(from, to, t);
+                return t -> Interpolation.circle.apply(from, to, t);
             case CIRCLEIN:
                 return t -> Interpolation.circleIn.apply(from, to, t);
+            case CIRCLEOUT:
+                return t -> Interpolation.circleOut.apply(from, to, t);
             case ELASTIC:
-                return t -> Interpolation.elasticOut.apply(from, to, t);
+                return t -> Interpolation.elastic.apply(from, to, t);
             case ELASTICIN:
                 return t -> Interpolation.elasticIn.apply(from, to, t);
+            case ELASTICOUT:
+                return t -> Interpolation.elasticOut.apply(from, to, t);
             case EXP5:
-                return t -> Interpolation.exp5Out.apply(from, to, t);
+                return t -> Interpolation.exp5.apply(from, to, t);
             case EXP5IN:
                 return t -> Interpolation.exp5In.apply(from, to, t);
+            case EXP5OUT:
+                return t -> Interpolation.exp5Out.apply(from, to, t);
             case EXP10:
-                return t -> Interpolation.exp10Out.apply(from, to, t);
+                return t -> Interpolation.exp10.apply(from, to, t);
             case EXP10IN:
                 return t -> Interpolation.exp10In.apply(from, to, t);
+            case EXP10OUT:
+                return t -> Interpolation.exp10Out.apply(from, to, t);
+            case FADE:
+                return t -> Interpolation.fade.apply(from, to, t);
+            case POW2:
+                return t -> Interpolation.pow2.apply(from, to, t);
+            case POW2IN:
+                return t -> Interpolation.pow2In.apply(from, to, t);
+            case POW2IN_INVERSE:
+                return t -> Interpolation.pow2InInverse.apply(from, to, t);
+            case POW2OUT:
+                return t -> Interpolation.pow2Out.apply(from, to, t);
+            case POW2OUT_INVERSE:
+                return t -> Interpolation.pow2OutInverse.apply(from, to, t);
+            case POW3:
+                return t -> Interpolation.pow3.apply(from, to, t);
+            case POW3IN:
+                return t -> Interpolation.pow3In.apply(from, to, t);
+            case POW3IN_INVERSE:
+                return t -> Interpolation.pow3InInverse.apply(from, to, t);
+            case POW3OUT:
+                return t -> Interpolation.pow3Out.apply(from, to, t);
+            case POW3OUT_INVERSE:
+                return t -> Interpolation.pow3OutInverse.apply(from, to, t);
+            case POW4:
+                return t -> Interpolation.pow4.apply(from, to, t);
+            case POW4IN:
+                return t -> Interpolation.pow4In.apply(from, to, t);
+            case POW4OUT:
+                return t -> Interpolation.pow4Out.apply(from, to, t);
+            case POW5:
+                return t -> Interpolation.pow5.apply(from, to, t);
+            case POW5IN:
+                return t -> Interpolation.pow5In.apply(from, to, t);
+            case POW5OUT:
+                return t -> Interpolation.pow5Out.apply(from, to, t);
+            case SINE:
+                return t -> Interpolation.sine.apply(from, to, t);
+            case SINEIN:
+                return t -> Interpolation.sineIn.apply(from, to, t);
+            case SINEOUT:
+                return t -> Interpolation.sineOut.apply(from, to, t);
             case SMOOTH:
                 return t -> Interpolation.smooth.apply(from, to, t);
+            case SMOOTH2:
+                return t -> Interpolation.smooth2.apply(from, to, t);
+            case SMOOTHER:
+                return t -> Interpolation.smoother.apply(from, to, t);
             case SWING:
-                return t -> Interpolation.swingOut.apply(from, to, t);
+                return t -> Interpolation.swing.apply(from, to, t);
             case SWINGIN:
                 return t -> Interpolation.swingIn.apply(from, to, t);
+            case SWINGOUT:
+                return t -> Interpolation.swingOut.apply(from, to, t);
             case LINEAR: // fallthrough
             default:
                 return t -> Interpolation.linear.apply(from, to, t);
@@ -693,15 +749,44 @@ public class VfxBuilder {
     public VfxBuilder andThen(float nextDuration) {
         animStages.add(updaters);
         durationList.add(duration);
+        phaseCompleteCallbacks.add(phaseCompleteCallback);
         updaters = new ArrayList<>();
         duration = nextDuration;
+        phaseCompleteCallback = null;
+        return this;
+    }
+
+    /**
+     * Calls a function when this stage of the effect is started.
+     * @param callback A function that will be called with the current state of the builder when this phase begins.
+     * @return this builder
+     */
+    public VfxBuilder whenStarted(Consumer<VfxBuilder> callback) {
+        updaters.add(t -> {
+            callback.accept(this);
+            return true;
+        });
+        return this;
+    }
+
+    /**
+     * Calls a function when this stage of the animation is completed.
+     * @param callback A function that will be called with the current state of the builder when this phase is complete.
+     * @return this builder
+     */
+    public VfxBuilder whenComplete(Consumer<VfxBuilder> callback) {
+        phaseCompleteCallback = callback;
         return this;
     }
 
     private boolean nextStage() {
+        if (phaseCompleteCallback != null) {
+            phaseCompleteCallback.accept(this);
+        }
         if (durationList.size() > 0) {
             duration = durationList.poll();
             updaters = animStages.poll();
+            phaseCompleteCallback = phaseCompleteCallbacks.poll();
             return false;
         } else {
             return true;
@@ -719,6 +804,8 @@ public class VfxBuilder {
     public AbstractGameEffect build() {
         durationList.add(duration);
         animStages.add(updaters);
+        phaseCompleteCallbacks.add(phaseCompleteCallback);
+        phaseCompleteCallback = null;
         nextStage();
         return new BuiltEffect(this);
     }
@@ -794,18 +881,46 @@ public class VfxBuilder {
      */
     public enum Interpolations {
         BOUNCE,
-        CIRCLE,
-        ELASTIC,
-        EXP5,
-        EXP10,
-        LINEAR,
-        SMOOTH,
-        SWING,
         BOUNCEIN,
+        BOUNCEOUT,
+        CIRCLE,
         CIRCLEIN,
+        CIRCLEOUT,
+        ELASTIC,
         ELASTICIN,
+        ELASTICOUT,
+        EXP5,
         EXP5IN,
+        EXP5OUT,
+        EXP10,
         EXP10IN,
-        SWINGIN
+        EXP10OUT,
+        FADE,
+        LINEAR,
+        POW2,
+        POW2IN,
+        POW2IN_INVERSE,
+        POW2OUT,
+        POW2OUT_INVERSE,
+        POW3,
+        POW3IN,
+        POW3IN_INVERSE,
+        POW3OUT,
+        POW3OUT_INVERSE,
+        POW4,
+        POW4IN,
+        POW4OUT,
+        POW5,
+        POW5IN,
+        POW5OUT,
+        SINE,
+        SINEIN,
+        SINEOUT,
+        SMOOTH,
+        SMOOTH2,
+        SMOOTHER,
+        SWING,
+        SWINGIN,
+        SWINGOUT
     }
 }
