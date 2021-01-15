@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -72,17 +73,18 @@ import java.util.stream.IntStream;
  */
 public class VfxBuilder {
     private float duration;
-    private float scale = 1f;
-    private float angle = 0f;
-    private float alpha = 1f;
-    private float x;
-    private float y;
+    public float scale = 1f;
+    public float angle = 0f;
+    public float alpha = 1f;
+    public float x;
+    public float y;
     private final AtlasRegion img;
     private Color color = Color.WHITE.cpy();
     private List<Predicate<Float>> updaters;
     private final Queue<List<Predicate<Float>>> animStages;
     private final Queue<Float> durationList;
     private boolean additive = false;
+    private BiConsumer<VfxBuilder, SpriteBatch> postRenderFn = null;
 
     /**
      * Build a visual effect using an AtlasRegion
@@ -667,6 +669,22 @@ public class VfxBuilder {
     }
 
     /**
+     * Calls a function after rendering each frame. Can be used to render something manually (like text)
+     *
+     * @param callback A function that will be called after rendering the VFX each frame. It will be passed the current
+     *                 state of the builder, as well as the game's SpriteBatch. Example:
+     *                 <code>myBuilder.postRender((state, spriteBatch) -> {
+     *                 FontHelper.renderFontCenteredHeight(spriteBatch, FontHelper.damageNumberFont,
+     *                 "Test Message", builderState.x, builderState.y);
+     *                 }</code>
+     * @return this builder
+     */
+    public VfxBuilder postRender(BiConsumer<VfxBuilder, SpriteBatch> callback) {
+        postRenderFn = callback;
+        return this;
+    }
+
+    /**
      * Start a new phase of the animation that starts from the end of the current phase.
      *
      * @param nextDuration The new duration to animate over.
@@ -729,6 +747,9 @@ public class VfxBuilder {
         @Override
         public void render(SpriteBatch sb) {
             if (builder.img == null) {
+                if (builder.postRenderFn != null) {
+                    builder.postRenderFn.accept(builder, sb);
+                }
                 return;
             }
             Color color = builder.color;
@@ -755,6 +776,9 @@ public class VfxBuilder {
             );
             if (builder.additive) {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            }
+            if (builder.postRenderFn != null) {
+                builder.postRenderFn.accept(builder, sb);
             }
         }
 
