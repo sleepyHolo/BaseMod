@@ -283,6 +283,11 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 		}
 	}
 
+	@Override
+	public boolean isDone() {
+		return !visible;
+	}
+
 	public static class PriorCommandsList extends ArrayList<String>
 	{
 		private static final String HISTORY_LOCATION = SpireConfig.makeFilePath(BaseModInit.MODNAME, "console-history", "txt");
