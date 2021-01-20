@@ -765,9 +765,11 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix character select screen on ultra-wide resolutions (NotInTheFace)
 * VfxBuilder (NotInTheFace)
 
-#### dev ####
+#### v5.30.0 ####
 * More reliable input canceling (Alchyr)
 * VfxBuilder features (NotInTheFace)
   * New hook to call after rendering
   * New hooks for animation phases starting/ending
   * More interpolations
+
+#### dev ####
