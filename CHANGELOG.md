@@ -766,3 +766,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * VfxBuilder (NotInTheFace)
 
 #### dev ####
+* More reliable input canceling (Alchyr)
+* VfxBuilder features (NotInTheFace)
+  * New hook to call after rendering
+  * New hooks for animation phases starting/ending
+  * More interpolations
