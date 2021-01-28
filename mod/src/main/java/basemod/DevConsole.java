@@ -261,7 +261,7 @@ implements PostEnergyRechargeSubscriber, PostInitializeSubscriber, PostRenderSub
 
 	@Override
 	public void receivePostUpdate() {
-		if (Gdx.input.isKeyJustPressed(toggleKey)) {
+		if (enabled && Gdx.input.isKeyJustPressed(toggleKey)) {
 			AutoComplete.reset();
 
 			// only allow opening console when enabled but allow closing the console anytime

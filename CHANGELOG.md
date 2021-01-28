@@ -773,3 +773,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * More interpolations
 
 #### dev ####
+* Fix Console being openable while it's not enabled
