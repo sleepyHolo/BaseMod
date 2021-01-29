@@ -158,6 +158,12 @@ public class CardModifierManager
         }
     }
 
+    public static void onCalculateCardDamage(AbstractCard card, AbstractMonster mo) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            mod.onCalculateCardDamage(card, mo);
+        }
+    }
+
     public static String onCreateDescription(AbstractCard card, String rawDescription) {
         for (AbstractCardModifier mod : modifiers(card)) {
             rawDescription = mod.modifyDescription(rawDescription, card);

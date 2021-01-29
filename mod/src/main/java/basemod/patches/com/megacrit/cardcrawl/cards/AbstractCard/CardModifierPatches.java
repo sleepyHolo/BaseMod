@@ -35,6 +35,11 @@ public class CardModifierPatches
     )
     public static class CardModifierCalculateCardDamage
     {
+        //onCalculateCardDamage
+        public static void Postfix(AbstractCard __instance, AbstractMonster mo) {
+            CardModifierManager.onCalculateCardDamage(__instance, mo);
+        }
+
         //modifyDamage
         @SpireInsertPatch(
                 locator = DamageLocator.class,
