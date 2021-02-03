@@ -458,14 +458,16 @@ public class CardModifierPatches
     {
         public static void Postfix(AbstractCreature __instance) {
             AbstractPlayer p = AbstractDungeon.player;
-            for (AbstractCard c : p.drawPile.group) {
-                CardModifierManager.atEndOfTurn(c, p.drawPile);
-            }
-            for (AbstractCard c : p.discardPile.group) {
-                CardModifierManager.atEndOfTurn(c, p.discardPile);
-            }
-            for (AbstractCard c : p.hand.group) {
-                CardModifierManager.atEndOfTurn(c, p.hand);
+            if (__instance == p) {
+                for (AbstractCard c : p.drawPile.group) {
+                    CardModifierManager.atEndOfTurn(c, p.drawPile);
+                }
+                for (AbstractCard c : p.discardPile.group) {
+                    CardModifierManager.atEndOfTurn(c, p.discardPile);
+                }
+                for (AbstractCard c : p.hand.group) {
+                    CardModifierManager.atEndOfTurn(c, p.hand);
+                }
             }
         }
     }
