@@ -842,21 +842,19 @@ public class VfxBuilder {
             Color color = builder.color;
             color.a = builder.alpha;
             sb.setColor(color);
-            float w = builder.img.packedWidth;
-            float h = builder.img.packedHeight;
-            float halfW = w / 2f;
-            float halfH = h / 2f;
+            float halfW = builder.img.originalWidth / 2f;
+            float halfH = builder.img.originalHeight / 2f;
             if (builder.additive) {
                 sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
             }
             sb.draw(
                     builder.img,
-                    builder.x - halfW,
-                    builder.y - halfH,
-                    halfW,
-                    halfH,
-                    w,
-                    h,
+                    builder.x - (halfW - builder.img.offsetX),
+                    builder.y - (halfH - builder.img.offsetY),
+                    halfW - builder.img.offsetX,
+                    halfH - builder.img.offsetY,
+                    builder.img.packedWidth,
+                    builder.img.packedHeight,
                     builder.scale * Settings.scale,
                     builder.scale * Settings.scale,
                     builder.angle
