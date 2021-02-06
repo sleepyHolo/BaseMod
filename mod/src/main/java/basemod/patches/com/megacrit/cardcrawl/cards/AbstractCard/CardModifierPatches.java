@@ -296,7 +296,7 @@ public class CardModifierPatches
             @Override
             public int[] Locate(CtBehavior ctMethodToPatch) throws Exception
             {
-                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "timesUpgraded");
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractCard.class, "name");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
