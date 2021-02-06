@@ -772,7 +772,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * New hooks for animation phases starting/ending
   * More interpolations
 
-#### dev ####
+#### v5.30.1 ####
 * Fix Console being openable while it's not enabled
 * Fix CardModifier atEndOfTurn triggering at the end of monster turns (JohnnyDevo)
 * Fix VFXBuilder to work with packed atlases
+
+#### dev ####
