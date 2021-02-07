@@ -116,6 +116,10 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
 
     }
 
+    public void onCalculateCardDamage(AbstractCard card, AbstractMonster mo) {
+
+    }
+
     /**
      * update/render hooks. Can be used to attach particle systems to a card, or a bottle icon, or similar.
      */
