@@ -778,3 +778,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix VFXBuilder to work with packed atlases
 
 #### dev ####
+* New CardModifier hook: calculateCardDamage (JohnnyDevo)
+* Change CardModifier copy applying to new copied card after upgrades (JohnnyDevo)
+* * Fix EventUtil override bonus condition crash (Alchyr)
