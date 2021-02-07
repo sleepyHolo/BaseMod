@@ -777,7 +777,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix CardModifier atEndOfTurn triggering at the end of monster turns (JohnnyDevo)
 * Fix VFXBuilder to work with packed atlases
 
-#### dev ####
+#### v5.31.0 ####
 * New CardModifier hook: calculateCardDamage (JohnnyDevo)
 * Change CardModifier copy applying to new copied card after upgrades (JohnnyDevo)
 * * Fix EventUtil override bonus condition crash (Alchyr)
+
+#### dev ####
