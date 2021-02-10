@@ -421,8 +421,8 @@ public class CardModifierPatches
                 locator = Locator.class
         )
         public static void Insert(UseCardAction __instance, AbstractCard card, AbstractCreature target) {
-            CardModifierManager.onUseCard(card, target, __instance);
             if (!card.dontTriggerOnUseCard) {
+                CardModifierManager.onUseCard(card, target, __instance);
                 AbstractPlayer p = AbstractDungeon.player;
                 for (AbstractCard c : p.hand.group) {
                     if (c != card) {
@@ -435,8 +435,8 @@ public class CardModifierPatches
                 for (AbstractCard c : p.discardPile.group) {
                     CardModifierManager.onOtherCardPlayed(c, card, p.discardPile);
                 }
+                CardModifierManager.removeWhenPlayedModifiers(card);
             }
-            CardModifierManager.removeWhenPlayedModifiers(card);
         }
 
         private static class Locator extends SpireInsertLocator
