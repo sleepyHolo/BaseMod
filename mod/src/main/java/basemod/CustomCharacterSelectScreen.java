@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
@@ -27,12 +28,12 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
     public CustomCharacterSelectScreen(){
         super();
         leftArrow = new LeftOptionsButton(
-                "img/tinyLeftArrow.png",
+                "images/ui/popupArrow.png",
                 (int)(425 * Settings.scale),
                 (int)((Settings.isFourByThree ? 244 : 180) * Settings.scale)
         );
         rightArrow = new RightOptionsButton(
-                "img/tinyRightArrow.png",
+                "images/ui/popupArrow.png",
                 (int)(1425 * Settings.scale),
                 (int)((Settings.isFourByThree ? 244 : 180) * Settings.scale)
         );
@@ -158,7 +159,20 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
         @Override
         public void render(SpriteBatch sb) {
             sb.setColor(Color.WHITE);
-            sb.draw(arrow,x,y,w,h);
+            float halfW = arrow.getWidth() / 2f;
+            float halfH = arrow.getHeight() / 2f;
+            sb.draw(
+                    arrow,
+                    x - halfW + halfW * Settings.scale, y - halfH + halfH * Settings.scale,
+                    halfW, halfH,
+                    arrow.getWidth(), arrow.getHeight(),
+                    0.75f * Settings.scale,
+                    0.75f * Settings.scale,
+                    0f,
+                    0, 0,
+                    arrow.getWidth(), arrow.getHeight(),
+                    false, false
+            );
             hitbox.render(sb);
         }
 
@@ -212,7 +226,20 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
         @Override
         public void render(SpriteBatch sb) {
             sb.setColor(Color.WHITE);
-            sb.draw(arrow,x,y,w,h);
+            float halfW = arrow.getWidth() / 2f;
+            float halfH = arrow.getHeight() / 2f;
+            sb.draw(
+                    arrow,
+                    x - halfW + halfW * Settings.scale, y - halfH + halfH * Settings.scale,
+                    halfW, halfH,
+                    arrow.getWidth(), arrow.getHeight(),
+                    0.75f * Settings.scale,
+                    0.75f * Settings.scale,
+                    0f,
+                    0, 0,
+                    arrow.getWidth(), arrow.getHeight(),
+                    true, false
+            );
             hitbox.render(sb);
         }
 
