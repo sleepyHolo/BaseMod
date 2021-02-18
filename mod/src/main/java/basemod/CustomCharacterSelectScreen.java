@@ -145,8 +145,8 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             this.arrow = ImageMaster.loadImage(imgUrl);
             this.x = x;
             this.y = y;
-            this.w = (int)(Settings.scale * arrow.getWidth());
-            this.h = (int)(Settings.scale * arrow.getHeight());
+            this.w = (int)(Settings.scale * arrow.getWidth() / 2f);
+            this.h = (int)(Settings.scale * arrow.getHeight() / 2f);
             this.hitbox = new Hitbox(x,y,w,h);
         }
 
@@ -163,7 +163,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             float halfH = arrow.getHeight() / 2f;
             sb.draw(
                     arrow,
-                    x - halfW + halfW * Settings.scale, y - halfH + halfH * Settings.scale,
+                    x + 10f * Settings.xScale - halfW + halfW * 0.5f * Settings.scale, y + 10f * Settings.yScale - halfH + halfH * 0.5f * Settings.scale,
                     halfW, halfH,
                     arrow.getWidth(), arrow.getHeight(),
                     0.75f * Settings.scale,
@@ -212,8 +212,8 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             this.arrow = ImageMaster.loadImage(imgUrl);
             this.x = x;
             this.y = y;
-            this.w = (int)(Settings.scale * arrow.getWidth());
-            this.h = (int)(Settings.scale * arrow.getHeight());
+            this.w = (int)(Settings.scale * arrow.getWidth() / 2f);
+            this.h = (int)(Settings.scale * arrow.getHeight() / 2f);
             this.hitbox = new Hitbox(x,y,w,h);
         }
 
@@ -230,7 +230,7 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
             float halfH = arrow.getHeight() / 2f;
             sb.draw(
                     arrow,
-                    x - halfW + halfW * Settings.scale, y - halfH + halfH * Settings.scale,
+                    x - 10f * Settings.xScale - halfW + halfW * 0.5f * Settings.scale, y + 10f * Settings.yScale - halfH + halfH * 0.5f * Settings.scale,
                     halfW, halfH,
                     arrow.getWidth(), arrow.getHeight(),
                     0.75f * Settings.scale,
