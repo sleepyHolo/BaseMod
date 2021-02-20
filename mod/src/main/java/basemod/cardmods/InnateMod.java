@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 
 public class InnateMod extends AbstractCardModifier {
-    public static String ID = "InnateCardModifier";
+    public static String ID = "basemod:InnateCardModifier";
 
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return GameDictionary.INNATE.NAMES[0] + LocalizedStrings.PERIOD + " NL " + rawDescription;

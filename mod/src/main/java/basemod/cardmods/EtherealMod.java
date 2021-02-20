@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 
 public class EtherealMod extends AbstractCardModifier {
-    public static String ID = "EtherealCardModifier";
+    public static String ID = "basemod:EtherealCardModifier";
 
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return GameDictionary.ETHEREAL.NAMES[0] + LocalizedStrings.PERIOD + " NL " + rawDescription;

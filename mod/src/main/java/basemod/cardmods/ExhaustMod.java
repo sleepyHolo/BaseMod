@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 
 public class ExhaustMod extends AbstractCardModifier {
-    public static String ID = "ExhaustCardModifier";
+    public static String ID = "basemod:ExhaustCardModifier";
 
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return GameDictionary.EXHAUST.NAMES[0] + LocalizedStrings.PERIOD + " NL " + rawDescription;
