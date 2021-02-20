@@ -24,6 +24,11 @@ public class ExhaustMod extends AbstractCardModifier {
     }
 
     @Override
+    public void onRemove(AbstractCard card) {
+        card.exhaust = false;
+    }
+
+    @Override
     public AbstractCardModifier makeCopy() {
         return new ExhaustMod();
     }

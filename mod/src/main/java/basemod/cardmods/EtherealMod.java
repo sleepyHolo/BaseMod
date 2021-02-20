@@ -24,6 +24,11 @@ public class EtherealMod extends AbstractCardModifier {
     }
 
     @Override
+    public void onRemove(AbstractCard card) {
+        card.isEthereal = false;
+    }
+
+    @Override
     public AbstractCardModifier makeCopy() {
         return new EtherealMod();
     }

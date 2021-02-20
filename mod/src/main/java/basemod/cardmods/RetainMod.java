@@ -24,6 +24,11 @@ public class RetainMod extends AbstractCardModifier {
     }
 
     @Override
+    public void onRemove(AbstractCard card) {
+        card.selfRetain = false;
+    }
+
+    @Override
     public AbstractCardModifier makeCopy() {
         return new RetainMod();
     }

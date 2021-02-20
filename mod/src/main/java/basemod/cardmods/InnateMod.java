@@ -24,6 +24,11 @@ public class InnateMod extends AbstractCardModifier {
     }
 
     @Override
+    public void onRemove(AbstractCard card) {
+        card.isInnate = false;
+    }
+
+    @Override
     public AbstractCardModifier makeCopy() {
         return new InnateMod();
     }
