@@ -8,22 +8,27 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 public class ExhaustMod extends AbstractCardModifier {
     public static String ID = "basemod:ExhaustCardModifier";
 
+    @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
         return GameDictionary.EXHAUST.NAMES[0] + LocalizedStrings.PERIOD + " NL " + rawDescription;
     }
 
+    @Override
     public boolean shouldApply(AbstractCard card) {
         return !card.exhaust;
     }
 
+    @Override
     public void onInitialApplication(AbstractCard card) {
         card.exhaust = true;
     }
 
+    @Override
     public AbstractCardModifier makeCopy() {
         return new ExhaustMod();
     }
 
+    @Override
     public String identifier(AbstractCard card) {
         return ID;
     }
