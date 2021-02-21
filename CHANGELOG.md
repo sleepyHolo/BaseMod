@@ -782,7 +782,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Change CardModifier copy applying to new copied card after upgrades (JohnnyDevo)
 * * Fix EventUtil override bonus condition crash (Alchyr)
 
-#### dev ####
+#### v5.32.0 ####
 * Fix all CardMod onUse related hooks to not trigger when unplayable and autoplayed (JohnnyDevo)
 * Add standard common CardMods (Vex)
 * Make character select screen page arrows bigger (NotInTheFace)
+
+#### dev ####
