@@ -158,7 +158,11 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
         @Override
         public void render(SpriteBatch sb) {
-            sb.setColor(Color.WHITE);
+            if (hitbox.hovered) {
+                sb.setColor(Color.WHITE);
+            } else {
+                sb.setColor(Color.LIGHT_GRAY);
+            }
             float halfW = arrow.getWidth() / 2f;
             float halfH = arrow.getHeight() / 2f;
             sb.draw(
@@ -225,7 +229,11 @@ public class CustomCharacterSelectScreen extends CharacterSelectScreen {
 
         @Override
         public void render(SpriteBatch sb) {
-            sb.setColor(Color.WHITE);
+            if (hitbox.hovered) {
+                sb.setColor(Color.WHITE);
+            } else {
+                sb.setColor(Color.LIGHT_GRAY);
+            }
             float halfW = arrow.getWidth() / 2f;
             float halfH = arrow.getHeight() / 2f;
             sb.draw(
