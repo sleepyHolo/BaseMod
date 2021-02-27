@@ -788,3 +788,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make character select screen page arrows bigger (NotInTheFace)
 
 #### dev ####
+* Fix VfxBuilder.fadeOut not working for fade times greater than 1 second (kiooeht)

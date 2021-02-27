@@ -504,7 +504,7 @@ public class VfxBuilder {
      */
     public VfxBuilder fadeOut(float fadeTime) {
         updaters.add(t -> {
-            float a = MathUtils.clamp(duration - t, 0f, 1f);
+            float a = MathUtils.clamp(duration - t, 0f, fadeTime);
             alpha = t > (duration - fadeTime) ? Interpolation.fade.apply(a / fadeTime) : 1f;
             return false;
         });
