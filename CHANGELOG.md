@@ -789,3 +789,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix VfxBuilder.fadeOut not working for fade times greater than 1 second (kiooeht)
+* Fix whatmod tooltip placement on ultrawide resolutions (kiooeht)
