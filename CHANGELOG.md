@@ -787,8 +787,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add standard common CardMods (Vex)
 * Make character select screen page arrows bigger (NotInTheFace)
 
-#### dev ####
+#### v5.32.1 ####
 * Fix VfxBuilder.fadeOut not working for fade times greater than 1 second (kiooeht)
 * Fix whatmod tooltip placement on ultrawide resolutions (kiooeht)
 * Fix whatmod appearing in SCV and SRV when whatmod is disabled (kiooeht)
 * Fix card preview position in SCV on ultrawide resolutions (kiooeht)
+
+#### dev ####
