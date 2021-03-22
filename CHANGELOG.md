@@ -791,3 +791,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix VfxBuilder.fadeOut not working for fade times greater than 1 second (kiooeht)
 * Fix whatmod tooltip placement on ultrawide resolutions (kiooeht)
 * Fix whatmod appearing in SCV and SRV when whatmod is disabled (kiooeht)
+* Fix card preview position in SCV on ultrawide resolutions (kiooeht)
