@@ -794,3 +794,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card preview position in SCV on ultrawide resolutions (kiooeht)
 
 #### dev ####
+* Fix Transient crashing after turn 7 if Fading is removed (kiooeht)
