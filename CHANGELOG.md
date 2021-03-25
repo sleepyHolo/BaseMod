@@ -793,6 +793,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix whatmod appearing in SCV and SRV when whatmod is disabled (kiooeht)
 * Fix card preview position in SCV on ultrawide resolutions (kiooeht)
 
-#### dev ####
+#### v5.32.2 ####
 * Fix Transient crashing after turn 7 if Fading is removed (kiooeht)
 * Fix mod config panel placement on ultrawide resolutions (kiooeht)
+
+#### dev ####
