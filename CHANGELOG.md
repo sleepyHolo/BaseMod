@@ -795,3 +795,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix Transient crashing after turn 7 if Fading is removed (kiooeht)
+* Fix mod config panel placement on ultrawide resolutions (kiooeht)
