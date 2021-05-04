@@ -689,9 +689,13 @@ public class BaseMod {
 			CtClass ctCls = pool.get(AbstractPower.class.getName());
 			String url = ctCls.getURL().getFile();
 			int i = url.lastIndexOf('!');
-			url = url.substring(0, i);
-			URL locationURL = new URL(url);
-			finder.add(new File(locationURL.toURI()));
+			if (i >= 0) {
+				url = url.substring(0, i);
+			}
+			if (url.endsWith(".jar")) {
+				URL locationURL = new URL(url);
+				finder.add(new File(locationURL.toURI()));
+			}
 
 			ClassFilter filter = new AndClassFilter(
 					new NotClassFilter(new InterfaceOnlyClassFilter()),

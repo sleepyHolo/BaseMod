@@ -798,3 +798,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix mod config panel placement on ultrawide resolutions (kiooeht)
 
 #### dev ####
+* Fix possible crash with initializePowerMap and WhatMod (kiooeht)

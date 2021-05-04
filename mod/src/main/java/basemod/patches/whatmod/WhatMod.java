@@ -65,8 +65,12 @@ public class WhatMod
 				CtClass ctCls = pool.get(cls.getName());
 				String url = ctCls.getURL().getFile();
 				int i = url.lastIndexOf('!');
-				url = url.substring(0, i);
-				locationURL = new URL(url);
+				if (i >= 0) {
+					url = url.substring(0, i);
+				}
+				if (url.endsWith(".jar")) {
+					locationURL = new URL(url);
+				}
 			} catch (NotFoundException | MalformedURLException ignored) {
 				return null;
 			}
