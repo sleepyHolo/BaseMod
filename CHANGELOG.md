@@ -797,6 +797,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Transient crashing after turn 7 if Fading is removed (kiooeht)
 * Fix mod config panel placement on ultrawide resolutions (kiooeht)
 
-#### dev ####
+#### v5.32.3 ####
 * Fix possible crash with initializePowerMap and WhatMod (kiooeht)
 * Fix SingleCardView variable width with additional character (Alchyr)
+
+#### dev ####
