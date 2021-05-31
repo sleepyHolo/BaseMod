@@ -803,3 +803,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix AbstractPotion.addToTop being an infinite loop (kiooeht)
+* Reset seen events every 3 acts so they return to the pool in endless (Alchyr)
