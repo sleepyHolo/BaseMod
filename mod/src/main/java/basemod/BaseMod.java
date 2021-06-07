@@ -1613,10 +1613,10 @@ public class BaseMod {
 		}
 
 		if (maxUnlockLevel.containsKey(c)) {
-			maxUnlockLevel.put(c, Math.max(maxUnlockLevel.get(c), unlockLevel));
+			maxUnlockLevel.put(c, Math.max(maxUnlockLevel.get(c), unlockLevel + 1));
 		}
 		else {
-			maxUnlockLevel.put(c, unlockLevel);
+			maxUnlockLevel.put(c, unlockLevel + 1);
 		}
 	}
 
