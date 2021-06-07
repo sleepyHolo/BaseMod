@@ -801,9 +801,11 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix possible crash with initializePowerMap and WhatMod (kiooeht)
 * Fix SingleCardView variable width with additional character (Alchyr)
 
-#### dev ####
+#### v5.33.0 ####
 * Fix AbstractPotion.addToTop being an infinite loop (kiooeht)
 * Reset seen events every 3 acts so they return to the pool in endless (Alchyr)
 * Add NoLibraryType annotation for CardColor SpireEnums (kiooeht)
 * Fix incorrect unlock count in character select screen (codewarrior0)
 * Fix Purple Cards run modifier not working for custom characters (codewarrior0)
+
+#### dev ####
