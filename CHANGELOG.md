@@ -809,3 +809,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Purple Cards run modifier not working for custom characters (codewarrior0)
 
 #### dev ####
+* Fix scrolling tooltips on ultrawide resolutions (kiooeht)
