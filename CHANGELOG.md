@@ -812,3 +812,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix scrolling tooltips on ultrawide resolutions (kiooeht)
 
 #### dev ####
+* Fix custom mode mods sometime persisting between runs (JohnnyDevo)
