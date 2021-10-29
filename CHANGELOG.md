@@ -811,6 +811,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.33.1 ####
 * Fix scrolling tooltips on ultrawide resolutions (kiooeht)
 
-#### dev ####
+#### v5.34.0 ####
 * Fix custom mode mods sometime persisting between runs (JohnnyDevo)
 * Console command for manipulating variables (Alchyr)
+
+#### dev ####
