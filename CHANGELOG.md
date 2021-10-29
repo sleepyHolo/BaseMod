@@ -813,3 +813,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix custom mode mods sometime persisting between runs (JohnnyDevo)
+* Console command for manipulating variables (Alchyr)
