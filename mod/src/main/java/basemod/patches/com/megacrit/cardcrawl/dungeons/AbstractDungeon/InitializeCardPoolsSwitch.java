@@ -34,6 +34,10 @@ public class InitializeCardPoolsSwitch {
 		AbstractPlayer player = AbstractDungeon.player;
 		AbstractPlayer.PlayerClass chosenClass = player.chosenClass;
 
+		if (AbstractPlayer.customMods == null) {
+			AbstractPlayer.customMods = new ArrayList<>();
+		}
+
 		// Diverse
 		if (ModHelper.isModEnabled(Diverse.ID)) {
 			for (AbstractPlayer character : BaseMod.getModdedCharacters()) {

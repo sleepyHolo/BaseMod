@@ -816,3 +816,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Console command for manipulating variables (Alchyr)
 
 #### dev ####
+* Fix crash with custom mods being null
