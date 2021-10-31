@@ -815,5 +815,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom mode mods sometime persisting between runs (JohnnyDevo)
 * Console command for manipulating variables (Alchyr)
 
-#### dev ####
+#### v5.34.1 ####
 * Fix crash with custom mods being null
+
+#### dev ####
