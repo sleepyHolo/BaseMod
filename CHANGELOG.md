@@ -818,5 +818,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.34.1 ####
 * Fix crash with custom mods being null
 
-#### dev ####
+#### v5.34.2 ####
 * Fix card border glow crash in library (JohnnyDevo)
+
+#### dev ####
