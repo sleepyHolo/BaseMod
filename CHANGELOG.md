@@ -822,3 +822,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card border glow crash in library (JohnnyDevo)
 
 #### dev ####
+* Fix monsters not passing to multitarget card modifiers (JohnnyDevo)
