@@ -511,7 +511,7 @@ public class VfxBuilder {
         return this;
     }
     
-      /**
+    /**
      * Fade out the image to transparent at the end of the effect duration.
      *
      * @param fadeTime the time to start fading the image
