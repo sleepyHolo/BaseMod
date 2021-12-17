@@ -3,6 +3,7 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInstrumentPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -16,12 +17,22 @@ import java.util.regex.Pattern;
 
 public class DynamicTextBlocks {
 
-    //TODO: patch apply powers and calc damage and stuff
+    //TODO: make this all less inefficient
 
+    @SpirePatch(clz = AbstractCard.class, method = "applyPowers")
+    @SpirePatch(clz = AbstractCard.class, method = "calculateCardDamage")
+    public static class AutoupdateText {
+        @SpirePostfixPatch
+        public static void updateAfterVarChange(AbstractCard __instance) {
+            if (__instance.rawDescription.matches(".*(\\[!.*?!\\|).*?(\\|]).*")) {
+                __instance.initializeDescription();
+            }
+        }
+    }
 
     @SpirePatch(clz = AbstractCard.class, method = "initializeDescription")
     @SpirePatch(clz = AbstractCard.class, method = "initializeDescriptionCN")
-    public static class BeDifferentColorPls {
+    public static class ProcessDynamicText {
         @SpireInstrumentPatch
         public static ExprEditor patch() {
             return new ExprEditor() {
@@ -39,7 +50,7 @@ public class DynamicTextBlocks {
 
     public static String[] checkForUnwrapping(AbstractCard c, String[] splitText) {
         String baseText = String.join(" ", splitText);
-        String regex = "(\\[!.*?!\\|).*?(\\|@])";
+        String regex = "(\\[!.*?!\\|).*?(\\|])";
         if (baseText.matches(".*"+regex+".*")) {
             String temp = baseText.replaceAll(regex,"@temp@");
             ArrayList<String> toUnwrap = new ArrayList<>();
@@ -64,7 +75,7 @@ public class DynamicTextBlocks {
             if (key.endsWith("@]")) {
                 key = key.replace("*d", "D").replace("*b", "B").replace("*m", "M");
             }
-            key = key.substring(1, key.length()-3);
+            key = key.substring(1, key.length()-2);
             String[] parts = key.split("\\|");
             Integer var = null;
             if (parts[0].equals("!D!")) {
