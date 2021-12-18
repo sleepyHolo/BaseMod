@@ -138,7 +138,7 @@ public class DynamicTextBlocks {
                 var = c.block;
             } else if (parts[0].equals("!M!")) {
                 var = c.magicNumber;
-            } else if (parts[0].equals("!L!")) {
+            } else if (parts[0].equals("!Location!")) {
                 //Used to grab the location of the card. Isn't a real dynvar, but we can pretend =]
                 var = -1; //Master Deck, Compendium, Limbo, modded CardGroups
                 if (CardCrawlGame.dungeon != null && AbstractDungeon.player != null) {
@@ -153,6 +153,9 @@ public class DynamicTextBlocks {
                         var = 3;
                     }
                 }
+            } else if (parts[0].equals("!Upgrades!")) {
+                //Used to grab the amount of times the card was upgraded. Again, isnt a real dynvar
+                var = c.timesUpgraded;
             } else if (BaseMod.cardDynamicVariableMap.containsKey(parts[0].replace("!",""))) {
                 //Check to see if it's a recognized dynvar registered by some mod
                 var = BaseMod.cardDynamicVariableMap.get(parts[0].replace("!","")).value(c);
