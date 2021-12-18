@@ -95,7 +95,7 @@ public class DynamicTextBlocks {
     }
 
     public static String[] checkForUnwrapping(AbstractCard c, String[] splitText) {
-        //Rejoin the text that has since been split into works
+        //Rejoin the text that has since been split into words
         String baseText = String.join(" ", splitText);
         String regex = "(\\[!.*?!\\|).*?(\\|])";
         //If the string contains the regex, we need to unpack it
@@ -107,6 +107,7 @@ public class DynamicTextBlocks {
             Pattern p = Pattern.compile(regex);
             java.util.regex.Matcher m = p.matcher(baseText);
             while (m.find()) {
+                //unwrap them as we add our text to the array
                 toUnwrap.add(unwrap(c, m.group()));
             }
             //Once all the unwrapping is done, replace the @temp@ pieces with our new strings
@@ -114,7 +115,7 @@ public class DynamicTextBlocks {
                 temp = temp.replaceFirst("@temp@", toUnwrap.get(0));
                 toUnwrap.remove(0);
             }
-            //Return our unpacked string
+            //Return our unpacked string that has been split
             return temp.split(" ");
         } else {
             //Else just return the re-split string as normal
@@ -122,96 +123,92 @@ public class DynamicTextBlocks {
         }
     }
 
-    public static String unwrap(AbstractCard c, String string) {
-        //TODO redundant check
-        if (string.length() > 0 && string.charAt(0) == '[') {
-            String key = string.trim();
-            //Cut the leading [ and the trailing |] and then split the string along each |
-            key = key.substring(1, key.length()-2);
-            String[] parts = key.split("\\|");
-            //Our first piece will always be the dynamic variable we care about. Find its value
-            Integer var = null;
-            if (parts[0].equals("!D!")) {
-                //Uses !D! for damage, just like normal dynvars, same applies to !B! and !M!
-                var = c.damage;
-            } else if (parts[0].equals("!B!")) {
-                var = c.block;
-            } else if (parts[0].equals("!M!")) {
-                var = c.magicNumber;
-            } else if (parts[0].equals("!Location!")) {
-                //Used to grab the location of the card. Isn't a real dynvar, but we can pretend =]
-                var = -1; //Master Deck, Compendium, Limbo, modded CardGroups
-                if (CardCrawlGame.dungeon != null && AbstractDungeon.player != null) {
-                    if (AbstractDungeon.player.hand.contains(c)) {
-                        var = 0;
-                    } else if (AbstractDungeon.player.drawPile.contains(c)) {
-                        var = 1;
-                    } else if (AbstractDungeon.player.discardPile.contains(c)) {
-                        var = 2;
-                    } else if (AbstractDungeon.player.exhaustPile.contains(c) || ExhaustViewFixField.exhaustViewCopy.get(c)) {
-                        //This is where we need the field. Without it this will default back to -1 as the cards shown in the Exhaust View are copies that arent actually in the exhaust pile
-                        var = 3;
-                    }
+    public static String unwrap(AbstractCard c, String key) {
+        //Cut the leading [ and the trailing |] and then split the string along each |
+        key = key.substring(1, key.length()-2);
+        String[] parts = key.split("\\|");
+        //Our first piece will always be the dynamic variable we care about. Find its value
+        Integer var = null;
+        if (parts[0].equals("!D!")) {
+            //Uses !D! for damage, just like normal dynvars, same applies to !B! and !M!
+            var = c.damage;
+        } else if (parts[0].equals("!B!")) {
+            var = c.block;
+        } else if (parts[0].equals("!M!")) {
+            var = c.magicNumber;
+        } else if (parts[0].equals("!Location!")) {
+            //Used to grab the location of the card. Isn't a real dynvar, but we can pretend
+            var = -1; //Master Deck, Compendium, Limbo, modded CardGroups
+            if (CardCrawlGame.dungeon != null && AbstractDungeon.player != null) {
+                if (AbstractDungeon.player.hand.contains(c)) {
+                    var = 0;
+                } else if (AbstractDungeon.player.drawPile.contains(c)) {
+                    var = 1;
+                } else if (AbstractDungeon.player.discardPile.contains(c)) {
+                    var = 2;
+                } else if (AbstractDungeon.player.exhaustPile.contains(c) || ExhaustViewFixField.exhaustViewCopy.get(c)) {
+                    //This is where we need the field. Without it this will default back to -1 as the cards shown in the Exhaust View are copies that arent actually in the exhaust pile
+                    var = 3;
                 }
-            } else if (parts[0].equals("!Upgrades!")) {
-                //Used to grab the amount of times the card was upgraded. Again, isnt a real dynvar
-                var = c.timesUpgraded;
-            } else if (BaseMod.cardDynamicVariableMap.containsKey(parts[0].replace("!",""))) {
-                //Check to see if it's a recognized dynvar registered by some mod
-                var = BaseMod.cardDynamicVariableMap.get(parts[0].replace("!","")).value(c);
             }
-            //Clean up the first string since we dont need it
-            parts = Arrays.copyOfRange(parts, 1, parts.length);
-            //If we found a var then we can do stuff, else just return an empty string
-            if (var != null) {
-                //Define a matched flag. Lets us know to NOT overwrite the output string with the default output if it actually matched a case
-                boolean matched = false;
-                //Iterate each case. Note that the right most matching case will be the output string, or the default output if no cases match
-                for (String s : parts) {
-                    //All cases need to contain a single =, which we use to split the case into its values and output
-                    if (s.contains("=")) {
-                        String[] split = s.split("=");
-                        //Check if the condition has commas, an indicator of a case having multiple conditions.
-                        if (split[0].contains(",")) {
-                            String[] nums = split[0].split(",");
-                            //Iterate each condition, as long as at least 1 condition matches we set the text
-                            for (String n : nums) {
-                                if(checkMatch(var, n)) {
-                                    //Checking the length allows up to know if there is actual text of just an empty string
-                                    if (split.length > 1) {
-                                        string = split[1];
-                                    } else {
-                                        string = "";
-                                    }
-                                    matched = true;
-                                }
-                            }
-                        } else {
-                            //Else just check the condition directly
-                            if (checkMatch(var, split[0])) {
+        } else if (parts[0].equals("!Upgrades!")) {
+            //Used to grab the amount of times the card was upgraded. Again, isnt a real dynvar
+            var = c.timesUpgraded;
+        } else if (BaseMod.cardDynamicVariableMap.containsKey(parts[0].replace("!",""))) {
+            //Check to see if it's a recognized dynvar registered by some mod
+            var = BaseMod.cardDynamicVariableMap.get(parts[0].replace("!","")).value(c);
+        }
+        //Clean up the first string since we dont need it
+        parts = Arrays.copyOfRange(parts, 1, parts.length);
+        //If we found a var then we can do stuff, else just return an empty string
+        if (var != null) {
+            //Define a matched flag. Lets us know to NOT overwrite the output string with the default output if it actually matched a case
+            boolean matched = false;
+            //Iterate each case. Note that the right most matching case will be the output string, or the default output if no cases match
+            for (String s : parts) {
+                //All cases need to contain a single =, which we use to split the case into its values and output
+                if (s.contains("=")) {
+                    String[] split = s.split("=");
+                    //Check if the condition has commas, an indicator of a case having multiple conditions.
+                    if (split[0].contains(",")) {
+                        String[] nums = split[0].split(",");
+                        //Iterate each condition, as long as at least 1 condition matches we set the text
+                        for (String n : nums) {
+                            if(checkMatch(var, n)) {
+                                //Checking the length allows up to know if there is actual text or just an empty string
                                 if (split.length > 1) {
-                                    string = split[1];
+                                    key = split[1];
                                 } else {
-                                    string = "";
+                                    key = "";
                                 }
                                 matched = true;
                             }
                         }
-                        //If this is the default output designated by @= then set this as the output text if we havent matched anything else yet.
-                        if (split[0].equals("@") && !matched) {
+                    } else {
+                        //Else just check the condition directly
+                        if (checkMatch(var, split[0])) {
                             if (split.length > 1) {
-                                string = split[1];
+                                key = split[1];
                             } else {
-                                string = "";
+                                key = "";
                             }
+                            matched = true;
+                        }
+                    }
+                    //If this is the default output designated by @= then set this as the output text if we havent matched anything else yet.
+                    if (split[0].equals("@") && !matched) {
+                        if (split.length > 1) {
+                            key = split[1];
+                        } else {
+                            key = "";
                         }
                     }
                 }
-            } else {
-                string = "";
             }
+        } else {
+            key = "";
         }
-        return string;
+        return key;
     }
 
     private static boolean checkMatch(Integer var, String s) {
@@ -227,12 +224,14 @@ public class DynamicTextBlocks {
             int comp = var.compareTo(NumberUtils.createInteger(s));
             //Checks the Direct Match, Greater Than, and Less Than cases
             boolean signCheck = !greater && !less && comp == 0 || greater && comp > 0 || less && comp < 0;
-            //Checks the Divisible By case. If the numbers are equal (comp is 0), or if variable mod check is 0, then its divisible
+            //Checks the Divisible By case. If the numbers are equal (comp is 0), or if variable mod N is 0, then its divisible
             boolean moduloCheck = mod && (comp == 0 || var % NumberUtils.createInteger(s) == 0);
-            //Checks the Ends With case. If the numbers are equal, or if the trailing digits of comp are all 0's, then var ends with condition
+            //Checks the Ends With case. If the numbers are equal, or if the trailing digits of comp are all 0's, then var ends with N
             boolean digitCheck = ends && (comp == 0 || comp % Math.pow(10, s.length()) == 0);
+            //As long as at least one condition matches we are good
             return signCheck || moduloCheck || digitCheck;
         }
+        //If its not a creatable number, there was a format error. Just return false instead of blowing up
         return false;
     }
 }
