@@ -18,6 +18,9 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class DynamicTextBlocks {
+    private static final String REGEX = "\\[!.*?!\\|.*?\\|]"; //"(\\[!.*?!\\|).*?(\\|])"
+    private static final String PREFIX = "[@@]";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     //TODO: make this all less inefficient
 
@@ -32,8 +35,10 @@ public class DynamicTextBlocks {
     public static class FixExhaustText {
         @SpireInsertPatch(locator = Locator.class, localvars = "toAdd")
         public static void setField(ExhaustPileViewScreen __instance, AbstractCard toAdd) {
-            ExhaustViewFixField.exhaustViewCopy.set(toAdd, true);
-            toAdd.initializeDescription();
+            if (toAdd.rawDescription.startsWith(PREFIX)) {
+                ExhaustViewFixField.exhaustViewCopy.set(toAdd, true);
+                toAdd.initializeDescription();
+            }
         }
 
         private static class Locator extends SpireInsertLocator {
@@ -51,7 +56,7 @@ public class DynamicTextBlocks {
     public static class UpdateTextForPowers {
         @SpirePostfixPatch
         public static void updateAfterVarChange(AbstractCard __instance) {
-            if (__instance.rawDescription.matches(".*(\\[!.*?!\\|).*?(\\|]).*")) {
+            if (__instance.rawDescription.startsWith(PREFIX)) {
                 __instance.initializeDescription();
             }
         }
@@ -63,7 +68,9 @@ public class DynamicTextBlocks {
         @SpirePostfixPatch()
         public static void updateAfterAdding(CardGroup __instance, CardGroup masterDeck) {
             for (AbstractCard c : __instance.group) {
-                c.initializeDescription();
+                if (c.rawDescription.startsWith(PREFIX)) {
+                    c.initializeDescription();
+                }
             }
         }
     }
@@ -73,7 +80,9 @@ public class DynamicTextBlocks {
     public static class UpdateTextOnExhaust{
         @SpirePostfixPatch()
         public static void updateAfter(CardGroup __instance, AbstractCard c) {
-            c.initializeDescription();
+            if (c.rawDescription.startsWith(PREFIX)) {
+                c.initializeDescription();
+            }
         }
     }
 
@@ -97,15 +106,14 @@ public class DynamicTextBlocks {
     public static String[] checkForUnwrapping(AbstractCard c, String[] splitText) {
         //Rejoin the text that has since been split into words
         String baseText = String.join(" ", splitText);
-        String regex = "(\\[!.*?!\\|).*?(\\|])";
         //If the string contains the regex, we need to unpack it
-        if (baseText.matches(".*"+regex+".*")) {
+        if (baseText.startsWith(PREFIX)) {
+            baseText = baseText.substring(PREFIX.length());
             //Replace all the dynamic text blocks with @temp@ for now
-            String temp = baseText.replaceAll(regex,"@temp@");
+            String temp = baseText.replaceAll(REGEX,"@temp@");
             //Make an array to hold the dynamic text pieces from the main text string
             ArrayList<String> toUnwrap = new ArrayList<>();
-            Pattern p = Pattern.compile(regex);
-            java.util.regex.Matcher m = p.matcher(baseText);
+            java.util.regex.Matcher m = PATTERN.matcher(baseText);
             while (m.find()) {
                 //unwrap them as we add our text to the array
                 toUnwrap.add(unwrap(c, m.group()));
