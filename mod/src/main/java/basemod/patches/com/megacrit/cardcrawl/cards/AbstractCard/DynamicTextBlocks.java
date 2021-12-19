@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class DynamicTextBlocks {
-    private static final String REGEX = "\\[!.*?!\\|.*?\\|]"; //"(\\[!.*?!\\|).*?(\\|])"
-    private static final String PREFIX = "[@@]";
+    private static final String REGEX = "\\{!.*?!\\|.*?}"; //"(\\[!.*?!\\|).*?(\\|])"
+    private static final String DYNAMIC_KEY = "{@@}";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     //TODO: make this all less inefficient
@@ -30,12 +30,18 @@ public class DynamicTextBlocks {
         public static final SpireField<Boolean> exhaustViewCopy = new SpireField<>(() -> Boolean.FALSE);
     }
 
+    //Spire Field for if dynamic text was found. This allows faster checking since we dont need to regex each time
+    @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
+    private static class DynamicTextField {
+        public static final SpireField<Boolean> isDynamic = new SpireField<>(() -> Boolean.FALSE);
+    }
+
     //When we render said card copy, set its field and initialize description
     @SpirePatch(clz = ExhaustPileViewScreen.class, method = "open")
     public static class FixExhaustText {
         @SpireInsertPatch(locator = Locator.class, localvars = "toAdd")
         public static void setField(ExhaustPileViewScreen __instance, AbstractCard toAdd) {
-            if (toAdd.rawDescription.startsWith(PREFIX)) {
+            if (DynamicTextField.isDynamic.get(toAdd)) {
                 ExhaustViewFixField.exhaustViewCopy.set(toAdd, true);
                 toAdd.initializeDescription();
             }
@@ -56,7 +62,7 @@ public class DynamicTextBlocks {
     public static class UpdateTextForPowers {
         @SpirePostfixPatch
         public static void updateAfterVarChange(AbstractCard __instance) {
-            if (__instance.rawDescription.startsWith(PREFIX)) {
+            if (DynamicTextField.isDynamic.get(__instance)) {
                 __instance.initializeDescription();
             }
         }
@@ -68,7 +74,7 @@ public class DynamicTextBlocks {
         @SpirePostfixPatch()
         public static void updateAfterAdding(CardGroup __instance, CardGroup masterDeck) {
             for (AbstractCard c : __instance.group) {
-                if (c.rawDescription.startsWith(PREFIX)) {
+                if (DynamicTextField.isDynamic.get(c)) {
                     c.initializeDescription();
                 }
             }
@@ -80,7 +86,7 @@ public class DynamicTextBlocks {
     public static class UpdateTextOnExhaust{
         @SpirePostfixPatch()
         public static void updateAfter(CardGroup __instance, AbstractCard c) {
-            if (c.rawDescription.startsWith(PREFIX)) {
+            if (DynamicTextField.isDynamic.get(c)) {
                 c.initializeDescription();
             }
         }
@@ -104,36 +110,28 @@ public class DynamicTextBlocks {
     }
 
     public static String[] checkForUnwrapping(AbstractCard c, String[] splitText) {
-        //Rejoin the text that has since been split into words
-        String baseText = String.join(" ", splitText);
-        //If the string contains the regex, we need to unpack it
-        if (baseText.startsWith(PREFIX)) {
-            baseText = baseText.substring(PREFIX.length());
-            //Replace all the dynamic text blocks with @temp@ for now
-            String temp = baseText.replaceAll(REGEX,"@temp@");
-            //Make an array to hold the dynamic text pieces from the main text string
-            ArrayList<String> toUnwrap = new ArrayList<>();
-            java.util.regex.Matcher m = PATTERN.matcher(baseText);
+        //If the string contains the key, or is known to contain the key, we need to unpack it
+        if (DynamicTextField.isDynamic.get(c)) {
+            //Replace all the dynamic text blocks with their unwrapped equivalent
+            java.util.regex.Matcher m = PATTERN.matcher(String.join(" ", splitText).replace(DYNAMIC_KEY,""));
+            StringBuffer sb = new StringBuffer();
             while (m.find()) {
-                //unwrap them as we add our text to the array
-                toUnwrap.add(unwrap(c, m.group()));
+                m.appendReplacement(sb, unwrap(c, m.group()));
             }
-            //Once all the unwrapping is done, replace the @temp@ pieces with our new strings
-            while (!toUnwrap.isEmpty()){
-                temp = temp.replaceFirst("@temp@", toUnwrap.get(0));
-                toUnwrap.remove(0);
-            }
-            //Return our unpacked string that has been split
-            return temp.split(" ");
+            m.appendTail(sb);
+            return sb.toString().split(" ");
+        } else if (Arrays.stream(splitText).anyMatch(s -> s.contains(DYNAMIC_KEY))) {
+            DynamicTextField.isDynamic.set(c, true);
+            return checkForUnwrapping(c, splitText);
         } else {
-            //Else just return the re-split string as normal
-            return baseText.split(" ");
+            //Else just return the split
+            return splitText;
         }
     }
 
     public static String unwrap(AbstractCard c, String key) {
-        //Cut the leading [ and the trailing |] and then split the string along each |
-        key = key.substring(1, key.length()-2);
+        //Cut the leading { and the trailing } and then split the string along each |
+        key = key.substring(1, key.length()-1);
         String[] parts = key.split("\\|");
         //Our first piece will always be the dynamic variable we care about. Find its value
         Integer var = null;
