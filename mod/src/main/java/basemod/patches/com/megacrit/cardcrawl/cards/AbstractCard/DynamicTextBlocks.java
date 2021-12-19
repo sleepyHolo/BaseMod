@@ -13,24 +13,23 @@ import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class DynamicTextBlocks {
-    private static final String REGEX = "\\{!.*?!\\|.*?}"; //"(\\[!.*?!\\|).*?(\\|])"
+    private static final String REGEX = "\\{!.*?!\\|.*?}";
     private static final String DYNAMIC_KEY = "{@@}";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    //TODO: make this all less inefficient
+    //TODO: Efficiency improvements?
 
-    //Spire Field for fixing the !L! var in ExhaustPileViewScreen thanks to the fact it returns a copy of the card that isnt actually in the Exhaust pile when you pull up the screen...
+    //Spire Field for fixing the Location var in ExhaustPileViewScreen thanks to the fact it returns a copy of the card that isn't actually in the Exhaust pile when you pull up the screen
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
     private static class ExhaustViewFixField {
         public static final SpireField<Boolean> exhaustViewCopy = new SpireField<>(() -> Boolean.FALSE);
     }
 
-    //Spire Field for if dynamic text was found. This allows faster checking since we dont need to regex each time
+    //Spire Field for if dynamic text was found. This allows faster checking since we don't need to regex each time
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
     private static class DynamicTextField {
         public static final SpireField<Boolean> isDynamic = new SpireField<>(() -> Boolean.FALSE);
@@ -81,7 +80,7 @@ public class DynamicTextBlocks {
         }
     }
 
-    //Force an !L! update when a card is exhausted.
+    //Force a Location update when a card is exhausted.
     @SpirePatch(clz = CardGroup.class, method = "moveToExhaustPile")
     public static class UpdateTextOnExhaust{
         @SpirePostfixPatch()
@@ -153,18 +152,18 @@ public class DynamicTextBlocks {
                 } else if (AbstractDungeon.player.discardPile.contains(c)) {
                     var = 2;
                 } else if (AbstractDungeon.player.exhaustPile.contains(c) || ExhaustViewFixField.exhaustViewCopy.get(c)) {
-                    //This is where we need the field. Without it this will default back to -1 as the cards shown in the Exhaust View are copies that arent actually in the exhaust pile
+                    //This is where we need the field. Without it this will default back to -1 as the cards shown in the Exhaust View are copies that aren't actually in the exhaust pile
                     var = 3;
                 }
             }
         } else if (parts[0].equals("!Upgrades!")) {
-            //Used to grab the amount of times the card was upgraded. Again, isnt a real dynvar
+            //Used to grab the amount of times the card was upgraded. Again, isn't a real dynvar
             var = c.timesUpgraded;
         } else if (BaseMod.cardDynamicVariableMap.containsKey(parts[0].replace("!",""))) {
             //Check to see if it's a recognized dynvar registered by some mod
             var = BaseMod.cardDynamicVariableMap.get(parts[0].replace("!","")).value(c);
         }
-        //Clean up the first string since we dont need it
+        //Clean up the first string since we don't need it
         parts = Arrays.copyOfRange(parts, 1, parts.length);
         //If we found a var then we can do stuff, else just return an empty string
         if (var != null) {
@@ -172,14 +171,14 @@ public class DynamicTextBlocks {
             boolean matched = false;
             //Iterate each case. Note that the right most matching case will be the output string, or the default output if no cases match
             for (String s : parts) {
-                //All cases need to contain a single =, which we use to split the case into its values and output
+                //All cases need to contain a single =, which we use for splitting the case into its values and output
                 if (s.contains("=")) {
                     String[] split = s.split("=");
                     //Check if the condition has commas, an indicator of a case having multiple conditions.
                     if (split[0].contains(",")) {
-                        String[] nums = split[0].split(",");
+                        String[] numbers = split[0].split(",");
                         //Iterate each condition, as long as at least 1 condition matches we set the text
-                        for (String n : nums) {
+                        for (String n : numbers) {
                             if(checkMatch(var, n)) {
                                 //Checking the length allows up to know if there is actual text or just an empty string
                                 if (split.length > 1) {
@@ -201,7 +200,7 @@ public class DynamicTextBlocks {
                             matched = true;
                         }
                     }
-                    //If this is the default output designated by @= then set this as the output text if we havent matched anything else yet.
+                    //If this is the default output designated by @= then set this as the output text if we haven't matched anything else yet.
                     if (split[0].equals("@") && !matched) {
                         if (split.length > 1) {
                             key = split[1];
@@ -237,7 +236,7 @@ public class DynamicTextBlocks {
             //As long as at least one condition matches we are good
             return signCheck || moduloCheck || digitCheck;
         }
-        //If its not a creatable number, there was a format error. Just return false instead of blowing up
+        //If it's not a creatable number, there was a format error. Just return false instead of blowing up
         return false;
     }
 }
