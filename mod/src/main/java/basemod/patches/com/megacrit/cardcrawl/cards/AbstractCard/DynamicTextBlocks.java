@@ -166,6 +166,7 @@ public class DynamicTextBlocks {
         //Clean up the first string since we don't need it
         parts = Arrays.copyOfRange(parts, 1, parts.length);
         //If we found a var then we can do stuff, else just return an empty string
+        key = "";
         if (var != null) {
             //Define a matched flag. Lets us know to NOT overwrite the output string with the default output if it actually matched a case
             boolean matched = false;
@@ -210,8 +211,6 @@ public class DynamicTextBlocks {
                     }
                 }
             }
-        } else {
-            key = "";
         }
         return key;
     }
