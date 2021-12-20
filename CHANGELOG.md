@@ -828,5 +828,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add fadeOutFromAlpha and fadeOutFromOriginalAlpha to VFXBuilder (EricB)
 * Dynamic text blocks on cards for pluralization cases (Mistress Alison)
 
-#### dev ####
+#### v5.35.1 ####
 * Fix weird possible crash with dynamic text blocks (kiooeht)
+
+#### dev ####
