@@ -825,3 +825,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix monsters not passing to multitarget card modifiers (JohnnyDevo)
 
 #### dev ####
+* Add fadeOutFromAlpha and fadeOutFromOriginalAlpha to VFXBuilder (EricB)
+* Dynamic text blocks on cards for pluralization cases (Mistress Alison)
