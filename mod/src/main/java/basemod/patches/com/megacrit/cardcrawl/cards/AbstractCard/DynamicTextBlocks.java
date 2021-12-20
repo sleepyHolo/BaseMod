@@ -25,13 +25,13 @@ public class DynamicTextBlocks {
 
     //Spire Field for fixing the Location var in ExhaustPileViewScreen thanks to the fact it returns a copy of the card that isn't actually in the Exhaust pile when you pull up the screen
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
-    private static class ExhaustViewFixField {
+    public static class ExhaustViewFixField {
         public static final SpireField<Boolean> exhaustViewCopy = new SpireField<>(() -> Boolean.FALSE);
     }
 
     //Spire Field for if dynamic text was found. This allows faster checking since we don't need to regex each time
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
-    private static class DynamicTextField {
+    public static class DynamicTextField {
         public static final SpireField<Boolean> isDynamic = new SpireField<>(() -> Boolean.FALSE);
     }
 

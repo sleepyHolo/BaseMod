@@ -829,3 +829,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Dynamic text blocks on cards for pluralization cases (Mistress Alison)
 
 #### dev ####
+* Fix weird possible crash with dynamic text blocks (kiooeht)
