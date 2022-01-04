@@ -2,6 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -14,14 +15,10 @@ import javassist.expr.MethodCall;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class DynamicTextBlocks {
     private static final String REGEX = "\\{!.*?!\\|.*?}";
     private static final String DYNAMIC_KEY = "{@@}";
-    private static final Pattern PATTERN = Pattern.compile(REGEX);
-
-    //TODO: Efficiency improvements?
 
     //Spire Field for fixing the Location var in ExhaustPileViewScreen thanks to the fact it returns a copy of the card that isn't actually in the Exhaust pile when you pull up the screen
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
@@ -101,30 +98,80 @@ public class DynamicTextBlocks {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getClassName().equals(String.class.getName()) && m.getMethodName().equals("split")) {
-                        m.replace("{ $_ = " + basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.DynamicTextBlocks.class.getName()+".checkForUnwrapping(this, $proceed($$)); }");
+                        m.replace("{ $_ = " + basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.DynamicTextBlocks.class.getName()+".processText(this, $proceed($$)); }");
                     }
                 }
             };
         }
     }
 
-    public static String[] checkForUnwrapping(AbstractCard c, String[] splitText) {
+//    public static String[] checkForUnwrappingOld(AbstractCard c, String[] splitText) {
+//        //If the string contains the key, or is known to contain the key, we need to unpack it
+//        if (DynamicTextField.isDynamic.get(c)) {
+//            //Replace all the dynamic text blocks with their unwrapped equivalent
+//            java.util.regex.Matcher m = PATTERN.matcher(String.join(" ", splitText).replace(DYNAMIC_KEY,""));
+//            StringBuffer sb = new StringBuffer();
+//            while (m.find()) {
+//                m.appendReplacement(sb, unwrap(c, m.group()));
+//            }
+//            m.appendTail(sb);
+//            return sb.toString().split(" ");
+//        } else if (Arrays.stream(splitText).anyMatch(s -> s.contains(DYNAMIC_KEY))) {
+//            DynamicTextField.isDynamic.set(c, true);
+//            return checkForUnwrappingOld(c, splitText);
+//        } else {
+//            //Else just return the split
+//            return splitText;
+//        }
+//    }
+
+    public static String[] processText(AbstractCard c, String[] splitText) {
+        return checkForUnwrapping(c, String.join(" ", splitText)).split(" ");
+    }
+
+    public static String checkForUnwrapping(AbstractCard c, String text) {
         //If the string contains the key, or is known to contain the key, we need to unpack it
         if (DynamicTextField.isDynamic.get(c)) {
             //Replace all the dynamic text blocks with their unwrapped equivalent
-            java.util.regex.Matcher m = PATTERN.matcher(String.join(" ", splitText).replace(DYNAMIC_KEY,""));
-            StringBuffer sb = new StringBuffer();
-            while (m.find()) {
-                m.appendReplacement(sb, unwrap(c, m.group()));
+            String s = text.replace(DYNAMIC_KEY,"");
+            StringBuilder sb = new StringBuilder();
+            //While we have text to unwrap
+            while (s.matches(".*"+REGEX+".*")) {
+                //Clear the builder
+                sb.setLength(0);
+                //Find the first instance of {. Since we matched the regex one must exist and there must be at least 5 characters following it
+                int start = s.indexOf("{");
+                int end = start + 1;
+                int open = 1;
+                boolean recursive = false;
+                //Iterate to find the matching end bracket, taking note if we find more open {
+                while (end < s.length()) {
+                    if (s.charAt(end) == '{') {
+                        open++;
+                        recursive = true;
+                    } else if (s.charAt(end) == '}') {
+                        open--;
+                    }
+                    end++;
+                    if (open == 0) {
+                        break;
+                    }
+                }
+                //If we found additional {} between our matching pair, try unwrapping them first, else just unwrap normally
+                if (recursive) {
+                    sb.append(s, 0, start).append(unwrap(c, s.charAt(start) + checkForUnwrapping(c, s.substring(start + 1, end - 1)) + s.charAt(end - 1))).append(s.substring(end));
+                } else {
+                    sb.append(s, 0, start).append(unwrap(c, s.substring(start, end))).append(s.substring(end));
+                }
+                //Set the new string to check against our while loop
+                s = sb.toString();
             }
-            m.appendTail(sb);
-            return sb.toString().split(" ");
-        } else if (Arrays.stream(splitText).anyMatch(s -> s.contains(DYNAMIC_KEY))) {
+            return s;
+        } else if (Arrays.stream(text.split(" ")).anyMatch(s -> s.contains(DYNAMIC_KEY))) {
             DynamicTextField.isDynamic.set(c, true);
-            return checkForUnwrapping(c, splitText);
+            return checkForUnwrapping(c, text);
         } else {
-            //Else just return the split
-            return splitText;
+            return text;
         }
     }
 
