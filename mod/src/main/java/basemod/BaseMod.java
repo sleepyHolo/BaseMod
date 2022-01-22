@@ -46,6 +46,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer.PlayerClass;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.daily.mods.AbstractDailyMod;
 import com.megacrit.cardcrawl.daily.mods.RedCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
@@ -689,9 +690,13 @@ public class BaseMod {
 			CtClass ctCls = pool.get(AbstractPower.class.getName());
 			String url = ctCls.getURL().getFile();
 			int i = url.lastIndexOf('!');
-			url = url.substring(0, i);
-			URL locationURL = new URL(url);
-			finder.add(new File(locationURL.toURI()));
+			if (i >= 0) {
+				url = url.substring(0, i);
+			}
+			if (url.endsWith(".jar")) {
+				URL locationURL = new URL(url);
+				finder.add(new File(locationURL.toURI()));
+			}
 
 			ClassFilter filter = new AndClassFilter(
 					new NotClassFilter(new InterfaceOnlyClassFilter()),
@@ -1609,10 +1614,10 @@ public class BaseMod {
 		}
 
 		if (maxUnlockLevel.containsKey(c)) {
-			maxUnlockLevel.put(c, Math.max(maxUnlockLevel.get(c), unlockLevel));
+			maxUnlockLevel.put(c, Math.max(maxUnlockLevel.get(c), unlockLevel + 1));
 		}
 		else {
-			maxUnlockLevel.put(c, unlockLevel);
+			maxUnlockLevel.put(c, unlockLevel + 1);
 		}
 	}
 
@@ -1744,6 +1749,7 @@ public class BaseMod {
 		}
 		// Sort alphabetically by character name
 		options.sort(Comparator.comparing(o -> o.name));
+
 		return options;
 	}
 
@@ -2645,6 +2651,10 @@ public class BaseMod {
 	public static void publishAddCustomModeMods(List<CustomMod> modList) {
 		logger.info("publishAddCustomModeMods");
 
+		String modType = "legacy"; 	//if community consensus thinks character card mods should be available on the daily, change this to "generic"
+									//maybe make this into a config? Idk that's out of this fix's scope.
+		HashMap<String, AbstractDailyMod> map = ReflectionHacks.getPrivateStatic(ModHelper.class, modType + "Mods");
+
 		CustomMod charMod = new CustomMod("Modded Character Cards", "p", false);
 		for (AbstractPlayer character : getModdedCharacters()) {
 			CustomMod mod = new CustomMod(RedCards.ID, "g", true);
@@ -2657,6 +2667,11 @@ public class BaseMod {
 			ReflectionHacks.setPrivate(mod, CustomMod.class, "height", height);
 
 			insertCustomMod(modList, mod);
+
+			if (map != null) {
+				AbstractDailyMod dailyMod = new AbstractDailyMod(mod.ID, mod.name, mod.description, "diverse.png", true, character.chosenClass);
+				map.put(dailyMod.modID, dailyMod);
+			}
 		}
 
 		for (AddCustomModeModsSubscriber sub : addCustomModeModsSubscribers) {

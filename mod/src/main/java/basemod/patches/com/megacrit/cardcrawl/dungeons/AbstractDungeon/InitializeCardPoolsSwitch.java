@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.daily.mods.BlueCards;
 import com.megacrit.cardcrawl.daily.mods.Diverse;
 import com.megacrit.cardcrawl.daily.mods.GreenCards;
 import com.megacrit.cardcrawl.daily.mods.RedCards;
+import com.megacrit.cardcrawl.daily.mods.PurpleCards;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.ModHelper;
@@ -43,15 +44,18 @@ public class InitializeCardPoolsSwitch {
 				character.getCardPool(tmpPool);
 			}
 		} else if (!BaseMod.isBaseGameCharacter(chosenClass)) {
-			// Red/Green/Blue Cards modifiers for modded characters
-			if (AbstractPlayer.customMods.contains(RedCards.ID)) {
+			// Red/Green/Blue/Purple Cards modifiers for modded characters
+			if (ModHelper.isModEnabled(RedCards.ID)) {
 				CardLibrary.addRedCards(tmpPool);
 			}
-			if (AbstractPlayer.customMods.contains(GreenCards.ID)) {
+			if (ModHelper.isModEnabled(GreenCards.ID)) {
 				CardLibrary.addGreenCards(tmpPool);
 			}
-			if (AbstractPlayer.customMods.contains(BlueCards.ID)) {
+			if (ModHelper.isModEnabled(BlueCards.ID)) {
 				CardLibrary.addBlueCards(tmpPool);
+			}
+			if (ModHelper.isModEnabled(PurpleCards.ID)) {
+				CardLibrary.addPurpleCards(tmpPool);
 			}
 		}
 
@@ -63,7 +67,7 @@ public class InitializeCardPoolsSwitch {
 					continue;
 				}
 				 String ID = character.chosenClass.name() + charMod.name;
-				 if (AbstractPlayer.customMods.contains(ID)) {
+				 if (ModHelper.isModEnabled(ID)) {
 				 	BaseMod.logger.info("[INFO] Adding " + character.getLocalizedCharacterName() + " cards into card pool.");
 				 	AbstractCard.CardColor color = character.getCardColor();
 				 	for (AbstractCard c : CardLibrary.cards.values()) {
