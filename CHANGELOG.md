@@ -832,3 +832,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix weird possible crash with dynamic text blocks (kiooeht)
 
 #### dev ####
+* Add OnPlayerTurnStartSubscriber (kiooeht/Alchyr/herbix)
+* Add OnPlayerTurnStartPostDrawSubscriber (kiooeht/Alchyr/herbix)
+* Fix crash when no shrine events are available (modargo)
+* Fix some issues with basic cardmods (erasels)
+  * Capitalize cardmod keywords
+  * Move Exhaust cardmod to end of description
