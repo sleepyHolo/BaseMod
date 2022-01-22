@@ -11,7 +11,7 @@ public class ExhaustMod extends AbstractCardModifier {
 
     @Override
     public String modifyDescription(String rawDescription, AbstractCard card) {
-        return StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + LocalizedStrings.PERIOD + " NL " + rawDescription;
+        return rawDescription + " NL " + StringUtils.capitalize(GameDictionary.EXHAUST.NAMES[0]) + LocalizedStrings.PERIOD;
     }
 
     @Override
