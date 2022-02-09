@@ -843,6 +843,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash in card power tips (JohnnyDevo)
 * Add controller support for CustomCharacterSelectScreen pages (kobting)
 
-#### dev ####
+#### v5.37.1 ####
 * Fix main menu settings crash (herbix)
 * Fix cardmods not respecting action queue with automatic removal (JohnnyDevo)
+
+#### dev ####
