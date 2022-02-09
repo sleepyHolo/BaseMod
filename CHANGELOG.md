@@ -844,3 +844,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add controller support for CustomCharacterSelectScreen pages (kobting)
 
 #### dev ####
+* Fix main menu settings crash (herbix)
+* Fix cardmods not respecting action queue with automatic removal (JohnnyDevo)
