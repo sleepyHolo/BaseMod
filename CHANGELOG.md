@@ -848,3 +848,6 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix cardmods not respecting action queue with automatic removal (JohnnyDevo)
 
 #### dev ####
+* Add !Turn! to dynamic text (Mistress Alison)
+* Add modifyName to CardMods (Mistress Alison)
+* Fix card tintColor (herbix)
