@@ -847,7 +847,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix main menu settings crash (herbix)
 * Fix cardmods not respecting action queue with automatic removal (JohnnyDevo)
 
-#### dev ####
+#### v5.38.0 ####
 * Add !Turn! to dynamic text (Mistress Alison)
 * Add modifyName to CardMods (Mistress Alison)
 * Fix card tintColor (herbix)
+
+#### dev ####
