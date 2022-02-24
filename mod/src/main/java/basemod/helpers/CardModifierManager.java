@@ -183,6 +183,13 @@ public class CardModifierManager
         return rawDescription;
     }
 
+    public static String onRenderTitle(AbstractCard card, String cardName) {
+        for (AbstractCardModifier mod : modifiers(card)) {
+            cardName = mod.modifyName(cardName, card);
+        }
+        return cardName;
+    }
+
     public static void onUseCard(AbstractCard card, AbstractCreature target, UseCardAction action) {
         for (AbstractCardModifier mod : modifiers(card)) {
             mod.onUse(card, target, action);

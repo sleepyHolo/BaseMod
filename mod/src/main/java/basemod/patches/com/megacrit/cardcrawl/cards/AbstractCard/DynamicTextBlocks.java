@@ -2,6 +2,7 @@ package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -157,8 +158,14 @@ public class DynamicTextBlocks {
                 }
             }
         } else if (parts[0].equals("!Upgrades!")) {
-            //Used to grab the amount of times the card was upgraded. Again, isn't a real dynvar
+            //Used to grab the amount of times the card was upgraded. Isn't a real dynvar
             var = c.timesUpgraded;
+        } else if (parts[0].equals("!Turn!")) {
+            //Used to grab the turn amount. Isn't a real dynvar
+            var = -1;
+            if (AbstractDungeon.player != null) {
+                var = GameActionManager.turn;
+            }
         } else if (BaseMod.cardDynamicVariableMap.containsKey(parts[0].replace("!",""))) {
             //Check to see if it's a recognized dynvar registered by some mod
             var = BaseMod.cardDynamicVariableMap.get(parts[0].replace("!","")).value(c);
