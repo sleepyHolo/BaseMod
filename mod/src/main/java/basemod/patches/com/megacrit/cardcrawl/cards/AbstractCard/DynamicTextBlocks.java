@@ -23,8 +23,6 @@ public class DynamicTextBlocks {
     private static final String DYNAMIC_KEY = "{@@}";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    //TODO: Efficiency improvements?
-
     //Spire Field for fixing the Location var in ExhaustPileViewScreen thanks to the fact it returns a copy of the card that isn't actually in the Exhaust pile when you pull up the screen
     @SpirePatch(clz= AbstractCard.class, method=SpirePatch.CLASS)
     public static class ExhaustViewFixField {
