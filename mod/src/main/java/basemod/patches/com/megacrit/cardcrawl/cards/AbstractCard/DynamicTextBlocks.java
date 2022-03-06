@@ -1,10 +1,13 @@
 package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.BaseMod;
+import basemod.abstracts.AbstractCardModifier;
+import basemod.helpers.CardModifierManager;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.ExhaustPileViewScreen;
@@ -88,6 +91,28 @@ public class DynamicTextBlocks {
         public static void updateAfter(CardGroup __instance, AbstractCard c) {
             if (DynamicTextField.isDynamic.get(c)) {
                 c.initializeDescription();
+            }
+        }
+    }
+
+    //Force an update when a card is upgraded in master deck. We dont have an onUpgrade hook but basegame permanent upgrades call this method after upgrading.
+    @SpirePatch2(clz = AbstractPlayer.class, method = "bottledCardUpgradeCheck")
+    public static class UpdateOnMasterDeckUpgrade {
+        @SpirePostfixPatch
+        public static void onUpgrade(AbstractCard c) {
+            if (DynamicTextField.isDynamic.get(c)) {
+                c.initializeDescription();
+            }
+        }
+    }
+
+    //Force an update in the smithing preview
+    @SpirePatch2(clz = AbstractCard.class, method = "displayUpgrades")
+    public static class UpdateOnUpgradePreview {
+        @SpirePostfixPatch
+        public static void onPreview(AbstractCard __instance) {
+            if (DynamicTextField.isDynamic.get(__instance)) {
+                __instance.initializeDescription();
             }
         }
     }
