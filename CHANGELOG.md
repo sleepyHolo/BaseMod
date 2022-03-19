@@ -853,3 +853,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card tintColor (herbix)
 
 #### dev ####
+* Make dynamic text work in upgrades and upgrade previews (Mistress Alison)
