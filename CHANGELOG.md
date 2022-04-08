@@ -852,7 +852,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add modifyName to CardMods (Mistress Alison)
 * Fix card tintColor (herbix)
 
-#### dev ####
+#### v5.39.0 ####
 * Make dynamic text work in upgrades and upgrade previews (Mistress Alison)
 * Add CardModifier support to WhatMod (kiooeht)
 * Fix crash in ZHT with modded keywords (modargo)
+
+#### dev ####
