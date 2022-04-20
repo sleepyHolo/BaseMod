@@ -862,3 +862,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Automatically give orb slot
   * Allow more than 5 combat rewards
 * Add tooltip option to ModLabeledToggleButton (kiooeht)
+* Remove Note For Yourself patch that is no longer necessary (kiooeht)
