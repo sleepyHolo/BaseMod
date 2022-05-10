@@ -868,3 +868,12 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix Conspire being unable to load (kiooeht)
 
 #### dev ####
+* Phased events (Alchyr)
+* Fix incorrect height scaling of TinyCard in run history screen (Mistress Alison)
+* Fix log spam when viewing curse cards with cost (Alchyr)
+* Fix CN text when magic number is at start of line (akdream)
+* Add multi-card previews to AbtractCard (JohnnyDevo)
+* Fix order of rewards and custom rewards when saving and reloading (herbix)
+* Add NoCompendium annotation to remove cards from compendium (JohnnyDevo)
+* Add NoPools annotation to remove cards from reward pools (JohnnyDevo)
+* Add modify base block and base damage methods to CardMods (JohnnyDevo)
