@@ -877,3 +877,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add NoCompendium annotation to remove cards from compendium (JohnnyDevo)
 * Add NoPools annotation to remove cards from reward pools (JohnnyDevo)
 * Add modify base block and base damage methods to CardMods (JohnnyDevo)
+* Fix energy icon rendering in card descriptions (Alchyr)
+  * Fix position when card is scaled
+  * Fix rotation and position when card is rotated
+  * Fix scale when card description gets shrunk for being long
