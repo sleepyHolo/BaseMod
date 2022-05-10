@@ -867,7 +867,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.40.1 ####
 * Fix Conspire being unable to load (kiooeht)
 
-#### dev ####
+#### v5.41.0 ####
 * Phased events (Alchyr)
 * Fix incorrect height scaling of TinyCard in run history screen (Mistress Alison)
 * Fix log spam when viewing curse cards with cost (Alchyr)
@@ -881,3 +881,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix position when card is scaled
   * Fix rotation and position when card is rotated
   * Fix scale when card description gets shrunk for being long
+
+#### dev ####
