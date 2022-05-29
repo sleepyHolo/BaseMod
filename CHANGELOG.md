@@ -883,3 +883,12 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix scale when card description gets shrunk for being long
 
 #### dev ####
+* Fix CN card descriptions not shrinking (Alchyr)
+* CardModifiers (JohnnyDevo)
+  * Apply base stuff on initial application
+  * Render in SCV
+* Dynamic text block fixes (Mistress Alison)
+  * Reinitialize description if any dynamic variables updated
+  * Remove issues needing manual initializeDescription
+  * Remove need for -1 case for uninitialized values in compendium
+* Fix CN keywords added by basic CardModifiers (herbix)
