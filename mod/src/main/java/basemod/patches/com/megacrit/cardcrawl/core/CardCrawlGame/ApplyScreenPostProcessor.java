@@ -44,6 +44,7 @@ public class ApplyScreenPostProcessor {
 
         setDefaultFrameBuffer(primaryFrameBuffer);
         primaryFrameBuffer.begin();
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
@@ -70,6 +71,7 @@ public class ApplyScreenPostProcessor {
 
             setDefaultFrameBuffer(primaryFrameBuffer);
             primaryFrameBuffer.begin();
+            Gdx.gl.glClearColor(0, 0, 0, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             sb.begin();
 
@@ -94,7 +96,7 @@ public class ApplyScreenPostProcessor {
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
 
-        primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, false);
+        primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
         primaryFboRegion = new TextureRegion(primaryFrameBuffer.getColorBufferTexture());
         primaryFboRegion.flip(false, true);
 
