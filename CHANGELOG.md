@@ -892,3 +892,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Remove issues needing manual initializeDescription
   * Remove need for -1 case for uninitialized values in compendium
 * Fix CN keywords added by basic CardModifiers (herbix)
+* Add option for custom events that end with a reward screen (herbix)
+* Add screen-space rendering postprocess (herbix/kiooeht)
