@@ -45,7 +45,7 @@ public class ApplyScreenPostProcessor {
         setDefaultFrameBuffer(primaryFrameBuffer);
         primaryFrameBuffer.begin();
         Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
     }
 
     public static class BeginLocator extends SpireInsertLocator {
@@ -72,7 +72,7 @@ public class ApplyScreenPostProcessor {
             setDefaultFrameBuffer(primaryFrameBuffer);
             primaryFrameBuffer.begin();
             Gdx.gl.glClearColor(0, 0, 0, 0);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
             sb.begin();
 
             postProcessor.postProcess(sb, secondaryFboRegion, camera);
@@ -96,11 +96,11 @@ public class ApplyScreenPostProcessor {
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
 
-        primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true, true);
         primaryFboRegion = new TextureRegion(primaryFrameBuffer.getColorBufferTexture());
         primaryFboRegion.flip(false, true);
 
-        secondaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, false);
+        secondaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, true, true);
         secondaryFboRegion = new TextureRegion(secondaryFrameBuffer.getColorBufferTexture());
         secondaryFboRegion.flip(false, true);
     }
