@@ -60,14 +60,10 @@ public class ApplyScreenPostProcessor {
         sb.end();
         primaryFrameBuffer.end();
 
-        for (ScreenPostProcessor postProcessor : postProcessors) {
-            FrameBuffer tempBuffer = primaryFrameBuffer;
-            primaryFrameBuffer = secondaryFrameBuffer;
-            secondaryFrameBuffer = tempBuffer;
+        FrameBuffer origPrimary = primaryFrameBuffer;
 
-            TextureRegion tempRegion = primaryFboRegion;
-            primaryFboRegion = secondaryFboRegion;
-            secondaryFboRegion = tempRegion;
+        for (ScreenPostProcessor postProcessor : postProcessors) {
+            swapBuffers();
 
             setDefaultFrameBuffer(primaryFrameBuffer);
             primaryFrameBuffer.begin();
@@ -88,6 +84,21 @@ public class ApplyScreenPostProcessor {
 
         sb.setProjectionMatrix(camera.combined);
         sb.draw(primaryFboRegion, 0, 0, Settings.WIDTH, Settings.HEIGHT);
+
+        // I don't know why, but this solves some problems
+        if (origPrimary != primaryFrameBuffer) {
+            swapBuffers();
+        }
+    }
+
+    private static void swapBuffers() {
+        FrameBuffer tempBuffer = primaryFrameBuffer;
+        primaryFrameBuffer = secondaryFrameBuffer;
+        secondaryFrameBuffer = tempBuffer;
+
+        TextureRegion tempRegion = primaryFboRegion;
+        primaryFboRegion = secondaryFboRegion;
+        secondaryFboRegion = tempRegion;
     }
 
     private static void initFrameBuffer() {
