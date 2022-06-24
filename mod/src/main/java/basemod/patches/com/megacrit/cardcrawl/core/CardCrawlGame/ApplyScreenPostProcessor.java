@@ -37,13 +37,14 @@ public class ApplyScreenPostProcessor {
     }
 
     @SpireInsertPatch(locator = BeginLocator.class)
-    public static void BeforeSpriteBatchBegin() {
+    public static void BeforeSpriteBatchBegin(SpriteBatch ___sb) {
         if (primaryFrameBuffer == null) {
             initFrameBuffer();
         }
 
         setDefaultFrameBuffer(primaryFrameBuffer);
         primaryFrameBuffer.begin();
+        ___sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
     }
@@ -70,6 +71,7 @@ public class ApplyScreenPostProcessor {
             Gdx.gl.glClearColor(0, 0, 0, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
             sb.begin();
+            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
             postProcessor.postProcess(sb, secondaryFboRegion, camera);
 
@@ -81,9 +83,11 @@ public class ApplyScreenPostProcessor {
         Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
         sb.begin();
         sb.setColor(Color.WHITE);
+        sb.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
 
         sb.setProjectionMatrix(camera.combined);
         sb.draw(primaryFboRegion, 0, 0, Settings.WIDTH, Settings.HEIGHT);
+        sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         // I don't know why, but this solves some problems
         if (origPrimary != primaryFrameBuffer) {
