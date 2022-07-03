@@ -882,7 +882,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Fix rotation and position when card is rotated
   * Fix scale when card description gets shrunk for being long
 
-#### dev ####
+#### v5.42.0 ####
 * Fix CN card descriptions not shrinking (Alchyr)
 * CardModifiers (JohnnyDevo)
   * Apply base stuff on initial application
@@ -894,3 +894,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix CN keywords added by basic CardModifiers (herbix)
 * Add option for custom events that end with a reward screen (herbix)
 * Add screen-space rendering postprocess (herbix/kiooeht)
+
+#### dev ####
