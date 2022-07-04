@@ -896,3 +896,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add screen-space rendering postprocess (herbix/kiooeht)
 
 #### dev ####
+* Fix screen shake (herbix)
+* Add safety checks to post-processing initialization (kiooeht)
