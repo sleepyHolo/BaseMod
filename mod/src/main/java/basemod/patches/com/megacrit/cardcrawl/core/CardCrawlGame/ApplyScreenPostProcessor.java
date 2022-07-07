@@ -67,10 +67,10 @@ public class ApplyScreenPostProcessor {
     }
 
     public static void BeforeSpriteBatchEnd(SpriteBatch sb, OrthographicCamera camera) {
-        if (failedInitialized) {
+        if (failedInitialized || primaryFrameBuffer == null) {
             return;
         }
-        
+
         sb.end();
         primaryFrameBuffer.end();
 
@@ -134,16 +134,16 @@ public class ApplyScreenPostProcessor {
             int width = Gdx.graphics.getWidth();
             int height = Gdx.graphics.getHeight();
 
-            primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true, true);
+            primaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false, false);
             primaryFboRegion = new TextureRegion(primaryFrameBuffer.getColorBufferTexture());
             primaryFboRegion.flip(false, true);
 
-            secondaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, true, true);
+            secondaryFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false, false);
             secondaryFboRegion = new TextureRegion(secondaryFrameBuffer.getColorBufferTexture());
             secondaryFboRegion.flip(false, true);
         } catch (Exception e) {
             failedInitialized = true;
-            e.printStackTrace();
+            System.out.println(e.getMessage());
 
             if (primaryFrameBuffer != null) {
                 primaryFrameBuffer.dispose();
@@ -155,6 +155,8 @@ public class ApplyScreenPostProcessor {
                 secondaryFrameBuffer = null;
                 secondaryFboRegion = null;
             }
+
+            e.printStackTrace();
         }
     }
 

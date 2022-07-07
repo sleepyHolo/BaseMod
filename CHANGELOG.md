@@ -900,3 +900,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add safety checks to post-processing initialization (kiooeht)
 
 #### dev ####
+* Fix post-processing blend function to not apply alpha again (kiooeht)
+* Fix post-processing rendering causing a crash on Mac (kiooeht)
