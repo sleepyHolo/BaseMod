@@ -904,3 +904,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix post-processing rendering causing a crash on Mac (kiooeht)
 
 #### dev ####
+* Fix rendering on super ultrawide (kiooeht)
