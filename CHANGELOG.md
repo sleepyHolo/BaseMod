@@ -905,3 +905,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix rendering on super ultrawide (kiooeht)
+* Add custom multi-page FTUE (herbix)
