@@ -903,6 +903,8 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix post-processing blend function to not apply alpha again (kiooeht)
 * Fix post-processing rendering causing a crash on Mac (kiooeht)
 
-#### dev ####
-* Fix rendering on super ultrawide (kiooeht)
+#### v5.43.0 ####
+* Fixrendering on super ultrawide (kiooeht)
 * Add custom multi-page FTUE (herbix)
+
+#### dev ####
