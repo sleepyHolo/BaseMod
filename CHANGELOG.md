@@ -908,3 +908,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add custom multi-page FTUE (herbix)
 
 #### dev ####
+* kill all command now actually always definitely kills (kiooeht)
