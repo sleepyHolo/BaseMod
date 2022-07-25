@@ -909,3 +909,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * kill all command now actually always definitely kills (kiooeht)
+* Fix custom dynamic variables not being colored in the Armaments preview (kiooeht)
