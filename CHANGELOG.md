@@ -907,7 +907,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fixrendering on super ultrawide (kiooeht)
 * Add custom multi-page FTUE (herbix)
 
-#### dev ####
+#### v5.44.0 ####
 * kill all command now actually always definitely kills (kiooeht)
 * Fix custom dynamic variables not being colored in the Armaments preview (kiooeht)
 * debug console command can now be used without arguments to toggle debug mode (kiooeht)
@@ -918,3 +918,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Add support for custom dynamic text block checks
   * Add extra Location cases for compendium and cards not owned by the player
 * Add modifyTitle support to TinyCards (Mistress Alison)
+
+#### dev ####
