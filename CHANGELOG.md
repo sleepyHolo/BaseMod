@@ -923,3 +923,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix possible crash in other mods when using CustomReward (kiooeht)
 
 #### dev ####
+* Fix kill all command softlocking Darklings and not stopping the Heart music (kiooeht)
