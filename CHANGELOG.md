@@ -928,3 +928,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * This fixes bugs like SRV instantly closing when right-clicking the shop relic in shops
 * Let CustomReward accept TextureRegions for the icon (kiooeht)
 * Fix ReflectionHacks.getCachedField memory churn (kiooeht)
+* Allow Ctrl-V to paste into the console (kiooeht)
