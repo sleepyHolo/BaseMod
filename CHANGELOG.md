@@ -936,3 +936,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add controller navigation support to card library (herbix)
 * Update SafeDamageAllEnemies (Alchyr)
 * Fix memory churn caused by the constant in-combat particle effects (kiooeht)
+* Allow CustomCard to have different card art in SCV on upgrade (kiooeht/Vex)
