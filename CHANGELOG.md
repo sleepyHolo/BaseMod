@@ -935,3 +935,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add DraggableUI interface (Pandemonium)
 * Add controller navigation support to card library (herbix)
 * Update SafeDamageAllEnemies (Alchyr)
+* Fix memory churn caused by the constant in-combat particle effects (kiooeht)
