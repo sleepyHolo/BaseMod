@@ -929,3 +929,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Let CustomReward accept TextureRegions for the icon (kiooeht)
 * Fix ReflectionHacks.getCachedField memory churn (kiooeht)
 * Allow Ctrl-V to paste into the console (kiooeht)
+* Fix evalcode command breaking if code doesn't have a return value (kiooeht)
