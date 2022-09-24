@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.scenes.TheBottomScene;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
 import com.megacrit.cardcrawl.scenes.TheEndingScene;
+import com.megacrit.cardcrawl.scenes.TitleBackground;
 import com.megacrit.cardcrawl.ui.panels.DiscardPilePanel;
 import com.megacrit.cardcrawl.ui.panels.DrawPilePanel;
 import com.megacrit.cardcrawl.vfx.*;
@@ -46,6 +47,9 @@ public class FixMemoryChurn
 			LightFlareMEffect.class,
 			TorchParticleSEffect.class,
 			LightFlareSEffect.class,
+			// main menu
+			LogoFlameEffect.class,
+			TitleDustEffect.class,
 			// the bottom
 			DustEffect.class,
 			BottomFogEffect.class,
@@ -66,6 +70,9 @@ public class FixMemoryChurn
 			new Pair(AbstractMonster.class, "updateIntentVFX"),
 			// torches
 			new Pair(InteractableTorchEffect.class, "update"),
+			// main menu
+			new Pair(TitleBackground.class, "updateFlame"),
+			new Pair(TitleBackground.class, "updateDust"),
 			// the bottom
 			new Pair(TheBottomScene.class, "updateDust"),
 			new Pair(TheBottomScene.class, "updateFog"),
@@ -193,6 +200,22 @@ public class FixMemoryChurn
 		protected LightFlareSEffect newObject()
 		{
 			return new LightFlareSEffect(0, 0);
+		}
+	};
+	private static final Pool<LogoFlameEffect> pool_LogoFlameEffect = new Pool<LogoFlameEffect>()
+	{
+		@Override
+		protected LogoFlameEffect newObject()
+		{
+			return new LogoFlameEffect();
+		}
+	};
+	private static final Pool<TitleDustEffect> pool_TitleDustEffect = new Pool<TitleDustEffect>()
+	{
+		@Override
+		protected TitleDustEffect newObject()
+		{
+			return new TitleDustEffect();
 		}
 	};
 	private static final Pool<DustEffect> pool_DustEffect = new Pool<DustEffect>()
