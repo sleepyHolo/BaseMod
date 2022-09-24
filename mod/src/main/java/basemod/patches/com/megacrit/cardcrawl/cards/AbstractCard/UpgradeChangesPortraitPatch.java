@@ -1,17 +1,14 @@
-package com.evacipated.cardcrawl.mod.stslib.patches.cardInterfaces;
+package basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard;
 
 import basemod.ReflectionHacks;
 import basemod.abstracts.CustomCard;
 import com.badlogic.gdx.graphics.Texture;
-import com.evacipated.cardcrawl.mod.stslib.cards.interfaces.UpgradeChangesPortraitCard;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import javassist.CtBehavior;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class UpgradeChangesPortraitPatch {
 
