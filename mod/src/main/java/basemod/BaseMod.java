@@ -248,6 +248,7 @@ public class BaseMod {
 	private static HashMap<AbstractPlayer.PlayerClass, Integer> maxUnlockLevel;
 
 	private static HashMap<String, CustomSavableRaw> customSaveFields = new HashMap<>();
+	private static HashMap<AbstractDungeon.CurrentScreen, CustomScreen> customScreens = new HashMap<>();
 
 	private static OrthographicCamera animationCamera;
 	private static ModelBatch batch;
@@ -2181,6 +2182,27 @@ public class BaseMod {
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
+	}
+
+	//
+	// Screens
+	//
+
+	public static void addCustomScreen(CustomScreen screen) {
+		customScreens.put(screen.curScreen(), screen);
+	}
+
+	public static CustomScreen getCustomScreen(AbstractDungeon.CurrentScreen screen) {
+		return customScreens.get(screen);
+	}
+
+	public static boolean openCustomScreen(AbstractDungeon.CurrentScreen screen, Object... args) {
+		CustomScreen customScreen = getCustomScreen(screen);
+		if (customScreen != null) {
+			customScreen.open(args);
+			return true;
+		}
+		return false;
 	}
 
 	//
