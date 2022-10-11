@@ -153,22 +153,40 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 
 	private boolean firstTime = true;
 	private final ImBoolean SHOW_DEMO_WINDOW = new ImBoolean(false);
+	private ImBoolean showSearch = null;
+	private ImBoolean showActionQueue = null;
 	private final ImInt iData = new ImInt();
 
 	@Override
 	public void receiveImGui() {
+		if (showSearch == null) {
+			showSearch = new ImBoolean(BaseMod.getBoolean("imgui-search"));
+			showActionQueue = new ImBoolean(BaseMod.getBoolean("imgui-actionqueue"));
+		}
+		boolean prevShowSearch = showSearch.get();
+		boolean prevShowActionQueue = showActionQueue.get();
+
 		ImVec2 wPos = ImGui.getMainViewport().getPos();
 		ImGui.setNextWindowPos(wPos.x + 7, wPos.y + 70, ImGuiCond.FirstUseEver);
 		ImGui.setNextWindowSize(465, 465, ImGuiCond.FirstUseEver);
 		if (ImGui.begin("BaseMod")) {
-			ImGui.checkbox("Show Demo Window", SHOW_DEMO_WINDOW);
+			ImGui.checkbox("Demo", SHOW_DEMO_WINDOW);
+			ImGui.sameLine();
+			ImGui.checkbox("Search", showSearch);
+			ImGui.sameLine();
+			ImGui.checkbox("Action Queue", showActionQueue);
+			ImGui.separator();
 			combatPanel();
 		}
 		ImGui.end();
 
-		searchWindow();
+		if (showSearch.get()) {
+			searchWindow();
+		}
 
-		actionQueueWindow();
+		if (showActionQueue.get()) {
+			actionQueueWindow();
+		}
 
 		if (firstTime) {
 			firstTime = false;
@@ -177,6 +195,13 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 
 		if (SHOW_DEMO_WINDOW.get()) {
 			ImGui.showDemoWindow(SHOW_DEMO_WINDOW);
+		}
+
+		if (prevShowSearch != showSearch.get()) {
+			BaseMod.setBoolean("imgui-search", showSearch.get());
+		}
+		if (prevShowActionQueue != showActionQueue.get()) {
+			BaseMod.setBoolean("imgui-actionqueue", showActionQueue.get());
 		}
 	}
 
@@ -421,7 +446,7 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 		ImVec2 wPos = ImGui.getMainViewport().getPos();
 		ImGui.setNextWindowPos(wPos.x + 1560, wPos.y + 160, ImGuiCond.FirstUseEver);
 		ImGui.setNextWindowSize(340, 270, ImGuiCond.FirstUseEver);
-		if (ImGui.begin("Action Queue")) {
+		if (ImGui.begin("Action Queue", showActionQueue)) {
 			if (AbstractDungeon.actionManager.actions.isEmpty()) {
 				ImGui.text("Empty");
 			}
@@ -465,7 +490,7 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 		ImVec2 wPos = ImGui.getMainViewport().getPos();
 		ImGui.setNextWindowPos(wPos.x + 7, wPos.y + 550, ImGuiCond.FirstUseEver);
 		ImGui.setNextWindowSize(465, 255, ImGuiCond.FirstUseEver);
-		if (ImGui.begin("Search")) {
+		if (ImGui.begin("Search", showSearch)) {
 			if (ImGui.beginTabBar("SearchTabBar")) {
 				cardSearchTab();
 				relicSearchTab();
