@@ -3,23 +3,29 @@ package basemod.devcommands.statics;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import com.evacipated.cardcrawl.modthespire.Loader;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import javassist.*;
 import javassist.bytecode.*;
+import javassist.compiler.MemberCodeGen;
 import javassist.convert.Transformer;
+import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
+import javassist.expr.MethodCall;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //Invoke code and output the result as toString
 public class EvalCode extends ConsoleCommand
 {
     public static class OurCode {}
 
-    private static int evalCount = 0;
+    private static URLClassLoader loader = null;
 
     public EvalCode() {
         minExtraTokens = 1;
@@ -29,17 +35,41 @@ public class EvalCode extends ConsoleCommand
 
     @Override
     public void execute(String[] tokens, int depth) {
-        List<String> imports = new ArrayList<>();
-        for (Iterator<String> it = Loader.getClassPool().getImportedPackages(); it.hasNext(); ) {
-            String s = it.next();
-            imports.add(s);
+        if (loader == null) {
+            try {
+                Method buildUrlArray = Loader.class.getDeclaredMethod("buildUrlArray", ModInfo[].class);
+                buildUrlArray.setAccessible(true);
+                URL[] urls = (URL[]) buildUrlArray.invoke(null, (Object) Loader.MODINFOS);
+                URL[] urls2 = new URL[urls.length+1];
+                urls2[0] = Loader.class.getProtectionDomain().getCodeSource().getLocation();
+                System.arraycopy(urls, 0, urls2, 1, urls.length);
+                loader = new URLClassLoader(urls2, null);
+
+                ClassPool pool = new ClassPool();
+                pool.appendSystemPath();
+                pool.insertClassPath(new LoaderClassPath(loader));
+                pool.childFirstLookup = true;
+                pool.importPackage("javassist.bytecode");
+
+                // Patch to disable the javassist compiler's check for private fields
+                CtClass ctMemberCodeGen = pool.get(MemberCodeGen.class.getName());
+                CtMethod isAccessibleField = ctMemberCodeGen.getDeclaredMethod("isAccessibleField");
+                isAccessibleField.insertAt(942, "return null;");
+
+                // Patch to disable the javassist compiler's check for private methods
+                CtMethod atMethodCallCore2 = ctMemberCodeGen.getDeclaredMethod("atMethodCallCore2");
+                atMethodCallCore2.insertAt(601, "if (AccessFlag.isPrivate(acc)) {" +
+                        "isSpecial = true;" +
+                        "acc = AccessFlag.setPackage(acc);" +
+                        "}");
+
+                ctMemberCodeGen.toClass(loader, null);
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NotFoundException | CannotCompileException e) {
+                DevConsole.log("Something bad happened. Check the log");
+                e.printStackTrace();
+                return;
+            }
         }
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl");
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl.core");
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl.dungeons");
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl.cards");
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl.powers");
-        Loader.getClassPool().importPackage("com.megacrit.cardcrawl.relics");
 
         String src =
                 "public static Object eval() {" +
@@ -48,59 +78,167 @@ public class EvalCode extends ConsoleCommand
             src += ";";
         }
         src += "}";
-        System.out.println(src);
+
         try {
-            CtClass ctClass = Loader.getClassPool().makeClass(OurCode.class.getName() + "$Eval" + evalCount);
-
-            CtMethod ctMethod = CtNewMethod.make(src, ctClass);
-            ctClass.addMethod(ctMethod);
-            CodeAttribute code = ctMethod.getMethodInfo().getCodeAttribute();
-            boolean stackUnderflow = false;
-            try {
-                code.computeMaxStack();
-            } catch (BadBytecode e) {
-                if (e.getMessage().startsWith("stack underflow")) {
-                    stackUnderflow = true;
-                } else {
-                    throw e;
-                }
+            Class<?> codeRunner = loader.loadClass("basemod.devcommands.statics.EvalCode$CodeRunner");
+            Method run = codeRunner.getDeclaredMethod("run", String.class, ClassLoader.class, boolean.class);
+            run.setAccessible(true);
+            Object output = run.invoke(null, src, EvalCode.class.getClassLoader(), Loader.DEBUG);
+            if (output instanceof CannotCompileException) {
+                CannotCompileException e = (CannotCompileException) output;
+                DevConsole.log("Cannot compile: " + e.getMessage());
+                e.printStackTrace();
+            } else if (output instanceof InvocationTargetException) {
+                InvocationTargetException e = (InvocationTargetException) output;
+                DevConsole.log("Exception in eval code: " + e.getCause());
+                e.getCause().printStackTrace();
+            } else if (output instanceof Exception || output instanceof Error){
+                Throwable e = (Throwable) output;
+                DevConsole.log("Something bad happened. Check the log");
+                e.printStackTrace();
             }
-            ReturnCodeConvertor codeConvertor = new ReturnCodeConvertor(stackUnderflow);
-            ctMethod.instrument(codeConvertor);
-
-            Class<?> cls = ctClass.toClass(EvalCode.class.getClassLoader(), null);
-            Method method = cls.getMethod("eval");
-            Object output = method.invoke(null);
             if (output == null) {
                 DevConsole.log("Output: null");
             } else {
                 DevConsole.log("Output: " + output);
             }
-        } catch (CannotCompileException e ) {
-            DevConsole.log("Cannot compile: " + e.getMessage());
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            DevConsole.log("Exception in eval code: " + e.getCause());
-            e.getCause().printStackTrace();
-        } catch (Exception | Error e) {
-            DevConsole.log("Something bad happened. Check the log");
-            e.printStackTrace();
-        } finally {
-            Loader.getClassPool().clearImportedPackages();
-            imports.remove(0); // removes the "java.lang" import because it gets added by clearImportedPackages
-            for (String s : imports) {
-                System.out.println(s);
-                Loader.getClassPool().importPackage(s);
+        }
+    }
+
+    private static class CodeRunner
+    {
+        private static ClassPool pool = null;
+        private static int evalCount = 0;
+
+        public static Object run(String src, ClassLoader outLoader, boolean debug)
+        {
+            ClassLoader loader = CodeRunner.class.getClassLoader();
+            if (pool == null) {
+                pool = new ClassPool();
+                pool.appendSystemPath();
+                pool.insertClassPath(new LoaderClassPath(loader));
+                pool.childFirstLookup = true;
+
+                pool.importPackage("com.megacrit.cardcrawl");
+                pool.importPackage("com.megacrit.cardcrawl.core");
+                pool.importPackage("com.megacrit.cardcrawl.dungeons");
+                pool.importPackage("com.megacrit.cardcrawl.cards");
+                pool.importPackage("com.megacrit.cardcrawl.powers");
+                pool.importPackage("com.megacrit.cardcrawl.relics");
+            }
+
+            if (debug) {
+                System.out.println(src);
+            }
+
+            try {
+                CtClass ctClass = pool.makeClass(OurCode.class.getName() + "$Eval" + evalCount);
+                ++evalCount;
+
+                CtMethod ctMethod = CtNewMethod.make(src, ctClass);
+                ctClass.addMethod(ctMethod);
+                CodeAttribute code = ctMethod.getMethodInfo().getCodeAttribute();
+                boolean stackUnderflow = false;
+                try {
+                    code.computeMaxStack();
+                } catch (BadBytecode e) {
+                    if (e.getMessage().startsWith("stack underflow")) {
+                        stackUnderflow = true;
+                    } else {
+                        throw e;
+                    }
+                }
+                ctMethod.instrument(new FixIllegalAccess(debug));
+                ctMethod.instrument(new ReturnCodeConvertor(debug, stackUnderflow));
+
+                if (debug) {
+                    ctClass.debugWriteFile("evalcode_debug");
+                }
+                Class<?> cls = ctClass.toClass(outLoader, null);
+                Method method = cls.getMethod("eval");
+                return method.invoke(null);
+            } catch (Exception | Error e) {
+                return e;
+            }
+        }
+    }
+
+    private static class FixIllegalAccess extends ExprEditor
+    {
+        private final boolean debug;
+
+        FixIllegalAccess(boolean debug)
+        {
+            this.debug = debug;
+        }
+
+        private boolean canAccess(CtClass thatClass, int modifiers)
+        {
+            return Modifier.isPublic(thatClass.getModifiers() & modifiers);
+        }
+
+        @Override
+        public void edit(MethodCall m) throws CannotCompileException
+        {
+            try {
+                CtMethod method = m.getMethod();
+                if (!canAccess(method.getDeclaringClass(), method.getModifiers())) {
+                    List<String> argTypes = Arrays.stream(method.getParameterTypes())
+                            .map(CtClass::getName)
+                            .map(x -> x + ".class")
+                            .collect(Collectors.toList());
+                    String src = "java.lang.reflect.Method m = " + m.getClassName() + ".class.getDeclaredMethod(\"" + method.getName() + "\"";
+                    if (argTypes.size() > 0) {
+                        src += ", new Class[] {" + String.join(", ", argTypes) + "}";
+                    } else {
+                        src += ", new Class[0]";
+                    }
+                    src += ");\n";
+                    src += "m.setAccessible(true);\n";
+                    src += "$_ = ($r) m.invoke($0, $args);\n";
+                    if (debug) {
+                        System.out.println(src);
+                    }
+                    m.replace(src);
+                }
+            } catch (NotFoundException e) {
+                e.printStackTrace();
             }
         }
 
-        ++evalCount;
+        @Override
+        public void edit(FieldAccess f) throws CannotCompileException
+        {
+            try {
+                CtField field = f.getField();
+                if (!canAccess(field.getDeclaringClass(), field.getModifiers())) {
+                    String src = "java.lang.reflect.Field f = " + f.getClassName() + ".class.getDeclaredField(\"" + field.getName() + "\");\n";
+                    src += "f.setAccessible(true);\n";
+                    if (f.isReader()) {
+                        src += "$_ = ($r) f.get($0);\n";
+                    } else {
+                        src += "f.set($0, ($w) $1);\n";
+                    }
+                    if (debug) {
+                        System.out.println(src);
+                    }
+                    f.replace(src);
+                }
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static class ReturnCodeConvertor extends CodeConverter
     {
-        public ReturnCodeConvertor(boolean stackUnderflow)
+        private final boolean debug;
+
+        public ReturnCodeConvertor(boolean debug, boolean stackUnderflow)
         {
+            this.debug = debug;
             transformers = new TransformPrimitiveReturn(transformers, stackUnderflow);
         }
 
