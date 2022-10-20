@@ -3,7 +3,6 @@ package basemod.devcommands.statics;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.compiler.MemberCodeGen;
@@ -25,7 +24,7 @@ public class EvalCode extends ConsoleCommand
 {
     public static class OurCode {}
 
-    private static URLClassLoader loader = null;
+    private static ClassLoader loader = null;
 
     public EvalCode() {
         minExtraTokens = 1;
@@ -33,22 +32,24 @@ public class EvalCode extends ConsoleCommand
         simpleCheck = false;
     }
 
+    private static void loadAll(CtClass ctClass) throws NotFoundException, CannotCompileException
+    {
+        for (CtClass nested : ctClass.getNestedClasses()) {
+            loadAll(nested);
+        }
+        ctClass.toClass(loader, null);
+    }
+
     @Override
     public void execute(String[] tokens, int depth) {
         if (loader == null) {
             try {
-                Method buildUrlArray = Loader.class.getDeclaredMethod("buildUrlArray", ModInfo[].class);
-                buildUrlArray.setAccessible(true);
-                URL[] urls = (URL[]) buildUrlArray.invoke(null, (Object) Loader.MODINFOS);
-                URL[] urls2 = new URL[urls.length+1];
-                urls2[0] = Loader.class.getProtectionDomain().getCodeSource().getLocation();
-                System.arraycopy(urls, 0, urls2, 1, urls.length);
-                loader = new URLClassLoader(urls2, null);
+                // Create a new ClassLoader just containing MTS, because that's where javassist is located
+                loader = new URLClassLoader(new URL[] {Loader.class.getProtectionDomain().getCodeSource().getLocation()}, null);
 
                 ClassPool pool = new ClassPool();
                 pool.appendSystemPath();
-                pool.insertClassPath(new LoaderClassPath(loader));
-                pool.childFirstLookup = true;
+                pool.insertClassPath(new LoaderClassPath(EvalCode.class.getClassLoader()));
                 pool.importPackage("javassist.bytecode");
 
                 // Patch to disable the javassist compiler's check for private fields
@@ -63,8 +64,12 @@ public class EvalCode extends ConsoleCommand
                         "acc = AccessFlag.setPackage(acc);" +
                         "}");
 
+                // Load CodeRunner and its prerequisites into the new ClassLoader
                 ctMemberCodeGen.toClass(loader, null);
-            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | NotFoundException | CannotCompileException e) {
+                CtClass ctCodeRunner = pool.get("basemod.devcommands.statics.EvalCode$CodeRunner");
+                loadAll(ctCodeRunner);
+                pool.get(OurCode.class.getName()).toClass(loader, null);
+            } catch (NotFoundException | CannotCompileException e) {
                 DevConsole.log("Something bad happened. Check the log");
                 e.printStackTrace();
                 return;
@@ -80,6 +85,7 @@ public class EvalCode extends ConsoleCommand
         src += "}";
 
         try {
+            // Get CodeRunner and run it in our ClassLoader
             Class<?> codeRunner = loader.loadClass("basemod.devcommands.statics.EvalCode$CodeRunner");
             Method run = codeRunner.getDeclaredMethod("run", String.class, ClassLoader.class, boolean.class);
             run.setAccessible(true);
@@ -114,11 +120,10 @@ public class EvalCode extends ConsoleCommand
 
         public static Object run(String src, ClassLoader outLoader, boolean debug)
         {
-            ClassLoader loader = CodeRunner.class.getClassLoader();
             if (pool == null) {
                 pool = new ClassPool();
                 pool.appendSystemPath();
-                pool.insertClassPath(new LoaderClassPath(loader));
+                pool.insertClassPath(new LoaderClassPath(outLoader));
                 pool.childFirstLookup = true;
 
                 pool.importPackage("com.megacrit.cardcrawl");
@@ -134,6 +139,7 @@ public class EvalCode extends ConsoleCommand
             }
 
             try {
+                // Make a new class to contain the new code
                 CtClass ctClass = pool.makeClass(OurCode.class.getName() + "$Eval" + evalCount);
                 ++evalCount;
 
@@ -150,12 +156,15 @@ public class EvalCode extends ConsoleCommand
                         throw e;
                     }
                 }
+                // Convert any illegal accessing of protected/private fields/methods to use reflection
                 ctMethod.instrument(new FixIllegalAccess(debug));
+                // Fix return when the code doesn't have a return
                 ctMethod.instrument(new ReturnCodeConvertor(debug, stackUnderflow));
 
                 if (debug) {
                     ctClass.debugWriteFile("evalcode_debug");
                 }
+                // Load the new class into the normal ClassLoader, so it has access to the game's actual state
                 Class<?> cls = ctClass.toClass(outLoader, null);
                 Method method = cls.getMethod("eval");
                 return method.invoke(null);
@@ -163,140 +172,140 @@ public class EvalCode extends ConsoleCommand
                 return e;
             }
         }
-    }
 
-    private static class FixIllegalAccess extends ExprEditor
-    {
-        private final boolean debug;
-
-        FixIllegalAccess(boolean debug)
+        private static class FixIllegalAccess extends ExprEditor
         {
-            this.debug = debug;
-        }
+            private final boolean debug;
 
-        private boolean canAccess(CtClass thatClass, int modifiers)
-        {
-            return Modifier.isPublic(thatClass.getModifiers() & modifiers);
-        }
-
-        @Override
-        public void edit(MethodCall m) throws CannotCompileException
-        {
-            try {
-                CtMethod method = m.getMethod();
-                if (!canAccess(method.getDeclaringClass(), method.getModifiers())) {
-                    List<String> argTypes = Arrays.stream(method.getParameterTypes())
-                            .map(CtClass::getName)
-                            .map(x -> x + ".class")
-                            .collect(Collectors.toList());
-                    String src = "java.lang.reflect.Method m = " + m.getClassName() + ".class.getDeclaredMethod(\"" + method.getName() + "\"";
-                    if (argTypes.size() > 0) {
-                        src += ", new Class[] {" + String.join(", ", argTypes) + "}";
-                    } else {
-                        src += ", new Class[0]";
-                    }
-                    src += ");\n";
-                    src += "m.setAccessible(true);\n";
-                    src += "$_ = ($r) m.invoke($0, $args);\n";
-                    if (debug) {
-                        System.out.println(src);
-                    }
-                    m.replace(src);
-                }
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void edit(FieldAccess f) throws CannotCompileException
-        {
-            try {
-                CtField field = f.getField();
-                if (!canAccess(field.getDeclaringClass(), field.getModifiers())) {
-                    String src = "java.lang.reflect.Field f = " + f.getClassName() + ".class.getDeclaredField(\"" + field.getName() + "\");\n";
-                    src += "f.setAccessible(true);\n";
-                    if (f.isReader()) {
-                        src += "$_ = ($r) f.get($0);\n";
-                    } else {
-                        src += "f.set($0, ($w) $1);\n";
-                    }
-                    if (debug) {
-                        System.out.println(src);
-                    }
-                    f.replace(src);
-                }
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static class ReturnCodeConvertor extends CodeConverter
-    {
-        private final boolean debug;
-
-        public ReturnCodeConvertor(boolean debug, boolean stackUnderflow)
-        {
-            this.debug = debug;
-            transformers = new TransformPrimitiveReturn(transformers, stackUnderflow);
-        }
-
-        private static class TransformPrimitiveReturn extends Transformer
-        {
-            private final boolean voidReturn;
-
-            public TransformPrimitiveReturn(Transformer t, boolean stackUnderflow)
+            FixIllegalAccess(boolean debug)
             {
-                super(t);
-                voidReturn = stackUnderflow;
+                this.debug = debug;
+            }
+
+            private boolean canAccess(CtClass thatClass, int modifiers)
+            {
+                return Modifier.isPublic(thatClass.getModifiers() & modifiers);
             }
 
             @Override
-            public int transform(CtClass clazz, int pos, CodeIterator iterator,
-                                 ConstPool cp) throws CannotCompileException, BadBytecode
+            public void edit(MethodCall m) throws CannotCompileException
             {
-                ClassPool pool = clazz.getClassPool();
-                int c = iterator.byteAt(pos);
-                CtPrimitiveType primitiveType = null;
-                if (c == IRETURN && voidReturn) {
-                    c = RETURN;
+                try {
+                    CtMethod method = m.getMethod();
+                    if (!canAccess(method.getDeclaringClass(), method.getModifiers())) {
+                        List<String> argTypes = Arrays.stream(method.getParameterTypes())
+                                .map(CtClass::getName)
+                                .map(x -> x + ".class")
+                                .collect(Collectors.toList());
+                        String src = "java.lang.reflect.Method m = " + m.getClassName() + ".class.getDeclaredMethod(\"" + method.getName() + "\"";
+                        if (argTypes.size() > 0) {
+                            src += ", new Class[] {" + String.join(", ", argTypes) + "}";
+                        } else {
+                            src += ", new Class[0]";
+                        }
+                        src += ");\n";
+                        src += "m.setAccessible(true);\n";
+                        src += "$_ = ($r) m.invoke($0, $args);\n";
+                        if (debug) {
+                            System.out.println(src);
+                        }
+                        m.replace(src);
+                    }
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
                 }
-                switch (c) {
-                    case IRETURN: // int
-                        primitiveType = (CtPrimitiveType) CtClass.intType;
-                        break;
-                    case LRETURN: // long
-                        primitiveType = (CtPrimitiveType) CtClass.longType;
-                        break;
-                    case FRETURN: // float
-                        primitiveType = (CtPrimitiveType) CtClass.floatType;
-                        break;
-                    case DRETURN: // double
-                        primitiveType = (CtPrimitiveType) CtClass.doubleType;
-                        break;
-                    case RETURN: // void
-                    {
-                        iterator.writeByte(ARETURN, pos);
+            }
+
+            @Override
+            public void edit(FieldAccess f) throws CannotCompileException
+            {
+                try {
+                    CtField field = f.getField();
+                    if (!canAccess(field.getDeclaringClass(), field.getModifiers())) {
+                        String src = "java.lang.reflect.Field f = " + f.getClassName() + ".class.getDeclaredField(\"" + field.getName() + "\");\n";
+                        src += "f.setAccessible(true);\n";
+                        if (f.isReader()) {
+                            src += "$_ = ($r) f.get($0);\n";
+                        } else {
+                            src += "f.set($0, ($w) $1);\n";
+                        }
+                        if (debug) {
+                            System.out.println(src);
+                        }
+                        f.replace(src);
+                    }
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private static class ReturnCodeConvertor extends CodeConverter
+        {
+            private final boolean debug;
+
+            public ReturnCodeConvertor(boolean debug, boolean stackUnderflow)
+            {
+                this.debug = debug;
+                transformers = new TransformPrimitiveReturn(transformers, stackUnderflow);
+            }
+
+            private static class TransformPrimitiveReturn extends Transformer
+            {
+                private final boolean voidReturn;
+
+                public TransformPrimitiveReturn(Transformer t, boolean stackUnderflow)
+                {
+                    super(t);
+                    voidReturn = stackUnderflow;
+                }
+
+                @Override
+                public int transform(CtClass clazz, int pos, CodeIterator iterator,
+                                     ConstPool cp) throws CannotCompileException, BadBytecode
+                {
+                    ClassPool pool = clazz.getClassPool();
+                    int c = iterator.byteAt(pos);
+                    CtPrimitiveType primitiveType = null;
+                    if (c == IRETURN && voidReturn) {
+                        c = RETURN;
+                    }
+                    switch (c) {
+                        case IRETURN: // int
+                            primitiveType = (CtPrimitiveType) CtClass.intType;
+                            break;
+                        case LRETURN: // long
+                            primitiveType = (CtPrimitiveType) CtClass.longType;
+                            break;
+                        case FRETURN: // float
+                            primitiveType = (CtPrimitiveType) CtClass.floatType;
+                            break;
+                        case DRETURN: // double
+                            primitiveType = (CtPrimitiveType) CtClass.doubleType;
+                            break;
+                        case RETURN: // void
+                        {
+                            iterator.writeByte(ARETURN, pos);
+                            Bytecode bytecode = new Bytecode(cp);
+                            bytecode.add(ACONST_NULL);
+                            iterator.insert(pos, bytecode.get());
+                            break;
+                        }
+                    }
+                    if (primitiveType != null) {
+                        iterator.writeByte(NOP, pos);
                         Bytecode bytecode = new Bytecode(cp);
-                        bytecode.add(ACONST_NULL);
-                        iterator.insert(pos, bytecode.get());
-                        break;
+                        try {
+                            CtClass wrapperType = pool.get(primitiveType.getWrapperName());
+                            bytecode.addInvokestatic(wrapperType, "valueOf", wrapperType, new CtClass[] { primitiveType });
+                        } catch (NotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                        bytecode.add(ARETURN);
+                        iterator.insert(pos + 1, bytecode.get());
                     }
+                    return pos;
                 }
-                if (primitiveType != null) {
-                    iterator.writeByte(NOP, pos);
-                    Bytecode bytecode = new Bytecode(cp);
-                    try {
-                        CtClass wrapperType = pool.get(primitiveType.getWrapperName());
-                        bytecode.addInvokestatic(wrapperType, "valueOf", wrapperType, new CtClass[] { primitiveType });
-                    } catch (NotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                    bytecode.add(ARETURN);
-                    iterator.insert(pos + 1, bytecode.get());
-                }
-                return pos;
             }
         }
     }
