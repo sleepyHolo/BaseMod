@@ -951,3 +951,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Allow evalcode command to access private fields and methods (kiooeht)
+* Add genericScreenOverlayReset helper to CustomScreen (kiooeht)
