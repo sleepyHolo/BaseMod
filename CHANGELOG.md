@@ -954,3 +954,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add genericScreenOverlayReset helper to CustomScreen (kiooeht)
 * Fix Dear ImGui trying to load even when not enabled (kiooeht)
 * Refactor memory churn patch (kiooeht)
+* Fix Chinese text rendering issues (Somdy)
