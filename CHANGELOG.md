@@ -965,7 +965,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card energy font in single card popup (herbix)
 * Allow multiple player classes for an event (Alchyr)
 
-#### dev ####
+#### v5.49.0 ####
 * Fix unnecessary line deletion when rendering Chinese text (Somdy)
 * Fix functuation and tipbox height when rendering Chinese text (Somdy)
 * Add render hooks to CardMods when in SCV (NellyDevo)
@@ -973,3 +973,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix getPotion log spam (erasels)
 * Allow dynamic variables to check card during upgrade coloring (Nyoxide)
 * Fix GlowInfo priority not being accessible (kiooeht)
+
+#### dev ####
