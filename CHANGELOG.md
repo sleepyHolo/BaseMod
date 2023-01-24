@@ -975,3 +975,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix GlowInfo priority not being accessible (kiooeht)
 
 #### dev ####
+* Add additionalTooltips method to CardMods (Pandemonium)
