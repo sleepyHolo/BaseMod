@@ -147,7 +147,7 @@ public class RenderCardDescriptors
 		}
 	}
 
-	private static List<String> getAllDescriptors(AbstractCard card) {
+	public static List<String> getAllDescriptors(AbstractCard card) {
 		List<String> list = new ArrayList<>();
 		if (card instanceof CustomCard) {
 			list.addAll(((CustomCard) card).getCardDescriptors());
