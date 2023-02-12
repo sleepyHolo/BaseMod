@@ -977,7 +977,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.50.0 ####
 * Add additionalTooltips method to CardMods (Pandemonium)
 
-#### dev ####
+#### v5.51.0 ####
 * Fix CustomBottleRelic rendering on cards not scaling with resolution (kiooeht)
 * Don't require modid prefixes to be all lowercase (Alchyr)
 * Fix modifed base damage multi-upgrade cards showing inflated values in SCV (NellyDevo)
@@ -987,3 +987,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add card descriptors to CardMods (NellyDevo)
 * Output stacktrace instead of silently accepting potion initialization errors (Alchyr)
 * Make ethereal exhaust order seeded (Alchyr)
+
+#### dev ####
