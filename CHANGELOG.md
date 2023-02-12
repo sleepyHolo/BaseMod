@@ -979,3 +979,11 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix CustomBottleRelic rendering on cards not scaling with resolution (kiooeht)
+* Don't require modid prefixes to be all lowercase (Alchyr)
+* Fix modifed base damage multi-upgrade cards showing inflated values in SCV (NellyDevo)
+* Fix modifyBaseMagic (Mistress Alison)
+* Add CardMods to Run History (Mistress Alison)
+* Fix CardMods crashing on load when they no longer exist (NellyDevo)
+* Add card descriptors to CardMods (NellyDevo)
+* Output stacktrace instead of silently accepting potion initialization errors (Alchyr)
+* Make ethereal exhaust order seeded (Alchyr)
