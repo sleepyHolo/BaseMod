@@ -117,23 +117,20 @@ public class RenderCardDescriptorsSCV
 
 		public static SpireReturn<Void> Prefix(SingleCardViewPopup __instance, SpriteBatch sb, TextureAtlas.AtlasRegion img, float xOffset, float xScale, AbstractCard ___card)
 		{
-			if (___card instanceof CustomCard) {
-				tmp.set(xOffset, 0);
-				sb.draw(
-						img,
-						Settings.WIDTH / 2f + img.offsetX - (img.originalWidth / 2f + 2) + tmp.x,
-						Settings.HEIGHT / 2f + img.offsetY - img.originalHeight / 2f + tmp.y,
-						img.originalWidth / 2f - img.offsetX + 2,
-						img.originalHeight / 2f - img.offsetY,
-						img.packedWidth,
-						img.packedHeight,
-						Settings.scale * xScale,
-						Settings.scale,
-						0f
-				);
-				return SpireReturn.Return(null);
-			}
-			return SpireReturn.Continue();
+			tmp.set(xOffset, 0);
+			sb.draw(
+					img,
+					Settings.WIDTH / 2f + img.offsetX - (img.originalWidth / 2f + 2) + tmp.x,
+					Settings.HEIGHT / 2f + img.offsetY - img.originalHeight / 2f + tmp.y,
+					img.originalWidth / 2f - img.offsetX + 2,
+					img.originalHeight / 2f - img.offsetY,
+					img.packedWidth,
+					img.packedHeight,
+					Settings.scale * xScale,
+					Settings.scale,
+					0f
+			);
+			return SpireReturn.Return(null);
 		}
 	}
 }

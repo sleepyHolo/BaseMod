@@ -990,3 +990,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix card descriptor frame not accounting for CardMods in SCV (kiooeht)
+* Fix card descriptor dynamic frame for all cards, not just CustomCard (kiooeht)

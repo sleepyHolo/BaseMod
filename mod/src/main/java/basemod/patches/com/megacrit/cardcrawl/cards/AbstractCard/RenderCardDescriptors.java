@@ -125,25 +125,22 @@ public class RenderCardDescriptors
 
 		public static SpireReturn<Void> Prefix(AbstractCard __instance, SpriteBatch sb, TextureAtlas.AtlasRegion img, float x, float y, float xOffset, float xScale)
 		{
-			if (__instance instanceof CustomCard) {
-				tmp.set(xOffset, 0);
-				tmp.scl(__instance.drawScale);
-				tmp.rotate(__instance.angle);
-				sb.draw(
-						img,
-						x + img.offsetX - (img.originalWidth / 2f + 1) + tmp.x,
-						y + img.offsetY - img.originalHeight / 2f + tmp.y,
-						img.originalWidth / 2f - img.offsetX + 1,
-						img.originalHeight / 2f - img.offsetY,
-						img.packedWidth,
-						img.packedHeight,
-						Settings.scale * __instance.drawScale * xScale,
-						Settings.scale * __instance.drawScale,
-						__instance.angle
-				);
-				return SpireReturn.Return(null);
-			}
-			return SpireReturn.Continue();
+			tmp.set(xOffset, 0);
+			tmp.scl(__instance.drawScale);
+			tmp.rotate(__instance.angle);
+			sb.draw(
+					img,
+					x + img.offsetX - (img.originalWidth / 2f + 1) + tmp.x,
+					y + img.offsetY - img.originalHeight / 2f + tmp.y,
+					img.originalWidth / 2f - img.offsetX + 1,
+					img.originalHeight / 2f - img.offsetY,
+					img.packedWidth,
+					img.packedHeight,
+					Settings.scale * __instance.drawScale * xScale,
+					Settings.scale * __instance.drawScale,
+					__instance.angle
+			);
+			return SpireReturn.Return(null);
 		}
 	}
 
