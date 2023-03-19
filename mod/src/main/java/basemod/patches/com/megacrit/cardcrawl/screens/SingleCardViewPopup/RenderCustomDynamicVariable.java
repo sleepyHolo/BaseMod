@@ -1,6 +1,7 @@
 package basemod.patches.com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.abstracts.DynamicVariable;
 import basemod.helpers.CardModifierManager;
 import basemod.helpers.dynamicvariables.BlockVariable;
@@ -23,7 +24,6 @@ import javassist.expr.MethodCall;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 
 @SpirePatch(
@@ -80,30 +80,15 @@ public class RenderCustomDynamicVariable
         public static float myRenderDynamicVariable(Object __obj_instance, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
             return myRenderDynamicVariable(__obj_instance, key, start_x, draw_y, i, font, sb);
         }
+        @SuppressWarnings("ConstantConditions")
         public static float myRenderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
         {
             SingleCardViewPopup __instance = (SingleCardViewPopup) __obj_instance;
 
             // Get any private variables we need
-            AbstractCard card;
-            float current_x;
-            float current_y;
-            try {
-                Field f = SingleCardViewPopup.class.getDeclaredField("card");
-                f.setAccessible(true);
-                card = (AbstractCard) f.get(__instance);
-
-                f = SingleCardViewPopup.class.getDeclaredField("current_x");
-                f.setAccessible(true);
-                current_x = f.getFloat(__instance);
-
-                f = SingleCardViewPopup.class.getDeclaredField("current_y");
-                f.setAccessible(true);
-                current_y = f.getFloat(__instance);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-                return 0;
-            }
+            AbstractCard card = ReflectionHacks.getPrivate(__instance, SingleCardViewPopup.class, "card");
+            float current_x = ReflectionHacks.getPrivate(__instance, SingleCardViewPopup.class, "current_x");
+            float current_y = ReflectionHacks.getPrivate(__instance, SingleCardViewPopup.class, "current_y");
 
             String pre = "", end = "";
 
