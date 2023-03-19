@@ -53,14 +53,15 @@ public class CardModifierManager
      * removes all modifiers from card that match id. Inherent mods are only included if the method is sent "true"
      */
     public static void removeModifiersById(AbstractCard card, String id, boolean includeInherent) {
-        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
-        while (it.hasNext()) {
-            AbstractCardModifier mod = it.next();
+        ArrayList<AbstractCardModifier> removed = new ArrayList<>();
+        modifiers(card).removeIf(mod -> {
             if (mod.identifier(card).equals(id) && (!mod.isInherent(card) || includeInherent)) {
-                it.remove();
-                mod.onRemove(card);
+                removed.add(mod);
+                return true;
             }
-        }
+            return false;
+        });
+        removed.forEach(mod -> mod.onRemove(card));
         card.initializeDescription();
     }
 
@@ -93,14 +94,15 @@ public class CardModifierManager
      * removes all modifiers from card. Mods that are inherent are only included if the method is sent "true"
      */
     public static void removeAllModifiers(AbstractCard card, boolean includeInherent) {
-        Iterator<AbstractCardModifier> it = modifiers(card).iterator();
-        while (it.hasNext()) {
-            AbstractCardModifier mod = it.next();
+        ArrayList<AbstractCardModifier> removed = new ArrayList<>();
+        modifiers(card).removeIf(mod -> {
             if (!mod.isInherent(card) || includeInherent) {
-                it.remove();
-                mod.onRemove(card);
+                removed.add(mod);
+                return true;
             }
-        }
+            return false;
+        });
+        removed.forEach(mod -> mod.onRemove(card));
         card.initializeDescription();
     }
 
@@ -114,21 +116,24 @@ public class CardModifierManager
         if (replace) {
             removeAllModifiers(newCard, includeInherent);
         }
-        Iterator<AbstractCardModifier> it = modifiers(oldCard).iterator();
-        while (it.hasNext()) {
-            AbstractCardModifier mod = it.next();
+        ArrayList<AbstractCardModifier> removed = new ArrayList<>();
+        modifiers(oldCard).removeIf(mod -> {
             if (!mod.isInherent(oldCard) || includeInherent) {
-                if (removeOld) {
-                    it.remove();
-                    mod.onRemove(oldCard);
-                }
-                AbstractCardModifier newMod = mod.makeCopy();
-                if (newMod.shouldApply(newCard)) {
-                    modifiers(newCard).add(newMod);
-                    newMod.onInitialApplication(newCard);
-                }
+                removed.add(mod);
+                return true;
             }
-        }
+            return false;
+        });
+        ArrayList<AbstractCardModifier> applied = new ArrayList<>();
+        removed.forEach(mod -> {
+            mod.onRemove(oldCard);
+            AbstractCardModifier newMod = mod.makeCopy();
+            if (newMod.shouldApply(newCard)) {
+                modifiers(newCard).add(newMod);
+                applied.add(newMod);
+            }
+        });
+        applied.forEach(mod -> mod.onInitialApplication(newCard));
         if (removeOld) {
             oldCard.initializeDescription();
         }
