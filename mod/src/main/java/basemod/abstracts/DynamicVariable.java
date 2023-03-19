@@ -4,8 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 
+import java.util.regex.Pattern;
+
 public abstract class DynamicVariable
 {
+    public static Pattern variablePattern = Pattern.compile("(.*)!(.+)!(.*)");
+
     public abstract String key();
 
     public abstract boolean isModified(AbstractCard card);
