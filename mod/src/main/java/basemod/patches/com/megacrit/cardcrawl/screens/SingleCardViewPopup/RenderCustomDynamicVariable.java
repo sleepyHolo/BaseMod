@@ -51,7 +51,7 @@ public class RenderCustomDynamicVariable
                 if (rounded && m.getMethodName().equals("charAt")) {
                     m.replace(
                             "if (" + Inner.class.getName() + ".checkDynamicVariable(tmp)) {" +
-                                    "start_x += " + Inner.class.getName() + ".myRenderDynamicVariable(this, tmp, start_x, draw_y, i, font, sb);" +
+                                    "start_x += " + Inner.class.getName() + ".renderDynamicVariable(this, tmp, start_x, draw_y, i, font, sb);" +
                                     "tmp = \"!\";" +
                                     "$_ = '!';" +
                                     "}" +
@@ -82,12 +82,13 @@ public class RenderCustomDynamicVariable
             return false;
         }
 
+        //Old method left for compatibility
         public static float myRenderDynamicVariable(Object __obj_instance, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
 
             return subRenderDynamicVariable(__obj_instance, "", "" + ckey, (cend == null ? "" : "" + cend), start_x, draw_y, i, font, sb);
         }
 
-        public static float myRenderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
+        public static float renderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
         {
             String pre = "", end = "";
 
@@ -115,7 +116,7 @@ public class RenderCustomDynamicVariable
             int num = 0;
             DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
             if (dv != null) {
-                num = dv.baseValue(card);
+                num = dv.modifiedBaseValue(card);
                 if (dv.upgraded(card)) {
                     c = dv.getUpgradedColor(card);
                 } else {
@@ -123,40 +124,6 @@ public class RenderCustomDynamicVariable
                 }
             } else {
                 logger.error("No dynamic card variable found for key \"" + key + "\"!");
-            }
-
-            //cardmods affect base variables
-            int base = -1;
-            boolean modified = false;
-            if (CardModifierPatches.CardModifierFields.needsRecalculation.get(card)) {
-                CardModifierManager.testBaseValues(card);
-                CardModifierPatches.CardModifierFields.needsRecalculation.set(card, false);
-            }
-            if (dv instanceof BlockVariable && CardModifierPatches.CardModifierFields.cardModHasBaseBlock.get(card)) {
-                base = CardModifierPatches.CardModifierFields.cardModBaseBlock.get(card);
-                modified = true;
-            } else if (dv instanceof DamageVariable && CardModifierPatches.CardModifierFields.cardModHasBaseDamage.get(card)) {
-                base = CardModifierPatches.CardModifierFields.cardModBaseDamage.get(card);
-                modified = true;
-            } else if (dv instanceof MagicNumberVariable && CardModifierPatches.CardModifierFields.cardModHasBaseMagic.get(card)) {
-                base = CardModifierPatches.CardModifierFields.cardModBaseMagic.get(card);
-                modified = true;
-            }
-            if (modified) {
-                if (!CardModifierPatches.CardModifierFields.preCalculated.get(card)) {
-                    num = base;
-                }
-                if (CardModifierPatches.CardModifierFields.previewingUpgrade.get(card)) {
-                    c = dv.getIncreasedValueColor();
-                } else {
-                    if (num == base) {
-                        c = dv.getNormalColor();
-                    } else if (num > base) {
-                        c = dv.getIncreasedValueColor();
-                    } else {
-                        c = dv.getDecreasedValueColor();
-                    }
-                }
             }
 
             float totalWidth = 0;

@@ -1,5 +1,6 @@
 package basemod.abstracts;
 
+import basemod.helpers.CardModifierManager;
 import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
@@ -22,6 +23,14 @@ public abstract class DynamicVariable
     public abstract int value(AbstractCard card);
 
     public abstract int baseValue(AbstractCard card);
+
+    public final int modifiedBaseValue(AbstractCard card) {
+        int base = baseValue(card);
+
+        base = CardModifierManager.modifiedBaseValue(card, base, key());
+
+        return base;
+    }
 
     public abstract boolean upgraded(AbstractCard card);
 

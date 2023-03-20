@@ -48,7 +48,7 @@ public class RenderCustomDynamicVariable
                 if (rounded && m.getMethodName().equals("charAt")) {
                     m.replace(
                             "if (" + Inner.class.getName() + ".checkDynamicVariable(tmp)) {" +
-                                        "start_x += " + Inner.class.getName() + ".myRenderDynamicVariable(this, tmp, start_x, draw_y, i, font, sb);" +
+                                        "start_x += " + Inner.class.getName() + ".renderDynamicVariable(this, tmp, start_x, draw_y, i, font, sb);" +
                                         "tmp = \"!\";" +
                                         "$_ = '!';" +
                                     "}" +
@@ -79,12 +79,13 @@ public class RenderCustomDynamicVariable
             return false;
         }
 
+        //Old method left for compatibility
         public static float myRenderDynamicVariable(Object __obj_instance, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
 
             return subRenderDynamicVariable(__obj_instance, "", "" + ckey, (cend == null ? "" : "" + cend), start_x, draw_y, i, font, sb);
         }
 
-        public static float myRenderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
+        public static float renderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
         {
             String pre = "", end = "";
 
@@ -113,48 +114,16 @@ public class RenderCustomDynamicVariable
             if (dv != null) {
                 if (dv.isModified(__instance)) {
                     num = dv.value(__instance);
-                    if (num >= dv.baseValue(__instance)) {
+                    if (num >= dv.modifiedBaseValue(__instance)) {
                         c = dv.getIncreasedValueColor();
                     } else {
                         c = dv.getDecreasedValueColor();
                     }
                 } else {
                     c = dv.getNormalColor();
-                    num = dv.baseValue(__instance);
+                    num = dv.modifiedBaseValue(__instance);
                 }
-                //cardmods affect base variables
-                int base = -1;
-                boolean modified = false;
-                if (CardModifierPatches.CardModifierFields.needsRecalculation.get(__instance)) {
-                    CardModifierManager.testBaseValues(__instance);
-                    CardModifierPatches.CardModifierFields.needsRecalculation.set(__instance, false);
-                }
-                if (dv instanceof BlockVariable && CardModifierPatches.CardModifierFields.cardModHasBaseBlock.get(__instance)) {
-                    base = CardModifierPatches.CardModifierFields.cardModBaseBlock.get(__instance);
-                    modified = true;
-                } else if (dv instanceof DamageVariable && CardModifierPatches.CardModifierFields.cardModHasBaseDamage.get(__instance)) {
-                    base = CardModifierPatches.CardModifierFields.cardModBaseDamage.get(__instance);
-                    modified = true;
-                } else if (dv instanceof MagicNumberVariable && CardModifierPatches.CardModifierFields.cardModHasBaseMagic.get(__instance)) {
-                    base = CardModifierPatches.CardModifierFields.cardModBaseMagic.get(__instance);
-                    modified = true;
-                }
-                if (modified) {
-                    if (!CardModifierPatches.CardModifierFields.preCalculated.get(__instance)) {
-                        num = base;
-                    }
-                    if (CardModifierPatches.CardModifierFields.previewingUpgrade.get(__instance)) {
-                        c = dv.getIncreasedValueColor();
-                    } else {
-                        if (num == base) {
-                            c = dv.getNormalColor();
-                        } else if (num > base) {
-                            c = dv.getIncreasedValueColor();
-                        } else {
-                            c = dv.getDecreasedValueColor();
-                        }
-                    }
-                }
+
                 c = c.cpy();
                 c.a = textColor.a;
             } else {
