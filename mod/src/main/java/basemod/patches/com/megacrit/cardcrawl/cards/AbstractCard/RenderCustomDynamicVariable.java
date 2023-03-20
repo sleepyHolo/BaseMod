@@ -37,6 +37,11 @@ public class RenderCustomDynamicVariable
 
             @Override
             public void edit(MethodCall m) throws CannotCompileException {
+                if (m.getMethodName().equals("renderDynamicVariable")) {
+                    m.replace("$_ = " + Inner.class.getName() + ".myRenderDynamicVariable(this, tmp, $$);");
+                    return;
+                }
+
                 if (modified)
                     return;
 
@@ -74,16 +79,13 @@ public class RenderCustomDynamicVariable
             return false;
         }
 
-
         public static float myRenderDynamicVariable(Object __obj_instance, String key, char ckey, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb, Character cend) {
-            return myRenderDynamicVariable(__obj_instance, key, start_x, draw_y, i, font, sb);
+
+            return subRenderDynamicVariable(__obj_instance, "", "" + ckey, (cend == null ? "" : "" + cend), start_x, draw_y, i, font, sb);
         }
+
         public static float myRenderDynamicVariable(Object __obj_instance, String key, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
         {
-            AbstractCard __instance = (AbstractCard) __obj_instance;
-            // Get any private variables we need
-            Color textColor = ReflectionHacks.getPrivate(__instance, AbstractCard.class, "textColor");
-
             String pre = "", end = "";
 
             Matcher matcher = DynamicVariable.variablePattern.matcher(key);
@@ -92,6 +94,17 @@ public class RenderCustomDynamicVariable
                 key = matcher.group(2);
                 end = matcher.group(3);
             }
+
+            return subRenderDynamicVariable(__obj_instance, pre, key, end, start_x, draw_y, i, font, sb);
+        }
+
+        @SuppressWarnings("ConstantConditions")
+        private static float subRenderDynamicVariable(Object __obj_instance, String pre, String key, String end, float start_x, float draw_y, int i, BitmapFont font, SpriteBatch sb)
+        {
+            AbstractCard __instance = (AbstractCard) __obj_instance;
+
+            // Get any private variables we need
+            Color textColor = ReflectionHacks.getPrivate(__instance, AbstractCard.class, "textColor");
 
             // Main body of method
             Color c;
