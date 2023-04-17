@@ -995,3 +995,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### dev ####
 * Fix basegame bug: SCV not displaying locked card art correctly (kiooeht)
 * Fix possible crash if SCV card name font ends up null (kiooeht)
+* Fix crash if other mods enable pedantic shaders (kiooeht)
