@@ -1010,3 +1010,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix offset of capitalized keyword prefixes (Alchyr)
 * Refactor CardMod base values (Alchyr)
 * Allow Ctrl, Shift, and Alt to be used as modifiers for opening the console (kiooeht)
+* Add hotkey config ui for opening ImGui (kiooeht/Piña Colada)

@@ -285,7 +285,7 @@ public class BaseMod {
 		defaultProperties.setProperty("basemod-fixes", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-search", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-actionqueue", Boolean.toString(true));
-		defaultProperties.setProperty("imgui-toggle-key", ImGuiPatches.toggleKey.save());
+		defaultProperties.setProperty("imgui-key", ImGuiPatches.toggleKey.save());
 
 		try {
 			SpireConfig retConfig = new SpireConfig(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
@@ -345,7 +345,7 @@ public class BaseMod {
 		if (whatmodEnabled != null) {
 			WhatMod.enabled = whatmodEnabled;
 		}
-		String imguiKey = getString("imgui-toggle-key");
+		String imguiKey = getString("imgui-key");
 		if (imguiKey != null) {
 			ImGuiPatches.toggleKey = DevConsole.KeyWithMods.load(imguiKey);
 		}
