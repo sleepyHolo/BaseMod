@@ -49,7 +49,7 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 			if (me.parent.waitingOnEvent) {
 				me.text = "Press key";
 			} else {
-				me.text = "Change console hotkey (" + Keys.toString(DevConsole.toggleKey) + ")";
+				me.text = "Change console hotkey (" + DevConsole.newToggleKey.toString() + ")";
 			}
 		});
 		settingsPanel.addUIElement(buttonLabel);
@@ -58,12 +58,51 @@ public class BaseModInit implements PostInitializeSubscriber, ImGuiSubscriber {
 			me.parent.waitingOnEvent = true;
 			oldInputProcessor = Gdx.input.getInputProcessor();
 			Gdx.input.setInputProcessor(new InputAdapter() {
+				private boolean ctrl = false;
+				private boolean shift = false;
+				private boolean alt = false;
+
+				@Override
+				public boolean keyDown(int keycode)
+				{
+					switch (keycode) {
+						case Keys.CONTROL_LEFT:
+						case Keys.CONTROL_RIGHT:
+							ctrl = true;
+							break;
+						case Keys.SHIFT_LEFT:
+						case Keys.SHIFT_RIGHT:
+							shift = true;
+							break;
+						case Keys.ALT_LEFT:
+						case Keys.ALT_RIGHT:
+							alt = true;
+							break;
+					}
+					return true;
+				}
+
 				@Override
 				public boolean keyUp(int keycode) {
-					DevConsole.toggleKey = keycode;
-					BaseMod.setString("console-key", Keys.toString(keycode));
-					me.parent.waitingOnEvent = false;
-					Gdx.input.setInputProcessor(oldInputProcessor);
+					switch (keycode) {
+						case Keys.CONTROL_LEFT:
+						case Keys.CONTROL_RIGHT:
+							ctrl = false;
+							break;
+						case Keys.SHIFT_LEFT:
+						case Keys.SHIFT_RIGHT:
+							shift = false;
+							break;
+						case Keys.ALT_LEFT:
+						case Keys.ALT_RIGHT:
+							alt = false;
+							break;
+						default:
+							DevConsole.newToggleKey = new DevConsole.KeyWithMods(keycode, ctrl, shift, alt);
+							BaseMod.setString("console-key", DevConsole.newToggleKey.save());
+							me.parent.waitingOnEvent = false;
+							Gdx.input.setInputProcessor(oldInputProcessor);
+					}
 					return true;
 				}
 			});

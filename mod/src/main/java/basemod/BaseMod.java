@@ -15,7 +15,6 @@ import basemod.patches.com.megacrit.cardcrawl.unlock.UnlockTracker.CountModdedUn
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -37,7 +36,6 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.audio.Sfx;
 import com.megacrit.cardcrawl.audio.SoundMaster;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -328,7 +326,7 @@ public class BaseMod {
 
 		String consoleKey = getString("console-key");
 		if (consoleKey != null) {
-			DevConsole.toggleKey = Keys.valueOf(consoleKey);
+			DevConsole.newToggleKey = DevConsole.KeyWithMods.load(consoleKey);
 		}
 		Boolean consoleEnabled = getBoolean("console-enabled");
 		if (consoleEnabled != null) {
