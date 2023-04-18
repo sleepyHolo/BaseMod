@@ -12,9 +12,11 @@ import basemod.patches.com.megacrit.cardcrawl.cards.AbstractCard.RenderDescripti
 import basemod.patches.com.megacrit.cardcrawl.helpers.TopPanel.TopPanelHelper;
 import basemod.patches.com.megacrit.cardcrawl.screens.select.GridCardSelectScreen.GridCardSelectScreenFields;
 import basemod.patches.com.megacrit.cardcrawl.unlock.UnlockTracker.CountModdedUnlockCards;
+import basemod.patches.imgui.ImGuiPatches;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -283,6 +285,7 @@ public class BaseMod {
 		defaultProperties.setProperty("basemod-fixes", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-search", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-actionqueue", Boolean.toString(true));
+		defaultProperties.setProperty("imgui-toggle-key", "E");
 
 		try {
 			SpireConfig retConfig = new SpireConfig(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
@@ -341,6 +344,10 @@ public class BaseMod {
 		Boolean whatmodEnabled = getBoolean("whatmod-enabled");
 		if (whatmodEnabled != null) {
 			WhatMod.enabled = whatmodEnabled;
+		}
+		String imguiKey = getString("imgui-toggle-key");
+		if (imguiKey != null) {
+			ImGuiPatches.toggleKey = Keys.valueOf(imguiKey);
 		}
 
 		fixesEnabled = getBoolean("basemod-fixes");

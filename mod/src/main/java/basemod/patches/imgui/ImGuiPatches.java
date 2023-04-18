@@ -32,6 +32,7 @@ import java.util.List;
 
 public class ImGuiPatches
 {
+	public static int toggleKey = Input.Keys.E;
 	private static ImGuiImplGlfw imGuiGlfw;
 	private static ImGuiImplGl3 imGuiGl3;
 
@@ -100,8 +101,8 @@ public class ImGuiPatches
 
 			SuppressHotkey.suppressedKeys.clear();
 
-			if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-				SuppressHotkey.suppressedKeys.add(Input.Keys.E);
+			if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyJustPressed(toggleKey)) {
+				SuppressHotkey.suppressedKeys.add(toggleKey);
 				enabled = !enabled;
 				GameCursor.hidden = enabled;
 			}
