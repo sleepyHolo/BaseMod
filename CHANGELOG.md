@@ -992,7 +992,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix card descriptor frame not accounting for CardMods in SCV (kiooeht)
 * Fix card descriptor dynamic frame for all cards, not just CustomCard (kiooeht)
 
-#### dev ####
+#### v5.52.0 ####
 * Fix basegame bug: SCV not displaying locked card art correctly (kiooeht)
 * Fix possible crash if SCV card name font ends up null (kiooeht)
 * Fix crash if other mods enable pedantic shaders (kiooeht)
@@ -1012,3 +1012,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Allow Ctrl, Shift, and Alt to be used as modifiers for opening the console (kiooeht)
 * Add hotkey config ui for opening ImGui (kiooeht/Piña Colada)
 * Stop ImGui hotkey activating while console is open (kiooeht)
+
+#### dev ####
