@@ -16,7 +16,7 @@ import basemod.patches.imgui.ImGuiPatches;
 import basemod.patches.whatmod.WhatMod;
 import basemod.screens.ModalChoiceScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -279,13 +279,13 @@ public class BaseMod {
 
 	private static SpireConfig makeConfig() {
 		Properties defaultProperties = new Properties();
-		defaultProperties.setProperty("console-key", "`");
+		defaultProperties.setProperty("console-key", DevConsole.newToggleKey.save());
 		defaultProperties.setProperty("autocomplete-enabled", Boolean.toString(true));
 		defaultProperties.setProperty("whatmod-enabled", Boolean.toString(true));
 		defaultProperties.setProperty("basemod-fixes", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-search", Boolean.toString(true));
 		defaultProperties.setProperty("imgui-actionqueue", Boolean.toString(true));
-		defaultProperties.setProperty("imgui-toggle-key", "E");
+		defaultProperties.setProperty("imgui-toggle-key", ImGuiPatches.toggleKey.save());
 
 		try {
 			SpireConfig retConfig = new SpireConfig(BaseModInit.MODNAME, CONFIG_FILE, defaultProperties);
@@ -347,7 +347,7 @@ public class BaseMod {
 		}
 		String imguiKey = getString("imgui-toggle-key");
 		if (imguiKey != null) {
-			ImGuiPatches.toggleKey = Keys.valueOf(imguiKey);
+			ImGuiPatches.toggleKey = DevConsole.KeyWithMods.load(imguiKey);
 		}
 
 		fixesEnabled = getBoolean("basemod-fixes");
