@@ -24,7 +24,9 @@ public abstract class DynamicVariable
 
     public abstract int baseValue(AbstractCard card);
 
-    public final int modifiedBaseValue(AbstractCard card) {
+    //Only affects the standard damage, block, and magicNumber variables normally.
+    //Can be overriden to do custom modification of base value for a custom variable.
+    public int modifiedBaseValue(AbstractCard card) {
         int base = baseValue(card);
 
         base = CardModifierManager.modifiedBaseValue(card, base, key());
