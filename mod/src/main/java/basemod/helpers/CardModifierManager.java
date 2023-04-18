@@ -14,9 +14,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CardModifierManager
 {
@@ -30,9 +28,9 @@ public class CardModifierManager
     public static void addModifier(AbstractCard card, AbstractCardModifier mod) {
         if (mod.shouldApply(card)) {
             modifiers(card).add(mod);
+
             Collections.sort(modifiers(card));
             mod.onInitialApplication(card);
-            testBaseValues(card);
             onCardModified(card);
             card.initializeDescription();
         }
@@ -141,44 +139,8 @@ public class CardModifierManager
             onCardModified(oldCard);
             oldCard.initializeDescription();
         }
-        testBaseValues(newCard);
         onCardModified(newCard);
         newCard.initializeDescription();
-    }
-
-    public static void testBaseValues(AbstractCard card) {
-        float damage = card.baseDamage;
-        float block = card.baseBlock;
-        float magic = card.baseMagicNumber;
-        for (AbstractCardModifier modifier : modifiers(card)) {
-            damage = modifier.modifyBaseDamage(damage, card.damageTypeForTurn, card, null);
-            block = modifier.modifyBaseBlock(block, card);
-            magic = modifier.modifyBaseMagic(magic, card);
-        }
-        damage = (int)damage;
-        block = (int)block;
-        magic = (int)magic;
-        if (damage != card.baseDamage) {
-            card.damage = (int)damage; //We have to set these values directly for dynamic text to work in master deck. They get overwritten in combat
-            CardModifierPatches.CardModifierFields.cardModBaseDamage.set(card, (int)damage);
-            CardModifierPatches.CardModifierFields.cardModHasBaseDamage.set(card, true);
-        } else {
-            CardModifierPatches.CardModifierFields.cardModHasBaseDamage.set(card, false);
-        }
-        if (block != card.baseBlock) {
-            card.block = (int)block;
-            CardModifierPatches.CardModifierFields.cardModBaseBlock.set(card, (int)block);
-            CardModifierPatches.CardModifierFields.cardModHasBaseBlock.set(card, true);
-        } else {
-            CardModifierPatches.CardModifierFields.cardModHasBaseBlock.set(card, false);
-        }
-        if (magic != card.baseMagicNumber) {
-            card.magicNumber = (int)magic;
-            CardModifierPatches.CardModifierFields.cardModBaseMagic.set(card, (int)magic);
-            CardModifierPatches.CardModifierFields.cardModHasBaseMagic.set(card, true);
-        } else {
-            CardModifierPatches.CardModifierFields.cardModHasBaseMagic.set(card, false);
-        }
     }
 
     public static void removeEndOfTurnModifiers(AbstractCard card) {
@@ -284,6 +246,20 @@ public class CardModifierManager
     public static void onCardRetained(AbstractCard card) {
         for (AbstractCardModifier mod : modifiers(card)) {
             mod.onRetained(card);
+        }
+    }
+
+    public static int modifiedBaseValue(AbstractCard card, int base, String key) {
+        switch (key) {
+            case "D":
+                return (int) onModifyBaseDamage(base, card, null);
+            case "B":
+                return (int) onModifyBaseBlock(base, card);
+            case "M":
+                return (int) onModifyBaseMagic(base, card);
+            default:
+                //Cannot support custom variables, as no way to set their variable values
+                return base;
         }
     }
 

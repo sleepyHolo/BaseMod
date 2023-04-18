@@ -990,8 +990,9 @@ public class BaseMod {
 	 */
 	public static float calculateCardDamage(AbstractPlayer player, AbstractMonster mo, AbstractCard c, float tmp) {
 		if (c instanceof CustomCard) {
+			float oldVal = tmp;
 			float newVal = ((CustomCard) c).calculateModifiedCardDamage(player, mo, tmp);
-			if ((int) newVal != c.baseDamage) {
+			if (newVal != oldVal) {
 				c.isDamageModified = true;
 			}
 			return newVal;
