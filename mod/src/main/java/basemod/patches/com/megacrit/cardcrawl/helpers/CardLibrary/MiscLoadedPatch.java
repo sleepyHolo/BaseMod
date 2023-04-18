@@ -17,7 +17,9 @@ import java.util.ArrayList;
 )
 public class MiscLoadedPatch {
 
-    @SpireInsertPatch
+    @SpireInsertPatch(
+            locator = Locator.class
+    )
     public static void onLoadMisc(AbstractCard ___retVal) {
         if (___retVal instanceof CustomCard) {
             ((CustomCard)___retVal).onLoadedMisc();
