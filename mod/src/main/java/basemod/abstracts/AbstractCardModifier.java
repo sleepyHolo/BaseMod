@@ -228,6 +228,13 @@ public abstract class AbstractCardModifier implements Comparable<AbstractCardMod
     }
 
     /**
+     * triggers on every modifier present on a card after any changes to the list of modifiers on a card changes.
+     */
+    public void onCardModified(AbstractCard card) {
+
+    }
+
+    /**
      * lower number = calculates first. For list sorting purposes. Don't override. Or do, I'm a comment, not a cop.
      */
     @Override
