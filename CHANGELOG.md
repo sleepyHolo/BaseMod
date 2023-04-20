@@ -1018,3 +1018,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix base value modifier upgrade preview (Alchyr)
 
 #### dev ####
+* Allow Ctrl, Shift, and Alt to be used on their own again for opening the console (kiooeht)
