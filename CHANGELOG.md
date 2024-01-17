@@ -1024,7 +1024,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix CardMod base value changes (Mistress Alison)
 * Fix border glow manager not testing for CardMod glows (NellyDevo)
 
-#### dev ####
+#### v5.53.0 ####
 * Make multiline relic descriptions work on character select screen (JohnnyBazooka89)
 * Don't fade limbo when clearing card queue (Alchyr)
 * Add repeat to dynamic text blocks (herbix)
@@ -1049,3 +1049,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix soft lock with endsWithRewardsUI events (Alchyr)
 * Fix queueExtraCard crash (erasels/kiooeht)
 * Fix provided CardMod localization (Rucodeby)
+
+#### dev ####
