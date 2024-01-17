@@ -1729,6 +1729,12 @@ public class BaseMod {
 		addCharacter(character, selectButtonPath, portraitPath, characterID, null);
 	}
 
+	public static void addCharacter(AbstractPlayer character,
+									String selectButtonPath,
+									String portraitPath) {
+		addCharacter(character, selectButtonPath, portraitPath, character.chosenClass, null);
+	}
+
 	public static TextureAtlas.AtlasRegion getCardSmallEnergy() {
 		if (AbstractDungeon.player == null) {
 			return AbstractCard.orb_red;
