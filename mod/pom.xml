@@ -88,6 +88,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>img/*.xcf</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
