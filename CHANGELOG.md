@@ -1050,4 +1050,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix queueExtraCard crash (erasels/kiooeht)
 * Fix provided CardMod localization (Rucodeby)
 
+#### v5.53.1 ####
+* Revert changes
+  * Add PostShopInitializeSubscriber (DandyLion)
+  * Add pagination to shop relic grid (DandyLion)
+
 #### dev ####
