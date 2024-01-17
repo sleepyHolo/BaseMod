@@ -168,7 +168,7 @@ public class DynamicTextBlocks {
             if (CardCrawlGame.dungeon != null && AbstractDungeon.player != null) {
                 if (AbstractDungeon.player.masterDeck.contains(c)) {
                     var = -1;
-                } else if (AbstractDungeon.player.hand.contains(c) || AbstractDungeon.player.limbo.contains(c)) {
+                } else if (AbstractDungeon.player.hand.contains(c) || AbstractDungeon.player.limbo.contains(c) || AbstractDungeon.player.cardInUse == c) {
                     var = 0;
                 } else if (AbstractDungeon.player.drawPile.contains(c)) {
                     var = 1;
