@@ -1055,4 +1055,9 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
   * Add PostShopInitializeSubscriber (DandyLion)
   * Add pagination to shop relic grid (DandyLion)
 
+#### v5.53.2 ####
+* Revert changes
+  * Fix magic number not resetting if a CardMod was applied once (herbix)
+    * Broke basegame cards like Halt
+
 #### dev ####
