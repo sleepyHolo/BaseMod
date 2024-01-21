@@ -1061,3 +1061,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
     * Broke basegame cards like Halt
 
 #### dev ####
+* Make basegame start relic upgrades replace the correct relic (erasels/kiooeht)
