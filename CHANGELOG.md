@@ -1066,3 +1066,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix whatmod tooltip in the wrong position on SCV and SRV (kiooeht)
 
 #### dev ####
+* Fix crash when inspecting single cards or relics in SCV/SRC (kiooeht)
