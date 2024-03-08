@@ -2,6 +2,7 @@ package basemod.patches.whatmod;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
@@ -14,6 +15,10 @@ import javassist.expr.NewExpr;
 @SpirePatch(
     clz=AbstractCreature.class,
     method="renderPowerTips"
+)
+@SpirePatch(
+        clz=AbstractPlayer.class,
+        method="renderPowerTips"
 )
 public class PlayerPowerTips
 {
@@ -49,6 +54,10 @@ public class PlayerPowerTips
     @SpirePatch(
 		clz=AbstractCreature.class,
         method="renderPowerTips"
+    )
+    @SpirePatch(
+            clz=AbstractPlayer.class,
+            method="renderPowerTips"
     )
     public static class Nested
     {

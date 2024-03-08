@@ -1069,3 +1069,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix crash when inspecting single cards or relics in SCV/SRC (kiooeht)
 
 #### dev ####
+* Fix WhatMod not working for powers on the player (kiooeht)
