@@ -1070,3 +1070,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 
 #### dev ####
 * Fix WhatMod not working for powers on the player (kiooeht)
+* Improve visual of hand sizes greater than 10 (kiooeht)

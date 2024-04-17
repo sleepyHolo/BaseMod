@@ -1,6 +1,8 @@
 package basemod.patches.com.megacrit.cardcrawl.characters.AbstractPlayer;
 
 import basemod.BaseMod;
+import com.badlogic.gdx.math.Bezier;
+import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.google.gson.annotations.SerializedName;
 import com.megacrit.cardcrawl.actions.common.BetterDiscardPileToHandAction;
@@ -10,7 +12,10 @@ import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.actions.defect.DiscardPileToHandAction;
 import com.megacrit.cardcrawl.actions.defect.ScrapeAction;
 import com.megacrit.cardcrawl.actions.defect.SeekAction;
-import com.megacrit.cardcrawl.actions.unique.*;
+import com.megacrit.cardcrawl.actions.unique.AttackFromDeckToHandAction;
+import com.megacrit.cardcrawl.actions.unique.DiscoveryAction;
+import com.megacrit.cardcrawl.actions.unique.ExhumeAction;
+import com.megacrit.cardcrawl.actions.unique.SkillFromDeckToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DiscardToHandAction;
 import com.megacrit.cardcrawl.actions.utility.DrawPileToHandAction;
 import com.megacrit.cardcrawl.actions.utility.ExhaustToHandAction;
@@ -211,21 +216,33 @@ public class MaxHandSizePatch
 			};
 		}
 
+		private static final Bezier<Vector2> curve = new Bezier<>();
+
 		@SuppressWarnings("unused")
 		public static void PositionCards(CardGroup hand)
 		{
 			float middle = hand.size() / 2.0f - 0.5f;
+			float scale = (1500 * Settings.scale) / (AbstractCard.IMG_WIDTH_S * hand.size());
+			float left = Settings.WIDTH / 2.0f + (AbstractCard.IMG_WIDTH_S * scale * (0 - middle));
+			float right = Settings.WIDTH / 2.0f + (AbstractCard.IMG_WIDTH_S * scale * (hand.size() - 1 - middle));
+			curve.set(
+					new Vector2(left, 0f),
+					new Vector2(Settings.WIDTH / 2f, 100f * Settings.scale),
+					new Vector2(right, 0f)
+			);
 
 			float index = 0;
+			Vector2 out = new Vector2();
 			for (AbstractCard card : hand.group) {
-				card.targetDrawScale = (1500 * Settings.scale) / (AbstractCard.IMG_WIDTH_S * hand.size());
+				card.targetDrawScale = scale;
 
-				card.target_x = Settings.WIDTH / 2.0f + (AbstractCard.IMG_WIDTH_S * card.targetDrawScale * (index - middle));
-				if (card.target_y < 0.0f * Settings.scale) {
-					card.target_y = 0.0f * Settings.scale;
-				}
-				if (Math.abs(card.targetAngle) > 20) {
-					card.targetAngle = Math.signum(card.targetAngle) * 20.0f;
+				card.target_x = curve.valueAt(out, (index + 0.5f) / hand.size()).x;
+				card.target_y = out.y;
+				curve.derivativeAt(out, (index + 0.5f) / hand.size());
+				card.targetAngle = out.angle();
+				// stops cards on the right side of the hand from doing a flip when unhovered
+				if (card.targetAngle > 180f) {
+					card.targetAngle -= 360f;
 				}
 				index += 1;
 			}
