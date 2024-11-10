@@ -78,7 +78,7 @@ public class DisplayRunInfo
 			infoX = MathHelper.uiLerpSnap(infoX, infoTargetX);
 
 			if (buttons.anyMatch(x -> x.hb.hovered)) {
-				infoTargetX = 25 * Settings.scale;
+				infoTargetX = 25;
 			} else {
 				infoTargetX = 0f;
 			}
@@ -125,7 +125,7 @@ public class DisplayRunInfo
 				float w = FontHelper.getWidth(FontHelper.cardDescFont_L, text, 1f) + PADDING * 2;
 				w = Math.max(w, MIN_BOX_WIDTH);
 				float h = FontHelper.getHeight(FontHelper.cardDescFont_L, text, 1f) + PADDING * 2;
-				float x = infoX + MenuButton.FONT_X - 179f + (120f + 32f) * Settings.scale;
+				float x = infoX * Settings.scale + MenuButton.FONT_X + (-179f + 120f + 32f) * Settings.scale;
 				float y = topButton.hb.y + topButton.hb.height + 10 * Settings.scale;
 
 				sb.setColor(BG_COLOR);
