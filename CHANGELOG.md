@@ -1074,3 +1074,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Add run info panel to main menu, inspired by sts2 preview (kiooeht)
 * Fix Watcher visual bug on some aspect ratios (kiooeht)
 * Fix hitboxes bleeding red in debug mode (erasels/kiooeht)
+* Fix Live Forever (Wish) causing graphical bug to Fruit Juice and Poison Potion (kiooeht)
