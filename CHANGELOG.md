@@ -1088,3 +1088,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Update AddCustomMonsters to deep copy to avoid possible weird weight modification (lastcel)
 
 #### dev ####
+* Fix custom monster encounters generating incorrectly after act 1 (kiooeht)

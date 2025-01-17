@@ -35,7 +35,6 @@ public class AddCustomMonsters
 				for (MonsterInfo i : BaseMod.getEliteEncounters(AbstractDungeon.id)) {
 					monsters[0].add(new MonsterInfo(i.name, i.weight));
 				}
-				break;
 			default:
 				calls = 0;
 				break;
