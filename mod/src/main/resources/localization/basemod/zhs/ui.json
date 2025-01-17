@@ -3,7 +3,7 @@
     "TEXT": [
       "%1$s %2$s",
       "%1$s, [run_info_blue]第 %2$d 层[]",
-      "进阶模式 [run_info_red]%1$d[]",
+      "进阶 [run_info_red]%1$d[]",
       "[run_info_red]%1$d / %2$d 生命[]   [run_info_gold]%3$d 金币[]"
     ],
     "EXTRA_TEXT": [
