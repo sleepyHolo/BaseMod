@@ -174,6 +174,7 @@ public class DisplayRunInfo
 						String.class
 				).invoke(new Object[] { filepath });
 				characterName = character.getLocalizedCharacterName();
+				return;
 			} catch (Exception ignore) {}
 		}
 	}
