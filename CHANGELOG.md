@@ -1087,5 +1087,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Move PostInitialize hook location so it is within the normal try-catch (Alchyr)
 * Update AddCustomMonsters to deep copy to avoid possible weird weight modification (lastcel)
 
-#### dev ####
+#### v5.55.1 ####
 * Fix custom monster encounters generating incorrectly after act 1 (kiooeht)
+
+#### dev ####
