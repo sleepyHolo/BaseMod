@@ -1068,7 +1068,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.54.1 ####
 * Fix crash when inspecting single cards or relics in SCV/SRC (kiooeht)
 
-#### dev ####
+#### v5.55.0 ####
 * Fix WhatMod not working for powers on the player (kiooeht)
 * Improve visual of hand sizes greater than 10 (kiooeht)
 * Add run info panel to main menu, inspired by sts2 preview (kiooeht)
@@ -1086,3 +1086,5 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Make NoCompendium annotation work for base game colors (Indi)
 * Move PostInitialize hook location so it is within the normal try-catch (Alchyr)
 * Update AddCustomMonsters to deep copy to avoid possible weird weight modification (lastcel)
+
+#### dev ####
