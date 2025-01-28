@@ -1091,3 +1091,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix custom monster encounters generating incorrectly after act 1 (kiooeht)
 
 #### dev ####
+* Fix language dropdown going offscreen while in a run (kiooeht)
