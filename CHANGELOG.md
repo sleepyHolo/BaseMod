@@ -1090,8 +1090,10 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 #### v5.55.1 ####
 * Fix custom monster encounters generating incorrectly after act 1 (kiooeht)
 
-#### dev ####
+#### v5.55.2 ####
 * Fix language dropdown going offscreen while in a run (kiooeht)
 * Fix settings toggles being the wrong size while in a run (kiooeht)
 * Fix frame color in SRV being incorrect the first time you view a relic (kiooeht)
 * Fix dynamic variables always rendering fully opaque in CN (herbix)
+
+#### dev ####
