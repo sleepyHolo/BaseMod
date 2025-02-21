@@ -1096,5 +1096,7 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix frame color in SRV being incorrect the first time you view a relic (kiooeht)
 * Fix dynamic variables always rendering fully opaque in CN (herbix)
 
-#### dev ####
+#### v5.55.3 ####
 * Fix for run info panel breaking Say the Spire (kiooeht)
+
+#### dev ####
