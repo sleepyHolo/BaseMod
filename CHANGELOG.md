@@ -1097,3 +1097,4 @@ This is a fast forward to v1.6.3 of daviscook477's fork with a few additional ch
 * Fix dynamic variables always rendering fully opaque in CN (herbix)
 
 #### dev ####
+* Fix for run info panel breaking Say the Spire (kiooeht)

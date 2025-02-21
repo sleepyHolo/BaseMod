@@ -20,7 +20,11 @@ import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuButton;
 import com.megacrit.cardcrawl.screens.options.ConfirmPopup;
+import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -203,10 +207,46 @@ public class DisplayRunInfo
 	{
 		String origName = AbstractDungeon.name;
 		String origLevelNum = AbstractDungeon.levelNum;
+		FixForSayTheSpire.disablePopup = true;
 		new DungeonTransitionScreen(save.level_name);
+		FixForSayTheSpire.disablePopup = false;
 		String ret = AbstractDungeon.name;
 		AbstractDungeon.name = origName;
 		AbstractDungeon.levelNum = origLevelNum;
 		return ret;
+	}
+
+	@SpirePatch2(
+			clz = DungeonTransitionScreen.class,
+			method = SpirePatch.CONSTRUCTOR
+	)
+	private static class FixForSayTheSpire
+	{
+		public static boolean disablePopup = false;
+
+		private static ExprEditor Instrument()
+		{
+			return new ExprEditor() {
+				@Override
+				public void edit(NewExpr e) throws CannotCompileException
+				{
+					if (e.getClassName().equals(ConfirmPopup.class.getName())) {
+						e.replace("if (" + FixForSayTheSpire.class.getName() + ".disablePopup) {" +
+								"$_ = null;" +
+								"} else {" +
+								"$_ = $proceed($$);" +
+								"}");
+					}
+				}
+
+				@Override
+				public void edit(MethodCall m) throws CannotCompileException
+				{
+					if (m.getClassName().equals(ConfirmPopup.class.getName()) && m.getMethodName().equals("show")) {
+						m.replace("if ($0 != null) { $proceed($$); }");
+					}
+				}
+			};
+		}
 	}
 }
